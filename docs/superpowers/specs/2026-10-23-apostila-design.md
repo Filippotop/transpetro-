@@ -22,15 +22,45 @@ O trabalho foi dividido em 4 partes, nesta ordem:
 
 **Critério de sucesso:** o estudante abre o app e vê o que já domina e o que falta no edital. Ele estuda um módulo com o essencial destacado, confere o aprendizado na checagem e o mapa reflete isso. Cada módulo leva à OS correspondente.
 
-## Fatos de partida (pesquisa de 2026-10-23)
+## Fatos de partida
 
-- **Prova:** 60 questões (40 de Conhecimentos Específicos, 10 de Português, 10 de Matemática), 4 h ([agrobase](https://www.agrobase.com.br/concursos/2026/transpetro-nacional-selecao-publica-03-2026/)).
-- **Data:** provavelmente 06/12/2026, mas sem confirmação oficial. As fontes divergem ([Direção](https://www.direcaoconcursos.com.br/noticias/concurso-transpetro-retificacao-prova-e-inscricao), [Gran](https://blog.grancursosonline.com.br/concurso-transpetro-cronograma-atualizado/amp/)). O app mantém `EXAM_DATE` num lugar só e avisa "confira no site da Cesgranrio".
-- **Conteúdo programático:** o Anexo IV oficial não foi obtido. Até o estudante fornecer o texto, vale o sumário secundário da [Nova Concursos](https://www.novaconcursos.com.br/apostila/transpetro-profissional-transpetro-nivel-medio-junior-enfase-manutencao-eletrica), com 11 itens. O app deixa explícito que a numeração é provisória.
-- **Peso dos temas:** na prova Cesgranrio/Petrobras 2017 (Téc. Manutenção Elétrica), 37 de 60 questões foram de eletricidade ([Qconcursos](https://www.qconcursos.com/questoes-de-concursos/provas/cesgranrio-2017-petrobras-tecnico-de-manutencao-junior-eletrica)). Por isso a faixa A começa por circuitos, trifásicos e potência.
+Fontes: o edital e a prova de 2023 enviados pelo estudante, mais a pesquisa de 2026-10-23.
+
+- **Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO – 2026.3** (PDF enviado pelo estudante).
+  - **Prova:** 40 questões de Conhecimentos Específicos e 20 de Gerais (10 de Português, 10 de Matemática), uma etapa só, alternativas de A a E.
+  - **Eliminação (7.1.4.3):** menos de 50% em Específicos, **ou** menos de 50% em Gerais, **ou** zero em qualquer matéria de Gerais.
+- **Data:** o Anexo V do edital original marca a prova para **29/11/2026**. Notícias falam de uma retificação para 06/12/2026 ([Direção](https://www.direcaoconcursos.com.br/noticias/concurso-transpetro-retificacao-prova-e-inscricao)), mas o texto da retificação não foi visto. O app mantém `EXAM_DATE` num lugar só e avisa "confira no site da Cesgranrio".
+- **Conteúdo programático (Anexo IV, Ênfase 8), texto oficial:**
+  1. Simbologia e diagramas (1.1 unifilares e trifilares; 1.2 esquemas de acionamento e controle).
+  2. Circuitos CC e CA (2.1 CC; 2.2 CA; 2.3 operações com senoides; 2.4 valores médio, eficaz e de pico; 2.5 Kirchhoff, Thévenin e Norton).
+  3. Energia e potência (3.1 cálculos e medidas; 3.2 ativa, reativa e aparente; 3.3 fator de potência e correção).
+  4. Mono e trifásicos (4.1; 4.2 tensão de linha e de fase, estrela e triângulo).
+  5. Máquinas (5.1 eletromagnetismo; 5.2 funcionamento; 5.3 transformadores; 5.4 síncronas; 5.5 CC e indução; 5.6 proteção BT; 5.7 acionamento e comando).
+  6. Segurança e higiene (6.1 conceitos; 6.2 EPI e EPC; 6.3 interpretação de projetos).
+  7. Medidas (7.1 fundamentos; 7.2 grandezas e SI; 7.3 instrumentos de corrente, tensão, potência e isolação; 7.4 retificadores, baterias e no-breaks).
+  8. Instalações (8.1 BT; 8.2 redes aéreas de 1,0 a 17,5 kV; 8.3 aterramento; 8.4 SPDA).
+  9. Automação e eletrônica (9.1 analógica e digital; 9.2 diagramas lógicos; 9.3 automação; 9.4 CLP; 9.5 malha fechada).
+  10. Normas (10.1 NBR 5410; 10.2 manutenção; 10.3 materiais e ferramentas; 10.4 NR-10).
+- **Peso observado na prova Transpetro 2023 (Manutenção – Elétrica, Cesgranrio, questões 21 a 60), classificação feita a partir do PDF:**
+
+  | Item | Questões | Nº |
+  |---|---|---|
+  | 2 | 32, 33, 48, 49, 52, 53, 60 | 7 |
+  | 8 | 37, 42, 45, 46, 54, 59 | 6 |
+  | 9 | 31, 34, 35, 36, 50, 51 | 6 |
+  | 3 | 21, 23, 25, 56, 58 | 5 |
+  | 5 | 26, 27, 28, 29, 38 | 5 |
+  | 4 | 22, 24, 30 | 3 |
+  | 7 | 43, 44, 57 | 3 |
+  | 10 | 40, 47, 55 | 3 |
+  | 6 | 39, 41 | 2 |
+  | 1 | — | 0 |
+
+  Cerca de 25 das 40 questões exigem cálculo. Como é uma prova só, o peso serve para **priorizar**, nunca para excluir um item.
 - **NR-10:**
   - Em vigor na data da prova: Portaria 915/2019, desenergização no item 10.5.1 ([gov.br](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/arquivos/normas-regulamentadoras/nr-10-atualizada-2019-1.pdf)).
   - A nova redação (Portaria MTE 737/2026) vale a partir de 01/06/2027. Ela troca a ordem de "impedimento de reenergização" e "constatação da ausência de tensão" e renumera o item para 10.13.1 ([gov.br](https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/nr-10-atualizada-2026-1.pdf)).
+- **Questões de provas anteriores** não são copiadas. As checagens são originais e reproduzem os **padrões** observados (exemplo: "sobretensão numa fase → neutro rompido com cargas mal distribuídas").
 
 ## 1. Módulo da apostila
 
@@ -43,18 +73,20 @@ Um módulo corresponde a um item do edital. Estrutura fixa:
 5. **"Veja na bancada":** links para as OS do campo `missoes`.
 6. **Resumo e checagem:** 4 questões (1 de memória, 1 de compreensão, 2 de aplicação no estilo Cesgranrio). Cada uma tem 5 alternativas, o gabarito e `porque[5]`, a explicação de **cada** alternativa.
 
-**Primeira entrega (faixa A, 6 módulos):**
+**Faixas (pelo peso de 2023):** A = itens 2, 3+4, 5, 8, 9; B = itens 6+10 (segurança, NR-10, NBR 5410) e 7; C = item 1.
 
-| id | Tema |
-|---|---|
-| `circuitos` | Circuitos CC e CA: Ohm, Kirchhoff, Thévenin/Norton, valores de pico, médio e eficaz |
-| `trifasicos` | Sistemas trifásicos: Y e Δ, tensões e correntes de linha e de fase, neutro e desequilíbrio |
-| `potencia` | Potência ativa, reativa e aparente; fator de potência e sua correção |
-| `motores` | Motor de indução, partidas, comandos, relé de sobrecarga, falta de fase |
-| `medidas` | Multímetro, alicate, megôhmetro, índice de polarização, vivo-morto-vivo |
-| `normas` | NR-10 (em vigor × 2027) e NBR 5410 (DR, aterramento, isolação) |
+**Primeira entrega (faixa A e a parte de normas, 6 módulos):**
 
-Os demais itens do edital aparecem no mapa como "em breve".
+| id | Itens do edital | Tema |
+|---|---|---|
+| `circuitos` | 2.1–2.5 | CC e CA: Ohm, Kirchhoff, Thévenin/Norton, fontes controladas, senoides (soma de fasores, pico/eficaz/médio), RC/RL |
+| `potencia-trifasicos` | 3.1–3.3, 4.1–4.2 | Energia (kWh ↔ J, medidor), P/Q/S, FP e banco de capacitores, dois wattímetros, Y e Δ (correntes e tensões de linha e de fase) |
+| `maquinas` | 5.1–5.7 | Força em condutor, transformador (perdas, índice horário, TC), motor CC shunt, síncrono, indução, estrela-triângulo, relé de sobrecarga |
+| `instalacoes` | 8.1–8.4 | Esquemas TN/TT/IT e DR, queda de tensão, neutro rompido, aterramento e equipotencialização, SPDA e DPS |
+| `automacao` | 9.1–9.5 | Amplificador operacional, álgebra booleana, CLP e pull-up, PID, malha fechada e Routh-Hurwitz, função de transferência RLC |
+| `normas-seguranca` | 6.1–6.3, 10.1–10.4 | Perigo × risco, EPC × EPI, NR-10 (prontuário, 10.5.1 em vigor × 10.13.1 de 2027), princípios da NBR 5410, materiais e isolação de condutores |
+
+O item 7 (medidas) e o item 1 (simbologia) aparecem no mapa como "em breve". As OS atuais já cobrem parte do 7.3 e do 1.2.
 
 **Tom:** o do app Humanas de Ouro. Frases diretas, termo técnico em negrito na primeira ocorrência, sem enrolação.
 
@@ -63,7 +95,7 @@ Os demais itens do edital aparecem no mapa como "em breve".
 Barra fixa com 3 abas: **Estudar**, **Bancada** e **Revisar**. O leitor de módulo se abre dentro de Estudar.
 
 - **Estudar → mapa do edital.**
-  - Uma linha por item, com faixa, status e barra de domínio.
+  - Uma linha por item **oficial** do Anexo IV (1 a 10, com os subitens), com faixa, peso em 2023, status e barra de domínio.
   - Status: ○ não lido · ◐ lido (≥ 90% das seções vistas) · ● checagem ≥ 75% de acerto · ★ dominado (checagem ≥ 75% **e** todas as questões do módulo na caixa 3 ou mais da revisão, o que exige acertar de novo em outro dia).
   - Itens sem módulo aparecem como "em breve".
   - Cartão **Próximo passo**, escolhido por regra: revisões vencidas primeiro → o módulo da faixa A com menor domínio → a OS ligada ao último módulo lido.
@@ -79,7 +111,7 @@ Barra fixa com 3 abas: **Estudar**, **Bancada** e **Revisar**. O leitor de módu
 ## 3. Dados e progresso
 
 - **Conteúdo:** `js/apostila/<id>.js`, cada um exportando `{ id, item, titulo, faixa, porque, essencial[], secoes[{id, titulo, html}], fontes[{t, url}], missoes[], checagem[{s, o[5], a, porque[5]}], contas[{secao, expr, valor}] }`.
-- **Catálogo:** `js/apostila/index.js` lista os módulos e a estrutura do edital (11 itens, com o módulo correspondente ou `null`).
+- **Catálogo:** `js/apostila/index.js` traz a estrutura oficial do Anexo IV (10 itens e subitens, com o peso de 2023) e diz qual módulo cobre cada subitem (um módulo pode cobrir subitens de mais de um item).
 - **Missões:** ganham o campo `modulos: [ids]`.
 - **Progresso:** o objeto atual (`bancada-transpetro-v1`, `v: 3`) ganha `leitura: {<id>: {vistas: [secaoIds], ultima, em}}`.
   - As checagens entram no `srs` com ids `ap/<modulo>/<i>`.
@@ -113,9 +145,9 @@ Barra fixa com 3 abas: **Estudar**, **Bancada** e **Revisar**. O leitor de módu
 ## 6. Ordem de execução
 
 1. Migrar para o repositório próprio e verificar que todos os testes passam lá.
-2. Estrutura (catálogo, leitor, mapa, domínio, abas) e **um** módulo completo (`trifasicos`). **Ponto de parada:** o estudante avalia o tom e a profundidade.
-3. Os cinco módulos restantes da faixa A.
+2. Estrutura (catálogo, leitor, mapa, domínio, abas) e **um** módulo completo (`potencia-trifasicos`). **Ponto de parada:** o estudante avalia o tom e a profundidade.
+3. Os cinco módulos restantes.
 
 ## Fora do escopo desta parte
 
-Atendimento guiado, banco grande de questões, novas OS, módulos das faixas B e C, sincronização entre aparelhos.
+Atendimento guiado, banco grande de questões, novas OS, módulos dos itens 1 e 7, Conhecimentos Gerais (Português e Matemática), sincronização entre aparelhos.
