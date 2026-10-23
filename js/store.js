@@ -1,8 +1,9 @@
 /* Persistência do progresso no aparelho (localStorage), com migração e cópia de segurança. */
 export const LSK = 'bancada-transpetro-v1';
 
-/** Estado inicial. `res`: resultados por missão; `exams`: histórico do modo prova; `srs`: revisão espaçada. */
-export const fresh = () => ({ v: 2, res: {}, nr10ok: false, instrutor: true, exams: [], srs: {} });
+/** Estado inicial. `res`: resultados por missão; `exams`: histórico do modo prova; `srs`: revisão espaçada;
+    `leitura`: seções da apostila já vistas por módulo. */
+export const fresh = () => ({ v: 3, res: {}, nr10ok: false, instrutor: true, exams: [], srs: {}, leitura: {} });
 
 /** Aceita qualquer coisa vinda do armazenamento ou de um arquivo e devolve um estado válido. */
 export function migrate(raw) {
@@ -18,7 +19,14 @@ export function migrate(raw) {
   P.nr10ok = !!raw.nr10ok;
   P.instrutor = raw.instrutor !== false;
   if (Array.isArray(raw.exams)) P.exams = raw.exams.filter(e => e && Number.isFinite(+e.score)).slice(-200);
-  if (raw.srs && typeof raw.srs === 'object') for (const [id, c] of Object.entries(raw.srs)) if (c && Number.isFinite(+c.box)) P.srs[id] = { box: Math.min(5, Math.max(1, +c.box)), due: +c.due || 0, seen: +c.seen || 0, wrong: +c.wrong || 0 };
+  if (raw.srs && typeof raw.srs === 'object') for (const [id, c] of Object.entries(raw.srs)) if (c && Number.isFinite(+c.box)) {
+    P.srs[id] = { box: Math.min(5, Math.max(1, +c.box)), due: +c.due || 0, seen: +c.seen || 0, wrong: +c.wrong || 0 };
+    if (typeof c.last === 'boolean') P.srs[id].last = c.last; // v2 não tinha: conta como não respondido
+  }
+  if (raw.leitura && typeof raw.leitura === 'object') for (const [id, l] of Object.entries(raw.leitura)) {
+    if (!l || !Array.isArray(l.vistas)) continue;
+    P.leitura[id] = { vistas: [...new Set(l.vistas.filter(x => typeof x === 'string'))], ultima: typeof l.ultima === 'string' ? l.ultima : null, em: +l.em || 0 };
+  }
   return P;
 }
 

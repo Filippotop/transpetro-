@@ -103,7 +103,7 @@ test('DR: limiar 19 mA (normal) e 9 mA (defeituoso); testador sem carga mede o l
 test('persistência: migra dados antigos e rejeita lixo', () => {
   const old = { v: 1, res: { cmd: { best: 80, n: 2, faults: { fuse: 80, x: 'abc' } } }, nr10ok: true, instrutor: false };
   const P = S.migrate(old);
-  assert.equal(P.v, 2); assert.equal(P.res.cmd.faults.fuse, 80); assert.equal(P.res.cmd.faults.x, undefined);
+  assert.equal(P.v, 3); assert.deepEqual(P.leitura, {}); assert.equal(P.res.cmd.faults.fuse, 80); assert.equal(P.res.cmd.faults.x, undefined);
   assert.equal(P.instrutor, false); assert.deepEqual(P.exams, []); assert.deepEqual(P.srs, {});
   assert.deepEqual(S.migrate('lixo'), S.fresh());
   const mem = new Map(); const st = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v) };
@@ -120,6 +120,31 @@ test('revisão espaçada (Leitner)', () => {
   for (let i = 0; i < 10; i++) answer(srs, 'b', true, now); assert.equal(srs.b.box, 5);
   answer(srs, 'b', false, now); assert.equal(srs.b.box, 1);
   assert.deepEqual(boxes(srs), [1, 1, 0, 0, 0]);
+});
+
+test('migração v2 → v3: cartões preservados, leitura validada', () => {
+  const v2 = { v: 2, res: {}, srs: { q1: { box: 3, due: 5, seen: 2, wrong: 1 }, q2: { box: 2, due: 1, seen: 1, wrong: 0, last: true }, q3: { box: 2, due: 1, seen: 1, wrong: 0, last: 'sim' } } };
+  const P = S.migrate(v2);
+  assert.equal(P.v, 3); assert.deepEqual(P.leitura, {});
+  assert.deepEqual(P.srs.q1, { box: 3, due: 5, seen: 2, wrong: 1 }); assert.equal(P.srs.q2.last, true); assert.equal('last' in P.srs.q3, false);
+  const L = S.migrate({ leitura: { a: { vistas: ['s1', 's2', 5], ultima: 's2', em: 7 }, b: { vistas: 'x' }, c: null, d: { vistas: [], ultima: 3, em: 'z' } } }).leitura;
+  assert.deepEqual(L.a, { vistas: ['s1', 's2'], ultima: 's2', em: 7 });
+  assert.equal(L.b, undefined); assert.equal(L.c, undefined); assert.deepEqual(L.d, { vistas: [], ultima: null, em: 0 });
+  assert.deepEqual(S.fresh(), { v: 3, res: {}, nr10ok: false, instrutor: true, exams: [], srs: {}, leitura: {} });
+});
+
+test('revisão limitada pela data da prova', () => {
+  const DAY = 86400000, now = 1_800_000_000_000, srs = {};
+  const at = d => new Date(now + d * DAY).toISOString();
+  for (let i = 0; i < 5; i++) answer(srs, 'x', true, now, at(10));
+  assert.equal(srs.x.box, 5); assert.equal(srs.x.due, now + 2 * DAY, '20% de 10 dias');
+  assert.equal(srs.x.last, true);
+  const s2 = { x: { box: 4, due: 0, seen: 0, wrong: 0 } };
+  assert.equal(answer(s2, 'x', true, now, at(3)).due, now + DAY, 'mínimo de 1 dia');
+  const s3 = { x: { box: 4, due: 0, seen: 0, wrong: 0 } };
+  assert.equal(answer(s3, 'x', true, now, at(-5)).due, now + DAY, 'prova no passado');
+  assert.equal(answer(s3, 'x', false, now, at(10)).last, false);
+  assert.equal(s3.x.due, now, 'caixa 1 continua vencendo já');
 });
 
 test('ids das questões são únicos e estáveis', () => {

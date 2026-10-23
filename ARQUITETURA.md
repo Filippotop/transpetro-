@@ -66,7 +66,7 @@ Diagnóstico 50 + ação 20 + segurança 20 (−10 por violação) + eficiência
 
 - **NR-10, item 10.5.1**: seccionamento → impedimento de reenergização → constatação da ausência de tensão → aterramento temporário com equipotencialização → proteção dos elementos energizados na zona controlada → sinalização de impedimento de reenergização. A nova redação (Portaria MTE nº 737, de 29/05/2026, DOU de 01/06/2026) só entra em vigor em **01/06/2027**. Ao atualizar o app para depois dessa data, revise a sequência.
 - **DR**: atuação entre 50% e 100% de IΔn; o toróide envolve fases e neutro, nunca o PE.
-- **Data da prova**: `EXAM_DATE` em `js/instruments.js` (06/12/2026). **Confira no cronograma oficial da Cesgranrio**: há fontes com datas diferentes.
+- **Data da prova**: `EXAM_DATE` em `js/instruments.js` (29/11/2026, Anexo V do edital original; `EXAM_DATE_NOTE` avisa na tela). **Confira a retificação no site da Cesgranrio**: há fontes com datas diferentes (06/12/2026).
 
 ## 7. O que ainda não foi feito
 

@@ -2,7 +2,7 @@
    Interface: painel, bancada, relatório, revisão. Toda a lógica de jogo
    fica em engine.js; aqui só há telas, eventos e persistência.
    ===================================================================== */
-import { INSTR, NR10, NR10RE, EXAM_DATE } from './instruments.js';
+import { INSTR, NR10, NR10RE, EXAM_DATE, EXAM_DATE_NOTE } from './instruments.js';
 import { MISSIONS, missionById, totalFaults, allQuestions } from './missions/index.js';
 import * as E from './engine.js';
 import * as S from './store.js';
@@ -43,7 +43,7 @@ function go(v, how = 'push') {
   render(); window.scrollTo({ top: 0 });
 }
 function render() {
-  $('#pill-days').textContent = `Faltam ${daysLeft()} dias para a prova`;
+  $('#pill-days').textContent = `Faltam ${daysLeft()} dias para a prova (data do edital original)`; $('#pill-days').title = EXAM_DATE_NOTE;
   document.body.dataset.view = VIEW;
   if (VIEW === 'run' && RUN) return drawRun();
   if (VIEW === 'debrief' && RUN && RUN.result) { view.innerHTML = debriefV(); return; }

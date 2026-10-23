@@ -1,4 +1,4 @@
-/* Instrumentos da bancada e sequências da NR-10 (redação vigente na data da prova, 06/12/2026). */
+/* Instrumentos da bancada e sequências da NR-10 (redação vigente na data da prova). */
 export const INSTR = {
   V: { nome: 'Multímetro: tensão CA', curto: 'V~', dica: 'Toque em dois pontos de teste (ponta vermelha e ponta preta) ou diretamente num componente para medir entre seus terminais.', energ: true },
   O: { nome: 'Multímetro: resistência', curto: 'Ω', dica: 'Só com o circuito desenergizado. Toque num componente para medir entre seus terminais.', desen: true },
@@ -26,4 +26,5 @@ export const NR10RE = [
   'Remoção da sinalização de impedimento de reenergização',
   'Destravamento, se houver, e religação dos dispositivos de seccionamento'
 ];
-export const EXAM_DATE = '2026-12-06T08:00:00-03:00';
+export const EXAM_DATE = '2026-11-29T08:00:00-03:00';
+export const EXAM_DATE_NOTE = 'Data do edital original (Anexo V); confira a retificação no site da Cesgranrio.';
