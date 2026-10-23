@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bancada Virtual de Manutenção</title>
+<meta name="description" content="Simulador de diagnóstico de defeitos elétricos com instrumentos virtuais e NR-10, para o Processo Seletivo Transpetro 2026 (Ênfase 8: Manutenção – Elétrica).">
+<meta name="theme-color" content="#1B2430">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bancada">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<script type="module" src="js/app.js"></script>
+</head>
+<body data-view="home">
+<a class="skip" href="#view">Pular para o conteúdo</a>
+<div class="wrap">
+<header class="top"><div class="brand"><h1><a href="./">Bancada Virtual de Manutenção</a></h1><p>Transpetro 2026 · Ênfase 8: Manutenção – Elétrica · diagnóstico de defeitos com instrumentos e NR-10</p></div>
+<div class="pills"><span class="pill" id="pill-days"></span><span class="pill" id="pill-save">Progresso salvo neste aparelho</span></div></header>
+<svg class="hero-strip" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0,30.0 L10,25.8 L20,21.9 L30,18.2 L40,15.1 L50,12.7 L60,11.0 L70,10.1 L80,10.1 L90,11.0 L100,12.7 L110,15.1 L120,18.2 L130,21.9 L140,25.8 L150,30.0 L160,34.2 L170,38.1 L180,41.8 L190,44.9 L200,47.3 L210,49.0 L220,49.9 L230,49.9 L240,49.0 L250,47.3 L260,44.9 L270,41.8 L280,38.1 L290,34.2 L300,30.0 L310,25.8 L320,21.9 L330,18.2 L340,15.1 L350,12.7 L360,11.0 L370,10.1 L380,10.1 L390,11.0 L400,12.7 L410,15.1 L420,18.2 L430,21.9 L440,25.8 L450,30.0 L460,34.2 L470,38.1 L480,41.8 L490,44.9 L500,47.3 L510,49.0 L520,49.9 L530,49.9 L540,49.0 L550,47.3 L560,44.9 L570,41.8 L580,38.1 L590,34.2 L600,30.0 L610,25.8 L620,21.9 L630,18.2 L640,15.1 L650,12.7 L660,11.0 L670,10.1 L680,10.1 L690,11.0 L700,12.7 L710,15.1 L720,18.2 L730,21.9 L740,25.8 L750,30.0 L760,34.2 L770,38.1 L780,41.8 L790,44.9 L800,47.3 L810,49.0 L820,49.9 L830,49.9 L840,49.0 L850,47.3 L860,44.9 L870,41.8 L880,38.1 L890,34.2 L900,30.0 L910,25.8 L920,21.9 L930,18.2 L940,15.1 L950,12.7 L960,11.0 L970,10.1 L980,10.1 L990,11.0 L1000,12.7 L1010,15.1 L1020,18.2 L1030,21.9 L1040,25.8 L1050,30.0 L1060,34.2 L1070,38.1 L1080,41.8 L1090,44.9 L1100,47.3 L1110,49.0 L1120,49.9 L1130,49.9 L1140,49.0 L1150,47.3 L1160,44.9 L1170,41.8 L1180,38.1 L1190,34.2 L1200,30.0" class="w pa"/><path d="M0,47.3 L10,49.0 L20,49.9 L30,49.9 L40,49.0 L50,47.3 L60,44.9 L70,41.8 L80,38.1 L90,34.2 L100,30.0 L110,25.8 L120,21.9 L130,18.2 L140,15.1 L150,12.7 L160,11.0 L170,10.1 L180,10.1 L190,11.0 L200,12.7 L210,15.1 L220,18.2 L230,21.9 L240,25.8 L250,30.0 L260,34.2 L270,38.1 L280,41.8 L290,44.9 L300,47.3 L310,49.0 L320,49.9 L330,49.9 L340,49.0 L350,47.3 L360,44.9 L370,41.8 L380,38.1 L390,34.2 L400,30.0 L410,25.8 L420,21.9 L430,18.2 L440,15.1 L450,12.7 L460,11.0 L470,10.1 L480,10.1 L490,11.0 L500,12.7 L510,15.1 L520,18.2 L530,21.9 L540,25.8 L550,30.0 L560,34.2 L570,38.1 L580,41.8 L590,44.9 L600,47.3 L610,49.0 L620,49.9 L630,49.9 L640,49.0 L650,47.3 L660,44.9 L670,41.8 L680,38.1 L690,34.2 L700,30.0 L710,25.8 L720,21.9 L730,18.2 L740,15.1 L750,12.7 L760,11.0 L770,10.1 L780,10.1 L790,11.0 L800,12.7 L810,15.1 L820,18.2 L830,21.9 L840,25.8 L850,30.0 L860,34.2 L870,38.1 L880,41.8 L890,44.9 L900,47.3 L910,49.0 L920,49.9 L930,49.9 L940,49.0 L950,47.3 L960,44.9 L970,41.8 L980,38.1 L990,34.2 L1000,30.0 L1010,25.8 L1020,21.9 L1030,18.2 L1040,15.1 L1050,12.7 L1060,11.0 L1070,10.1 L1080,10.1 L1090,11.0 L1100,12.7 L1110,15.1 L1120,18.2 L1130,21.9 L1140,25.8 L1150,30.0 L1160,34.2 L1170,38.1 L1180,41.8 L1190,44.9 L1200,47.3" class="w pb"/><path d="M0,12.7 L10,15.1 L20,18.2 L30,21.9 L40,25.8 L50,30.0 L60,34.2 L70,38.1 L80,41.8 L90,44.9 L100,47.3 L110,49.0 L120,49.9 L130,49.9 L140,49.0 L150,47.3 L160,44.9 L170,41.8 L180,38.1 L190,34.2 L200,30.0 L210,25.8 L220,21.9 L230,18.2 L240,15.1 L250,12.7 L260,11.0 L270,10.1 L280,10.1 L290,11.0 L300,12.7 L310,15.1 L320,18.2 L330,21.9 L340,25.8 L350,30.0 L360,34.2 L370,38.1 L380,41.8 L390,44.9 L400,47.3 L410,49.0 L420,49.9 L430,49.9 L440,49.0 L450,47.3 L460,44.9 L470,41.8 L480,38.1 L490,34.2 L500,30.0 L510,25.8 L520,21.9 L530,18.2 L540,15.1 L550,12.7 L560,11.0 L570,10.1 L580,10.1 L590,11.0 L600,12.7 L610,15.1 L620,18.2 L630,21.9 L640,25.8 L650,30.0 L660,34.2 L670,38.1 L680,41.8 L690,44.9 L700,47.3 L710,49.0 L720,49.9 L730,49.9 L740,49.0 L750,47.3 L760,44.9 L770,41.8 L780,38.1 L790,34.2 L800,30.0 L810,25.8 L820,21.9 L830,18.2 L840,15.1 L850,12.7 L860,11.0 L870,10.1 L880,10.1 L890,11.0 L900,12.7 L910,15.1 L920,18.2 L930,21.9 L940,25.8 L950,30.0 L960,34.2 L970,38.1 L980,41.8 L990,44.9 L1000,47.3 L1010,49.0 L1020,49.9 L1030,49.9 L1040,49.0 L1050,47.3 L1060,44.9 L1070,41.8 L1080,38.1 L1090,34.2 L1100,30.0 L1110,25.8 L1120,21.9 L1130,18.2 L1140,15.1 L1150,12.7 L1160,11.0 L1170,10.1 L1180,10.1 L1190,11.0 L1200,12.7" class="w pc"/></svg>
+<main id="view" tabindex="-1"><noscript><p>Este simulador precisa de JavaScript ativado.</p></noscript></main>
+<footer><p>Material de estudo independente, sem vínculo com a Transpetro ou com a Cesgranrio. Modelos elétricos didáticos. Funciona sem internet depois do primeiro acesso.</p></footer>
+</div>
+<dialog class="modal" id="modal" aria-labelledby="mt"><div class="mbox"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<div class="update" id="update" role="status" hidden><span>Nova versão disponível.</span><button class="btn">Atualizar</button></div>
+</body>
+</html>
