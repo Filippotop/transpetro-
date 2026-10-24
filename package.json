@@ -1,1 +1,13 @@
-{"name":"bancada-transpetro","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs && node tests/smoke.mjs"},"devDependencies":{"axe-core":"4.10.2","playwright":"1.56.1"}}
+{
+  "name": "eletrica-de-ouro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/merge.test.mjs && node tests/sw.test.mjs && node tests/smoke.mjs && npm run test:bancada",
+    "test:bancada": "node --test bancada/tests/*.test.mjs && node bancada/tests/smoke.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.2",
+    "playwright": "1.56.1"
+  }
+}
