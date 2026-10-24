@@ -1,0 +1,1 @@
+{"name":"bancada-transpetro","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs && node tests/smoke.mjs"},"devDependencies":{"axe-core":"4.10.2","playwright":"1.56.1"}}

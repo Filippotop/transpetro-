@@ -1,6 +1,6 @@
 /* Bancada: teste de fumaça num Chromium de verdade. Joga uma OS inteira pela interface e falha se aparecer
    erro de JavaScript, rolagem lateral, falha séria de acessibilidade (WCAG AA) ou se o app não abrir offline.
-   Rodar (na raiz do repositório): npm install && npm run test:bancada */
+   Rodar (na raiz do repositório): npm install && npm test */
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -9,7 +9,7 @@ import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
 
 const require = createRequire(import.meta.url);
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.json': 'application/json' };
 const VIEWPORTS = { 320: { width: 320, height: 640 }, 375: { width: 375, height: 780 }, 1280: { width: 1280, height: 850 } };
@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(f).pipe(res);
 });
 await new Promise(ok => server.listen(0, '127.0.0.1', ok));
-const URL_ = `http://127.0.0.1:${server.address().port}/bancada/`;
+const URL_ = `http://127.0.0.1:${server.address().port}/`;
 
 async function axe(page, where) {
   await page.addScriptTag({ content: AXE });

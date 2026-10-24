@@ -1,5 +1,5 @@
 /* Apostila: catálogo do Anexo IV, esquema dos módulos, contas conferidas e ligação com as missões.
-   Rodar: node --test bancada/tests */
+   Rodar: node --test tests/*.test.mjs */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { EDITAL } from '../js/apostila/edital.js';

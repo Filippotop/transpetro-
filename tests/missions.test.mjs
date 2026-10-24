@@ -1,5 +1,5 @@
 /* Integridade das missões: cada falha tem dados completos e TODA prova listada no relatório
-   pode ser obtida por alguma sequência de ações e medições. Rodar: node --test bancada/tests */
+   pode ser obtida por alguma sequência de ações e medições. Rodar: node --test tests/*.test.mjs */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MISSIONS } from '../js/missions/index.js';

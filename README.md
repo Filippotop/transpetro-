@@ -14,12 +14,12 @@ O aluno atende ordens de serviço (OS), mede circuitos com instrumentos virtuais
 
 ## Como usar
 
-Publicado junto com o repositório no GitHub Pages: `https://filippotop.github.io/humanas-de-ouro/bancada/`. No celular, abra o endereço e use **Adicionar à tela inicial**.
+Publicado no GitHub Pages: `https://filippotop.github.io/transpetro-/`. No celular, abra o endereço e use **Adicionar à tela inicial**.
 
 Para rodar localmente, sirva a raiz do repositório com qualquer servidor estático (os módulos ES não abrem por `file://`):
 
 ```
-npx serve .        # depois abra http://localhost:3000/bancada/
+npx serve .        # depois abra http://localhost:3000/
 ```
 
 ## Testes
@@ -28,14 +28,14 @@ Na raiz do repositório:
 
 ```
 npm install
-npm run test:bancada
+npm test
 ```
 
 - `tests/engine.test.mjs`: pontuação, regras de segurança, NR-10, persistência, revisão espaçada e checagens dos modelos elétricos (Millman, desequilíbrio 380/363/363 V, limiares do DR).
 - `tests/missions.test.mjs`: percorre **todos os estados alcançáveis** de cada missão, mede tudo e exige que cada prova listada no relatório seja obtível; e garante que leituras com o circuito desenergizado não “provam” nada.
 - `tests/smoke.mjs`: joga uma OS inteira num Chromium de verdade em 3 tamanhos × 2 temas, roda o axe (WCAG AA), confere revisão, modo prova, botão voltar e abertura offline.
 
-Se o Chromium do Playwright não estiver instalado, aponte para outro: `CHROMIUM=/caminho/do/chrome npm run test:bancada`.
+Se o Chromium do Playwright não estiver instalado, aponte para outro: `CHROMIUM=/caminho/do/chrome npm test`.
 
 ## Publicar uma versão nova
 
