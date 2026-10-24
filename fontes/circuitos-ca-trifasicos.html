@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Circuitos CA e trifásicos — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. A forma senoidal<small>Itens 2.2 e 2.3</small></a></li>
+    <li><a href="#b2">2. Pico, médio e eficaz<small>Item 2.4</small></a></li>
+    <li><a href="#b3">3. Fasores e complexos<small>Itens 2.3 e 2.5</small></a></li>
+    <li><a href="#b4">4. R, L, C e impedância<small>Item 2.2</small></a></li>
+    <li><a href="#b5">5. Potência em CA<small>Ponte com os itens 3.2 e 3.3</small></a></li>
+    <li><a href="#b6">6. Sistemas trifásicos<small>Itens 4.1 e 4.2</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Circuitos em corrente alternada e trifásicos</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Teoria, figuras, equações com cada símbolo nomeado, exemplos resolvidos e exercícios comentados ao fim de cada bloco.</p>
+  <svg class="hero-wave" viewBox="0 0 1200 180" role="img" aria-label="Três tensões senoidais defasadas de 120 graus">
+<line x1="0" y1="90" x2="1200" y2="90" class="ax"/>
+<path d="M0.0,90.0 L5.0,85.3 L10.0,80.6 L15.0,76.0 L20.0,71.4 L25.0,66.9 L30.0,62.4 L35.0,58.2 L40.0,54.0 L45.0,50.0 L50.0,46.2 L55.0,42.5 L60.0,39.1 L65.0,35.9 L70.0,32.9 L75.0,30.1 L80.0,27.6 L85.0,25.4 L90.0,23.5 L95.0,21.8 L100.0,20.5 L105.0,19.4 L110.0,18.6 L115.0,18.2 L120.0,18.0 L125.0,18.2 L130.0,18.6 L135.0,19.4 L140.0,20.5 L145.0,21.8 L150.0,23.5 L155.0,25.4 L160.0,27.6 L165.0,30.1 L170.0,32.9 L175.0,35.9 L180.0,39.1 L185.0,42.5 L190.0,46.2 L195.0,50.0 L200.0,54.0 L205.0,58.2 L210.0,62.4 L215.0,66.9 L220.0,71.4 L225.0,76.0 L230.0,80.6 L235.0,85.3 L240.0,90.0 L245.0,94.7 L250.0,99.4 L255.0,104.0 L260.0,108.6 L265.0,113.1 L270.0,117.6 L275.0,121.8 L280.0,126.0 L285.0,130.0 L290.0,133.8 L295.0,137.5 L300.0,140.9 L305.0,144.1 L310.0,147.1 L315.0,149.9 L320.0,152.4 L325.0,154.6 L330.0,156.5 L335.0,158.2 L340.0,159.5 L345.0,160.6 L350.0,161.4 L355.0,161.8 L360.0,162.0 L365.0,161.8 L370.0,161.4 L375.0,160.6 L380.0,159.5 L385.0,158.2 L390.0,156.5 L395.0,154.6 L400.0,152.4 L405.0,149.9 L410.0,147.1 L415.0,144.1 L420.0,140.9 L425.0,137.5 L430.0,133.8 L435.0,130.0 L440.0,126.0 L445.0,121.8 L450.0,117.6 L455.0,113.1 L460.0,108.6 L465.0,104.0 L470.0,99.4 L475.0,94.7 L480.0,90.0 L485.0,85.3 L490.0,80.6 L495.0,76.0 L500.0,71.4 L505.0,66.9 L510.0,62.4 L515.0,58.2 L520.0,54.0 L525.0,50.0 L530.0,46.2 L535.0,42.5 L540.0,39.1 L545.0,35.9 L550.0,32.9 L555.0,30.1 L560.0,27.6 L565.0,25.4 L570.0,23.5 L575.0,21.8 L580.0,20.5 L585.0,19.4 L590.0,18.6 L595.0,18.2 L600.0,18.0 L605.0,18.2 L610.0,18.6 L615.0,19.4 L620.0,20.5 L625.0,21.8 L630.0,23.5 L635.0,25.4 L640.0,27.6 L645.0,30.1 L650.0,32.9 L655.0,35.9 L660.0,39.1 L665.0,42.5 L670.0,46.2 L675.0,50.0 L680.0,54.0 L685.0,58.2 L690.0,62.4 L695.0,66.9 L700.0,71.4 L705.0,76.0 L710.0,80.6 L715.0,85.3 L720.0,90.0 L725.0,94.7 L730.0,99.4 L735.0,104.0 L740.0,108.6 L745.0,113.1 L750.0,117.6 L755.0,121.8 L760.0,126.0 L765.0,130.0 L770.0,133.8 L775.0,137.5 L780.0,140.9 L785.0,144.1 L790.0,147.1 L795.0,149.9 L800.0,152.4 L805.0,154.6 L810.0,156.5 L815.0,158.2 L820.0,159.5 L825.0,160.6 L830.0,161.4 L835.0,161.8 L840.0,162.0 L845.0,161.8 L850.0,161.4 L855.0,160.6 L860.0,159.5 L865.0,158.2 L870.0,156.5 L875.0,154.6 L880.0,152.4 L885.0,149.9 L890.0,147.1 L895.0,144.1 L900.0,140.9 L905.0,137.5 L910.0,133.8 L915.0,130.0 L920.0,126.0 L925.0,121.8 L930.0,117.6 L935.0,113.1 L940.0,108.6 L945.0,104.0 L950.0,99.4 L955.0,94.7 L960.0,90.0 L965.0,85.3 L970.0,80.6 L975.0,76.0 L980.0,71.4 L985.0,66.9 L990.0,62.4 L995.0,58.2 L1000.0,54.0 L1005.0,50.0 L1010.0,46.2 L1015.0,42.5 L1020.0,39.1 L1025.0,35.9 L1030.0,32.9 L1035.0,30.1 L1040.0,27.6 L1045.0,25.4 L1050.0,23.5 L1055.0,21.8 L1060.0,20.5 L1065.0,19.4 L1070.0,18.6 L1075.0,18.2 L1080.0,18.0 L1085.0,18.2 L1090.0,18.6 L1095.0,19.4 L1100.0,20.5 L1105.0,21.8 L1110.0,23.5 L1115.0,25.4 L1120.0,27.6 L1125.0,30.1 L1130.0,32.9 L1135.0,35.9 L1140.0,39.1 L1145.0,42.5 L1150.0,46.2 L1155.0,50.0 L1160.0,54.0 L1165.0,58.2 L1170.0,62.4 L1175.0,66.9 L1180.0,71.4 L1185.0,76.0 L1190.0,80.6 L1195.0,85.3 L1200.0,90.0" class="w pa"/>
+<path d="M0.0,152.4 L5.0,154.6 L10.0,156.5 L15.0,158.2 L20.0,159.5 L25.0,160.6 L30.0,161.4 L35.0,161.8 L40.0,162.0 L45.0,161.8 L50.0,161.4 L55.0,160.6 L60.0,159.5 L65.0,158.2 L70.0,156.5 L75.0,154.6 L80.0,152.4 L85.0,149.9 L90.0,147.1 L95.0,144.1 L100.0,140.9 L105.0,137.5 L110.0,133.8 L115.0,130.0 L120.0,126.0 L125.0,121.8 L130.0,117.6 L135.0,113.1 L140.0,108.6 L145.0,104.0 L150.0,99.4 L155.0,94.7 L160.0,90.0 L165.0,85.3 L170.0,80.6 L175.0,76.0 L180.0,71.4 L185.0,66.9 L190.0,62.4 L195.0,58.2 L200.0,54.0 L205.0,50.0 L210.0,46.2 L215.0,42.5 L220.0,39.1 L225.0,35.9 L230.0,32.9 L235.0,30.1 L240.0,27.6 L245.0,25.4 L250.0,23.5 L255.0,21.8 L260.0,20.5 L265.0,19.4 L270.0,18.6 L275.0,18.2 L280.0,18.0 L285.0,18.2 L290.0,18.6 L295.0,19.4 L300.0,20.5 L305.0,21.8 L310.0,23.5 L315.0,25.4 L320.0,27.6 L325.0,30.1 L330.0,32.9 L335.0,35.9 L340.0,39.1 L345.0,42.5 L350.0,46.2 L355.0,50.0 L360.0,54.0 L365.0,58.2 L370.0,62.4 L375.0,66.9 L380.0,71.4 L385.0,76.0 L390.0,80.6 L395.0,85.3 L400.0,90.0 L405.0,94.7 L410.0,99.4 L415.0,104.0 L420.0,108.6 L425.0,113.1 L430.0,117.6 L435.0,121.8 L440.0,126.0 L445.0,130.0 L450.0,133.8 L455.0,137.5 L460.0,140.9 L465.0,144.1 L470.0,147.1 L475.0,149.9 L480.0,152.4 L485.0,154.6 L490.0,156.5 L495.0,158.2 L500.0,159.5 L505.0,160.6 L510.0,161.4 L515.0,161.8 L520.0,162.0 L525.0,161.8 L530.0,161.4 L535.0,160.6 L540.0,159.5 L545.0,158.2 L550.0,156.5 L555.0,154.6 L560.0,152.4 L565.0,149.9 L570.0,147.1 L575.0,144.1 L580.0,140.9 L585.0,137.5 L590.0,133.8 L595.0,130.0 L600.0,126.0 L605.0,121.8 L610.0,117.6 L615.0,113.1 L620.0,108.6 L625.0,104.0 L630.0,99.4 L635.0,94.7 L640.0,90.0 L645.0,85.3 L650.0,80.6 L655.0,76.0 L660.0,71.4 L665.0,66.9 L670.0,62.4 L675.0,58.2 L680.0,54.0 L685.0,50.0 L690.0,46.2 L695.0,42.5 L700.0,39.1 L705.0,35.9 L710.0,32.9 L715.0,30.1 L720.0,27.6 L725.0,25.4 L730.0,23.5 L735.0,21.8 L740.0,20.5 L745.0,19.4 L750.0,18.6 L755.0,18.2 L760.0,18.0 L765.0,18.2 L770.0,18.6 L775.0,19.4 L780.0,20.5 L785.0,21.8 L790.0,23.5 L795.0,25.4 L800.0,27.6 L805.0,30.1 L810.0,32.9 L815.0,35.9 L820.0,39.1 L825.0,42.5 L830.0,46.2 L835.0,50.0 L840.0,54.0 L845.0,58.2 L850.0,62.4 L855.0,66.9 L860.0,71.4 L865.0,76.0 L870.0,80.6 L875.0,85.3 L880.0,90.0 L885.0,94.7 L890.0,99.4 L895.0,104.0 L900.0,108.6 L905.0,113.1 L910.0,117.6 L915.0,121.8 L920.0,126.0 L925.0,130.0 L930.0,133.8 L935.0,137.5 L940.0,140.9 L945.0,144.1 L950.0,147.1 L955.0,149.9 L960.0,152.4 L965.0,154.6 L970.0,156.5 L975.0,158.2 L980.0,159.5 L985.0,160.6 L990.0,161.4 L995.0,161.8 L1000.0,162.0 L1005.0,161.8 L1010.0,161.4 L1015.0,160.6 L1020.0,159.5 L1025.0,158.2 L1030.0,156.5 L1035.0,154.6 L1040.0,152.4 L1045.0,149.9 L1050.0,147.1 L1055.0,144.1 L1060.0,140.9 L1065.0,137.5 L1070.0,133.8 L1075.0,130.0 L1080.0,126.0 L1085.0,121.8 L1090.0,117.6 L1095.0,113.1 L1100.0,108.6 L1105.0,104.0 L1110.0,99.4 L1115.0,94.7 L1120.0,90.0 L1125.0,85.3 L1130.0,80.6 L1135.0,76.0 L1140.0,71.4 L1145.0,66.9 L1150.0,62.4 L1155.0,58.2 L1160.0,54.0 L1165.0,50.0 L1170.0,46.2 L1175.0,42.5 L1180.0,39.1 L1185.0,35.9 L1190.0,32.9 L1195.0,30.1 L1200.0,27.6" class="w pb"/>
+<path d="M0.0,27.6 L5.0,30.1 L10.0,32.9 L15.0,35.9 L20.0,39.1 L25.0,42.5 L30.0,46.2 L35.0,50.0 L40.0,54.0 L45.0,58.2 L50.0,62.4 L55.0,66.9 L60.0,71.4 L65.0,76.0 L70.0,80.6 L75.0,85.3 L80.0,90.0 L85.0,94.7 L90.0,99.4 L95.0,104.0 L100.0,108.6 L105.0,113.1 L110.0,117.6 L115.0,121.8 L120.0,126.0 L125.0,130.0 L130.0,133.8 L135.0,137.5 L140.0,140.9 L145.0,144.1 L150.0,147.1 L155.0,149.9 L160.0,152.4 L165.0,154.6 L170.0,156.5 L175.0,158.2 L180.0,159.5 L185.0,160.6 L190.0,161.4 L195.0,161.8 L200.0,162.0 L205.0,161.8 L210.0,161.4 L215.0,160.6 L220.0,159.5 L225.0,158.2 L230.0,156.5 L235.0,154.6 L240.0,152.4 L245.0,149.9 L250.0,147.1 L255.0,144.1 L260.0,140.9 L265.0,137.5 L270.0,133.8 L275.0,130.0 L280.0,126.0 L285.0,121.8 L290.0,117.6 L295.0,113.1 L300.0,108.6 L305.0,104.0 L310.0,99.4 L315.0,94.7 L320.0,90.0 L325.0,85.3 L330.0,80.6 L335.0,76.0 L340.0,71.4 L345.0,66.9 L350.0,62.4 L355.0,58.2 L360.0,54.0 L365.0,50.0 L370.0,46.2 L375.0,42.5 L380.0,39.1 L385.0,35.9 L390.0,32.9 L395.0,30.1 L400.0,27.6 L405.0,25.4 L410.0,23.5 L415.0,21.8 L420.0,20.5 L425.0,19.4 L430.0,18.6 L435.0,18.2 L440.0,18.0 L445.0,18.2 L450.0,18.6 L455.0,19.4 L460.0,20.5 L465.0,21.8 L470.0,23.5 L475.0,25.4 L480.0,27.6 L485.0,30.1 L490.0,32.9 L495.0,35.9 L500.0,39.1 L505.0,42.5 L510.0,46.2 L515.0,50.0 L520.0,54.0 L525.0,58.2 L530.0,62.4 L535.0,66.9 L540.0,71.4 L545.0,76.0 L550.0,80.6 L555.0,85.3 L560.0,90.0 L565.0,94.7 L570.0,99.4 L575.0,104.0 L580.0,108.6 L585.0,113.1 L590.0,117.6 L595.0,121.8 L600.0,126.0 L605.0,130.0 L610.0,133.8 L615.0,137.5 L620.0,140.9 L625.0,144.1 L630.0,147.1 L635.0,149.9 L640.0,152.4 L645.0,154.6 L650.0,156.5 L655.0,158.2 L660.0,159.5 L665.0,160.6 L670.0,161.4 L675.0,161.8 L680.0,162.0 L685.0,161.8 L690.0,161.4 L695.0,160.6 L700.0,159.5 L705.0,158.2 L710.0,156.5 L715.0,154.6 L720.0,152.4 L725.0,149.9 L730.0,147.1 L735.0,144.1 L740.0,140.9 L745.0,137.5 L750.0,133.8 L755.0,130.0 L760.0,126.0 L765.0,121.8 L770.0,117.6 L775.0,113.1 L780.0,108.6 L785.0,104.0 L790.0,99.4 L795.0,94.7 L800.0,90.0 L805.0,85.3 L810.0,80.6 L815.0,76.0 L820.0,71.4 L825.0,66.9 L830.0,62.4 L835.0,58.2 L840.0,54.0 L845.0,50.0 L850.0,46.2 L855.0,42.5 L860.0,39.1 L865.0,35.9 L870.0,32.9 L875.0,30.1 L880.0,27.6 L885.0,25.4 L890.0,23.5 L895.0,21.8 L900.0,20.5 L905.0,19.4 L910.0,18.6 L915.0,18.2 L920.0,18.0 L925.0,18.2 L930.0,18.6 L935.0,19.4 L940.0,20.5 L945.0,21.8 L950.0,23.5 L955.0,25.4 L960.0,27.6 L965.0,30.1 L970.0,32.9 L975.0,35.9 L980.0,39.1 L985.0,42.5 L990.0,46.2 L995.0,50.0 L1000.0,54.0 L1005.0,58.2 L1010.0,62.4 L1015.0,66.9 L1020.0,71.4 L1025.0,76.0 L1030.0,80.6 L1035.0,85.3 L1040.0,90.0 L1045.0,94.7 L1050.0,99.4 L1055.0,104.0 L1060.0,108.6 L1065.0,113.1 L1070.0,117.6 L1075.0,121.8 L1080.0,126.0 L1085.0,130.0 L1090.0,133.8 L1095.0,137.5 L1100.0,140.9 L1105.0,144.1 L1110.0,147.1 L1115.0,149.9 L1120.0,152.4 L1125.0,154.6 L1130.0,156.5 L1135.0,158.2 L1140.0,159.5 L1145.0,160.6 L1150.0,161.4 L1155.0,161.8 L1160.0,162.0 L1165.0,161.8 L1170.0,161.4 L1175.0,160.6 L1180.0,159.5 L1185.0,158.2 L1190.0,156.5 L1195.0,154.6 L1200.0,152.4" class="w pc"/>
+</svg>
+  <div class="hero-legend"><span class="a">Fase A</span><span class="b">Fase B</span><span class="c">Fase C</span></div>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>Este material cobre exatamente os seguintes itens do conteúdo programático da <b>Ênfase 8 — Manutenção – Elétrica</b> (Anexo IV do Edital nº 03), conferidos no texto oficial:</p>
+  <ul>
+    <li><b>2.2</b> Noções básicas de circuitos elétricos de corrente alternada (CA);</li>
+    <li><b>2.3</b> Operações básicas com corrente e tensão senoidais;</li>
+    <li><b>2.4</b> Medidas de valores médio, eficaz e valor de pico;</li>
+    <li><b>4.1</b> Circuitos elétricos monofásicos e trifásicos;</li>
+    <li><b>4.2</b> Tensão de linha, tensão de fase e ligações estrela e triângulo.</li>
+  </ul>
+  <p>O Bloco 5 (potência) é uma <b>ponte</b> com os itens 3.2 (potência ativa, reativa e aparente) e 3.3 (fator de potência e correção): sem ele não dá para calcular potência trifásica, então ele entra aqui de forma enxuta. O item 2.5 (Kirchhoff, Thévenin e Norton) aparece só no que toca à CA (Kirchhoff com fasores).</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (Técnico de Manutenção – Elétrica), a listagem pública de questões mostra três formatos que batem com este material: leituras de potência reativa e aparente num quadro de baixa tensão para concluir algo sobre o fator de potência; cargas trifásicas alimentadas com tensão de linha escrita como “200√3 V” (o √3 já vem embutido para simplificar a conta); e uma senoide de 60 Hz cujo valor de pico foi lido num osciloscópio. É um <b>padrão observado</b>, não garantia de repetição, mas indica o estilo: contas curtas, números “redondos”, triângulo 3-4-5 e muita conversão entre pico, eficaz, fase e linha.</p>
+  </div>
+</section>
+
+<!-- ============ BLOCO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>A corrente alternada e a forma senoidal</h2></div>
+  <p class="edital-ref">Edital, itens 2.2 e 2.3</p>
+
+  <h3>O que é corrente alternada</h3>
+  <p>Em corrente contínua (CC), a tensão tem polaridade fixa e a corrente circula sempre no mesmo sentido. Em <b>corrente alternada (CA)</b>, a polaridade da tensão se inverte periodicamente, e a corrente muda de sentido a cada meio ciclo. Na rede elétrica, essa variação tem a forma de uma <b>senoide</b>, porque é assim que nasce a tensão num alternador: uma bobina (ou um campo magnético) girando em velocidade constante produz uma força eletromotriz induzida proporcional ao seno do ângulo de giro.</p>
+  <p>A grande vantagem prática da CA é o <b>transformador</b>: ele só funciona com fluxo magnético variável, e permite elevar a tensão para transmitir energia com corrente menor (as perdas nos cabos valem R·I², então caem com o quadrado da corrente) e depois abaixá-la para o uso.</p>
+
+  <h3>A equação da senoide</h3>
+  <div class="eq">
+    <p class="eq-name">Tensão senoidal instantânea</p>
+    <div class="eq-main"><var>v</var>(<var>t</var>) = <var>V</var><sub>p</sub> · sen(<var>ω</var><var>t</var> + <var>θ</var>)</div>
+    <dl>
+      <dt><var>v</var>(<var>t</var>)</dt><dd>valor instantâneo da tensão no tempo t, em volts (V)</dd>
+      <dt><var>V</var><sub>p</sub></dt><dd>valor de pico, ou amplitude (V)</dd>
+      <dt><var>ω</var></dt><dd>frequência angular, em radianos por segundo (rad/s)</dd>
+      <dt><var>t</var></dt><dd>tempo, em segundos (s)</dd>
+      <dt><var>θ</var></dt><dd>ângulo de fase inicial, em graus ou radianos</dd>
+    </dl>
+  </div>
+  <p>A corrente tem a mesma forma: <var>i</var>(<var>t</var>) = <var>I</var><sub>p</sub>·sen(<var>ω</var><var>t</var> + <var>θ</var><sub>i</sub>).</p>
+  <figure><svg viewBox="0 0 700 295" role="img" aria-label="Senoide com valor de pico, pico a pico, eficaz e período">
+<line x1="50" y1="140" x2="650" y2="140" class="ax" marker-end="url(#ah-mut)"/>
+<line x1="70" y1="265" x2="70" y2="18" class="ax" marker-end="url(#ah-mut)"/>
+<text x="656" y="145" class="tm">t</text><text x="78" y="22" class="tm">v(t)</text>
+<line x1="70" y1="69.3" x2="570" y2="69.3" class="dash pb"/>
+<text x="265" y="62" class="tl fb">V<tspan class="sub" dy="4">ef</tspan><tspan dy="-4"> ≈ 0,707·V</tspan><tspan class="sub" dy="4">p</tspan></text>
+<path d="M70.0,140.0 L72.1,137.4 L74.2,134.8 L76.2,132.2 L78.3,129.5 L80.4,126.9 L82.5,124.4 L84.6,121.8 L86.7,119.2 L88.8,116.7 L90.8,114.1 L92.9,111.6 L95.0,109.1 L97.1,106.6 L99.2,104.2 L101.2,101.7 L103.3,99.3 L105.4,96.9 L107.5,94.6 L109.6,92.3 L111.7,90.0 L113.8,87.8 L115.8,85.5 L117.9,83.4 L120.0,81.2 L122.1,79.1 L124.2,77.1 L126.2,75.1 L128.3,73.1 L130.4,71.2 L132.5,69.3 L134.6,67.5 L136.7,65.7 L138.8,64.0 L140.8,62.3 L142.9,60.7 L145.0,59.1 L147.1,57.6 L149.2,56.1 L151.2,54.7 L153.3,53.4 L155.4,52.1 L157.5,50.9 L159.6,49.7 L161.7,48.6 L163.8,47.6 L165.8,46.6 L167.9,45.7 L170.0,44.9 L172.1,44.1 L174.2,43.4 L176.2,42.8 L178.3,42.2 L180.4,41.7 L182.5,41.2 L184.6,40.9 L186.7,40.5 L188.8,40.3 L190.8,40.1 L192.9,40.0 L195.0,40.0 L197.1,40.0 L199.2,40.1 L201.2,40.3 L203.3,40.5 L205.4,40.9 L207.5,41.2 L209.6,41.7 L211.7,42.2 L213.8,42.8 L215.8,43.4 L217.9,44.1 L220.0,44.9 L222.1,45.7 L224.2,46.6 L226.2,47.6 L228.3,48.6 L230.4,49.7 L232.5,50.9 L234.6,52.1 L236.7,53.4 L238.8,54.7 L240.8,56.1 L242.9,57.6 L245.0,59.1 L247.1,60.7 L249.2,62.3 L251.2,64.0 L253.3,65.7 L255.4,67.5 L257.5,69.3 L259.6,71.2 L261.7,73.1 L263.8,75.1 L265.8,77.1 L267.9,79.1 L270.0,81.2 L272.1,83.4 L274.2,85.5 L276.2,87.8 L278.3,90.0 L280.4,92.3 L282.5,94.6 L284.6,96.9 L286.7,99.3 L288.8,101.7 L290.8,104.2 L292.9,106.6 L295.0,109.1 L297.1,111.6 L299.2,114.1 L301.2,116.7 L303.3,119.2 L305.4,121.8 L307.5,124.4 L309.6,126.9 L311.7,129.5 L313.8,132.2 L315.8,134.8 L317.9,137.4 L320.0,140.0 L322.1,142.6 L324.2,145.2 L326.2,147.8 L328.3,150.5 L330.4,153.1 L332.5,155.6 L334.6,158.2 L336.7,160.8 L338.8,163.3 L340.8,165.9 L342.9,168.4 L345.0,170.9 L347.1,173.4 L349.2,175.8 L351.2,178.3 L353.3,180.7 L355.4,183.1 L357.5,185.4 L359.6,187.7 L361.7,190.0 L363.8,192.2 L365.8,194.5 L367.9,196.6 L370.0,198.8 L372.1,200.9 L374.2,202.9 L376.2,204.9 L378.3,206.9 L380.4,208.8 L382.5,210.7 L384.6,212.5 L386.7,214.3 L388.8,216.0 L390.8,217.7 L392.9,219.3 L395.0,220.9 L397.1,222.4 L399.2,223.9 L401.2,225.3 L403.3,226.6 L405.4,227.9 L407.5,229.1 L409.6,230.3 L411.7,231.4 L413.8,232.4 L415.8,233.4 L417.9,234.3 L420.0,235.1 L422.1,235.9 L424.2,236.6 L426.2,237.2 L428.3,237.8 L430.4,238.3 L432.5,238.8 L434.6,239.1 L436.7,239.5 L438.8,239.7 L440.8,239.9 L442.9,240.0 L445.0,240.0 L447.1,240.0 L449.2,239.9 L451.2,239.7 L453.3,239.5 L455.4,239.1 L457.5,238.8 L459.6,238.3 L461.7,237.8 L463.8,237.2 L465.8,236.6 L467.9,235.9 L470.0,235.1 L472.1,234.3 L474.2,233.4 L476.2,232.4 L478.3,231.4 L480.4,230.3 L482.5,229.1 L484.6,227.9 L486.7,226.6 L488.8,225.3 L490.8,223.9 L492.9,222.4 L495.0,220.9 L497.1,219.3 L499.2,217.7 L501.2,216.0 L503.3,214.3 L505.4,212.5 L507.5,210.7 L509.6,208.8 L511.7,206.9 L513.8,204.9 L515.8,202.9 L517.9,200.9 L520.0,198.8 L522.1,196.6 L524.2,194.5 L526.2,192.2 L528.3,190.0 L530.4,187.7 L532.5,185.4 L534.6,183.1 L536.7,180.7 L538.8,178.3 L540.8,175.8 L542.9,173.4 L545.0,170.9 L547.1,168.4 L549.2,165.9 L551.2,163.3 L553.3,160.8 L555.4,158.2 L557.5,155.6 L559.6,153.1 L561.7,150.5 L563.8,147.8 L565.8,145.2 L567.9,142.6 L570.0,140.0" class="w ink"/>
+<line x1="195" y1="140" x2="195" y2="43" class="ar ink" marker-end="url(#ah-ink)"/>
+<text x="203" y="100" class="tl">V<tspan class="sub" dy="4">p</tspan></text>
+<line x1="195" y1="40" x2="620" y2="40" class="guide"/><line x1="445" y1="240" x2="620" y2="240" class="guide"/>
+<line x1="615" y1="43" x2="615" y2="237" class="ar pc" marker-start="url(#ah-pc)" marker-end="url(#ah-pc)"/>
+<text x="625" y="110" class="tl fc">V<tspan class="sub" dy="4">pp</tspan></text>
+<line x1="70" y1="262" x2="570" y2="262" class="ar mut" marker-start="url(#ah-mut)" marker-end="url(#ah-mut)"/>
+<line x1="570" y1="140" x2="570" y2="270" class="guide"/>
+<text x="320" y="286" class="tm" text-anchor="middle">período T = 1/f (um ciclo completo = 360° = 2π rad)</text>
+</svg><figcaption>Figura 1. Grandezas de uma senoide: pico (V<sub>p</sub>), pico a pico (V<sub>pp</sub>), valor eficaz (V<sub>ef</sub>) e período (T). O valor eficaz é detalhado no Bloco 2.</figcaption></figure>
+
+  <h3>Frequência, período e frequência angular</h3>
+  <div class="eq">
+    <p class="eq-name">Relações entre f, T e ω</p>
+    <div class="eq-main"><var>T</var> = <span class="frac"><span>1</span><span><var>f</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>ω</var> = 2π<var>f</var> = <span class="frac"><span>2π</span><span><var>T</var></span></span></div>
+    <dl>
+      <dt><var>f</var></dt><dd>frequência: número de ciclos por segundo, em hertz (Hz)</dd>
+      <dt><var>T</var></dt><dd>período: duração de um ciclo completo, em segundos (s)</dd>
+      <dt><var>ω</var></dt><dd>frequência angular, em rad/s</dd>
+    </dl>
+  </div>
+  <p>No Brasil, a frequência da rede é <b>60 Hz</b>. Guarde os números que decorrem disso, porque aparecem prontos nas questões:</p>
+  <ul>
+    <li>T = 1/60 ≈ 16,67 ms (meio ciclo ≈ 8,33 ms);</li>
+    <li>ω = 2π·60 ≈ <b>377 rad/s</b>. Quando a questão escrever “sen(377t)”, ela está dizendo “60 Hz”.</li>
+  </ul>
+
+  <h3>Defasagem (ângulo de fase entre duas senoides)</h3>
+  <p>Duas senoides de <b>mesma frequência</b> podem estar deslocadas no tempo. A diferença entre seus ângulos de fase é a <b>defasagem</b>, normalmente escrita como φ = θ<sub>v</sub> − θ<sub>i</sub>. Se φ &gt; 0, a tensão está <b>adiantada</b> (chega ao pico antes) e a corrente, <b>atrasada</b>, que é o comportamento de cargas indutivas, como motores.</p>
+  <div class="eq">
+    <p class="eq-name">Converter atraso de tempo em ângulo</p>
+    <div class="eq-main"><var>φ</var> = 360° · <var>f</var> · Δ<var>t</var></div>
+    <dl>
+      <dt><var>φ</var></dt><dd>defasagem, em graus</dd>
+      <dt><var>f</var></dt><dd>frequência comum às duas senoides (Hz)</dd>
+      <dt>Δ<var>t</var></dt><dd>intervalo de tempo entre dois pontos equivalentes das ondas (por exemplo, entre os picos), em s</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 640 240" role="img" aria-label="Tensão e corrente defasadas de 60 graus, corrente atrasada">
+<line x1="50" y1="125" x2="620" y2="125" class="ax" marker-end="url(#ah-mut)"/>
+<text x="624" y="130" class="tm">ωt</text>
+<path d="M60.0,125.0 L62.2,121.5 L64.5,117.9 L66.8,114.4 L69.0,110.9 L71.2,107.4 L73.5,104.0 L75.8,100.6 L78.0,97.2 L80.2,93.8 L82.5,90.6 L84.8,87.3 L87.0,84.1 L89.2,81.0 L91.5,78.0 L93.8,75.0 L96.0,72.1 L98.2,69.3 L100.5,66.5 L102.8,63.9 L105.0,61.4 L107.2,58.9 L109.5,56.6 L111.8,54.3 L114.0,52.2 L116.2,50.2 L118.5,48.3 L120.8,46.5 L123.0,44.8 L125.2,43.3 L127.5,41.9 L129.8,40.6 L132.0,39.4 L134.2,38.4 L136.5,37.5 L138.8,36.7 L141.0,36.1 L143.2,35.6 L145.5,35.3 L147.8,35.1 L150.0,35.0 L152.2,35.1 L154.5,35.3 L156.8,35.6 L159.0,36.1 L161.2,36.7 L163.5,37.5 L165.8,38.4 L168.0,39.4 L170.2,40.6 L172.5,41.9 L174.8,43.3 L177.0,44.8 L179.2,46.5 L181.5,48.3 L183.8,50.2 L186.0,52.2 L188.2,54.3 L190.5,56.6 L192.8,58.9 L195.0,61.4 L197.2,63.9 L199.5,66.5 L201.8,69.3 L204.0,72.1 L206.2,75.0 L208.5,78.0 L210.8,81.0 L213.0,84.1 L215.2,87.3 L217.5,90.6 L219.8,93.8 L222.0,97.2 L224.2,100.6 L226.5,104.0 L228.8,107.4 L231.0,110.9 L233.2,114.4 L235.5,117.9 L237.8,121.5 L240.0,125.0 L242.2,128.5 L244.5,132.1 L246.8,135.6 L249.0,139.1 L251.2,142.6 L253.5,146.0 L255.8,149.4 L258.0,152.8 L260.2,156.2 L262.5,159.4 L264.8,162.7 L267.0,165.9 L269.2,169.0 L271.5,172.0 L273.8,175.0 L276.0,177.9 L278.2,180.7 L280.5,183.5 L282.8,186.1 L285.0,188.6 L287.2,191.1 L289.5,193.4 L291.8,195.7 L294.0,197.8 L296.2,199.8 L298.5,201.7 L300.8,203.5 L303.0,205.2 L305.2,206.7 L307.5,208.1 L309.8,209.4 L312.0,210.6 L314.2,211.6 L316.5,212.5 L318.8,213.3 L321.0,213.9 L323.2,214.4 L325.5,214.7 L327.8,214.9 L330.0,215.0 L332.2,214.9 L334.5,214.7 L336.8,214.4 L339.0,213.9 L341.2,213.3 L343.5,212.5 L345.8,211.6 L348.0,210.6 L350.2,209.4 L352.5,208.1 L354.8,206.7 L357.0,205.2 L359.2,203.5 L361.5,201.7 L363.8,199.8 L366.0,197.8 L368.2,195.7 L370.5,193.4 L372.8,191.1 L375.0,188.6 L377.2,186.1 L379.5,183.5 L381.8,180.7 L384.0,177.9 L386.2,175.0 L388.5,172.0 L390.8,169.0 L393.0,165.9 L395.2,162.7 L397.5,159.4 L399.8,156.2 L402.0,152.8 L404.2,149.4 L406.5,146.0 L408.8,142.6 L411.0,139.1 L413.2,135.6 L415.5,132.1 L417.8,128.5 L420.0,125.0 L422.2,121.5 L424.5,117.9 L426.8,114.4 L429.0,110.9 L431.2,107.4 L433.5,104.0 L435.8,100.6 L438.0,97.2 L440.2,93.8 L442.5,90.6 L444.8,87.3 L447.0,84.1 L449.2,81.0 L451.5,78.0 L453.8,75.0 L456.0,72.1 L458.2,69.3 L460.5,66.5 L462.8,63.9 L465.0,61.4 L467.2,58.9 L469.5,56.6 L471.8,54.3 L474.0,52.2 L476.2,50.2 L478.5,48.3 L480.8,46.5 L483.0,44.8 L485.2,43.3 L487.5,41.9 L489.8,40.6 L492.0,39.4 L494.2,38.4 L496.5,37.5 L498.8,36.7 L501.0,36.1 L503.2,35.6 L505.5,35.3 L507.8,35.1 L510.0,35.0 L512.2,35.1 L514.5,35.3 L516.8,35.6 L519.0,36.1 L521.2,36.7 L523.5,37.5 L525.8,38.4 L528.0,39.4 L530.2,40.6 L532.5,41.9 L534.8,43.3 L537.0,44.8 L539.2,46.5 L541.5,48.3 L543.8,50.2 L546.0,52.2 L548.2,54.3 L550.5,56.6 L552.8,58.9 L555.0,61.4 L557.2,63.9 L559.5,66.5 L561.8,69.3 L564.0,72.1 L566.2,75.0 L568.5,78.0 L570.8,81.0 L573.0,84.1 L575.2,87.3 L577.5,90.6 L579.8,93.8 L582.0,97.2 L584.2,100.6 L586.5,104.0 L588.8,107.4 L591.0,110.9 L593.2,114.4 L595.5,117.9 L597.8,121.5 L600.0,125.0" class="w ink"/>
+<path d="M60.0,172.6 L62.2,171.5 L64.5,170.3 L66.8,169.1 L69.0,167.7 L71.2,166.4 L73.5,164.9 L75.8,163.4 L78.0,161.8 L80.2,160.2 L82.5,158.5 L84.8,156.7 L87.0,155.0 L89.2,153.1 L91.5,151.2 L93.8,149.3 L96.0,147.4 L98.2,145.4 L100.5,143.4 L102.8,141.3 L105.0,139.2 L107.2,137.1 L109.5,135.0 L111.8,132.9 L114.0,130.7 L116.2,128.6 L118.5,126.4 L120.8,124.3 L123.0,122.1 L125.2,120.0 L127.5,117.8 L129.8,115.7 L132.0,113.6 L134.2,111.5 L136.5,109.4 L138.8,107.3 L141.0,105.3 L143.2,103.3 L145.5,101.3 L147.8,99.4 L150.0,97.5 L152.2,95.7 L154.5,93.8 L156.8,92.1 L159.0,90.4 L161.2,88.7 L163.5,87.1 L165.8,85.6 L168.0,84.1 L170.2,82.7 L172.5,81.4 L174.8,80.1 L177.0,78.9 L179.2,77.7 L181.5,76.7 L183.8,75.7 L186.0,74.8 L188.2,73.9 L190.5,73.2 L192.8,72.5 L195.0,71.9 L197.2,71.4 L199.5,70.9 L201.8,70.6 L204.0,70.3 L206.2,70.1 L208.5,70.0 L210.8,70.0 L213.0,70.1 L215.2,70.2 L217.5,70.5 L219.8,70.8 L222.0,71.2 L224.2,71.7 L226.5,72.3 L228.8,72.9 L231.0,73.7 L233.2,74.5 L235.5,75.4 L237.8,76.3 L240.0,77.4 L242.2,78.5 L244.5,79.7 L246.8,80.9 L249.0,82.3 L251.2,83.6 L253.5,85.1 L255.8,86.6 L258.0,88.2 L260.2,89.8 L262.5,91.5 L264.8,93.3 L267.0,95.0 L269.2,96.9 L271.5,98.8 L273.8,100.7 L276.0,102.6 L278.2,104.6 L280.5,106.6 L282.8,108.7 L285.0,110.8 L287.2,112.9 L289.5,115.0 L291.8,117.1 L294.0,119.3 L296.2,121.4 L298.5,123.6 L300.8,125.7 L303.0,127.9 L305.2,130.0 L307.5,132.2 L309.8,134.3 L312.0,136.4 L314.2,138.5 L316.5,140.6 L318.8,142.7 L321.0,144.7 L323.2,146.7 L325.5,148.7 L327.8,150.6 L330.0,152.5 L332.2,154.3 L334.5,156.2 L336.8,157.9 L339.0,159.6 L341.2,161.3 L343.5,162.9 L345.8,164.4 L348.0,165.9 L350.2,167.3 L352.5,168.6 L354.8,169.9 L357.0,171.1 L359.2,172.3 L361.5,173.3 L363.8,174.3 L366.0,175.2 L368.2,176.1 L370.5,176.8 L372.8,177.5 L375.0,178.1 L377.2,178.6 L379.5,179.1 L381.8,179.4 L384.0,179.7 L386.2,179.9 L388.5,180.0 L390.8,180.0 L393.0,179.9 L395.2,179.8 L397.5,179.5 L399.8,179.2 L402.0,178.8 L404.2,178.3 L406.5,177.7 L408.8,177.1 L411.0,176.3 L413.2,175.5 L415.5,174.6 L417.8,173.7 L420.0,172.6 L422.2,171.5 L424.5,170.3 L426.8,169.1 L429.0,167.7 L431.2,166.4 L433.5,164.9 L435.8,163.4 L438.0,161.8 L440.2,160.2 L442.5,158.5 L444.8,156.7 L447.0,155.0 L449.2,153.1 L451.5,151.2 L453.8,149.3 L456.0,147.4 L458.2,145.4 L460.5,143.4 L462.8,141.3 L465.0,139.2 L467.2,137.1 L469.5,135.0 L471.8,132.9 L474.0,130.7 L476.2,128.6 L478.5,126.4 L480.8,124.3 L483.0,122.1 L485.2,120.0 L487.5,117.8 L489.8,115.7 L492.0,113.6 L494.2,111.5 L496.5,109.4 L498.8,107.3 L501.0,105.3 L503.2,103.3 L505.5,101.3 L507.8,99.4 L510.0,97.5 L512.2,95.7 L514.5,93.8 L516.8,92.1 L519.0,90.4 L521.2,88.7 L523.5,87.1 L525.8,85.6 L528.0,84.1 L530.2,82.7 L532.5,81.4 L534.8,80.1 L537.0,78.9 L539.2,77.7 L541.5,76.7 L543.8,75.7 L546.0,74.8 L548.2,73.9 L550.5,73.2 L552.8,72.5 L555.0,71.9 L557.2,71.4 L559.5,70.9 L561.8,70.6 L564.0,70.3 L566.2,70.1 L568.5,70.0 L570.8,70.0 L573.0,70.1 L575.2,70.2 L577.5,70.5 L579.8,70.8 L582.0,71.2 L584.2,71.7 L586.5,72.3 L588.8,72.9 L591.0,73.7 L593.2,74.5 L595.5,75.4 L597.8,76.3 L600.0,77.4" class="w pc"/>
+<line x1="150" y1="30" x2="150" y2="125" class="guide"/><line x1="210" y1="30" x2="210" y2="125" class="guide"/>
+<line x1="152" y1="24" x2="208" y2="24" class="ar pa" marker-start="url(#ah-pa)" marker-end="url(#ah-pa)"/>
+<text x="180" y="15" class="tl fa" text-anchor="middle">φ = 60°</text>
+<text x="72" y="52" class="tl">v(t)</text>
+<text x="236" y="84" class="tl fc">i(t)</text>
+<text x="330" y="228" class="tm" text-anchor="middle">a corrente atinge o pico 60° depois da tensão: i está atrasada (carga indutiva)</text>
+</svg><figcaption>Figura 2. Tensão v(t) e corrente i(t) com defasagem de 60°. Como a corrente chega ao pico depois, ela está atrasada: a carga é indutiva.</figcaption></figure>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Dada v(t) = 169,7·sen(377t + 30°) V, determine V<sub>p</sub>, f, T e o valor da tensão em t = 0.</p>
+    <ol class="steps">
+      <li>V<sub>p</sub> é o número que multiplica o seno: <b>169,7 V</b>.</li>
+      <li>ω = 377 rad/s → f = ω/(2π) = 377/6,283 ≈ <b>60 Hz</b>.</li>
+      <li>T = 1/60 ≈ <b>16,67 ms</b>.</li>
+      <li>Em t = 0: v(0) = 169,7·sen(30°) = 169,7 × 0,5 ≈ <b>84,9 V</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Em “377t + 30°” o termo 377t está em <b>radianos</b> e o 30° está em <b>graus</b>. Se precisar calcular um valor instantâneo num tempo t ≠ 0, converta tudo para a mesma unidade (π rad = 180°) antes de tirar o seno.</p>
+  </div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ BLOCO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Valores de pico, pico a pico, médio e eficaz</h2></div>
+  <p class="edital-ref">Edital, item 2.4</p>
+  <p>Uma senoide muda de valor a cada instante, então precisamos de números que a representem. Cada um responde a uma pergunta diferente, e a Cesgranrio gosta de misturá-los.</p>
+
+  <h3>Pico e pico a pico</h3>
+  <div class="eq">
+    <p class="eq-name">Valor de pico a pico</p>
+    <div class="eq-main"><var>V</var><sub>pp</sub> = 2 · <var>V</var><sub>p</sub></div>
+    <dl>
+      <dt><var>V</var><sub>pp</sub></dt><dd>distância entre o máximo positivo e o máximo negativo (V)</dd>
+      <dt><var>V</var><sub>p</sub></dt><dd>valor de pico, ou amplitude (V)</dd>
+    </dl>
+  </div>
+  <p>É o que se lê diretamente na tela de um <b>osciloscópio</b>. O valor de pico importa para dimensionar <b>isolação</b> e tensão de trabalho de componentes (um capacitor ligado a 220 V eficazes sofre picos de cerca de 311 V).</p>
+
+  <h3>Valor médio</h3>
+  <p>O valor médio é a “altura média” da onda. Numa senoide pura, o semiciclo positivo cancela exatamente o negativo, então o <b>valor médio em um ciclo completo é zero</b>. Por isso, quando se fala em valor médio de uma senoide, normalmente se considera <b>meio ciclo</b> (ou a onda retificada):</p>
+  <div class="eq">
+    <p class="eq-name">Valor médio de meio ciclo (igual ao da onda completa retificada)</p>
+    <div class="eq-main"><var>V</var><sub>méd</sub> = <span class="frac"><span>2 · <var>V</var><sub>p</sub></span><span>π</span></span> ≈ 0,637 · <var>V</var><sub>p</sub></div>
+    <dl>
+      <dt><var>V</var><sub>méd</sub></dt><dd>valor médio (V), que é a componente CC que um voltímetro de CC indicaria</dd>
+      <dt>π</dt><dd>constante ≈ 3,1416</dd>
+    </dl>
+  </div>
+
+  <h3>Valor eficaz (RMS)</h3>
+  <p>O <b>valor eficaz</b> (em inglês, RMS: <i>root mean square</i>, raiz da média dos quadrados) é o valor de <b>tensão contínua que produziria a mesma potência média</b>, ou seja, o mesmo aquecimento, num resistor. É o número que usamos no dia a dia: quando se diz “tomada de 127 V” ou “rede de 220 V”, fala-se de valor eficaz, e é o que o multímetro indica em CA.</p>
+  <div class="eq">
+    <p class="eq-name">Valor eficaz de uma senoide</p>
+    <div class="eq-main"><var>V</var><sub>ef</sub> = <span class="frac"><span><var>V</var><sub>p</sub></span><span>√2</span></span> ≈ 0,707 · <var>V</var><sub>p</sub> &nbsp;&nbsp;&nbsp; ⇔ &nbsp;&nbsp;&nbsp; <var>V</var><sub>p</sub> = √2 · <var>V</var><sub>ef</sub> ≈ 1,414 · <var>V</var><sub>ef</sub></div>
+    <dl>
+      <dt><var>V</var><sub>ef</sub></dt><dd>valor eficaz ou RMS (V); o mesmo vale para corrente: I<sub>ef</sub> = I<sub>p</sub>/√2</dd>
+      <dt>√2</dt><dd>≈ 1,414; vem do fato de que a média de sen² ao longo de um ciclo vale 1/2</dd>
+    </dl>
+  </div>
+  <p>Duas relações que às vezes aparecem com nome próprio:</p>
+  <ul>
+    <li><b>Fator de forma</b> = V<sub>ef</sub>/V<sub>méd</sub> ≈ 1,11 (senoide);</li>
+    <li><b>Fator de crista</b> = V<sub>p</sub>/V<sub>ef</sub> = √2 ≈ 1,414 (senoide).</li>
+  </ul>
+
+  <div class="tw"><table>
+    <thead><tr><th>Forma de onda (pico V<sub>p</sub>)</th><th>Valor médio</th><th>Valor eficaz</th></tr></thead>
+    <tbody>
+      <tr><td>Senoide, ciclo completo</td><td>0</td><td>V<sub>p</sub>/√2 ≈ 0,707·V<sub>p</sub></td></tr>
+      <tr><td>Senoide retificada em onda completa</td><td>2V<sub>p</sub>/π ≈ 0,637·V<sub>p</sub></td><td>V<sub>p</sub>/√2 ≈ 0,707·V<sub>p</sub></td></tr>
+      <tr><td>Senoide retificada em meia onda</td><td>V<sub>p</sub>/π ≈ 0,318·V<sub>p</sub></td><td>V<sub>p</sub>/2 = 0,5·V<sub>p</sub></td></tr>
+      <tr><td>Onda quadrada simétrica (±V<sub>p</sub>)</td><td>0</td><td>V<sub>p</sub></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Como os instrumentos medem</h3>
+  <ul>
+    <li><b>Osciloscópio</b>: mostra a forma da onda; lê-se V<sub>p</sub> ou V<sub>pp</sub> contando divisões (volts/divisão) e o período contando divisões no eixo do tempo (tempo/divisão).</li>
+    <li><b>Multímetro comum</b>: em CA, indica o valor eficaz <i>de uma senoide</i>. Muitos modelos, na verdade, medem o valor médio retificado e multiplicam por 1,11 (o fator de forma). Isso só dá certo se a onda for senoidal.</li>
+    <li><b>Multímetro “true RMS”</b>: calcula o valor eficaz verdadeiro, correto também para ondas distorcidas (com harmônicos, comuns em inversores de frequência e fontes chaveadas). Em manutenção industrial, é o instrumento recomendado.</li>
+  </ul>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Uma tomada de 127 V (eficaz), 60 Hz. Calcule V<sub>p</sub>, V<sub>pp</sub> e o valor médio de meio ciclo.</p>
+    <ol class="steps">
+      <li>V<sub>p</sub> = √2 × 127 ≈ <b>179,6 V</b>.</li>
+      <li>V<sub>pp</sub> = 2 × 179,6 ≈ <b>359,2 V</b>.</li>
+      <li>V<sub>méd</sub> (meio ciclo) = 0,637 × 179,6 ≈ <b>114,3 V</b>. Em ciclo completo, zero.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Potência em resistor usa sempre valor <b>eficaz</b>: P = V<sub>ef</sub>²/R. Usar o pico no lugar do eficaz <b>dobra</b> a potência (porque (√2)² = 2). As alternativas erradas da banca costumam trazer exatamente esse dobro.</p>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ BLOCO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Operações com grandezas senoidais: fasores e números complexos</h2></div>
+  <p class="edital-ref">Edital, item 2.3 (e item 2.5, Kirchhoff aplicado à CA)</p>
+
+  <h3>Por que fasores</h3>
+  <p>Somar duas senoides ponto a ponto é trabalhoso. Mas, se ambas têm a <b>mesma frequência</b>, o resultado é outra senoide da mesma frequência, e só precisamos descobrir sua <b>amplitude</b> e seu <b>ângulo</b>. O <b>fasor</b> guarda exatamente essas duas informações: é um vetor girante “congelado” em t = 0, cujo comprimento é o valor eficaz (convenção usual em potência) e cujo ângulo é a fase.</p>
+  <div class="eq">
+    <p class="eq-name">Da função do tempo para o fasor</p>
+    <div class="eq-main"><var>v</var>(<var>t</var>) = <var>V</var><sub>p</sub>·sen(<var>ω</var><var>t</var> + <var>θ</var>) &nbsp;&nbsp;→&nbsp;&nbsp; <b>V</b> = <var>V</var><sub>ef</sub> ∠ <var>θ</var></div>
+    <dl>
+      <dt><b>V</b></dt><dd>fasor de tensão (grandeza complexa, em negrito)</dd>
+      <dt><var>V</var><sub>ef</sub></dt><dd>módulo do fasor: valor eficaz, V<sub>p</sub>/√2 (V)</dd>
+      <dt>∠<var>θ</var></dt><dd>ângulo do fasor: a fase inicial da senoide</dd>
+    </dl>
+  </div>
+
+  <h3>As duas formas de um número complexo</h3>
+  <p>Em eletricidade usa-se <b>j</b> para a unidade imaginária (j = √−1, e portanto j² = −1), porque a letra i já está ocupada pela corrente.</p>
+  <div class="eq">
+    <p class="eq-name">Forma retangular e forma polar</p>
+    <div class="eq-main"><b>Z</b> = <var>a</var> + j<var>b</var> &nbsp;&nbsp;=&nbsp;&nbsp; <var>M</var> ∠ <var>θ</var></div>
+    <dl>
+      <dt><var>a</var></dt><dd>parte real (projeção horizontal) = M·cos θ</dd>
+      <dt><var>b</var></dt><dd>parte imaginária (projeção vertical) = M·sen θ</dd>
+      <dt><var>M</var></dt><dd>módulo = √(a² + b²)</dd>
+      <dt><var>θ</var></dt><dd>ângulo = arctg(b/a), conferindo o quadrante pelos sinais de a e b</dd>
+    </dl>
+  </div>
+
+  <h3>Qual forma usar em cada operação</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Operação</th><th>Forma mais prática</th><th>Regra</th></tr></thead>
+    <tbody>
+      <tr><td>Soma e subtração</td><td>Retangular</td><td>(a<sub>1</sub>+jb<sub>1</sub>) ± (a<sub>2</sub>+jb<sub>2</sub>) = (a<sub>1</sub>±a<sub>2</sub>) + j(b<sub>1</sub>±b<sub>2</sub>)</td></tr>
+      <tr><td>Multiplicação</td><td>Polar</td><td>M<sub>1</sub>∠θ<sub>1</sub> × M<sub>2</sub>∠θ<sub>2</sub> = (M<sub>1</sub>·M<sub>2</sub>) ∠ (θ<sub>1</sub>+θ<sub>2</sub>)</td></tr>
+      <tr><td>Divisão</td><td>Polar</td><td>M<sub>1</sub>∠θ<sub>1</sub> ÷ M<sub>2</sub>∠θ<sub>2</sub> = (M<sub>1</sub>/M<sub>2</sub>) ∠ (θ<sub>1</sub>−θ<sub>2</sub>)</td></tr>
+      <tr><td>Multiplicar por j</td><td>—</td><td>j = 1∠90°: gira o fasor +90° (adianta); −j = 1∠−90°: gira −90° (atrasa); 1/j = −j</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Ângulos que a banca usa</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Ângulo</th><th>sen</th><th>cos</th><th>tg</th><th>Origem</th></tr></thead>
+    <tbody>
+      <tr><td>30°</td><td>0,5</td><td>0,866</td><td>0,577</td><td>notável</td></tr>
+      <tr><td>36,87°</td><td>0,6</td><td>0,8</td><td>0,75</td><td>triângulo 3-4-5 (FP = 0,8)</td></tr>
+      <tr><td>45°</td><td>0,707</td><td>0,707</td><td>1</td><td>notável</td></tr>
+      <tr><td>53,13°</td><td>0,8</td><td>0,6</td><td>1,333</td><td>triângulo 3-4-5 (FP = 0,6)</td></tr>
+      <tr><td>60°</td><td>0,866</td><td>0,5</td><td>1,732</td><td>notável</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Kirchhoff em CA</h3>
+  <p>As leis de Kirchhoff continuam valendo em CA, mas com uma condição fundamental: a soma é <b>fasorial</b> (ou de valores instantâneos), <b>nunca</b> a soma dos valores eficazes lidos no multímetro.</p>
+  <div class="eq">
+    <p class="eq-name">Leis de Kirchhoff com fasores</p>
+    <div class="eq-main">LKT: Σ <b>V</b> = 0 na malha &nbsp;&nbsp;&nbsp;&nbsp; LKC: Σ <b>I</b> = 0 no nó</div>
+    <dl>
+      <dt>LKT</dt><dd>lei das tensões (malhas): a soma fasorial das tensões numa malha fechada é nula</dd>
+      <dt>LKC</dt><dd>lei das correntes (nós): a soma fasorial das correntes que entram num nó é nula</dd>
+    </dl>
+  </div>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Num nó chegam duas correntes: <b>I</b><sub>1</sub> = 3∠0° A e <b>I</b><sub>2</sub> = 4∠90° A. Qual a corrente total e quanto indicaria um amperímetro?</p>
+    <ol class="steps">
+      <li>Retangular: <b>I</b><sub>1</sub> = 3 + j0; <b>I</b><sub>2</sub> = 0 + j4.</li>
+      <li>Soma: <b>I</b> = 3 + j4.</li>
+      <li>Polar: M = √(3² + 4²) = 5; θ = arctg(4/3) = 53,13°. Logo <b>I = 5∠53,13° A</b>.</li>
+      <li>O amperímetro indica o módulo: <b>5 A</b>, e não 3 + 4 = 7 A.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ BLOCO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Resistor, indutor e capacitor em CA: reatância e impedância</h2></div>
+  <p class="edital-ref">Edital, item 2.2</p>
+
+  <h3>Comportamento de cada elemento</h3>
+  <p><b>Resistor.</b> Tensão e corrente ficam <b>em fase</b>. A resistência não depende da frequência.</p>
+  <p><b>Indutor.</b> O indutor se opõe à <b>variação</b> de corrente (lei de Lenz). Em CA, isso aparece como uma oposição chamada <b>reatância indutiva</b>, que cresce com a frequência, e a corrente fica <b>atrasada 90°</b> em relação à tensão.</p>
+  <div class="eq">
+    <p class="eq-name">Reatância indutiva</p>
+    <div class="eq-main"><var>X</var><sub>L</sub> = <var>ω</var><var>L</var> = 2π<var>f</var><var>L</var> &nbsp;&nbsp;&nbsp;&nbsp; <b>Z</b><sub>L</sub> = j<var>X</var><sub>L</sub> = <var>X</var><sub>L</sub>∠90°</div>
+    <dl>
+      <dt><var>X</var><sub>L</sub></dt><dd>reatância indutiva, em ohms (Ω)</dd>
+      <dt><var>L</var></dt><dd>indutância, em henrys (H)</dd>
+      <dt><var>f</var></dt><dd>frequência (Hz)</dd>
+    </dl>
+  </div>
+  <p><b>Capacitor.</b> O capacitor se opõe à <b>variação</b> de tensão. Sua <b>reatância capacitiva</b> diminui com a frequência, e a corrente fica <b>adiantada 90°</b> em relação à tensão.</p>
+  <div class="eq">
+    <p class="eq-name">Reatância capacitiva</p>
+    <div class="eq-main"><var>X</var><sub>C</sub> = <span class="frac"><span>1</span><span><var>ω</var><var>C</var></span></span> = <span class="frac"><span>1</span><span>2π<var>f</var><var>C</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <b>Z</b><sub>C</sub> = −j<var>X</var><sub>C</sub> = <var>X</var><sub>C</sub>∠−90°</div>
+    <dl>
+      <dt><var>X</var><sub>C</sub></dt><dd>reatância capacitiva (Ω)</dd>
+      <dt><var>C</var></dt><dd>capacitância, em farads (F); atenção: 1 µF = 10<sup>−6</sup> F</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="Fasores de tensão e corrente em resistor, indutor e capacitor">
+<line x1="40" y1="115" x2="182" y2="115" class="ar ink thick" marker-end="url(#ah-ink)"/>
+<line x1="40" y1="115" x2="150" y2="115" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="130" y="104" class="tl fc">I</text><text x="186" y="120" class="tl">V</text>
+<circle cx="40" cy="115" r="3" class="f-ink"/>
+<text x="110" y="238" class="tm" text-anchor="middle">Resistor: V e I em fase</text>
+<line x1="255" y1="115" x2="375" y2="115" class="ar pc" marker-end="url(#ah-pc)"/>
+<line x1="255" y1="115" x2="255" y2="22" class="ar ink thick" marker-end="url(#ah-ink)"/>
+<path d="M 285 115 A 30 30 0 0 0 255 85" class="arc"/>
+<text x="382" y="120" class="tl fc">I</text><text x="263" y="32" class="tl">V</text>
+<text x="284" y="95" class="tm">90°</text>
+<circle cx="255" cy="115" r="3" class="f-ink"/>
+<text x="320" y="238" class="tm" text-anchor="middle">Indutor: V adiantada 90°</text>
+<line x1="470" y1="115" x2="590" y2="115" class="ar pc" marker-end="url(#ah-pc)"/>
+<line x1="470" y1="115" x2="470" y2="208" class="ar ink thick" marker-end="url(#ah-ink)"/>
+<path d="M 500 115 A 30 30 0 0 1 470 145" class="arc"/>
+<text x="597" y="120" class="tl fc">I</text><text x="478" y="205" class="tl">V</text>
+<text x="497" y="146" class="tm">90°</text>
+<circle cx="470" cy="115" r="3" class="f-ink"/>
+<text x="540" y="238" class="tm" text-anchor="middle">Capacitor: V atrasada 90°</text>
+</svg><figcaption>Figura 3. Fasores de tensão (preto) e corrente (azul), tomando a corrente como referência. Mnemônico “ELI, o ICE-man”: em L, a tensão (E) vem antes da corrente (I); em C, a corrente (I) vem antes da tensão (E).</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th>Elemento</th><th>Em CC (f = 0)</th><th>Frequência muito alta</th><th>Se f dobra</th></tr></thead>
+    <tbody>
+      <tr><td>Indutor</td><td>curto-circuito (X<sub>L</sub> = 0)</td><td>tende a circuito aberto</td><td>X<sub>L</sub> dobra</td></tr>
+      <tr><td>Capacitor</td><td>circuito aberto (após carregar)</td><td>tende a curto-circuito</td><td>X<sub>C</sub> cai à metade</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Impedância</h3>
+  <p>A <b>impedância</b> é a oposição total à corrente alternada, somando o efeito resistivo e o reativo. É a “resistência” da lei de Ohm em CA, só que complexa.</p>
+  <div class="eq">
+    <p class="eq-name">Impedância de um circuito série RLC</p>
+    <div class="eq-main"><b>Z</b> = <var>R</var> + j(<var>X</var><sub>L</sub> − <var>X</var><sub>C</sub>) &nbsp;&nbsp;&nbsp; |<b>Z</b>| = √(<var>R</var>² + <var>X</var>²) &nbsp;&nbsp;&nbsp; <var>φ</var> = arctg(<var>X</var>/<var>R</var>)</div>
+    <dl>
+      <dt><b>Z</b></dt><dd>impedância complexa (Ω)</dd>
+      <dt><var>R</var></dt><dd>resistência (Ω)</dd>
+      <dt><var>X</var></dt><dd>reatância líquida X<sub>L</sub> − X<sub>C</sub> (Ω): positiva → circuito indutivo; negativa → capacitivo; zero → resistivo</dd>
+      <dt><var>φ</var></dt><dd>ângulo da impedância, que é também a defasagem entre V e I</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Lei de Ohm em CA</p>
+    <div class="eq-main"><b>V</b> = <b>Z</b> · <b>I</b> &nbsp;&nbsp;&nbsp;&nbsp; em módulo: <var>V</var><sub>ef</sub> = |<b>Z</b>| · <var>I</var><sub>ef</sub></div>
+    <dl>
+      <dt><b>V</b>, <b>I</b></dt><dd>fasores de tensão (V) e corrente (A)</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 520 215" role="img" aria-label="Circuito RLC série alimentado por fonte senoidal">
+<path d="M60 88 L60 50 L110 50" class="wire"/><path d="M110.0,50.0 L120.0,40.0 L130.0,60.0 L140.0,40.0 L150.0,60.0 L160.0,40.0 L170.0,60.0 L180.0,40.0 L190.0,50.0" class="wire"/>
+<path d="M190 50 L230 50" class="wire"/><path d="M230 50 a12.5 12.5 0 0 1 25 0 a12.5 12.5 0 0 1 25 0 a12.5 12.5 0 0 1 25 0 a12.5 12.5 0 0 1 25 0" class="wire"/>
+<path d="M330 50 L375 50" class="wire"/>
+<line x1="375" y1="32" x2="375" y2="68" class="wire thick"/><line x1="387" y1="32" x2="387" y2="68" class="wire thick"/>
+<path d="M387 50 L460 50 L460 170 L60 170 L60 132" class="wire"/>
+<circle cx="60" cy="110" r="22" class="comp"/>
+<path d="M47 110 q6.5 -12 13 0 t13 0" class="wire"/>
+<text x="20" y="115" class="tl" text-anchor="middle">V</text>
+<text x="150" y="28" class="tl" text-anchor="middle">R</text>
+<text x="280" y="28" class="tl" text-anchor="middle">L</text>
+<text x="381" y="24" class="tl" text-anchor="middle">C</text>
+<text x="150" y="85" class="tm" text-anchor="middle">V<tspan class="sub" dy="3">R</tspan></text>
+<text x="280" y="85" class="tm" text-anchor="middle">V<tspan class="sub" dy="3">L</tspan></text>
+<text x="381" y="92" class="tm" text-anchor="middle">V<tspan class="sub" dy="3">C</tspan></text>
+<line x1="460" y1="92" x2="460" y2="128" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="472" y="115" class="tl fc">I</text>
+<text x="260" y="200" class="tm" text-anchor="middle">a mesma corrente I percorre os três elementos</text>
+</svg><figcaption>Figura 4. Circuito RLC série. Pela LKT fasorial, <b>V</b> = <b>V</b><sub>R</sub> + <b>V</b><sub>L</sub> + <b>V</b><sub>C</sub>.</figcaption></figure>
+  <figure class="narrow"><svg viewBox="0 0 380 230" role="img" aria-label="Triângulo de impedância">
+<line x1="40" y1="190" x2="280" y2="190" class="wire thick"/>
+<line x1="280" y1="190" x2="280" y2="40" class="wire thick pa-s"/>
+<line x1="40" y1="190" x2="280" y2="40" class="wire thick pc-s"/>
+<path d="M268 190 L268 178 L280 178" class="guide"/>
+<path d="M 85 190 A 45 45 0 0 0 78.2 166.1" class="arc"/>
+<text x="95" y="182" class="tl">φ</text>
+<text x="160" y="214" class="tl" text-anchor="middle">R (resistência)</text>
+<text x="290" y="112" class="tl fa">X = X<tspan class="sub" dy="4">L</tspan><tspan dy="-4"> − X</tspan><tspan class="sub" dy="4">C</tspan></text>
+<text x="128" y="100" class="tl fc">|Z|</text>
+</svg><figcaption>Figura 5. Triângulo de impedância: R no cateto horizontal, X no vertical e |Z| na hipotenusa. O ângulo φ é o mesmo do fator de potência (Bloco 5).</figcaption></figure>
+  <p><b>Associação em paralelo.</b> Para dois ramos, vale a mesma forma “produto pela soma” da CC, só que com complexos: <b>Z</b> = <b>Z</b><sub>1</sub>·<b>Z</b><sub>2</sub>/(<b>Z</b><sub>1</sub>+<b>Z</b><sub>2</sub>). Em paralelo, todos os ramos têm a mesma tensão, e as correntes dos ramos se somam fasorialmente.</p>
+
+  <h3>Ressonância série</h3>
+  <p>Quando X<sub>L</sub> = X<sub>C</sub>, as reatâncias se anulam: a impedância fica mínima e igual a R, a corrente fica máxima e em fase com a tensão (FP = 1).</p>
+  <div class="eq">
+    <p class="eq-name">Frequência de ressonância</p>
+    <div class="eq-main"><var>f</var><sub>0</sub> = <span class="frac"><span>1</span><span>2π√(<var>L</var><var>C</var>)</span></span></div>
+    <dl>
+      <dt><var>f</var><sub>0</sub></dt><dd>frequência de ressonância (Hz)</dd>
+      <dt><var>L</var>, <var>C</var></dt><dd>indutância (H) e capacitância (F)</dd>
+    </dl>
+  </div>
+  <p>Na ressonância série, as tensões sobre L e sobre C podem ficar <b>maiores que a tensão da fonte</b>, porque se cancelam entre si. Isso não viola a LKT: elas estão em oposição de fase (180°).</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>RLC série com R = 40 Ω, X<sub>L</sub> = 50 Ω e X<sub>C</sub> = 20 Ω, alimentado por <b>V</b> = 100∠0° V.</p>
+    <ol class="steps">
+      <li>X = 50 − 20 = 30 Ω (indutivo). <b>Z</b> = 40 + j30 → |Z| = 50 Ω; φ = arctg(30/40) = 36,87°. <b>Z</b> = 50∠36,87° Ω.</li>
+      <li><b>I</b> = <b>V</b>/<b>Z</b> = 100∠0° / 50∠36,87° = <b>2∠−36,87° A</b> (corrente atrasada: circuito indutivo).</li>
+      <li>V<sub>R</sub> = 2 × 40 = 80 V; V<sub>L</sub> = 2 × 50 = 100 V; V<sub>C</sub> = 2 × 20 = 40 V.</li>
+      <li>Conferência fasorial: √(80² + (100 − 40)²) = √(6400 + 3600) = 100 V ✓. A soma aritmética 80 + 100 + 40 = 220 V não tem sentido físico.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ BLOCO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Potência em CA monofásica</h2></div>
+  <p class="edital-ref">Ponte com os itens 3.2 e 3.3 do edital: o essencial para os circuitos trifásicos</p>
+
+  <p>Em CA, a potência instantânea p(t) = v(t)·i(t) oscila. Parte da energia é consumida (vira calor, trabalho mecânico, luz) e parte vai e volta entre a fonte e os campos magnéticos dos indutores ou elétricos dos capacitores. Daí surgem três potências:</p>
+  <div class="eq">
+    <p class="eq-name">Potências ativa, reativa e aparente</p>
+    <div class="eq-main"><var>P</var> = <var>V</var>·<var>I</var>·cos<var>φ</var> &nbsp;&nbsp; <var>Q</var> = <var>V</var>·<var>I</var>·sen<var>φ</var> &nbsp;&nbsp; <var>S</var> = <var>V</var>·<var>I</var> &nbsp;&nbsp; <var>S</var>² = <var>P</var>² + <var>Q</var>²</div>
+    <dl>
+      <dt><var>P</var></dt><dd>potência ativa: realiza trabalho útil, em watts (W)</dd>
+      <dt><var>Q</var></dt><dd>potência reativa: troca de energia com os campos, em volt-ampère reativo (var); positiva se indutiva</dd>
+      <dt><var>S</var></dt><dd>potência aparente: o que a instalação precisa “transportar”, em volt-ampère (VA)</dd>
+      <dt><var>V</var>, <var>I</var></dt><dd>valores eficazes de tensão e corrente</dd>
+      <dt><var>φ</var></dt><dd>ângulo entre V e I (o mesmo ângulo da impedância)</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Fator de potência</p>
+    <div class="eq-main">FP = cos<var>φ</var> = <span class="frac"><span><var>P</var></span><span><var>S</var></span></span></div>
+    <dl>
+      <dt>FP</dt><dd>adimensional, entre 0 e 1; “indutivo” (atrasado) se a corrente atrasa, “capacitivo” (adiantado) se adianta</dd>
+    </dl>
+  </div>
+  <p>Também vale calcular elemento a elemento: P = I²·R (só os resistores consomem potência ativa), Q<sub>L</sub> = I²·X<sub>L</sub> e Q<sub>C</sub> = I²·X<sub>C</sub>.</p>
+
+  <h3>Por que o fator de potência baixo é um problema</h3>
+  <p>Para entregar a mesma potência ativa com FP menor, a corrente precisa ser maior. Isso aumenta perdas por efeito Joule (R·I²), quedas de tensão e exige cabos e transformadores maiores. Por isso a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual o consumidor atendido nessas condições paga pelo excedente de reativos.</p>
+  <h3>Correção, em linhas gerais</h3>
+  <p>Como a maioria das cargas industriais é indutiva (motores, reatores), corrige-se o FP instalando <b>capacitores em paralelo</b>, que fornecem potência reativa capacitiva localmente. A potência ativa <b>não muda</b>; caem a potência aparente e a corrente da fonte. O cálculo detalhado de bancos de capacitores pertence ao item 3.3 e fica para o material de potência.</p>
+  <div class="eq">
+    <p class="eq-name">Potência reativa do banco de capacitores</p>
+    <div class="eq-main"><var>Q</var><sub>C</sub> = <var>P</var> · (tg<var>φ</var><sub>1</sub> − tg<var>φ</var><sub>2</sub>)</div>
+    <dl>
+      <dt><var>Q</var><sub>C</sub></dt><dd>potência reativa capacitiva a instalar (var)</dd>
+      <dt><var>P</var></dt><dd>potência ativa da carga (W), que não se altera</dd>
+      <dt><var>φ</var><sub>1</sub>, <var>φ</var><sub>2</sub></dt><dd>ângulos antes e depois da correção (cos φ<sub>1</sub> = FP atual; cos φ<sub>2</sub> = FP desejado)</dd>
+    </dl>
+  </div>
+  <figure class="narrow"><svg viewBox="0 0 440 265" role="img" aria-label="Triângulo de potências antes e depois da correção do fator de potência">
+<line x1="40" y1="220" x2="300" y2="220" class="wire thick"/>
+<line x1="300" y1="220" x2="300" y2="140" class="wire thick pa-s"/>
+<line x1="300" y1="140" x2="300" y2="40" class="ar pc thick" marker-start="url(#ah-pc)" marker-end="url(#ah-pc)"/>
+<line x1="40" y1="220" x2="300" y2="40" class="wire dash-s"/>
+<line x1="40" y1="220" x2="300" y2="140" class="wire thick pb-s"/>
+<path d="M 85 220 A 45 45 0 0 0 77 194.4" class="arc"/>
+<path d="M 115 220 A 75 75 0 0 0 111.7 197.9" class="arc"/>
+<text x="68" y="186" class="ts">φ<tspan class="sub" dy="3">1</tspan></text>
+<text x="120" y="212" class="ts">φ<tspan class="sub" dy="3">2</tspan></text>
+<text x="170" y="246" class="tl" text-anchor="middle">P (W) — não muda</text>
+<text x="310" y="186" class="tl fa">Q<tspan class="sub" dy="4">2</tspan></text>
+<text x="310" y="95" class="tl fc">Q<tspan class="sub" dy="4">C</tspan></text>
+<text x="128" y="115" class="tl">S<tspan class="sub" dy="4">1</tspan></text>
+<text x="190" y="168" class="tl fb">S<tspan class="sub" dy="4">2</tspan></text>
+<text x="300" y="28" class="tm" text-anchor="middle">Q<tspan class="sub" dy="3">1</tspan><tspan dy="-3"> (antes)</tspan></text>
+</svg><figcaption>Figura 6. Triângulo de potências. A instalação de capacitores (Q<sub>C</sub>) reduz a reativa de Q<sub>1</sub> para Q<sub>2</sub>; P fica igual, S diminui de S<sub>1</sub> para S<sub>2</sub> e o ângulo cai de φ<sub>1</sub> para φ<sub>2</sub>.</figcaption></figure>
+
+  <div class="lab" id="lab1">
+    <h4>Laboratório: tensão, corrente e potências</h4>
+    <p class="hint">Mova o ângulo φ e veja a corrente se deslocar em relação à tensão e o triângulo de potências mudar. φ positivo = carga indutiva.</p>
+    <div class="ctrl">
+      <label for="lv">Tensão eficaz (V)</label><input id="lv" type="range" min="50" max="400" step="1" value="220"><output id="lvo">220</output>
+      <label for="li">Corrente eficaz (A)</label><input id="li" type="range" min="1" max="30" step="0.5" value="10"><output id="lio">10</output>
+      <label for="lf">Ângulo φ (°)</label><input id="lf" type="range" min="-90" max="90" step="1" value="37"><output id="lfo">37</output>
+    </div>
+    <svg id="labsvg" viewBox="0 0 640 210" role="img" aria-label="Formas de onda e triângulo de potências"></svg>
+    <div class="lab-out">
+      <div><span>Ativa P</span><b id="oP"></b></div>
+      <div><span>Reativa Q</span><b id="oQ"></b></div>
+      <div><span>Aparente S</span><b id="oS"></b></div>
+      <div><span>Fator de potência</span><b id="oFP"></b></div>
+    </div>
+  </div>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Um motor monofásico absorve 5 A em 220 V, com FP = 0,8 indutivo.</p>
+    <ol class="steps">
+      <li>S = 220 × 5 = <b>1100 VA</b>.</li>
+      <li>P = S·cosφ = 1100 × 0,8 = <b>880 W</b>.</li>
+      <li>senφ = 0,6 (triângulo 3-4-5) → Q = 1100 × 0,6 = <b>660 var</b>. Conferência: √(880² + 660²) = 1100 ✓.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ BLOCO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Circuitos monofásicos e trifásicos</h2></div>
+  <p class="edital-ref">Edital, itens 4.1 e 4.2</p>
+
+  <h3>Geração trifásica</h3>
+  <p>Um gerador trifásico tem três enrolamentos idênticos distribuídos a 120° no estator. Ao girar o rotor, surgem três tensões de <b>mesma amplitude e frequência</b>, <b>defasadas de 120°</b>. Na sequência de fases direta (ou positiva, ABC):</p>
+  <div class="eq">
+    <p class="eq-name">Sistema trifásico simétrico, sequência ABC</p>
+    <div class="eq-main"><var>v</var><sub>A</sub> = <var>V</var><sub>p</sub>sen(<var>ω</var><var>t</var>) &nbsp; <var>v</var><sub>B</sub> = <var>V</var><sub>p</sub>sen(<var>ω</var><var>t</var> − 120°) &nbsp; <var>v</var><sub>C</sub> = <var>V</var><sub>p</sub>sen(<var>ω</var><var>t</var> + 120°)</div>
+    <dl>
+      <dt><var>v</var><sub>A</sub>, <var>v</var><sub>B</sub>, <var>v</var><sub>C</sub></dt><dd>tensões instantâneas de fase (fase-neutro)</dd>
+      <dt>±120°</dt><dd>defasagem entre fases; a soma das três é zero em qualquer instante</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="Tensões trifásicas defasadas de 120 graus">
+<line x1="50" y1="125" x2="620" y2="125" class="ax" marker-end="url(#ah-mut)"/>
+<text x="624" y="130" class="tm">ωt</text>
+<path d="M60.0,125.0 L62.2,122.8 L64.5,120.6 L66.8,118.3 L69.0,116.1 L71.2,113.9 L73.5,111.7 L75.8,109.5 L78.0,107.3 L80.2,105.2 L82.5,103.0 L84.8,100.9 L87.0,98.7 L89.2,96.6 L91.5,94.5 L93.8,92.5 L96.0,90.4 L98.2,88.4 L100.5,86.4 L102.8,84.4 L105.0,82.5 L107.2,80.6 L109.5,78.7 L111.8,76.9 L114.0,75.0 L116.2,73.3 L118.5,71.5 L120.8,69.8 L123.0,68.1 L125.2,66.5 L127.5,64.9 L129.8,63.3 L132.0,61.8 L134.2,60.4 L136.5,58.9 L138.8,57.6 L141.0,56.2 L143.2,54.9 L145.5,53.7 L147.8,52.5 L150.0,51.4 L152.2,50.3 L154.5,49.3 L156.8,48.3 L159.0,47.3 L161.2,46.5 L163.5,45.6 L165.8,44.9 L168.0,44.2 L170.2,43.5 L172.5,42.9 L174.8,42.3 L177.0,41.9 L179.2,41.4 L181.5,41.0 L183.8,40.7 L186.0,40.5 L188.2,40.3 L190.5,40.1 L192.8,40.0 L195.0,40.0 L197.2,40.0 L199.5,40.1 L201.8,40.3 L204.0,40.5 L206.2,40.7 L208.5,41.0 L210.8,41.4 L213.0,41.9 L215.2,42.3 L217.5,42.9 L219.8,43.5 L222.0,44.2 L224.2,44.9 L226.5,45.6 L228.8,46.5 L231.0,47.3 L233.2,48.3 L235.5,49.3 L237.8,50.3 L240.0,51.4 L242.2,52.5 L244.5,53.7 L246.8,54.9 L249.0,56.2 L251.2,57.6 L253.5,58.9 L255.8,60.4 L258.0,61.8 L260.2,63.3 L262.5,64.9 L264.8,66.5 L267.0,68.1 L269.2,69.8 L271.5,71.5 L273.8,73.3 L276.0,75.0 L278.2,76.9 L280.5,78.7 L282.8,80.6 L285.0,82.5 L287.2,84.4 L289.5,86.4 L291.8,88.4 L294.0,90.4 L296.2,92.5 L298.5,94.5 L300.8,96.6 L303.0,98.7 L305.2,100.9 L307.5,103.0 L309.8,105.2 L312.0,107.3 L314.2,109.5 L316.5,111.7 L318.8,113.9 L321.0,116.1 L323.2,118.3 L325.5,120.6 L327.8,122.8 L330.0,125.0 L332.2,127.2 L334.5,129.4 L336.8,131.7 L339.0,133.9 L341.2,136.1 L343.5,138.3 L345.8,140.5 L348.0,142.7 L350.2,144.8 L352.5,147.0 L354.8,149.1 L357.0,151.3 L359.2,153.4 L361.5,155.5 L363.8,157.5 L366.0,159.6 L368.2,161.6 L370.5,163.6 L372.8,165.6 L375.0,167.5 L377.2,169.4 L379.5,171.3 L381.8,173.1 L384.0,175.0 L386.2,176.7 L388.5,178.5 L390.8,180.2 L393.0,181.9 L395.2,183.5 L397.5,185.1 L399.8,186.7 L402.0,188.2 L404.2,189.6 L406.5,191.1 L408.8,192.4 L411.0,193.8 L413.2,195.1 L415.5,196.3 L417.8,197.5 L420.0,198.6 L422.2,199.7 L424.5,200.7 L426.8,201.7 L429.0,202.7 L431.2,203.5 L433.5,204.4 L435.8,205.1 L438.0,205.8 L440.2,206.5 L442.5,207.1 L444.8,207.7 L447.0,208.1 L449.2,208.6 L451.5,209.0 L453.8,209.3 L456.0,209.5 L458.2,209.7 L460.5,209.9 L462.8,210.0 L465.0,210.0 L467.2,210.0 L469.5,209.9 L471.8,209.7 L474.0,209.5 L476.2,209.3 L478.5,209.0 L480.8,208.6 L483.0,208.1 L485.2,207.7 L487.5,207.1 L489.8,206.5 L492.0,205.8 L494.2,205.1 L496.5,204.4 L498.8,203.5 L501.0,202.7 L503.2,201.7 L505.5,200.7 L507.8,199.7 L510.0,198.6 L512.2,197.5 L514.5,196.3 L516.8,195.1 L519.0,193.8 L521.2,192.4 L523.5,191.1 L525.8,189.6 L528.0,188.2 L530.2,186.7 L532.5,185.1 L534.8,183.5 L537.0,181.9 L539.2,180.2 L541.5,178.5 L543.8,176.7 L546.0,175.0 L548.2,173.1 L550.5,171.3 L552.8,169.4 L555.0,167.5 L557.2,165.6 L559.5,163.6 L561.8,161.6 L564.0,159.6 L566.2,157.5 L568.5,155.5 L570.8,153.4 L573.0,151.3 L575.2,149.1 L577.5,147.0 L579.8,144.8 L582.0,142.7 L584.2,140.5 L586.5,138.3 L588.8,136.1 L591.0,133.9 L593.2,131.7 L595.5,129.4 L597.8,127.2 L600.0,125.0" class="w pa"/>
+<path d="M60.0,198.6 L62.2,199.7 L64.5,200.7 L66.8,201.7 L69.0,202.7 L71.2,203.5 L73.5,204.4 L75.8,205.1 L78.0,205.8 L80.2,206.5 L82.5,207.1 L84.8,207.7 L87.0,208.1 L89.2,208.6 L91.5,209.0 L93.8,209.3 L96.0,209.5 L98.2,209.7 L100.5,209.9 L102.8,210.0 L105.0,210.0 L107.2,210.0 L109.5,209.9 L111.8,209.7 L114.0,209.5 L116.2,209.3 L118.5,209.0 L120.8,208.6 L123.0,208.1 L125.2,207.7 L127.5,207.1 L129.8,206.5 L132.0,205.8 L134.2,205.1 L136.5,204.4 L138.8,203.5 L141.0,202.7 L143.2,201.7 L145.5,200.7 L147.8,199.7 L150.0,198.6 L152.2,197.5 L154.5,196.3 L156.8,195.1 L159.0,193.8 L161.2,192.4 L163.5,191.1 L165.8,189.6 L168.0,188.2 L170.2,186.7 L172.5,185.1 L174.8,183.5 L177.0,181.9 L179.2,180.2 L181.5,178.5 L183.8,176.7 L186.0,175.0 L188.2,173.1 L190.5,171.3 L192.8,169.4 L195.0,167.5 L197.2,165.6 L199.5,163.6 L201.8,161.6 L204.0,159.6 L206.2,157.5 L208.5,155.5 L210.8,153.4 L213.0,151.3 L215.2,149.1 L217.5,147.0 L219.8,144.8 L222.0,142.7 L224.2,140.5 L226.5,138.3 L228.8,136.1 L231.0,133.9 L233.2,131.7 L235.5,129.4 L237.8,127.2 L240.0,125.0 L242.2,122.8 L244.5,120.6 L246.8,118.3 L249.0,116.1 L251.2,113.9 L253.5,111.7 L255.8,109.5 L258.0,107.3 L260.2,105.2 L262.5,103.0 L264.8,100.9 L267.0,98.7 L269.2,96.6 L271.5,94.5 L273.8,92.5 L276.0,90.4 L278.2,88.4 L280.5,86.4 L282.8,84.4 L285.0,82.5 L287.2,80.6 L289.5,78.7 L291.8,76.9 L294.0,75.0 L296.2,73.3 L298.5,71.5 L300.8,69.8 L303.0,68.1 L305.2,66.5 L307.5,64.9 L309.8,63.3 L312.0,61.8 L314.2,60.4 L316.5,58.9 L318.8,57.6 L321.0,56.2 L323.2,54.9 L325.5,53.7 L327.8,52.5 L330.0,51.4 L332.2,50.3 L334.5,49.3 L336.8,48.3 L339.0,47.3 L341.2,46.5 L343.5,45.6 L345.8,44.9 L348.0,44.2 L350.2,43.5 L352.5,42.9 L354.8,42.3 L357.0,41.9 L359.2,41.4 L361.5,41.0 L363.8,40.7 L366.0,40.5 L368.2,40.3 L370.5,40.1 L372.8,40.0 L375.0,40.0 L377.2,40.0 L379.5,40.1 L381.8,40.3 L384.0,40.5 L386.2,40.7 L388.5,41.0 L390.8,41.4 L393.0,41.9 L395.2,42.3 L397.5,42.9 L399.8,43.5 L402.0,44.2 L404.2,44.9 L406.5,45.6 L408.8,46.5 L411.0,47.3 L413.2,48.3 L415.5,49.3 L417.8,50.3 L420.0,51.4 L422.2,52.5 L424.5,53.7 L426.8,54.9 L429.0,56.2 L431.2,57.6 L433.5,58.9 L435.8,60.4 L438.0,61.8 L440.2,63.3 L442.5,64.9 L444.8,66.5 L447.0,68.1 L449.2,69.8 L451.5,71.5 L453.8,73.3 L456.0,75.0 L458.2,76.9 L460.5,78.7 L462.8,80.6 L465.0,82.5 L467.2,84.4 L469.5,86.4 L471.8,88.4 L474.0,90.4 L476.2,92.5 L478.5,94.5 L480.8,96.6 L483.0,98.7 L485.2,100.9 L487.5,103.0 L489.8,105.2 L492.0,107.3 L494.2,109.5 L496.5,111.7 L498.8,113.9 L501.0,116.1 L503.2,118.3 L505.5,120.6 L507.8,122.8 L510.0,125.0 L512.2,127.2 L514.5,129.4 L516.8,131.7 L519.0,133.9 L521.2,136.1 L523.5,138.3 L525.8,140.5 L528.0,142.7 L530.2,144.8 L532.5,147.0 L534.8,149.1 L537.0,151.3 L539.2,153.4 L541.5,155.5 L543.8,157.5 L546.0,159.6 L548.2,161.6 L550.5,163.6 L552.8,165.6 L555.0,167.5 L557.2,169.4 L559.5,171.3 L561.8,173.1 L564.0,175.0 L566.2,176.7 L568.5,178.5 L570.8,180.2 L573.0,181.9 L575.2,183.5 L577.5,185.1 L579.8,186.7 L582.0,188.2 L584.2,189.6 L586.5,191.1 L588.8,192.4 L591.0,193.8 L593.2,195.1 L595.5,196.3 L597.8,197.5 L600.0,198.6" class="w pb"/>
+<path d="M60.0,51.4 L62.2,52.5 L64.5,53.7 L66.8,54.9 L69.0,56.2 L71.2,57.6 L73.5,58.9 L75.8,60.4 L78.0,61.8 L80.2,63.3 L82.5,64.9 L84.8,66.5 L87.0,68.1 L89.2,69.8 L91.5,71.5 L93.8,73.3 L96.0,75.0 L98.2,76.9 L100.5,78.7 L102.8,80.6 L105.0,82.5 L107.2,84.4 L109.5,86.4 L111.8,88.4 L114.0,90.4 L116.2,92.5 L118.5,94.5 L120.8,96.6 L123.0,98.7 L125.2,100.9 L127.5,103.0 L129.8,105.2 L132.0,107.3 L134.2,109.5 L136.5,111.7 L138.8,113.9 L141.0,116.1 L143.2,118.3 L145.5,120.6 L147.8,122.8 L150.0,125.0 L152.2,127.2 L154.5,129.4 L156.8,131.7 L159.0,133.9 L161.2,136.1 L163.5,138.3 L165.8,140.5 L168.0,142.7 L170.2,144.8 L172.5,147.0 L174.8,149.1 L177.0,151.3 L179.2,153.4 L181.5,155.5 L183.8,157.5 L186.0,159.6 L188.2,161.6 L190.5,163.6 L192.8,165.6 L195.0,167.5 L197.2,169.4 L199.5,171.3 L201.8,173.1 L204.0,175.0 L206.2,176.7 L208.5,178.5 L210.8,180.2 L213.0,181.9 L215.2,183.5 L217.5,185.1 L219.8,186.7 L222.0,188.2 L224.2,189.6 L226.5,191.1 L228.8,192.4 L231.0,193.8 L233.2,195.1 L235.5,196.3 L237.8,197.5 L240.0,198.6 L242.2,199.7 L244.5,200.7 L246.8,201.7 L249.0,202.7 L251.2,203.5 L253.5,204.4 L255.8,205.1 L258.0,205.8 L260.2,206.5 L262.5,207.1 L264.8,207.7 L267.0,208.1 L269.2,208.6 L271.5,209.0 L273.8,209.3 L276.0,209.5 L278.2,209.7 L280.5,209.9 L282.8,210.0 L285.0,210.0 L287.2,210.0 L289.5,209.9 L291.8,209.7 L294.0,209.5 L296.2,209.3 L298.5,209.0 L300.8,208.6 L303.0,208.1 L305.2,207.7 L307.5,207.1 L309.8,206.5 L312.0,205.8 L314.2,205.1 L316.5,204.4 L318.8,203.5 L321.0,202.7 L323.2,201.7 L325.5,200.7 L327.8,199.7 L330.0,198.6 L332.2,197.5 L334.5,196.3 L336.8,195.1 L339.0,193.8 L341.2,192.4 L343.5,191.1 L345.8,189.6 L348.0,188.2 L350.2,186.7 L352.5,185.1 L354.8,183.5 L357.0,181.9 L359.2,180.2 L361.5,178.5 L363.8,176.7 L366.0,175.0 L368.2,173.1 L370.5,171.3 L372.8,169.4 L375.0,167.5 L377.2,165.6 L379.5,163.6 L381.8,161.6 L384.0,159.6 L386.2,157.5 L388.5,155.5 L390.8,153.4 L393.0,151.3 L395.2,149.1 L397.5,147.0 L399.8,144.8 L402.0,142.7 L404.2,140.5 L406.5,138.3 L408.8,136.1 L411.0,133.9 L413.2,131.7 L415.5,129.4 L417.8,127.2 L420.0,125.0 L422.2,122.8 L424.5,120.6 L426.8,118.3 L429.0,116.1 L431.2,113.9 L433.5,111.7 L435.8,109.5 L438.0,107.3 L440.2,105.2 L442.5,103.0 L444.8,100.9 L447.0,98.7 L449.2,96.6 L451.5,94.5 L453.8,92.5 L456.0,90.4 L458.2,88.4 L460.5,86.4 L462.8,84.4 L465.0,82.5 L467.2,80.6 L469.5,78.7 L471.8,76.9 L474.0,75.0 L476.2,73.3 L478.5,71.5 L480.8,69.8 L483.0,68.1 L485.2,66.5 L487.5,64.9 L489.8,63.3 L492.0,61.8 L494.2,60.4 L496.5,58.9 L498.8,57.6 L501.0,56.2 L503.2,54.9 L505.5,53.7 L507.8,52.5 L510.0,51.4 L512.2,50.3 L514.5,49.3 L516.8,48.3 L519.0,47.3 L521.2,46.5 L523.5,45.6 L525.8,44.9 L528.0,44.2 L530.2,43.5 L532.5,42.9 L534.8,42.3 L537.0,41.9 L539.2,41.4 L541.5,41.0 L543.8,40.7 L546.0,40.5 L548.2,40.3 L550.5,40.1 L552.8,40.0 L555.0,40.0 L557.2,40.0 L559.5,40.1 L561.8,40.3 L564.0,40.5 L566.2,40.7 L568.5,41.0 L570.8,41.4 L573.0,41.9 L575.2,42.3 L577.5,42.9 L579.8,43.5 L582.0,44.2 L584.2,44.9 L586.5,45.6 L588.8,46.5 L591.0,47.3 L593.2,48.3 L595.5,49.3 L597.8,50.3 L600.0,51.4" class="w pc"/>
+<line x1="195" y1="40" x2="195" y2="125" class="guide"/><line x1="375" y1="40" x2="375" y2="125" class="guide"/><line x1="555" y1="40" x2="555" y2="125" class="guide"/>
+<line x1="197" y1="24" x2="373" y2="24" class="ar mut" marker-start="url(#ah-mut)" marker-end="url(#ah-mut)"/>
+<line x1="377" y1="24" x2="553" y2="24" class="ar mut" marker-start="url(#ah-mut)" marker-end="url(#ah-mut)"/>
+<text x="285" y="16" class="tm" text-anchor="middle">120°</text><text x="465" y="16" class="tm" text-anchor="middle">120°</text>
+<rect x="150" y="226" width="14" height="4" class="f-pa"/><text x="170" y="232" class="ts">v<tspan class="sub" dy="3">A</tspan></text>
+<rect x="290" y="226" width="14" height="4" class="f-pb"/><text x="310" y="232" class="ts">v<tspan class="sub" dy="3">B</tspan></text>
+<rect x="430" y="226" width="14" height="4" class="f-pc"/><text x="450" y="232" class="ts">v<tspan class="sub" dy="3">C</tspan></text>
+</svg><figcaption>Figura 7. As três tensões de fase. A fase B atinge o pico 120° depois da A, e a C, 120° depois da B.</figcaption></figure>
+  <p><b>Sistema simétrico</b> é o de tensões iguais em módulo e defasadas de 120°. <b>Carga equilibrada</b> é a que tem três impedâncias iguais. Trabalhar com trifásico traz três vantagens que a banca costuma perguntar: usa menos cobre para transmitir a mesma potência; a potência instantânea total é constante com carga equilibrada (motores giram com conjugado sem pulsação); e as três correntes defasadas criam o <b>campo magnético girante</b> que faz o motor de indução funcionar. Inverter duas fases quaisquer inverte a sequência e, portanto, o sentido de rotação do motor.</p>
+
+  <h3>Tensão de fase e tensão de linha</h3>
+  <ul>
+    <li><b>Tensão de fase (V<sub>F</sub>)</b>: sobre cada elemento da fonte ou da carga; na ligação estrela, é a tensão entre uma fase e o neutro.</li>
+    <li><b>Tensão de linha (V<sub>L</sub>)</b>: entre dois condutores de fase (A-B, B-C, C-A).</li>
+    <li><b>Corrente de linha (I<sub>L</sub>)</b>: a que percorre o condutor da rede. <b>Corrente de fase (I<sub>F</sub>)</b>: a que percorre cada elemento da carga.</li>
+  </ul>
+  <p>Os pares nominais mais comuns em baixa tensão no Brasil são <b>127/220 V</b> e <b>220/380 V</b> (fase/linha). Repare que 220/127 ≈ 380/220 ≈ √3: não é coincidência, é a ligação estrela.</p>
+  <p><b>Circuito monofásico</b>, no contexto do item 4.1, é uma carga ligada entre fase e neutro (recebe V<sub>F</sub>) ou entre duas fases (recebe V<sub>L</sub>). Um chuveiro “220 V” numa rede 127/220 V é ligado entre duas fases.</p>
+
+  <h3>Ligação estrela (Y)</h3>
+  <p>Os três elementos têm um terminal em comum, o <b>ponto neutro</b> N. Cada elemento fica entre uma fase e o neutro.</p>
+  <div class="eq">
+    <p class="eq-name">Relações na ligação estrela equilibrada</p>
+    <div class="eq-main"><var>V</var><sub>L</sub> = √3 · <var>V</var><sub>F</sub> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <var>I</var><sub>L</sub> = <var>I</var><sub>F</sub></div>
+    <dl>
+      <dt><var>V</var><sub>L</sub></dt><dd>tensão de linha, entre fases (V)</dd>
+      <dt><var>V</var><sub>F</sub></dt><dd>tensão de fase, sobre cada elemento (fase-neutro) (V)</dd>
+      <dt><var>I</var><sub>L</sub>, <var>I</var><sub>F</sub></dt><dd>correntes de linha e de fase (A): são a mesma corrente</dd>
+      <dt>√3</dt><dd>≈ 1,732; vem da geometria da figura 8</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 560 315" role="img" aria-label="Carga ligada em estrela com neutro">
+<path d="M40 30 L520 30" class="wire pa-s"/><path d="M40 65 L520 65" class="wire pb-s"/><path d="M40 100 L520 100" class="wire pc-s"/>
+<path d="M300 30 L300 210" class="wire"/>
+<path d="M230.7 65 L230.7 250 L300 210" class="wire"/>
+<path d="M369.3 100 L369.3 250 L300 210" class="wire"/>
+<path d="M300 210 L300 290 L40 290" class="wire dash-s"/>
+<circle cx="300" cy="30" r="3.5" class="f-ink"/><circle cx="230.7" cy="65" r="3.5" class="f-ink"/><circle cx="369.3" cy="100" r="3.5" class="f-ink"/><circle cx="300" cy="210" r="4" class="f-ink"/>
+<rect x="292.0" y="148.0" width="16" height="44" class="zbox" transform="rotate(0 300.0 170.0)"/><rect x="257.4" y="208.0" width="16" height="44" class="zbox" transform="rotate(60 265.4 230.0)"/><rect x="326.6" y="208.0" width="16" height="44" class="zbox" transform="rotate(-60 334.6 230.0)"/>
+<text x="26" y="35" class="tl fa" text-anchor="middle">A</text><text x="26" y="70" class="tl fb" text-anchor="middle">B</text><text x="26" y="105" class="tl fc" text-anchor="middle">C</text><text x="26" y="295" class="tl" text-anchor="middle">N</text>
+<line x1="90" y1="33" x2="90" y2="62" class="ar ink" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="98" y="52" class="ts">V<tspan class="sub" dy="3">L</tspan><tspan dy="-3"> (entre fases)</tspan></text>
+<line x1="312" y1="110" x2="312" y2="138" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="320" y="128" class="ts fc">I<tspan class="sub" dy="3">L</tspan><tspan dy="-3"> = I</tspan><tspan class="sub" dy="3">F</tspan></text>
+<text x="316" y="176" class="ts">Z</text>
+<text x="400" y="215" class="ts">V<tspan class="sub" dy="3">F</tspan><tspan dy="-3"> em cada Z</tspan></text>
+<text x="400" y="232" class="tm">(fase-neutro)</text>
+<text x="308" y="200" class="ts">N</text>
+<text x="50" y="280" class="tm">neutro: I<tspan class="sub" dy="3">N</tspan><tspan dy="-3"> = 0 se equilibrada</tspan></text>
+</svg><figcaption>Figura 9. Carga em estrela a quatro fios (três fases e neutro). A corrente da linha é a mesma que passa pela impedância.</figcaption></figure>
+  <p><b>De onde vem o √3.</b> A tensão de linha é a diferença entre duas tensões de fase: <b>V</b><sub>AB</sub> = <b>V</b><sub>AN</sub> − <b>V</b><sub>BN</sub>. Como os fasores estão a 120°, o resultado tem módulo √3 vezes maior e, na sequência ABC, fica <b>adiantado 30°</b> em relação a <b>V</b><sub>AN</sub>.</p>
+  <figure class="narrow"><svg viewBox="0 0 440 360" role="img" aria-label="Diagrama fasorial com tensões de fase e tensão de linha VAB">
+<line x1="180" y1="200" x2="240" y2="96.1" class="dash pb"/>
+<line x1="300" y1="200" x2="360" y2="96.1" class="guide"/>
+<line x1="240" y1="96.1" x2="360" y2="96.1" class="guide"/>
+<line x1="180" y1="200" x2="300" y2="200" class="ar pa thick" marker-end="url(#ah-pa)"/>
+<line x1="180" y1="200" x2="120" y2="303.9" class="ar pb thick" marker-end="url(#ah-pb)"/>
+<line x1="180" y1="200" x2="120" y2="96.1" class="ar pc thick" marker-end="url(#ah-pc)"/>
+<line x1="180" y1="200" x2="360" y2="96.1" class="ar ink thick" marker-end="url(#ah-ink)"/>
+<path d="M 240 200 A 60 60 0 0 0 232 170" class="arc"/>
+<text x="246" y="190" class="ts">30°</text>
+<circle cx="180" cy="200" r="3.5" class="f-ink"/>
+<text x="306" y="216" class="tl fa">V<tspan class="sub" dy="4">AN</tspan></text>
+<text x="92" y="326" class="tl fb">V<tspan class="sub" dy="4">BN</tspan></text>
+<text x="86" y="88" class="tl fc">V<tspan class="sub" dy="4">CN</tspan></text>
+<text x="366" y="92" class="tl">V<tspan class="sub" dy="4">AB</tspan></text>
+<text x="196" y="86" class="ts fb">−V<tspan class="sub" dy="3">BN</tspan></text>
+<text x="220" y="345" class="tm" text-anchor="middle">V<tspan class="sub" dy="3">AB</tspan><tspan dy="-3"> = V</tspan><tspan class="sub" dy="3">AN</tspan><tspan dy="-3"> − V</tspan><tspan class="sub" dy="3">BN</tspan><tspan dy="-3"> = √3·V</tspan><tspan class="sub" dy="3">AN</tspan><tspan dy="-3"> ∠+30°</tspan></text>
+</svg><figcaption>Figura 8. Diagrama fasorial (sequência ABC). Somando V<sub>AN</sub> com −V<sub>BN</sub> pela regra do paralelogramo obtém-se V<sub>AB</sub>, de módulo √3·V<sub>AN</sub> e ângulo +30°.</figcaption></figure>
+  <p><b>O papel do neutro.</b> Com carga equilibrada, as três correntes somam zero e o neutro não conduz. Com carga desequilibrada (o caso real de prédios e quadros de iluminação), o neutro leva a corrente de desequilíbrio e mantém a tensão de cada fase próxima de V<sub>F</sub>. Se o neutro se <b>rompe</b> numa carga desequilibrada, o ponto neutro da carga se desloca: as fases com pouca carga recebem sobretensão (podendo chegar perto de V<sub>L</sub>) e queimam equipamentos. É um defeito clássico de manutenção.</p>
+
+  <h3>Ligação triângulo (Δ)</h3>
+  <p>Os três elementos formam uma malha fechada, cada um ligado entre duas fases. Não há neutro (sistema a três fios).</p>
+  <div class="eq">
+    <p class="eq-name">Relações na ligação triângulo equilibrada</p>
+    <div class="eq-main"><var>V</var><sub>L</sub> = <var>V</var><sub>F</sub> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <var>I</var><sub>L</sub> = √3 · <var>I</var><sub>F</sub></div>
+    <dl>
+      <dt><var>V</var><sub>F</sub></dt><dd>tensão sobre cada elemento, que é a própria tensão entre fases (V)</dd>
+      <dt><var>I</var><sub>F</sub></dt><dd>corrente dentro de cada elemento do triângulo (A)</dd>
+      <dt><var>I</var><sub>L</sub></dt><dd>corrente na linha: diferença fasorial de duas correntes de fase; na sequência ABC, atrasada 30° da corrente de fase correspondente</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 560 320" role="img" aria-label="Carga ligada em triângulo">
+<path d="M40 30 L520 30" class="wire pa-s"/><path d="M40 65 L520 65" class="wire pb-s"/><path d="M40 100 L520 100" class="wire pc-s"/>
+<path d="M220 30 L220 150" class="wire"/><path d="M400 65 L400 150" class="wire"/>
+<path d="M520 100 L535 100 L535 305 L310 305 L310 290" class="wire"/>
+<path d="M220 150 L400 150 L310 290 Z" class="wire"/>
+<circle cx="220" cy="30" r="3.5" class="f-ink"/><circle cx="400" cy="65" r="3.5" class="f-ink"/><circle cx="520" cy="100" r="3.5" class="f-ink"/>
+<circle cx="220" cy="150" r="3.5" class="f-ink"/><circle cx="400" cy="150" r="3.5" class="f-ink"/><circle cx="310" cy="290" r="3.5" class="f-ink"/>
+<rect x="302.0" y="128.0" width="16" height="44" class="zbox" transform="rotate(90 310.0 150.0)"/><rect x="347.0" y="198.0" width="16" height="44" class="zbox" transform="rotate(32.7 355.0 220.0)"/><rect x="257.0" y="198.0" width="16" height="44" class="zbox" transform="rotate(-32.7 265.0 220.0)"/>
+<text x="26" y="35" class="tl fa" text-anchor="middle">A</text><text x="26" y="70" class="tl fb" text-anchor="middle">B</text><text x="26" y="105" class="tl fc" text-anchor="middle">C</text>
+<line x1="90" y1="33" x2="90" y2="62" class="ar ink" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="98" y="52" class="ts">V<tspan class="sub" dy="3">L</tspan><tspan dy="-3"> = V</tspan><tspan class="sub" dy="3">F</tspan></text>
+<line x1="210" y1="108" x2="210" y2="136" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="140" y="126" class="ts fc">I<tspan class="sub" dy="3">L</tspan><tspan dy="-3"> = √3·I</tspan><tspan class="sub" dy="3">F</tspan></text>
+<line x1="286" y1="170" x2="334" y2="170" class="ar pa" marker-end="url(#ah-pa)"/>
+<text x="310" y="190" class="ts fa" text-anchor="middle">I<tspan class="sub" dy="3">F</tspan></text>
+<text x="310" y="138" class="ts" text-anchor="middle">Z</text>
+<text x="420" y="240" class="ts">cada Z fica sob V<tspan class="sub" dy="3">L</tspan></text>
+<text x="100" y="250" class="tm">sem neutro: 3 fios</text>
+</svg><figcaption>Figura 10. Carga em triângulo. Cada impedância recebe a tensão de linha; em cada vértice, duas correntes de fase se combinam para formar a corrente de linha.</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Estrela (Y)</th><th>Triângulo (Δ)</th></tr></thead>
+    <tbody>
+      <tr><td>Tensão</td><td>V<sub>L</sub> = √3·V<sub>F</sub></td><td>V<sub>L</sub> = V<sub>F</sub></td></tr>
+      <tr><td>Corrente</td><td>I<sub>L</sub> = I<sub>F</sub></td><td>I<sub>L</sub> = √3·I<sub>F</sub></td></tr>
+      <tr><td>Neutro</td><td>pode existir (4 fios)</td><td>não existe (3 fios)</td></tr>
+      <tr><td>Defasagem (seq. ABC)</td><td>V<sub>L</sub> adiantada 30° de V<sub>F</sub></td><td>I<sub>L</sub> atrasada 30° de I<sub>F</sub></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Potência trifásica</h3>
+  <div class="eq">
+    <p class="eq-name">Potências em carga trifásica equilibrada (vale para Y e para Δ)</p>
+    <div class="eq-main"><var>P</var> = √3·<var>V</var><sub>L</sub>·<var>I</var><sub>L</sub>·cos<var>φ</var> = 3·<var>V</var><sub>F</sub>·<var>I</var><sub>F</sub>·cos<var>φ</var></div>
+    <div class="eq-main"><var>Q</var> = √3·<var>V</var><sub>L</sub>·<var>I</var><sub>L</sub>·sen<var>φ</var> &nbsp;&nbsp;&nbsp; <var>S</var> = √3·<var>V</var><sub>L</sub>·<var>I</var><sub>L</sub></div>
+    <dl>
+      <dt><var>P</var>, <var>Q</var>, <var>S</var></dt><dd>potências totais ativa (W), reativa (var) e aparente (VA)</dd>
+      <dt><var>V</var><sub>L</sub>, <var>I</var><sub>L</sub></dt><dd>tensão e corrente de linha, eficazes</dd>
+      <dt><var>φ</var></dt><dd>ângulo da impedância de <b>cada fase</b>, isto é, entre V<sub>F</sub> e I<sub>F</sub> (não entre V<sub>L</sub> e I<sub>L</sub>)</dd>
+    </dl>
+  </div>
+  <p>Um caminho alternativo e muito seguro: calcule tudo numa fase e multiplique por 3 (P = 3·I<sub>F</sub>²·R).</p>
+
+  <h3>Conversão entre estrela e triângulo (cargas equilibradas)</h3>
+  <div class="eq">
+    <p class="eq-name">Equivalência Y–Δ</p>
+    <div class="eq-main"><b>Z</b><sub>Y</sub> = <span class="frac"><span><b>Z</b><sub>Δ</sub></span><span>3</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <b>Z</b><sub>Δ</sub> = 3·<b>Z</b><sub>Y</sub></div>
+    <dl>
+      <dt><b>Z</b><sub>Y</sub></dt><dd>impedância por fase da estrela equivalente (Ω)</dd>
+      <dt><b>Z</b><sub>Δ</sub></dt><dd>impedância por fase do triângulo (Ω)</dd>
+    </dl>
+  </div>
+  <p>Consequência importante: as <b>mesmas três impedâncias</b>, ligadas na <b>mesma rede</b>, consomem <b>três vezes mais potência</b> em triângulo do que em estrela (em Δ, cada uma recebe √3 vezes mais tensão; a potência vai com o quadrado).</p>
+
+  <h3>Aplicação: motores de seis terminais</h3>
+  <p>Um motor com placa “220/380 V” tem enrolamentos projetados para 220 V cada. Na rede de <b>220 V</b>, liga-se em <b>triângulo</b> (cada bobina recebe V<sub>L</sub> = 220 V); na rede de <b>380 V</b>, em <b>estrela</b> (cada bobina recebe 380/√3 ≈ 220 V). A regra: tensão menor da placa → Δ; tensão maior → Y. A <b>partida estrela-triângulo</b> explora isso: parte-se em Y (cada bobina com 1/√3 da tensão nominal), o que reduz a corrente de linha e o conjugado de partida a cerca de <b>1/3</b> dos valores em Δ; depois comuta-se para Δ. O comando e a proteção dessa partida são do item 5.7.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Carga equilibrada em triângulo, com <b>Z</b> = 30 + j40 Ω por fase, ligada a uma rede de 380 V (linha).</p>
+    <ol class="steps">
+      <li>|Z| = √(30² + 40²) = 50 Ω; cosφ = 30/50 = 0,6.</li>
+      <li>Em Δ, V<sub>F</sub> = V<sub>L</sub> = 380 V → I<sub>F</sub> = 380/50 = <b>7,6 A</b>.</li>
+      <li>I<sub>L</sub> = √3 × 7,6 ≈ <b>13,16 A</b>.</li>
+      <li>P = 3·I<sub>F</sub>²·R = 3 × 7,6² × 30 ≈ <b>5198 W</b>. Conferência: √3 × 380 × 13,16 × 0,6 ≈ 5197 W ✓ (diferença só de arredondamento).</li>
+      <li>Pela equivalência: Z<sub>Y</sub> = 50/3 ≈ 16,67 Ω; V<sub>F</sub> em Y = 380/√3 ≈ 219,4 V → I<sub>L</sub> = 219,4/16,67 ≈ 13,16 A ✓.</li>
+    </ol>
+  </div>
+
+  <div class="lab" id="lab2">
+    <h4>Calculadora de carga trifásica equilibrada</h4>
+    <p class="hint">Use para conferir seus exercícios. Reatância positiva = indutiva; negativa = capacitiva.</p>
+    <div class="calc">
+      <label><span>Tensão de linha V<sub>L</sub> (V)</span><input id="cVL" type="number" value="380" min="0" step="any"></label>
+      <label><span>Resistência R por fase (Ω)</span><input id="cR" type="number" value="30" step="any"></label>
+      <label><span>Reatância X por fase (Ω)</span><input id="cX" type="number" value="40" step="any"></label>
+      <label><span>Ligação</span><select id="cL"><option value="D">Triângulo (Δ)</option><option value="Y">Estrela (Y)</option></select></label>
+    </div>
+    <div class="lab-out" id="cOut"></div>
+  </div>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinhas mais comuns em trifásico</p>
+    <ul>
+      <li>Esquecer o √3 na potência (P = V<sub>L</sub>·I<sub>L</sub>·cosφ está errado) ou usar 3 no lugar dele com valores de linha.</li>
+      <li>Usar a tensão de linha sobre uma impedância ligada em estrela: em Y, cada impedância recebe V<sub>L</sub>/√3.</li>
+      <li>Achar que o φ da fórmula é o ângulo entre V<sub>L</sub> e I<sub>L</sub>: é o ângulo da impedância de cada fase.</li>
+      <li>“Tensão da rede” sem qualificação quase sempre significa tensão de linha.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<!-- ============ FORMULARIO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Senoide</td><td>v(t) = V<sub>p</sub>·sen(ωt + θ)</td><td>377t ⇒ 60 Hz</td></tr>
+      <tr><td>Período e frequência angular</td><td>T = 1/f; ω = 2πf</td><td>60 Hz: T ≈ 16,67 ms; ω ≈ 377 rad/s</td></tr>
+      <tr><td>Defasagem a partir do tempo</td><td>φ = 360°·f·Δt</td><td></td></tr>
+      <tr><td>Pico a pico</td><td>V<sub>pp</sub> = 2V<sub>p</sub></td><td>leitura de osciloscópio</td></tr>
+      <tr><td>Eficaz (senoide)</td><td>V<sub>ef</sub> = V<sub>p</sub>/√2 ≈ 0,707V<sub>p</sub></td><td>127 V → 179,6 V pico; 220 V → 311 V pico</td></tr>
+      <tr><td>Médio de meio ciclo</td><td>V<sub>méd</sub> = 2V<sub>p</sub>/π ≈ 0,637V<sub>p</sub></td><td>ciclo completo: 0; meia onda retificada: V<sub>p</sub>/π</td></tr>
+      <tr><td>Reatância indutiva</td><td>X<sub>L</sub> = 2πfL</td><td>V adiantada 90°</td></tr>
+      <tr><td>Reatância capacitiva</td><td>X<sub>C</sub> = 1/(2πfC)</td><td>I adiantada 90°</td></tr>
+      <tr><td>Impedância série</td><td>Z = R + j(X<sub>L</sub> − X<sub>C</sub>); |Z| = √(R² + X²)</td><td>φ = arctg(X/R)</td></tr>
+      <tr><td>Ressonância série</td><td>f<sub>0</sub> = 1/(2π√(LC))</td><td>Z mínima = R; FP = 1</td></tr>
+      <tr><td>Potências monofásicas</td><td>P = VIcosφ; Q = VIsenφ; S = VI</td><td>S² = P² + Q²; FP = P/S</td></tr>
+      <tr><td>Correção de FP</td><td>Q<sub>C</sub> = P(tgφ<sub>1</sub> − tgφ<sub>2</sub>)</td><td>P não muda</td></tr>
+      <tr><td>Estrela</td><td>V<sub>L</sub> = √3V<sub>F</sub>; I<sub>L</sub> = I<sub>F</sub></td><td>V<sub>L</sub> adiantada 30°</td></tr>
+      <tr><td>Triângulo</td><td>V<sub>L</sub> = V<sub>F</sub>; I<sub>L</sub> = √3I<sub>F</sub></td><td>I<sub>L</sub> atrasada 30°</td></tr>
+      <tr><td>Potência trifásica</td><td>P = √3V<sub>L</sub>I<sub>L</sub>cosφ = 3V<sub>F</sub>I<sub>F</sub>cosφ</td><td>φ da impedância de fase</td></tr>
+      <tr><td>Equivalência Y–Δ</td><td>Z<sub>Y</sub> = Z<sub>Δ</sub>/3</td><td>mesma Z na mesma rede: P<sub>Δ</sub> = 3P<sub>Y</sub></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, conteúdo programático da Ênfase 8 (Manutenção – Elétrica), itens 2.2 a 2.5, 3.2, 3.3, 4.1 e 4.2 — conferido no PDF do projeto.</li>
+    <li>Listagem de questões da prova Cesgranrio 2023, Transpetro, Técnico de Manutenção – Elétrica, no <a href="https://www.qconcursos.com/questoes-de-concursos/provas/cesgranrio-2023-transpetro-tecnico-de-manutencao-eletrica/questoes?page=2">Qconcursos</a> (usada apenas para identificar o estilo de cobrança).</li>
+    <li>Bibliografia de apoio para aprofundar a teoria: R. L. Boylestad, <i>Introdução à Análise de Circuitos</i> (Pearson); C. K. Alexander e M. N. O. Sadiku, <i>Fundamentos de Circuitos Elétricos</i> (AMGH).</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+
+<script>
+const QUIZ = {
+b1:[
+ {s:"A tensão de alimentação de um painel é descrita por v(t) = 311·sen(377t + 30°) V. A frequência e o valor de pico dessa tensão são, respectivamente,",
+  o:["60 Hz e 311 V","377 Hz e 311 V","60 Hz e 220 V","120 Hz e 311 V","50 Hz e 220 V"],a:0,
+  c:"O número que multiplica o seno é o pico: 311 V. A frequência angular ω = 377 rad/s corresponde a f = 377/(2π) ≈ 60 Hz. As alternativas com 220 V trocam pico por valor eficaz (311/√2 ≈ 220 V), e a de 377 Hz confunde ω com f."},
+ {s:"O período de uma tensão senoidal de 60 Hz é, aproximadamente,",
+  o:["60 ms","20 ms","16,67 ms","8,33 ms","1,67 ms"],a:2,
+  c:"T = 1/f = 1/60 ≈ 0,01667 s = 16,67 ms. 20 ms seria o período em 50 Hz, e 8,33 ms é apenas meio ciclo em 60 Hz."},
+ {s:"Em uma carga alimentada em CA, medem-se v(t) = 100·sen(ωt + 40°) V e i(t) = 5·sen(ωt − 20°) A. Conclui-se que",
+  o:["a tensão está atrasada 60° em relação à corrente, e a carga é capacitiva","a tensão está adiantada 60° em relação à corrente, e a carga é indutiva","a tensão está adiantada 20° em relação à corrente","a tensão e a corrente estão em fase","a corrente está adiantada 40° em relação à tensão"],a:1,
+  c:"φ = θ<sub>v</sub> − θ<sub>i</sub> = 40° − (−20°) = 60°. Como φ é positivo, a tensão está adiantada (a corrente atrasada): comportamento indutivo."},
+ {s:"Em um osciloscópio, duas senoides de 60 Hz aparecem deslocadas: a segunda atinge seu pico cerca de 2,78 ms depois da primeira. A defasagem entre elas é de, aproximadamente,",
+  o:["30°","45°","60°","90°","120°"],a:2,
+  c:"φ = 360° · f · Δt = 360 × 60 × 0,00278 ≈ 60°. Outra forma: um ciclo (360°) dura 16,67 ms; 2,78 ms é 1/6 do ciclo, ou seja, 60°."},
+ {s:"Uma tensão v(θ) = 170·sen θ V, com θ = ωt. Qual o valor instantâneo da tensão quando θ = 30°?",
+  o:["170 V","147,2 V","120,2 V","85 V","0 V"],a:3,
+  c:"v = 170 · sen 30° = 170 × 0,5 = 85 V. O valor 147,2 V seria 170·cos30° (seno trocado por cosseno) e 120,2 V é o valor eficaz, que nada tem a ver com o valor instantâneo pedido."}
+],
+b2:[
+ {s:"Durante a manutenção de uma fonte, o técnico mede no osciloscópio uma tensão senoidal com 340 V pico a pico. Um multímetro true RMS ligado aos mesmos pontos deverá indicar, aproximadamente,",
+  o:["340 V","240 V","170 V","120 V","108 V"],a:3,
+  c:"V<sub>p</sub> = V<sub>pp</sub>/2 = 170 V; V<sub>ef</sub> = 170/√2 ≈ 120 V. 170 V seria o pico, e 108 V (2·170/π) é o valor médio de meio ciclo, que o multímetro não indica."},
+ {s:"Numa rede de 220 V (valor eficaz), senoidal, o valor de pico a pico da tensão é, aproximadamente,",
+  o:["155 V","311 V","380 V","440 V","622 V"],a:4,
+  c:"V<sub>p</sub> = √2 × 220 ≈ 311 V e V<sub>pp</sub> = 2 × 311 ≈ 622 V. A alternativa 440 V é o erro de dobrar o eficaz sem passar pelo pico; 380 V é distrator de tensão de linha."},
+ {s:"O valor médio de uma tensão senoidal pura, calculado ao longo de um ciclo completo, é",
+  o:["zero","0,318·V<sub>p</sub>","0,637·V<sub>p</sub>","0,707·V<sub>p</sub>","V<sub>p</sub>"],a:0,
+  c:"Os semiciclos positivo e negativo têm a mesma área e se anulam. 0,637·V<sub>p</sub> é o médio de meio ciclo; 0,707·V<sub>p</sub> é o eficaz; 0,318·V<sub>p</sub> é o médio da meia onda retificada."},
+ {s:"Uma senoide de 100 V de pico é retificada em onda completa. O valor médio da tensão retificada é de, aproximadamente,",
+  o:["100 V","70,7 V","63,7 V","50 V","31,8 V"],a:2,
+  c:"Na onda completa retificada, V<sub>méd</sub> = 2V<sub>p</sub>/π = 200/3,1416 ≈ 63,7 V. 31,8 V seria a meia onda (V<sub>p</sub>/π); 70,7 V é o eficaz, que, aliás, não muda com a retificação em onda completa."},
+ {s:"Um resistor de 10 Ω é alimentado por uma fonte senoidal com valor de pico de 141,4 V. A potência média dissipada no resistor é de",
+  o:["2.000 W","1.414 W","1.000 W","707 W","500 W"],a:2,
+  c:"V<sub>ef</sub> = 141,4/√2 = 100 V; P = V<sub>ef</sub>²/R = 100²/10 = 1.000 W. Usar o pico (141,4²/10) dá 2.000 W: exatamente o dobro, erro previsto pela banca."}
+],
+b3:[
+ {s:"A forma polar do número complexo 6 + j8 é",
+  o:["14∠53,13°","10∠36,87°","10∠53,13°","100∠53,13°","2∠−53,13°"],a:2,
+  c:"M = √(6² + 8²) = √100 = 10 (triângulo 3-4-5 multiplicado por 2). θ = arctg(8/6) = 53,13°. 10∠36,87° seria 8 + j6 (inverteu as partes); 14 é a soma aritmética 6 + 8."},
+ {s:"O resultado da divisão (20∠30°) ÷ (5∠−60°) é",
+  o:["4∠−30°","100∠−30°","4∠90°","15∠90°","4∠30°"],a:2,
+  c:"Na divisão polar, dividem-se os módulos e subtraem-se os ângulos: 20/5 = 4 e 30° − (−60°) = 90°. 100∠−30° é o resultado da multiplicação, não da divisão."},
+ {s:"Duas cargas em paralelo absorvem as correntes <b>I</b><sub>1</sub> = 3∠0° A e <b>I</b><sub>2</sub> = 4∠90° A. Um amperímetro instalado no condutor que alimenta as duas cargas indica",
+  o:["1 A","3,5 A","5 A","7 A","12 A"],a:2,
+  c:"Pela LKC fasorial, <b>I</b> = 3 + j4 = 5∠53,13° A; o amperímetro indica o módulo, 5 A. A soma aritmética (7 A) só valeria se as correntes estivessem em fase."},
+ {s:"O fasor, em valor eficaz, correspondente a v(t) = 311·sen(377t − 45°) V é",
+  o:["311∠−45° V","220∠45° V","220∠−45° V","155∠−45° V","311∠45° V"],a:2,
+  c:"Módulo = valor eficaz = 311/√2 ≈ 220 V; ângulo = fase inicial = −45°. As alternativas com 311 V usam o pico; as de +45° trocam o sinal do ângulo."},
+ {s:"Multiplicar um fasor por −j equivale a",
+  o:["girá-lo 90° no sentido anti-horário, mantendo o módulo","girá-lo 90° no sentido horário, mantendo o módulo","girá-lo 180°, mantendo o módulo","inverter apenas o sinal da parte real","dividir o seu módulo por 90"],a:1,
+  c:"−j = 1∠−90°. Multiplicar por ele soma −90° ao ângulo (giro horário, atraso de 90°) e multiplica o módulo por 1. É exatamente o que acontece com a tensão num capacitor: <b>V</b><sub>C</sub> = −jX<sub>C</sub>·<b>I</b>."}
+],
+b4:[
+ {s:"A reatância de um indutor de 100 mH, em 60 Hz, é de, aproximadamente,",
+  o:["3,77 Ω","6 Ω","26,5 Ω","37,7 Ω","377 Ω"],a:3,
+  c:"X<sub>L</sub> = 2πfL = 2π × 60 × 0,1 ≈ 377 × 0,1 = 37,7 Ω. Errar a conversão de mH para H leva aos distratores 377 Ω ou 3,77 Ω."},
+ {s:"A reatância de um capacitor de 100 µF, em 60 Hz, é de, aproximadamente,",
+  o:["0,0377 Ω","2,65 Ω","26,5 Ω","37,7 Ω","265 Ω"],a:2,
+  c:"X<sub>C</sub> = 1/(2πfC) = 1/(377 × 100×10⁻⁶) = 1/0,0377 ≈ 26,5 Ω."},
+ {s:"Um circuito RL série, com R = 30 Ω e X<sub>L</sub> = 40 Ω, é alimentado por 100 V (eficaz). Um voltímetro ligado sobre o resistor indicará",
+  o:["42,9 V","50 V","60 V","80 V","100 V"],a:2,
+  c:"|Z| = √(30² + 40²) = 50 Ω; I = 100/50 = 2 A; V<sub>R</sub> = 2 × 30 = 60 V (e V<sub>L</sub> = 80 V). Note que 60 + 80 = 140 V ≠ 100 V: as tensões se somam fasorialmente (√(60² + 80²) = 100 V)."},
+ {s:"Um circuito RLC série tem R = 10 Ω, X<sub>L</sub> = 30 Ω e X<sub>C</sub> = 30 Ω, e é alimentado por 50 V (eficaz). A tensão sobre o indutor é",
+  o:["0 V","5 V","30 V","50 V","150 V"],a:4,
+  c:"Com X<sub>L</sub> = X<sub>C</sub>, o circuito está em ressonância: Z = R = 10 Ω e I = 50/10 = 5 A. V<sub>L</sub> = 5 × 30 = 150 V, três vezes a tensão da fonte. V<sub>C</sub> também vale 150 V, em oposição de fase, e as duas se cancelam."},
+ {s:"Em um circuito com resistor, indutor e capacitor, a frequência da fonte é dobrada. É correto afirmar que",
+  o:["a reatância indutiva cai à metade e a capacitiva dobra","as duas reatâncias dobram","a reatância indutiva dobra e a capacitiva cai à metade","a resistência dobra","as reatâncias não dependem da frequência"],a:2,
+  c:"X<sub>L</sub> = 2πfL é diretamente proporcional a f; X<sub>C</sub> = 1/(2πfC) é inversamente proporcional. A resistência, idealmente, não depende da frequência."},
+ {s:"A frequência de ressonância de um circuito LC série com L = 10 mH e C = 10 µF é de, aproximadamente,",
+  o:["50,3 Hz","159 Hz","503 Hz","1.591 Hz","5.033 Hz"],a:2,
+  c:"LC = 0,01 × 10×10⁻⁶ = 10⁻⁷; √(LC) ≈ 3,162×10⁻⁴ s; f<sub>0</sub> = 1/(2π × 3,162×10⁻⁴) ≈ 503 Hz. Esquecer o 2π leva a cerca de 3.162 Hz; erros de potência de 10 levam a 50,3 ou 5.033 Hz."}
+],
+b5:[
+ {s:"As medições no quadro geral de baixa tensão de uma instalação indicaram 100 kVA de potência aparente e 60 kvar de potência reativa indutiva. Considerando o fator de potência de referência de 0,92, conclui-se que a instalação",
+  o:["opera com FP de 0,6 e está adequada","opera com FP de 0,8, abaixo do valor de referência","opera com FP de 0,8, acima do valor de referência","consome 60 kW de potência ativa","opera com FP unitário"],a:1,
+  c:"P = √(S² − Q²) = √(100² − 60²) = 80 kW; FP = P/S = 0,8, abaixo de 0,92. A alternativa de FP 0,6 usa Q/S (que é o seno, não o cosseno)."},
+ {s:"Um motor monofásico absorve 10 A em 220 V, com fator de potência 0,8 indutivo. A potência reativa absorvida é de",
+  o:["440 var","880 var","1.320 var","1.760 var","2.200 var"],a:2,
+  c:"S = 220 × 10 = 2.200 VA; senφ = 0,6; Q = 2.200 × 0,6 = 1.320 var. 1.760 W é a potência ativa (S × 0,8) e 2.200 VA, a aparente."},
+ {s:"Uma carga de 40 kW opera com FP = 0,8 indutivo. A potência reativa capacitiva necessária para elevar o FP a 1,0 é de",
+  o:["10 kvar","24 kvar","30 kvar","40 kvar","50 kvar"],a:2,
+  c:"Com FP 0,8, tgφ<sub>1</sub> = 0,75, logo Q = 40 × 0,75 = 30 kvar indutivos. Para FP = 1, tgφ<sub>2</sub> = 0, e Q<sub>C</sub> = 40 × (0,75 − 0) = 30 kvar. 50 kVA é a potência aparente inicial."},
+ {s:"Ao se instalar um banco de capacitores em paralelo com uma carga indutiva para corrigir o fator de potência, é correto afirmar que",
+  o:["a potência ativa da carga aumenta","a corrente fornecida pela fonte diminui, e a potência ativa permanece a mesma","a tensão nominal da carga é reduzida","a potência aparente aumenta","o motor passa a desenvolver mais potência mecânica"],a:1,
+  c:"Os capacitores suprem localmente a reativa, reduzindo Q e, com isso, S = √(P² + Q²) e a corrente da fonte. A potência ativa (e a potência mecânica do motor) não muda."},
+ {s:"Uma carga série com R = 8 Ω e X<sub>L</sub> = 6 Ω é alimentada por 100 V (eficaz). A potência ativa consumida é de",
+  o:["600 W","800 W","1.000 W","1.250 W","1.667 W"],a:1,
+  c:"|Z| = 10 Ω; I = 10 A; P = I²R = 100 × 8 = 800 W (Q = I²X<sub>L</sub> = 600 var; S = 1.000 VA). 1.250 W sai de V²/R, erro de usar a tensão total sobre o resistor."}
+],
+b6:[
+ {s:"Uma carga trifásica equilibrada, ligada em estrela, tem impedância puramente resistiva de 12,7 Ω por fase e é alimentada por uma rede de 220 V (tensão de linha). A corrente de linha é de",
+  o:["5,77 A","10 A","12,7 A","17,3 A","30 A"],a:1,
+  c:"Em Y, cada impedância recebe V<sub>F</sub> = 220/√3 ≈ 127 V. I<sub>F</sub> = 127/12,7 = 10 A, e I<sub>L</sub> = I<sub>F</sub> = 10 A. 17,3 A resultaria de aplicar 220 V sobre a impedância."},
+ {s:"As mesmas três impedâncias de 12,7 Ω da questão anterior são religadas em triângulo, na mesma rede de 220 V. A corrente de linha passa a ser de",
+  o:["5,77 A","10 A","17,3 A","30 A","52 A"],a:3,
+  c:"Em Δ, V<sub>F</sub> = V<sub>L</sub> = 220 V; I<sub>F</sub> = 220/12,7 ≈ 17,3 A; I<sub>L</sub> = √3 × 17,3 ≈ 30 A. A corrente de linha triplicou em relação à estrela (10 A), assim como a potência."},
+ {s:"Um motor trifásico opera em rede de 380 V, com corrente de linha de 20 A e fator de potência 0,85. A potência ativa absorvida é de, aproximadamente,",
+  o:["3,7 kW","6,5 kW","11,2 kW","13,2 kW","19,4 kW"],a:2,
+  c:"P = √3 × 380 × 20 × 0,85 ≈ 1,732 × 380 × 20 × 0,85 ≈ 11.190 W ≈ 11,2 kW. Sem o √3: 6,5 kW; com 3 no lugar de √3: 19,4 kW; sem o FP: 13,2 kVA (potência aparente)."},
+ {s:"Um motor de indução trifásico de seis terminais tem placa 220/380 V. Para ligá-lo em uma rede de 380 V, os enrolamentos devem ser ligados em",
+  o:["triângulo, pois cada enrolamento suporta 380 V","estrela, para que cada enrolamento receba cerca de 220 V","triângulo, para que cada enrolamento receba cerca de 220 V","estrela, para que cada enrolamento receba 380 V","paralelo, pois a rede tem tensão maior que a nominal"],a:1,
+  c:"Os enrolamentos são de 220 V. Em Y, cada um recebe 380/√3 ≈ 220 V. Em Δ, receberia os 380 V inteiros e queimaria. Regra: tensão maior da placa → estrela."},
+ {s:"Uma carga trifásica equilibrada em estrela, com <b>Z</b> = 16 + j12 Ω por fase, é alimentada por uma rede com tensão de linha de 200√3 V. A potência ativa total é de",
+  o:["1.600 W","3.600 W","4.800 W","6.000 W","8.314 W"],a:2,
+  c:"V<sub>F</sub> = 200√3/√3 = 200 V; |Z| = 20 Ω (triângulo 3-4-5 × 4); I<sub>F</sub> = 10 A; P = 3 × 10² × 16 = 4.800 W. 6.000 VA é a aparente, 3.600 var a reativa e 1.600 W a potência de uma fase só."},
+ {s:"Em um sistema trifásico simétrico de sequência ABC, alimentando carga em estrela, a tensão de linha <b>V</b><sub>AB</sub>",
+  o:["é igual em módulo à tensão de fase e está em fase com ela","tem módulo √3 vezes o da tensão de fase <b>V</b><sub>AN</sub> e está adiantada 30° em relação a ela","tem módulo √3 vezes o de <b>V</b><sub>AN</sub> e está atrasada 30°","tem módulo 3 vezes o de <b>V</b><sub>AN</sub> e está adiantada 120°","tem módulo √2 vezes o de <b>V</b><sub>AN</sub> e está adiantada 90°"],a:1,
+  c:"<b>V</b><sub>AB</sub> = <b>V</b><sub>AN</sub> − <b>V</b><sub>BN</sub> = √3·V<sub>AN</sub>∠+30° (figura 8). O atraso de 30° aparece na corrente de linha da ligação triângulo, não na tensão de linha da estrela."},
+ {s:"Uma carga equilibrada em triângulo tem impedância de 60 Ω por fase. A impedância por fase da estrela equivalente é de",
+  o:["20 Ω","34,6 Ω","60 Ω","103,9 Ω","180 Ω"],a:0,
+  c:"Z<sub>Y</sub> = Z<sub>Δ</sub>/3 = 60/3 = 20 Ω. Dividir por √3 (34,6 Ω) é um erro comum: a equivalência entre impedâncias usa o fator 3."},
+ {s:"Sobre o condutor neutro de um sistema trifásico a quatro fios que alimenta cargas em estrela, é correto afirmar que",
+  o:["conduz corrente igual à soma aritmética das correntes de fase","com carga equilibrada, a corrente no neutro é nula, e seu rompimento com carga desequilibrada pode causar sobretensão nas fases menos carregadas","seu rompimento não produz efeito, pois o neutro não conduz corrente em nenhuma situação","é indispensável para cargas ligadas em triângulo","mantém a tensão de linha igual à tensão de fase"],a:1,
+  c:"A soma fasorial das correntes de uma carga equilibrada é zero. Com desequilíbrio, o neutro conduz a diferença; se ele se rompe, o ponto neutro da carga se desloca e as fases com menos carga recebem tensão maior que a nominal."}
+]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+/* ---------- lab 1 ---------- */
+const fmt=(x,d=0)=>x.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+function lab1(){
+  const V=+lv.value, I=+li.value, f=+lf.value, r=f*Math.PI/180;
+  lvo.textContent=fmt(V); lio.textContent=fmt(I,1); lfo.textContent=f+"°";
+  const S=V*I, P=S*Math.cos(r), Q=S*Math.sin(r);
+  oP.textContent=fmt(P)+" W"; oQ.textContent=fmt(Q)+" var"; oS.textContent=fmt(S)+" VA";
+  oFP.textContent=fmt(Math.cos(r),2)+(f>0?" indutivo":f<0?" capacitivo":" (resistivo)");
+  const x0=20,x1=400,yc=105,n=160; let pv="",pi="";
+  for(let k=0;k<=n;k++){const x=x0+(x1-x0)*k/n, a=4*Math.PI*k/n;
+    pv+=(k?"L":"M")+x.toFixed(1)+","+(yc-80*Math.sin(a)).toFixed(1);
+    pi+=(k?"L":"M")+x.toFixed(1)+","+(yc-55*Math.sin(a-r)).toFixed(1);}
+  const ox=450, oy=150, sc=150/Math.max(S,1), px=P*sc, qy=Q*sc;
+  labsvg.innerHTML=`<line x1="${x0}" y1="${yc}" x2="${x1}" y2="${yc}" class="ax"/>
+  <path d="${pv}" class="w ink"/><path d="${pi}" class="w pc"/>
+  <text x="${x0}" y="18" class="ts">v(t)</text><text x="${x0+40}" y="18" class="ts fc">i(t)</text>
+  <line x1="${ox}" y1="${oy-60}" x2="${ox}" y2="${oy+60}" class="guide"/>
+  <line x1="${ox}" y1="${oy}" x2="${ox+px}" y2="${oy}" class="wire thick"/>
+  <line x1="${ox+px}" y1="${oy}" x2="${ox+px}" y2="${oy-qy}" class="wire thick pa-s"/>
+  <line x1="${ox}" y1="${oy}" x2="${ox+px}" y2="${oy-qy}" class="wire thick pc-s"/>
+  <text x="${ox+px/2}" y="${oy+(qy<0?-8:18)}" class="ts" text-anchor="middle">P</text>
+  <text x="${ox+px+6}" y="${oy-qy/2+5}" class="ts fa">Q</text>
+  <text x="${ox+px/2-12}" y="${oy-qy/2-6}" class="ts fc">S</text>`;
+}
+[lv,li,lf].forEach(e=>e.addEventListener("input",lab1)); lab1();
+
+/* ---------- lab 2 ---------- */
+function lab2(){
+  const VL=+cVL.value, R=+cR.value, X=+cX.value, Y=cL.value==="Y";
+  const Z=Math.hypot(R,X);
+  if(!(VL>0) || !(Z>0) || R<0){cOut.innerHTML="<div><span>Aviso</span><b>Informe V<sub>L</sub> &gt; 0, R ≥ 0 e impedância diferente de zero.</b></div>";return;}
+  const VF=Y?VL/Math.sqrt(3):VL, IF=VF/Z, IL=Y?IF:Math.sqrt(3)*IF;
+  const P=3*IF*IF*R, Q=3*IF*IF*X, S=3*VF*IF, fp=R/Z;
+  const cell=(t,v)=>`<div><span>${t}</span><b>${v}</b></div>`;
+  cOut.innerHTML=cell("|Z| por fase",fmt(Z,2)+" Ω")+cell("V<sub>F</sub>",fmt(VF,1)+" V")+cell("I<sub>F</sub>",fmt(IF,2)+" A")+
+    cell("I<sub>L</sub>",fmt(IL,2)+" A")+cell("P total",fmt(P)+" W")+cell("Q total",fmt(Q)+" var")+cell("S total",fmt(S)+" VA")+
+    cell("FP",fmt(fp,3)+(X>0?" ind.":X<0?" cap.":""));
+}
+[cVL,cR,cX,cL].forEach(e=>e.addEventListener("input",lab2)); lab2();
+</script>
+</body>
+</html>

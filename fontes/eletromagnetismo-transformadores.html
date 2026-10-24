@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eletromagnetismo e transformadores — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. Magnetismo e grandezas<small>Itens 5.1 e 7.2</small></a></li>
+    <li><a href="#b2">2. Campo criado por corrente<small>Item 5.1</small></a></li>
+    <li><a href="#b3">3. Força magnética<small>Item 5.1</small></a></li>
+    <li><a href="#b4">4. Indução e perdas no núcleo<small>Item 5.1</small></a></li>
+    <li><a href="#b5">5. Transformador ideal<small>Item 5.3</small></a></li>
+    <li><a href="#b6">6. Transformador real<small>Item 5.3</small></a></li>
+    <li><a href="#b7">7. Trifásicos e de instrumento<small>Item 5.3</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Eletromagnetismo e transformadores</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Teoria, figuras, equações com cada símbolo nomeado, exemplos resolvidos e exercícios comentados ao fim de cada bloco.</p>
+  <svg class="hero-wave" viewBox="0 0 1200 180" role="img" aria-label="Tensão do primário e tensão menor do secundário, em fase">
+<line x1="0" y1="90" x2="1200" y2="90" class="ax"/>
+<path d="M0.0,90.0 L5.0,84.9 L10.0,79.8 L15.0,74.8 L20.0,69.8 L25.0,64.9 L30.0,60.2 L35.0,55.5 L40.0,51.0 L45.0,46.7 L50.0,42.5 L55.0,38.6 L60.0,34.8 L65.0,31.4 L70.0,28.1 L75.0,25.1 L80.0,22.5 L85.0,20.0 L90.0,17.9 L95.0,16.1 L100.0,14.7 L105.0,13.5 L110.0,12.7 L115.0,12.2 L120.0,12.0 L125.0,12.2 L130.0,12.7 L135.0,13.5 L140.0,14.7 L145.0,16.1 L150.0,17.9 L155.0,20.0 L160.0,22.5 L165.0,25.1 L170.0,28.1 L175.0,31.4 L180.0,34.8 L185.0,38.6 L190.0,42.5 L195.0,46.7 L200.0,51.0 L205.0,55.5 L210.0,60.2 L215.0,64.9 L220.0,69.8 L225.0,74.8 L230.0,79.8 L235.0,84.9 L240.0,90.0 L245.0,95.1 L250.0,100.2 L255.0,105.2 L260.0,110.2 L265.0,115.1 L270.0,119.8 L275.0,124.5 L280.0,129.0 L285.0,133.3 L290.0,137.5 L295.0,141.4 L300.0,145.2 L305.0,148.6 L310.0,151.9 L315.0,154.9 L320.0,157.5 L325.0,160.0 L330.0,162.1 L335.0,163.9 L340.0,165.3 L345.0,166.5 L350.0,167.3 L355.0,167.8 L360.0,168.0 L365.0,167.8 L370.0,167.3 L375.0,166.5 L380.0,165.3 L385.0,163.9 L390.0,162.1 L395.0,160.0 L400.0,157.5 L405.0,154.9 L410.0,151.9 L415.0,148.6 L420.0,145.2 L425.0,141.4 L430.0,137.5 L435.0,133.3 L440.0,129.0 L445.0,124.5 L450.0,119.8 L455.0,115.1 L460.0,110.2 L465.0,105.2 L470.0,100.2 L475.0,95.1 L480.0,90.0 L485.0,84.9 L490.0,79.8 L495.0,74.8 L500.0,69.8 L505.0,64.9 L510.0,60.2 L515.0,55.5 L520.0,51.0 L525.0,46.7 L530.0,42.5 L535.0,38.6 L540.0,34.8 L545.0,31.4 L550.0,28.1 L555.0,25.1 L560.0,22.5 L565.0,20.0 L570.0,17.9 L575.0,16.1 L580.0,14.7 L585.0,13.5 L590.0,12.7 L595.0,12.2 L600.0,12.0 L605.0,12.2 L610.0,12.7 L615.0,13.5 L620.0,14.7 L625.0,16.1 L630.0,17.9 L635.0,20.0 L640.0,22.5 L645.0,25.1 L650.0,28.1 L655.0,31.4 L660.0,34.8 L665.0,38.6 L670.0,42.5 L675.0,46.7 L680.0,51.0 L685.0,55.5 L690.0,60.2 L695.0,64.9 L700.0,69.8 L705.0,74.8 L710.0,79.8 L715.0,84.9 L720.0,90.0 L725.0,95.1 L730.0,100.2 L735.0,105.2 L740.0,110.2 L745.0,115.1 L750.0,119.8 L755.0,124.5 L760.0,129.0 L765.0,133.3 L770.0,137.5 L775.0,141.4 L780.0,145.2 L785.0,148.6 L790.0,151.9 L795.0,154.9 L800.0,157.5 L805.0,160.0 L810.0,162.1 L815.0,163.9 L820.0,165.3 L825.0,166.5 L830.0,167.3 L835.0,167.8 L840.0,168.0 L845.0,167.8 L850.0,167.3 L855.0,166.5 L860.0,165.3 L865.0,163.9 L870.0,162.1 L875.0,160.0 L880.0,157.5 L885.0,154.9 L890.0,151.9 L895.0,148.6 L900.0,145.2 L905.0,141.4 L910.0,137.5 L915.0,133.3 L920.0,129.0 L925.0,124.5 L930.0,119.8 L935.0,115.1 L940.0,110.2 L945.0,105.2 L950.0,100.2 L955.0,95.1 L960.0,90.0 L965.0,84.9 L970.0,79.8 L975.0,74.8 L980.0,69.8 L985.0,64.9 L990.0,60.2 L995.0,55.5 L1000.0,51.0 L1005.0,46.7 L1010.0,42.5 L1015.0,38.6 L1020.0,34.8 L1025.0,31.4 L1030.0,28.1 L1035.0,25.1 L1040.0,22.5 L1045.0,20.0 L1050.0,17.9 L1055.0,16.1 L1060.0,14.7 L1065.0,13.5 L1070.0,12.7 L1075.0,12.2 L1080.0,12.0 L1085.0,12.2 L1090.0,12.7 L1095.0,13.5 L1100.0,14.7 L1105.0,16.1 L1110.0,17.9 L1115.0,20.0 L1120.0,22.5 L1125.0,25.1 L1130.0,28.1 L1135.0,31.4 L1140.0,34.8 L1145.0,38.6 L1150.0,42.5 L1155.0,46.7 L1160.0,51.0 L1165.0,55.5 L1170.0,60.2 L1175.0,64.9 L1180.0,69.8 L1185.0,74.8 L1190.0,79.8 L1195.0,84.9 L1200.0,90.0" class="w pa"/>
+<path d="M0.0,90.0 L5.0,88.0 L10.0,86.1 L15.0,84.1 L20.0,82.2 L25.0,80.4 L30.0,78.5 L35.0,76.7 L40.0,75.0 L45.0,73.3 L50.0,71.7 L55.0,70.2 L60.0,68.8 L65.0,67.4 L70.0,66.2 L75.0,65.1 L80.0,64.0 L85.0,63.1 L90.0,62.3 L95.0,61.6 L100.0,61.0 L105.0,60.6 L110.0,60.3 L115.0,60.1 L120.0,60.0 L125.0,60.1 L130.0,60.3 L135.0,60.6 L140.0,61.0 L145.0,61.6 L150.0,62.3 L155.0,63.1 L160.0,64.0 L165.0,65.1 L170.0,66.2 L175.0,67.4 L180.0,68.8 L185.0,70.2 L190.0,71.7 L195.0,73.3 L200.0,75.0 L205.0,76.7 L210.0,78.5 L215.0,80.4 L220.0,82.2 L225.0,84.1 L230.0,86.1 L235.0,88.0 L240.0,90.0 L245.0,92.0 L250.0,93.9 L255.0,95.9 L260.0,97.8 L265.0,99.6 L270.0,101.5 L275.0,103.3 L280.0,105.0 L285.0,106.7 L290.0,108.3 L295.0,109.8 L300.0,111.2 L305.0,112.6 L310.0,113.8 L315.0,114.9 L320.0,116.0 L325.0,116.9 L330.0,117.7 L335.0,118.4 L340.0,119.0 L345.0,119.4 L350.0,119.7 L355.0,119.9 L360.0,120.0 L365.0,119.9 L370.0,119.7 L375.0,119.4 L380.0,119.0 L385.0,118.4 L390.0,117.7 L395.0,116.9 L400.0,116.0 L405.0,114.9 L410.0,113.8 L415.0,112.6 L420.0,111.2 L425.0,109.8 L430.0,108.3 L435.0,106.7 L440.0,105.0 L445.0,103.3 L450.0,101.5 L455.0,99.6 L460.0,97.8 L465.0,95.9 L470.0,93.9 L475.0,92.0 L480.0,90.0 L485.0,88.0 L490.0,86.1 L495.0,84.1 L500.0,82.2 L505.0,80.4 L510.0,78.5 L515.0,76.7 L520.0,75.0 L525.0,73.3 L530.0,71.7 L535.0,70.2 L540.0,68.8 L545.0,67.4 L550.0,66.2 L555.0,65.1 L560.0,64.0 L565.0,63.1 L570.0,62.3 L575.0,61.6 L580.0,61.0 L585.0,60.6 L590.0,60.3 L595.0,60.1 L600.0,60.0 L605.0,60.1 L610.0,60.3 L615.0,60.6 L620.0,61.0 L625.0,61.6 L630.0,62.3 L635.0,63.1 L640.0,64.0 L645.0,65.1 L650.0,66.2 L655.0,67.4 L660.0,68.8 L665.0,70.2 L670.0,71.7 L675.0,73.3 L680.0,75.0 L685.0,76.7 L690.0,78.5 L695.0,80.4 L700.0,82.2 L705.0,84.1 L710.0,86.1 L715.0,88.0 L720.0,90.0 L725.0,92.0 L730.0,93.9 L735.0,95.9 L740.0,97.8 L745.0,99.6 L750.0,101.5 L755.0,103.3 L760.0,105.0 L765.0,106.7 L770.0,108.3 L775.0,109.8 L780.0,111.2 L785.0,112.6 L790.0,113.8 L795.0,114.9 L800.0,116.0 L805.0,116.9 L810.0,117.7 L815.0,118.4 L820.0,119.0 L825.0,119.4 L830.0,119.7 L835.0,119.9 L840.0,120.0 L845.0,119.9 L850.0,119.7 L855.0,119.4 L860.0,119.0 L865.0,118.4 L870.0,117.7 L875.0,116.9 L880.0,116.0 L885.0,114.9 L890.0,113.8 L895.0,112.6 L900.0,111.2 L905.0,109.8 L910.0,108.3 L915.0,106.7 L920.0,105.0 L925.0,103.3 L930.0,101.5 L935.0,99.6 L940.0,97.8 L945.0,95.9 L950.0,93.9 L955.0,92.0 L960.0,90.0 L965.0,88.0 L970.0,86.1 L975.0,84.1 L980.0,82.2 L985.0,80.4 L990.0,78.5 L995.0,76.7 L1000.0,75.0 L1005.0,73.3 L1010.0,71.7 L1015.0,70.2 L1020.0,68.8 L1025.0,67.4 L1030.0,66.2 L1035.0,65.1 L1040.0,64.0 L1045.0,63.1 L1050.0,62.3 L1055.0,61.6 L1060.0,61.0 L1065.0,60.6 L1070.0,60.3 L1075.0,60.1 L1080.0,60.0 L1085.0,60.1 L1090.0,60.3 L1095.0,60.6 L1100.0,61.0 L1105.0,61.6 L1110.0,62.3 L1115.0,63.1 L1120.0,64.0 L1125.0,65.1 L1130.0,66.2 L1135.0,67.4 L1140.0,68.8 L1145.0,70.2 L1150.0,71.7 L1155.0,73.3 L1160.0,75.0 L1165.0,76.7 L1170.0,78.5 L1175.0,80.4 L1180.0,82.2 L1185.0,84.1 L1190.0,86.1 L1195.0,88.0 L1200.0,90.0" class="w pc"/>
+</svg>
+  <div class="hero-legend"><span class="a">Tensão no primário</span><span class="c">Tensão no secundário</span></div>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>No Anexo IV do Edital nº 03, a <b>Ênfase 8 — Manutenção – Elétrica</b> não usa a expressão “magnetismo” isolada. O tema aparece dentro do bloco 5 (Máquinas Elétricas), nos itens conferidos no texto oficial:</p>
+  <ul>
+    <li><b>5.1</b> Noções básicas de Eletromagnetismo aplicado;</li>
+    <li><b>5.3</b> Transformadores.</li>
+  </ul>
+  <p>O Bloco 1 também toca o item <b>7.2</b> (grandezas elétricas, magnéticas e Sistema Internacional de Unidades), porque não dá para estudar eletromagnetismo sem as unidades magnéticas. Os fundamentos de ímãs e campo magnético entram como base do item 5.1. Máquinas síncronas, de corrente contínua e motores de indução (itens 5.4 e 5.5) usam estes mesmos princípios, mas <b>não</b> estão cobertos aqui.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (Manutenção – Elétrica), pelo menos 4 das 40 questões específicas foram deste tema:</p>
+    <ul>
+      <li>força sobre um condutor retilíneo num campo magnético, pedindo o módulo e o sentido;</li>
+      <li>qual perda a laminação do núcleo de um transformador reduz;</li>
+      <li>interpretação do índice horário de placa (ligação Dy5), no contexto de paralelismo de transformadores;</li>
+      <li>a função de um transformador de corrente (TC) numa subestação.</li>
+    </ul>
+    <p>É um <b>padrão observado</b>, não garantia de repetição. Mas mostra o estilo: fórmula direta com regra de sentido, conceitos de construção e perdas, e aplicação prática em subestação.</p>
+  </div>
+</section>
+
+<!-- ============ BLOCO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Magnetismo e grandezas magnéticas</h2></div>
+  <p class="edital-ref">Edital, itens 5.1 e 7.2</p>
+
+  <h3>Ímãs e linhas de campo</h3>
+  <p>Todo ímã tem dois <b>polos</b>, norte (N) e sul (S). Polos de mesmo nome se repelem; polos de nomes diferentes se atraem. Os polos são <b>inseparáveis</b>: partir um ímã ao meio não isola um polo, cria dois ímãs completos, cada um com seu norte e seu sul.</p>
+  <p>O <b>campo magnético</b> é representado por <b>linhas de campo</b> (ou de indução), com quatro propriedades que a banca gosta de testar:</p>
+  <ul>
+    <li>fora do ímã, saem do polo norte e entram no polo sul; dentro dele, vão do sul para o norte, formando <b>curvas fechadas</b>;</li>
+    <li>nunca se cruzam;</li>
+    <li>onde estão mais concentradas, o campo é mais intenso (nos polos);</li>
+    <li>a direção do campo num ponto é a da tangente à linha naquele ponto (é para onde aponta o norte de uma bússola).</li>
+  </ul>
+  <figure><svg viewBox="0 0 560 300" role="img" aria-label="Ímã em barra e suas linhas de campo">
+<path d="M180 142 C 120 72, 440 72, 380 142" class="fl"/><path d="M180 158 C 120 228, 440 228, 380 158" class="fl"/><polygon points="286,89.5 276,84.5 276,94.5" class="f-ink"/><polygon points="286,210.5 276,205.5 276,215.5" class="f-ink"/><path d="M180 138 C 100 18, 460 18, 380 138" class="fl"/><path d="M180 162 C 100 282, 460 282, 380 162" class="fl"/><polygon points="286,48.0 276,43.0 276,53.0" class="f-ink"/><polygon points="286,252.0 276,247.0 276,257.0" class="f-ink"/><path d="M180 134 C 80 -31, 480 -31, 380 134" class="fl"/><path d="M180 166 C 80 331, 480 331, 380 166" class="fl"/><polygon points="286,10.2 276,5.2 276,15.2" class="f-ink"/><polygon points="286,289.8 276,284.8 276,294.8" class="f-ink"/>
+<line x1="180" y1="150" x2="40" y2="150" class="fl" marker-end="url(#ah-ink)"/>
+<line x1="520" y1="150" x2="383" y2="150" class="fl" marker-end="url(#ah-ink)"/>
+<rect x="180" y="130" width="100" height="40" class="f-pa"/><rect x="280" y="130" width="100" height="40" class="f-pc"/>
+<text x="230" y="157" class="tl tinv" text-anchor="middle">N</text><text x="330" y="157" class="tl tinv" text-anchor="middle">S</text>
+<text x="44" y="140" class="tm">sai do norte</text><text x="516" y="140" class="tm" text-anchor="end">entra no sul</text>
+</svg><figcaption>Figura 1. Ímã em barra. Fora do ímã, as linhas de campo vão do norte para o sul; dentro, do sul para o norte, sempre fechando o circuito.</figcaption></figure>
+
+  <h3>As grandezas magnéticas</h3>
+  <div class="eq">
+    <p class="eq-name">Fluxo magnético e densidade de fluxo</p>
+    <div class="eq-main"><var>Φ</var> = <var>B</var> · <var>A</var> · cos<var>α</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>B</var> = <span class="frac"><span><var>Φ</var></span><span><var>A</var></span></span> (campo perpendicular à área)</div>
+    <dl>
+      <dt><var>Φ</var></dt><dd>fluxo magnético: “quantidade” de linhas que atravessa uma superfície, em weber (Wb)</dd>
+      <dt><var>B</var></dt><dd>densidade de fluxo magnético (ou indução magnética), em tesla (T); 1 T = 1 Wb/m² = 10⁴ gauss</dd>
+      <dt><var>A</var></dt><dd>área atravessada, em m² (atenção: 1 cm² = 10⁻⁴ m²)</dd>
+      <dt><var>α</var></dt><dd>ângulo entre B e a reta perpendicular (normal) à superfície</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Intensidade de campo e permeabilidade</p>
+    <div class="eq-main"><var>B</var> = <var>μ</var> · <var>H</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>μ</var> = <var>μ</var><sub>r</sub> · <var>μ</var><sub>0</sub> &nbsp;&nbsp;&nbsp;&nbsp; <var>μ</var><sub>0</sub> = 4π × 10⁻⁷ T·m/A</div>
+    <dl>
+      <dt><var>H</var></dt><dd>intensidade de campo magnético (força magnetizante), em ampère por metro (A/m); depende só da corrente e da geometria</dd>
+      <dt><var>μ</var></dt><dd>permeabilidade do meio, em henry por metro (H/m) ou T·m/A: a “facilidade” com que o material se deixa magnetizar</dd>
+      <dt><var>μ</var><sub>0</sub></dt><dd>permeabilidade do vácuo (e, na prática, do ar)</dd>
+      <dt><var>μ</var><sub>r</sub></dt><dd>permeabilidade relativa (adimensional): quantas vezes o material conduz o fluxo melhor que o ar</dd>
+    </dl>
+  </div>
+
+  <h3>Classificação magnética dos materiais</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo</th><th>μ<sub>r</sub></th><th>Comportamento</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td>Ferromagnético</td><td>muito maior que 1 (centenas a milhares)</td><td>fortemente atraído; concentra o fluxo; satura</td><td>ferro, aço-silício, níquel, cobalto</td></tr>
+      <tr><td>Paramagnético</td><td>ligeiramente maior que 1</td><td>atração muito fraca</td><td>alumínio, platina</td></tr>
+      <tr><td>Diamagnético</td><td>ligeiramente menor que 1</td><td>repulsão muito fraca</td><td>cobre, bismuto, prata</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os ferromagnéticos perdem essa propriedade acima de uma temperatura característica, a <b>temperatura de Curie</b>. Por serem de alta permeabilidade, são o material dos <b>núcleos</b> de transformadores, motores e relés.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Um fluxo de 1,2 mWb atravessa perpendicularmente a seção de um núcleo de 8 cm × 5 cm. Qual a densidade de fluxo?</p>
+    <ol class="steps">
+      <li>Área: 8 × 5 = 40 cm² = 40 × 10⁻⁴ = 0,004 m².</li>
+      <li>B = Φ/A = 0,0012 / 0,004 = <b>0,3 T</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>A conversão de área: 1 cm² = 10⁻⁴ m² (e não 10⁻²). Esquecer isso multiplica ou divide B por 100, e a banca costuma pôr esse valor entre as alternativas.</p>
+  </div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ BLOCO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Campo magnético criado por corrente e circuitos magnéticos</h2></div>
+  <p class="edital-ref">Edital, item 5.1</p>
+
+  <h3>A experiência de Oersted e a regra da mão direita</h3>
+  <p>Em 1820, Oersted observou que um fio percorrido por corrente desviava uma bússola: <b>toda corrente elétrica cria um campo magnético</b> ao seu redor. Esse é o ponto de partida do eletromagnetismo.</p>
+  <p>O sentido das linhas é dado pela <b>regra da mão direita</b> (regra do saca-rolhas): com o polegar apontando no sentido da corrente convencional, os outros dedos curvados indicam o sentido das linhas de campo, que são circunferências concêntricas ao fio.</p>
+  <figure><svg viewBox="0 0 560 260" role="img" aria-label="Campo magnético em torno de condutores vistos em corte">
+<circle cx="140" cy="115" r="40" class="fl"/><polygon points="134,75 145,70 145,80" class="f-ink"/><polygon points="146,155 135,150 135,160" class="f-ink"/><circle cx="140" cy="115" r="68" class="fl"/><polygon points="134,47 145,42 145,52" class="f-ink"/><polygon points="146,183 135,178 135,188" class="f-ink"/><circle cx="140" cy="115" r="94" class="fl"/><polygon points="134,21 145,16 145,26" class="f-ink"/><polygon points="146,209 135,204 135,214" class="f-ink"/><circle cx="420" cy="115" r="40" class="fl"/><polygon points="426,75 415,70 415,80" class="f-ink"/><polygon points="414,155 425,150 425,160" class="f-ink"/><circle cx="420" cy="115" r="68" class="fl"/><polygon points="426,47 415,42 415,52" class="f-ink"/><polygon points="414,183 425,178 425,188" class="f-ink"/><circle cx="420" cy="115" r="94" class="fl"/><polygon points="426,21 415,16 415,26" class="f-ink"/><polygon points="414,209 425,204 425,214" class="f-ink"/>
+<circle cx="140" cy="115" r="15" class="cond"/><circle cx="140" cy="115" r="4" class="f-pa"/>
+<circle cx="420" cy="115" r="15" class="cond"/><path d="M411 106 L429 124 M429 106 L411 124" class="xmark"/>
+<text x="140" y="238" class="ts" text-anchor="middle">corrente saindo do plano (⊙)</text>
+<text x="140" y="254" class="tm" text-anchor="middle">linhas no sentido anti-horário</text>
+<text x="420" y="238" class="ts" text-anchor="middle">corrente entrando no plano (⊗)</text>
+<text x="420" y="254" class="tm" text-anchor="middle">linhas no sentido horário</text>
+</svg><figcaption>Figura 2. Condutores vistos em corte. O ponto (⊙) indica corrente saindo do plano; o xis (⊗), corrente entrando. Pela regra da mão direita, as linhas giram no sentido anti-horário e horário, respectivamente.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Campo de um condutor retilíneo longo</p>
+    <div class="eq-main"><var>B</var> = <span class="frac"><span><var>μ</var><sub>0</sub> · <var>I</var></span><span>2π · <var>r</var></span></span></div>
+    <dl>
+      <dt><var>B</var></dt><dd>densidade de fluxo a uma distância r do fio (T)</dd>
+      <dt><var>I</var></dt><dd>corrente no condutor (A)</dd>
+      <dt><var>r</var></dt><dd>distância do centro do fio ao ponto (m)</dd>
+    </dl>
+  </div>
+  <p>Truque de conta: μ<sub>0</sub>/(2π) = 2 × 10⁻⁷, então B = 2 × 10⁻⁷ · I / r.</p>
+
+  <h3>Espira e solenoide</h3>
+  <p>Enrolando o fio, os campos de cada trecho se somam. Um <b>solenoide</b> (bobina longa) se comporta como um ímã em barra: dentro dele o campo é intenso e praticamente uniforme. Para achar o norte, use de novo a mão direita: com os dedos curvados no sentido da corrente nas espiras, o polegar aponta o polo norte.</p>
+  <div class="eq">
+    <p class="eq-name">Campo no centro de uma espira circular e no interior de um solenoide longo</p>
+    <div class="eq-main"><var>B</var><sub>espira</sub> = <span class="frac"><span><var>μ</var><sub>0</sub> · <var>I</var></span><span>2 · <var>R</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>B</var><sub>solenoide</sub> = <span class="frac"><span><var>μ</var> · <var>N</var> · <var>I</var></span><span><var>l</var></span></span></div>
+    <dl>
+      <dt><var>R</var></dt><dd>raio da espira (m)</dd>
+      <dt><var>N</var></dt><dd>número de espiras do solenoide</dd>
+      <dt><var>l</var></dt><dd>comprimento do solenoide (m)</dd>
+      <dt><var>μ</var></dt><dd>permeabilidade do núcleo: μ<sub>0</sub> se for de ar, μ<sub>r</sub>·μ<sub>0</sub> se for de material ferromagnético</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 600 265" role="img" aria-label="Solenoide e suas linhas de campo">
+<path d="M455 112 C 575 112, 575 28, 300 28 C 25 28, 25 112, 145 112" class="fl"/>
+<path d="M455 148 C 575 148, 575 232, 300 232 C 25 232, 25 148, 145 148" class="fl"/>
+<polygon points="294,28 304,23 304,33" class="f-ink"/><polygon points="294,232 304,227 304,237" class="f-ink"/>
+<ellipse cx="190" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="218" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="246" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="274" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="302" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="330" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="358" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="386" cy="130" rx="9" ry="46" class="coil"/><ellipse cx="414" cy="130" rx="9" ry="46" class="coil"/>
+<line x1="150" y1="112" x2="455" y2="112" class="fl" marker-end="url(#ah-ink)"/>
+<line x1="150" y1="130" x2="455" y2="130" class="fl" marker-end="url(#ah-ink)"/>
+<line x1="150" y1="148" x2="455" y2="148" class="fl" marker-end="url(#ah-ink)"/>
+<text x="478" y="137" class="tl fa">N</text><text x="112" y="137" class="tl fc">S</text>
+<text x="300" y="258" class="tm" text-anchor="middle">dentro da bobina o campo é intenso e quase uniforme</text>
+</svg><figcaption>Figura 3. Solenoide. O campo interno é quase uniforme e as linhas se fecham por fora, como num ímã em barra. Colocar um núcleo de ferro multiplica B por μ<sub>r</sub>: é assim que se faz um eletroímã (bobinas de contatores, relés, freios eletromagnéticos).</figcaption></figure>
+
+  <h3>Circuito magnético: a “lei de Ohm” do fluxo</h3>
+  <p>Num núcleo ferromagnético fechado, o fluxo fica confinado no núcleo, como a corrente fica confinada num fio. Daí a analogia com o circuito elétrico:</p>
+  <div class="eq">
+    <p class="eq-name">Força magnetomotriz, relutância e fluxo</p>
+    <div class="eq-main">ℱ = <var>N</var> · <var>I</var> &nbsp;&nbsp;&nbsp;&nbsp; ℛ = <span class="frac"><span><var>l</var></span><span><var>μ</var> · <var>A</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>Φ</var> = <span class="frac"><span>ℱ</span><span>ℛ</span></span></div>
+    <dl>
+      <dt>ℱ</dt><dd>força magnetomotriz (fmm), em ampère-espira (A·e), que “empurra” o fluxo; faz o papel da tensão</dd>
+      <dt>ℛ</dt><dd>relutância: oposição ao fluxo, em A·e/Wb; faz o papel da resistência</dd>
+      <dt><var>l</var></dt><dd>comprimento médio do caminho magnético (m)</dd>
+      <dt><var>A</var></dt><dd>área da seção do núcleo (m²)</dd>
+      <dt><var>Φ</var></dt><dd>fluxo (Wb); faz o papel da corrente</dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 560 290" role="img" aria-label="Circuito magnético com núcleo, bobina e fluxo">
+<path d="M150 30 H450 V250 H150 Z M220 90 V190 H380 V90 Z" class="core" fill-rule="evenodd"/>
+<line x1="138" y1="96" x2="232" y2="103" class="wind pa-s"/><line x1="138" y1="107" x2="232" y2="114" class="wind pa-s"/><line x1="138" y1="118" x2="232" y2="125" class="wind pa-s"/><line x1="138" y1="129" x2="232" y2="136" class="wind pa-s"/><line x1="138" y1="140" x2="232" y2="147" class="wind pa-s"/><line x1="138" y1="151" x2="232" y2="158" class="wind pa-s"/><line x1="138" y1="162" x2="232" y2="169" class="wind pa-s"/><line x1="138" y1="173" x2="232" y2="180" class="wind pa-s"/><line x1="138" y1="184" x2="232" y2="191" class="wind pa-s"/>
+<path d="M138 100 H80 M138 185 H80" class="wire"/>
+<line x1="84" y1="100" x2="122" y2="100" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="92" y="92" class="ts fc">I</text>
+<text x="70" y="148" class="ts" text-anchor="middle">N</text><text x="70" y="164" class="tm" text-anchor="middle">espiras</text>
+<rect x="185" y="60" width="230" height="160" class="dash" style="stroke:var(--ink)"/>
+<line x1="280" y1="60" x2="322" y2="60" class="ar ink" marker-end="url(#ah-ink)"/>
+<line x1="415" y1="120" x2="415" y2="162" class="ar ink" marker-end="url(#ah-ink)"/>
+<text x="300" y="52" class="tl">Φ</text>
+<line x1="450" y1="140" x2="480" y2="140" class="guide"/><text x="486" y="145" class="ts">seção A</text>
+<text x="300" y="276" class="tm" text-anchor="middle">tracejado: caminho médio do fluxo, de comprimento l</text>
+</svg><figcaption>Figura 4. Circuito magnético: a bobina de N espiras percorrida por I produz a fmm N·I, e o fluxo Φ circula pelo núcleo.</figcaption></figure>
+  <div class="tw"><table>
+    <thead><tr><th>Circuito elétrico</th><th>Circuito magnético</th></tr></thead>
+    <tbody>
+      <tr><td>Tensão V (V)</td><td>Força magnetomotriz ℱ = N·I (A·e)</td></tr>
+      <tr><td>Corrente I (A)</td><td>Fluxo Φ (Wb)</td></tr>
+      <tr><td>Resistência R = ρl/A (Ω)</td><td>Relutância ℛ = l/(μA) (A·e/Wb)</td></tr>
+      <tr><td>Condutividade</td><td>Permeabilidade μ</td></tr>
+    </tbody>
+  </table></div>
+  <p>Um <b>entreferro</b> (trecho de ar no caminho do fluxo, como a folga entre estator e rotor de um motor) tem relutância enorme, porque μ<sub>r</sub> do ar é 1. Por isso um núcleo mal fechado ou um motor com entreferro irregular exige muito mais corrente de magnetização.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Um fio conduz 30 A. Qual a densidade de fluxo a 10 cm dele?</p>
+    <ol class="steps">
+      <li>r = 0,1 m.</li>
+      <li>B = 2 × 10⁻⁷ × 30 / 0,1 = <b>6 × 10⁻⁵ T</b> (60 µT, próximo do campo magnético da Terra).</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ BLOCO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Força magnética sobre condutores</h2></div>
+  <p class="edital-ref">Edital, item 5.1: o princípio do motor elétrico</p>
+  <p>Se um condutor percorrido por corrente está dentro de um campo magnético, o campo do condutor interage com o campo externo e surge uma <b>força</b> sobre o condutor. É o princípio de funcionamento de todo motor elétrico e de instrumentos de bobina móvel.</p>
+  <div class="eq">
+    <p class="eq-name">Força sobre um condutor retilíneo (força de Lorentz no condutor)</p>
+    <div class="eq-main"><var>F</var> = <var>B</var> · <var>I</var> · <var>L</var> · sen<var>θ</var></div>
+    <dl>
+      <dt><var>F</var></dt><dd>força sobre o condutor, em newtons (N)</dd>
+      <dt><var>B</var></dt><dd>densidade de fluxo do campo externo (T)</dd>
+      <dt><var>I</var></dt><dd>corrente no condutor (A)</dd>
+      <dt><var>L</var></dt><dd>comprimento do condutor imerso no campo (m)</dd>
+      <dt><var>θ</var></dt><dd>ângulo entre o condutor (sentido da corrente) e o campo; força máxima a 90°, nula se o condutor é paralelo ao campo</dd>
+    </dl>
+  </div>
+
+  <h3>O sentido da força</h3>
+  <p>A força é sempre <b>perpendicular</b> ao condutor e ao campo ao mesmo tempo. Duas formas equivalentes de achar o sentido:</p>
+  <ul>
+    <li><b>Regra da mão esquerda de Fleming</b> (motores): polegar, indicador e médio perpendiculares entre si. O <b>indicador</b> aponta o campo B, o <b>médio</b> aponta a corrente I e o <b>polegar</b> dá a força F (o movimento).</li>
+    <li><b>Produto vetorial</b>: <b>F</b> = I · <b>L</b> × <b>B</b>. Nos eixos: x̂ × ŷ = ẑ, ŷ × ẑ = x̂, ẑ × x̂ = ŷ; inverter a ordem troca o sinal.</li>
+  </ul>
+  <figure><svg viewBox="0 0 560 280" role="img" aria-label="Força sobre um condutor percorrido por corrente em campo magnético">
+<path d="M55 35 L65 45 M65 35 L55 45" class="xm2"/><path d="M55 85 L65 95 M65 85 L55 95" class="xm2"/><path d="M55 185 L65 195 M65 185 L55 195" class="xm2"/><path d="M55 235 L65 245 M65 235 L55 245" class="xm2"/><path d="M105 35 L115 45 M115 35 L105 45" class="xm2"/><path d="M105 85 L115 95 M115 85 L105 95" class="xm2"/><path d="M105 185 L115 195 M115 185 L105 195" class="xm2"/><path d="M105 235 L115 245 M115 235 L105 245" class="xm2"/><path d="M155 35 L165 45 M165 35 L155 45" class="xm2"/><path d="M155 85 L165 95 M165 85 L155 95" class="xm2"/><path d="M155 185 L165 195 M165 185 L155 195" class="xm2"/><path d="M155 235 L165 245 M165 235 L155 245" class="xm2"/><path d="M205 35 L215 45 M215 35 L205 45" class="xm2"/><path d="M205 85 L215 95 M215 85 L205 95" class="xm2"/><path d="M205 185 L215 195 M215 185 L205 195" class="xm2"/><path d="M205 235 L215 245 M215 235 L205 245" class="xm2"/><path d="M255 35 L265 45 M265 35 L255 45" class="xm2"/><path d="M255 85 L265 95 M265 85 L255 95" class="xm2"/><path d="M255 185 L265 195 M265 185 L255 195" class="xm2"/><path d="M255 235 L265 245 M265 235 L255 245" class="xm2"/><path d="M305 35 L315 45 M315 35 L305 45" class="xm2"/><path d="M305 85 L315 95 M315 85 L305 95" class="xm2"/><path d="M305 185 L315 195 M315 185 L305 195" class="xm2"/><path d="M305 235 L315 245 M315 235 L305 245" class="xm2"/><path d="M355 35 L365 45 M365 35 L355 45" class="xm2"/><path d="M355 85 L365 95 M365 85 L355 95" class="xm2"/><path d="M355 185 L365 195 M365 185 L355 195" class="xm2"/><path d="M355 235 L365 245 M365 235 L355 245" class="xm2"/><path d="M405 35 L415 45 M415 35 L405 45" class="xm2"/><path d="M405 85 L415 95 M415 85 L405 95" class="xm2"/><path d="M405 185 L415 195 M415 185 L405 195" class="xm2"/><path d="M405 235 L415 245 M415 235 L405 245" class="xm2"/><path d="M455 35 L465 45 M465 35 L455 45" class="xm2"/><path d="M455 85 L465 95 M465 85 L455 95" class="xm2"/><path d="M455 185 L465 195 M465 185 L455 195" class="xm2"/><path d="M455 235 L465 245 M465 235 L455 245" class="xm2"/><path d="M505 35 L515 45 M515 35 L505 45" class="xm2"/><path d="M505 85 L515 95 M515 85 L505 95" class="xm2"/><path d="M505 185 L515 195 M515 185 L505 195" class="xm2"/><path d="M505 235 L515 245 M515 235 L505 245" class="xm2"/>
+<line x1="40" y1="150" x2="520" y2="150" class="wire" style="stroke-width:5"/>
+<line x1="380" y1="170" x2="460" y2="170" class="ar pc thick" marker-end="url(#ah-pc)"/>
+<text x="420" y="192" class="tl fc" text-anchor="middle">I</text>
+<line x1="270" y1="150" x2="270" y2="62" class="ar pa thick" marker-end="url(#ah-pa)"/>
+<text x="282" y="92" class="tl fa">F</text>
+<text x="40" y="272" class="tm">× = campo B entrando no plano</text>
+<text x="520" y="272" class="tm" text-anchor="end">F = I·L × B → para cima</text>
+</svg><figcaption>Figura 5. Condutor com corrente para a direita num campo que entra no plano: a força aponta para cima. Invertendo a corrente <i>ou</i> o campo, a força se inverte; invertendo os dois, ela se mantém.</figcaption></figure>
+
+  <h3>Força entre condutores paralelos</h3>
+  <p>Cada condutor está no campo do outro. Correntes no <b>mesmo sentido se atraem</b>; em <b>sentidos opostos se repelem</b>. Em condições normais essas forças são pequenas, mas num <b>curto-circuito</b>, com correntes de milhares de ampères, elas podem deformar barramentos e arrancar isoladores. Por isso barramentos e seus suportes são dimensionados também para os esforços eletrodinâmicos de curto.</p>
+  <div class="eq">
+    <p class="eq-name">Força por unidade de comprimento entre dois condutores paralelos</p>
+    <div class="eq-main"><span class="frac"><span><var>F</var></span><span><var>L</var></span></span> = <span class="frac"><span><var>μ</var><sub>0</sub> · <var>I</var><sub>1</sub> · <var>I</var><sub>2</sub></span><span>2π · <var>d</var></span></span> = 2 × 10⁻⁷ · <span class="frac"><span><var>I</var><sub>1</sub> · <var>I</var><sub>2</sub></span><span><var>d</var></span></span></div>
+    <dl>
+      <dt><var>F</var>/<var>L</var></dt><dd>força por metro de condutor (N/m)</dd>
+      <dt><var>I</var><sub>1</sub>, <var>I</var><sub>2</sub></dt><dd>correntes nos dois condutores (A)</dd>
+      <dt><var>d</var></dt><dd>distância entre os eixos dos condutores (m)</dd>
+    </dl>
+  </div>
+  <p><b>Do condutor à máquina.</b> Numa espira dentro de um campo, os dois lados percorridos por correntes opostas sofrem forças opostas, o que produz um <b>conjugado</b> (torque) que a faz girar. Esse é o princípio de funcionamento dos motores, detalhado nos itens 5.4 e 5.5.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Um condutor de 30 cm, percorrido por 20 A, está num campo de 0,5 T, formando 30° com as linhas de campo. Qual a força?</p>
+    <ol class="steps">
+      <li>F = B · I · L · senθ = 0,5 × 20 × 0,3 × sen30°.</li>
+      <li>F = 3 × 0,5 = <b>1,5 N</b>. Se o condutor fosse perpendicular ao campo, seriam 3 N; se fosse paralelo, zero.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ BLOCO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Indução eletromagnética, indutância e perdas no núcleo</h2></div>
+  <p class="edital-ref">Edital, item 5.1: o princípio do gerador e do transformador</p>
+
+  <h3>Lei de Faraday</h3>
+  <p>Faraday descobriu o caminho inverso ao de Oersted: <b>um fluxo magnético que varia no tempo induz uma força eletromotriz (fem)</b> numa bobina que ele atravessa. O que importa é a <b>variação</b>: fluxo constante, por maior que seja, não induz nada.</p>
+  <div class="eq">
+    <p class="eq-name">Lei de Faraday-Lenz</p>
+    <div class="eq-main"><var>e</var> = −<var>N</var> · <span class="frac"><span>Δ<var>Φ</var></span><span>Δ<var>t</var></span></span></div>
+    <dl>
+      <dt><var>e</var></dt><dd>força eletromotriz induzida (V)</dd>
+      <dt><var>N</var></dt><dd>número de espiras da bobina</dd>
+      <dt>Δ<var>Φ</var></dt><dd>variação do fluxo que atravessa cada espira (Wb)</dd>
+      <dt>Δ<var>t</var></dt><dd>intervalo de tempo em que a variação ocorre (s)</dd>
+      <dt>sinal −</dt><dd>lei de Lenz: a fem induzida se opõe à variação que a produziu</dd>
+    </dl>
+  </div>
+  <p><b>Lei de Lenz.</b> A corrente induzida cria um campo que <b>se opõe à variação do fluxo</b>. Se um ímã se aproxima de uma espira pelo polo norte, a espira forma um norte voltado para ele (repulsão); se o ímã se afasta, forma um sul (atração). A natureza “reage” à mudança; se fosse o contrário, haveria energia de graça.</p>
+
+  <h3>Fem de movimento: o princípio do gerador</h3>
+  <div class="eq">
+    <p class="eq-name">Fem induzida num condutor que corta linhas de campo</p>
+    <div class="eq-main"><var>e</var> = <var>B</var> · <var>L</var> · <var>v</var> · sen<var>θ</var></div>
+    <dl>
+      <dt><var>L</var></dt><dd>comprimento ativo do condutor dentro do campo (m)</dd>
+      <dt><var>v</var></dt><dd>velocidade do condutor (m/s)</dd>
+      <dt><var>θ</var></dt><dd>ângulo entre a velocidade e o campo</dd>
+    </dl>
+  </div>
+  <p>O sentido da corrente induzida é dado pela <b>regra da mão direita de Fleming</b> (geradores): polegar no movimento, indicador no campo, médio na corrente induzida. Um jeito de não confundir: <b>mão esquerda = motor, mão direita = gerador</b>.</p>
+
+  <h3>Autoindutância e indutância mútua</h3>
+  <p>Uma bobina é atravessada pelo próprio fluxo. Se a corrente dela varia, o fluxo varia e ela induz uma fem em si mesma: é a <b>autoindução</b>, medida pela indutância L.</p>
+  <div class="eq">
+    <p class="eq-name">Indutância e fem de autoindução</p>
+    <div class="eq-main"><var>L</var> = <span class="frac"><span><var>N</var> · <var>Φ</var></span><span><var>I</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>e</var> = −<var>L</var> · <span class="frac"><span>Δ<var>i</var></span><span>Δ<var>t</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>W</var> = ½ · <var>L</var> · <var>I</var>²</div>
+    <dl>
+      <dt><var>L</var></dt><dd>indutância, em henry (H)</dd>
+      <dt>Δ<var>i</var>/Δ<var>t</var></dt><dd>taxa de variação da corrente (A/s)</dd>
+      <dt><var>W</var></dt><dd>energia armazenada no campo magnético da bobina, em joules (J)</dd>
+    </dl>
+  </div>
+  <p>Consequência prática: ao <b>desligar bruscamente</b> um circuito indutivo (bobina de contator, relé, solenoide de válvula), a corrente cai quase a zero num instante e surge uma sobretensão alta, que provoca arco nos contatos e pode queimar a saída de um CLP. Por isso se usam diodos de roda livre em bobinas CC e supressores RC ou varistores em bobinas CA.</p>
+  <p>Quando o fluxo de uma bobina atravessa <b>outra</b> bobina, a variação de corrente na primeira induz fem na segunda: é a <b>indutância mútua</b> (M), o princípio do transformador (Bloco 5).</p>
+
+  <h3>Histerese</h3>
+  <p>Num material ferromagnético, B não acompanha H de forma reversível. Ao magnetizar e desmagnetizar ciclicamente, a curva B × H forma um <b>laço de histerese</b>:</p>
+  <ul>
+    <li><b>Saturação</b>: a partir de certo ponto, aumentar H quase não aumenta B;</li>
+    <li><b>Remanência (B<sub>r</sub>)</b>: o magnetismo que sobra quando H volta a zero;</li>
+    <li><b>Coercitividade (H<sub>c</sub>)</b>: o H em sentido contrário necessário para zerar B.</li>
+  </ul>
+  <figure><svg viewBox="0 0 520 330" role="img" aria-label="Laço de histerese B por H">
+<line x1="40" y1="165" x2="495" y2="165" class="ax" marker-end="url(#ah-mut)"/>
+<line x1="260" y1="310" x2="260" y2="20" class="ax" marker-end="url(#ah-mut)"/>
+<text x="498" y="170" class="ts">H</text><text x="268" y="26" class="ts">B</text>
+<path d="M260.0,165.0 L262.0,161.9 L264.0,158.7 L266.0,155.6 L268.0,152.5 L270.0,149.4 L272.0,146.3 L274.0,143.3 L276.0,140.3 L278.0,137.3 L280.0,134.4 L282.0,131.5 L284.0,128.7 L286.0,125.9 L288.0,123.2 L290.0,120.5 L292.0,117.9 L294.0,115.4 L296.0,112.9 L298.0,110.5 L300.0,108.2 L302.0,105.9 L304.0,103.7 L306.0,101.6 L308.0,99.5 L310.0,97.5 L312.0,95.6 L314.0,93.7 L316.0,92.0 L318.0,90.2 L320.0,88.6 L322.0,87.0 L324.0,85.4 L326.0,84.0 L328.0,82.6 L330.0,81.2 L332.0,79.9 L334.0,78.7 L336.0,77.5 L338.0,76.4 L340.0,75.3 L342.0,74.3 L344.0,73.3 L346.0,72.4 L348.0,71.5 L350.0,70.6 L352.0,69.8 L354.0,69.0 L356.0,68.3 L358.0,67.6 L360.0,66.9 L362.0,66.3 L364.0,65.7 L366.0,65.2 L368.0,64.6 L370.0,64.1 L372.0,63.6 L374.0,63.2 L376.0,62.7 L378.0,62.3 L380.0,61.9 L382.0,61.5 L384.0,61.2 L386.0,60.9 L388.0,60.5 L390.0,60.2 L392.0,60.0 L394.0,59.7 L396.0,59.4 L398.0,59.2 L400.0,59.0 L402.0,58.7 L404.0,58.5 L406.0,58.3 L408.0,58.2 L410.0,58.0 L412.0,57.8 L414.0,57.7 L416.0,57.5 L418.0,57.4 L420.0,57.3 L422.0,57.1 L424.0,57.0 L426.0,56.9 L428.0,56.8 L430.0,56.7 L432.0,56.6 L434.0,56.5 L436.0,56.4 L438.0,56.4 L440.0,56.3 L442.0,56.2 L444.0,56.1 L446.0,56.1 L448.0,56.0 L450.0,56.0 L452.0,55.9 L454.0,55.9 L456.0,55.8 L458.0,55.8 L460.0,55.7" class="dash mut"/>
+<path d="M60.0,274.6 L63.3,274.5 L66.7,274.4 L70.0,274.3 L73.3,274.2 L76.7,274.1 L80.0,274.0 L83.3,273.9 L86.7,273.7 L90.0,273.5 L93.3,273.3 L96.7,273.1 L100.0,272.8 L103.3,272.5 L106.7,272.2 L110.0,271.7 L113.3,271.3 L116.7,270.8 L120.0,270.2 L123.3,269.5 L126.7,268.8 L130.0,267.9 L133.3,266.9 L136.7,265.8 L140.0,264.6 L143.3,263.2 L146.7,261.6 L150.0,259.8 L153.3,257.8 L156.7,255.6 L160.0,253.1 L163.3,250.3 L166.7,247.2 L170.0,243.8 L173.3,240.0 L176.7,235.9 L180.0,231.5 L183.3,226.6 L186.7,221.4 L190.0,215.8 L193.3,209.9 L196.7,203.6 L200.0,197.0 L203.3,190.2 L206.7,183.2 L210.0,176.0 L213.3,168.7 L216.7,161.3 L220.0,154.0 L223.3,146.8 L226.7,139.8 L230.0,133.0 L233.3,126.4 L236.7,120.1 L240.0,114.2 L243.3,108.6 L246.7,103.4 L250.0,98.5 L253.3,94.1 L256.7,90.0 L260.0,86.2 L263.3,82.8 L266.7,79.7 L270.0,76.9 L273.3,74.4 L276.7,72.2 L280.0,70.2 L283.3,68.4 L286.7,66.8 L290.0,65.4 L293.3,64.2 L296.7,63.1 L300.0,62.1 L303.3,61.2 L306.7,60.5 L310.0,59.8 L313.3,59.2 L316.7,58.7 L320.0,58.3 L323.3,57.8 L326.7,57.5 L330.0,57.2 L333.3,56.9 L336.7,56.7 L340.0,56.5 L343.3,56.3 L346.7,56.1 L350.0,56.0 L353.3,55.9 L356.7,55.8 L360.0,55.7 L363.3,55.6 L366.7,55.5 L370.0,55.4 L373.3,55.4 L376.7,55.3 L380.0,55.3 L383.3,55.3 L386.7,55.2 L390.0,55.2 L393.3,55.2 L396.7,55.2 L400.0,55.1 L403.3,55.1 L406.7,55.1 L410.0,55.1 L413.3,55.1 L416.7,55.1 L420.0,55.1 L423.3,55.1 L426.7,55.0 L430.0,55.0 L433.3,55.0 L436.7,55.0 L440.0,55.0 L443.3,55.0 L446.7,55.0 L450.0,55.0 L453.3,55.0 L456.7,55.0 L460.0,55.0" class="w pa"/><path d="M60.0,275.0 L63.3,275.0 L66.7,275.0 L70.0,275.0 L73.3,275.0 L76.7,275.0 L80.0,275.0 L83.3,275.0 L86.7,275.0 L90.0,275.0 L93.3,275.0 L96.7,274.9 L100.0,274.9 L103.3,274.9 L106.7,274.9 L110.0,274.9 L113.3,274.9 L116.7,274.9 L120.0,274.9 L123.3,274.8 L126.7,274.8 L130.0,274.8 L133.3,274.8 L136.7,274.7 L140.0,274.7 L143.3,274.7 L146.7,274.6 L150.0,274.6 L153.3,274.5 L156.7,274.4 L160.0,274.3 L163.3,274.2 L166.7,274.1 L170.0,274.0 L173.3,273.9 L176.7,273.7 L180.0,273.5 L183.3,273.3 L186.7,273.1 L190.0,272.8 L193.3,272.5 L196.7,272.2 L200.0,271.7 L203.3,271.3 L206.7,270.8 L210.0,270.2 L213.3,269.5 L216.7,268.8 L220.0,267.9 L223.3,266.9 L226.7,265.8 L230.0,264.6 L233.3,263.2 L236.7,261.6 L240.0,259.8 L243.3,257.8 L246.7,255.6 L250.0,253.1 L253.3,250.3 L256.7,247.2 L260.0,243.8 L263.3,240.0 L266.7,235.9 L270.0,231.5 L273.3,226.6 L276.7,221.4 L280.0,215.8 L283.3,209.9 L286.7,203.6 L290.0,197.0 L293.3,190.2 L296.7,183.2 L300.0,176.0 L303.3,168.7 L306.7,161.3 L310.0,154.0 L313.3,146.8 L316.7,139.8 L320.0,133.0 L323.3,126.4 L326.7,120.1 L330.0,114.2 L333.3,108.6 L336.7,103.4 L340.0,98.5 L343.3,94.1 L346.7,90.0 L350.0,86.2 L353.3,82.8 L356.7,79.7 L360.0,76.9 L363.3,74.4 L366.7,72.2 L370.0,70.2 L373.3,68.4 L376.7,66.8 L380.0,65.4 L383.3,64.2 L386.7,63.1 L390.0,62.1 L393.3,61.2 L396.7,60.5 L400.0,59.8 L403.3,59.2 L406.7,58.7 L410.0,58.3 L413.3,57.8 L416.7,57.5 L420.0,57.2 L423.3,56.9 L426.7,56.7 L430.0,56.5 L433.3,56.3 L436.7,56.1 L440.0,56.0 L443.3,55.9 L446.7,55.8 L450.0,55.7 L453.3,55.6 L456.7,55.5 L460.0,55.4" class="w pc"/>
+<circle cx="260" cy="86.2" r="4" class="f-ink"/><circle cx="215" cy="165" r="4" class="f-ink"/>
+<line x1="257" y1="83.2" x2="200" y2="46" class="guide"/><text x="196" y="42" class="ts" text-anchor="end">B<tspan class="sub" dy="3">r</tspan><tspan dy="-3"> remanência</tspan></text>
+<text x="209" y="185" class="ts" text-anchor="end">−H<tspan class="sub" dy="3">c</tspan><tspan dy="-3"> coercitividade</tspan></text>
+<text x="470" y="47" class="tm" text-anchor="end">saturação</text>
+<text x="320" y="125" class="tm">curva inicial</text>
+<text x="260" y="325" class="tm" text-anchor="middle">a área interna do laço é proporcional à perda por histerese em cada ciclo</text>
+</svg><figcaption>Figura 6. Laço de histerese. Materiais “moles” (aço-silício), de laço estreito, servem para núcleos de máquinas e transformadores. Materiais “duros”, de laço largo e alta remanência, servem para ímãs permanentes.</figcaption></figure>
+
+  <h3>Perdas no núcleo: histerese e correntes parasitas</h3>
+  <p>Em CA, o núcleo é magnetizado e desmagnetizado 60 vezes por segundo, e isso gera duas perdas, que aquecem o núcleo:</p>
+  <ul>
+    <li><b>Perda por histerese</b>: energia gasta em cada ciclo para reorientar os domínios magnéticos (proporcional à área do laço e à frequência). Reduz-se usando <b>aço com silício</b>, de laço estreito, em especial o de grão orientado.</li>
+    <li><b>Perda por correntes parasitas (correntes de Foucault)</b>: o próprio fluxo variável induz correntes circulantes no ferro, que é condutor, aquecendo-o por efeito Joule. Reduz-se com o núcleo <b>laminado</b>, feito de chapas finas isoladas entre si, que cortam o caminho dessas correntes. O silício também ajuda, porque aumenta a resistividade do aço.</li>
+  </ul>
+  <p>Essas perdas praticamente não dependem da carga, só da tensão e da frequência aplicadas. Juntas, formam as <b>perdas no ferro</b>, que voltam a aparecer no Bloco 6.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Uma bobina de 500 espiras tem o fluxo reduzido uniformemente de 3 mWb para zero em 50 ms. Qual a fem média induzida?</p>
+    <ol class="steps">
+      <li>ΔΦ = 0,003 Wb; Δt = 0,05 s.</li>
+      <li>|e| = N·ΔΦ/Δt = 500 × 0,003 / 0,05 = <b>30 V</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Laminação combate <b>correntes parasitas</b>, não histerese. Silício no aço ajuda nas duas. Se a questão perguntar especificamente pela laminação, a resposta é correntes parasitas (Foucault).</p>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ BLOCO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>O transformador: princípio de funcionamento e transformador ideal</h2></div>
+  <p class="edital-ref">Edital, item 5.3</p>
+
+  <h3>Como funciona</h3>
+  <p>O transformador é uma <b>máquina elétrica estática</b>: não tem partes móveis. Duas (ou mais) bobinas, o <b>primário</b> (que recebe energia) e o <b>secundário</b> (que entrega energia à carga), estão enroladas no mesmo núcleo ferromagnético, mas <b>sem ligação elétrica</b> entre si. A energia passa de uma para a outra pelo <b>fluxo magnético mútuo</b>:</p>
+  <ol class="steps">
+    <li>a tensão alternada no primário faz circular uma corrente alternada;</li>
+    <li>essa corrente cria um fluxo alternado no núcleo;</li>
+    <li>o fluxo variável atravessa o secundário e, pela lei de Faraday, induz nele uma tensão alternada de mesma frequência.</li>
+  </ol>
+  <figure><svg viewBox="0 0 600 290" role="img" aria-label="Transformador monofásico com primário, secundário e fluxo mútuo">
+<path d="M180 40 H420 V250 H180 Z M240 100 V190 H360 V100 Z" class="core" fill-rule="evenodd"/>
+<rect x="210" y="70" width="180" height="150" class="dash" style="stroke:var(--ink)"/>
+<line x1="280" y1="70" x2="322" y2="70" class="ar ink" marker-end="url(#ah-ink)"/>
+<line x1="170" y1="106" x2="250" y2="113" class="wind pa-s"/><line x1="170" y1="116" x2="250" y2="123" class="wind pa-s"/><line x1="170" y1="126" x2="250" y2="133" class="wind pa-s"/><line x1="170" y1="136" x2="250" y2="143" class="wind pa-s"/><line x1="170" y1="146" x2="250" y2="153" class="wind pa-s"/><line x1="170" y1="156" x2="250" y2="163" class="wind pa-s"/><line x1="170" y1="166" x2="250" y2="173" class="wind pa-s"/><line x1="170" y1="176" x2="250" y2="183" class="wind pa-s"/><line x1="350" y1="116" x2="430" y2="123" class="wind pc-s"/><line x1="350" y1="136" x2="430" y2="143" class="wind pc-s"/><line x1="350" y1="156" x2="430" y2="163" class="wind pc-s"/>
+<path d="M170 110 H80 V130 M80 170 V190 H170" class="wire"/>
+<circle cx="80" cy="150" r="20" class="comp"/><path d="M68 150 q6 -11 12 0 t12 0" class="wire"/>
+<line x1="100" y1="110" x2="140" y2="110" class="ar pa" marker-end="url(#ah-pa)"/>
+<text x="112" y="102" class="ts fa">I<tspan class="sub" dy="3">1</tspan></text>
+<text x="40" y="155" class="tl" text-anchor="middle">V<tspan class="sub" dy="4">1</tspan></text>
+<path d="M430 120 H520 V128 M520 172 V180 H430" class="wire"/>
+<rect x="510" y="128" width="20" height="44" class="zbox"/>
+<line x1="450" y1="120" x2="490" y2="120" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="460" y="112" class="ts fc">I<tspan class="sub" dy="3">2</tspan></text>
+<text x="470" y="156" class="tl">V<tspan class="sub" dy="4">2</tspan></text><text x="540" y="155" class="ts">carga</text>
+<text x="300" y="62" class="tl">Φ</text>
+<text x="210" y="274" class="ts fa" text-anchor="middle">primário: N<tspan class="sub" dy="3">1</tspan></text>
+<text x="390" y="274" class="ts fc" text-anchor="middle">secundário: N<tspan class="sub" dy="3">2</tspan></text>
+</svg><figcaption>Figura 7. Transformador monofásico. O primário (N<sub>1</sub> espiras) e o secundário (N<sub>2</sub> espiras) só estão ligados pelo fluxo mútuo Φ no núcleo.</figcaption></figure>
+  <div class="box trap">
+    <p class="box-title">Por que não funciona em corrente contínua</p>
+    <p>Com CC, o fluxo é constante: não há tensão induzida no secundário. E, sem a fem que se opõe à tensão aplicada, a corrente do primário fica limitada apenas pela pequena resistência do enrolamento, o que resulta numa corrente muito alta que aquece e danifica a bobina.</p>
+  </div>
+
+  <h3>Equação geral do transformador</h3>
+  <div class="eq">
+    <p class="eq-name">Tensão induzida em função do fluxo máximo</p>
+    <div class="eq-main"><var>E</var> = 4,44 · <var>f</var> · <var>N</var> · <var>Φ</var><sub>máx</sub></div>
+    <dl>
+      <dt><var>E</var></dt><dd>tensão eficaz induzida no enrolamento (V)</dd>
+      <dt><var>f</var></dt><dd>frequência (Hz)</dd>
+      <dt><var>N</var></dt><dd>número de espiras do enrolamento</dd>
+      <dt><var>Φ</var><sub>máx</sub></dt><dd>fluxo máximo (de pico) no núcleo (Wb)</dd>
+      <dt>4,44</dt><dd>= 2π/√2: vem de derivar o fluxo senoidal e passar do pico para o valor eficaz</dd>
+    </dl>
+  </div>
+  <p>Essa equação explica dois cuidados de manutenção: com tensão e frequência nominais, o fluxo fica no valor de projeto; se a <b>tensão sobe</b> ou a <b>frequência cai</b> (por exemplo, usar em 50 Hz um transformador de 60 Hz), Φ<sub>máx</sub> aumenta, o núcleo satura, a corrente de magnetização dispara e o transformador aquece.</p>
+
+  <h3>O transformador ideal</h3>
+  <p>O modelo ideal despreza perdas, dispersão de fluxo e corrente de magnetização. As relações ficam:</p>
+  <div class="eq">
+    <p class="eq-name">Relação de transformação</p>
+    <div class="eq-main"><var>a</var> = <span class="frac"><span><var>N</var><sub>1</sub></span><span><var>N</var><sub>2</sub></span></span> = <span class="frac"><span><var>V</var><sub>1</sub></span><span><var>V</var><sub>2</sub></span></span> = <span class="frac"><span><var>I</var><sub>2</sub></span><span><var>I</var><sub>1</sub></span></span></div>
+    <dl>
+      <dt><var>a</var></dt><dd>relação de transformação (ou de espiras)</dd>
+      <dt><var>N</var><sub>1</sub>, <var>N</var><sub>2</sub></dt><dd>espiras do primário e do secundário</dd>
+      <dt><var>V</var><sub>1</sub>, <var>V</var><sub>2</sub></dt><dd>tensões eficazes do primário e do secundário (V): tensão proporcional ao número de espiras</dd>
+      <dt><var>I</var><sub>1</sub>, <var>I</var><sub>2</sub></dt><dd>correntes eficazes (A): corrente <b>inversamente</b> proporcional ao número de espiras</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Conservação de potência e impedância refletida</p>
+    <div class="eq-main"><var>V</var><sub>1</sub> · <var>I</var><sub>1</sub> = <var>V</var><sub>2</sub> · <var>I</var><sub>2</sub> &nbsp;&nbsp;&nbsp;&nbsp; <var>Z</var>′ = <var>a</var>² · <var>Z</var><sub>2</sub></div>
+    <dl>
+      <dt><var>V</var>·<var>I</var></dt><dd>potência aparente (VA), igual nos dois lados do transformador ideal</dd>
+      <dt><var>Z</var><sub>2</sub></dt><dd>impedância da carga ligada ao secundário (Ω)</dd>
+      <dt><var>Z</var>′</dt><dd>impedância “vista” pela fonte no primário (Ω): multiplicada pelo quadrado da relação</dd>
+    </dl>
+  </div>
+  <p>Se a &gt; 1, o transformador é <b>abaixador</b> (V<sub>2</sub> &lt; V<sub>1</sub>); se a &lt; 1, é <b>elevador</b>; se a = 1, é <b>isolador</b> (usado para separar eletricamente circuitos, por segurança). Em qualquer caso: <b>o lado de alta tensão tem mais espiras e menos corrente</b>, e por isso seu fio é mais fino.</p>
+
+  <h3>Autotransformador</h3>
+  <p>Tem um único enrolamento com uma derivação: parte das espiras é comum ao primário e ao secundário. É menor, mais barato e mais eficiente para relações próximas de 1 (por exemplo, 220/127 V ou chaves compensadoras de partida de motores), mas <b>não isola</b> eletricamente a carga da rede.</p>
+
+  <h3>Polaridade</h3>
+  <p>Os terminais de mesma polaridade instantânea são marcados com um ponto no esquema ou com índices iguais (H1 e X1, H2 e X2). A polaridade importa para ligar transformadores em paralelo ou em bancos trifásicos e para ligar TCs e TPs aos medidores. Teste clássico: ligam-se H1 e X1 com um jumper, aplica-se tensão reduzida no lado de alta e mede-se entre H2 e X2. Se a leitura for a <b>diferença</b> das tensões dos dois lados, a polaridade é <b>subtrativa</b>; se for a <b>soma</b>, é <b>aditiva</b>.</p>
+
+  <h3>Construção</h3>
+  <ul>
+    <li><b>Núcleo</b>: chapas de aço-silício laminadas e isoladas (Bloco 4). Pode ser do tipo núcleo envolvido (bobinas em torno das colunas) ou núcleo envolvente (o núcleo abraça as bobinas).</li>
+    <li><b>Enrolamentos</b>: cobre ou alumínio isolados; o de baixa tensão costuma ficar mais próximo do núcleo.</li>
+    <li><b>Óleo mineral isolante</b> (em transformadores de potência e distribuição): isola e refrigera. Há também transformadores <b>a seco</b>, com isolação em resina, usados em ambientes internos.</li>
+    <li><b>Acessórios</b>: buchas (passagem isolada dos terminais pela carcaça), comutador de derivações (taps, para ajustar a relação), tanque de expansão (conservador), secador de ar com sílica-gel, indicador de temperatura e relé Buchholz, que detecta gases gerados por faltas internas.</li>
+  </ul>
+
+  <div class="lab" id="lab1">
+    <h4>Calculadora: transformador ideal</h4>
+    <p class="hint">Altere espiras, tensão e carga. A carga é considerada resistiva.</p>
+    <div class="calc">
+      <label><span>Tensão no primário V<sub>1</sub> (V)</span><input id="tV1" type="number" value="2200" min="0" step="any"></label>
+      <label><span>Espiras do primário N<sub>1</sub></span><input id="tN1" type="number" value="1000" min="1" step="1"></label>
+      <label><span>Espiras do secundário N<sub>2</sub></span><input id="tN2" type="number" value="100" min="1" step="1"></label>
+      <label><span>Carga R<sub>2</sub> (Ω)</span><input id="tR2" type="number" value="4" min="0" step="any"></label>
+      <label><span>Frequência f (Hz)</span><input id="tF" type="number" value="60" min="1" step="any"></label>
+    </div>
+    <div class="lab-out" id="tOut"></div>
+  </div>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Transformador monofásico ideal de 5 kVA, 440/220 V. Calcule a relação, as correntes nominais e a impedância refletida de uma carga de 11 Ω ligada ao secundário.</p>
+    <ol class="steps">
+      <li>a = 440/220 = 2 (abaixador).</li>
+      <li>I<sub>1</sub> = 5000/440 ≈ <b>11,4 A</b>; I<sub>2</sub> = 5000/220 ≈ <b>22,7 A</b> (o dobro, como manda a relação).</li>
+      <li>Z′ = a² · Z<sub>2</sub> = 4 × 11 = <b>44 Ω</b>. Conferência: a carga de 11 Ω em 220 V absorve 20 A; no primário, 440/44 = 10 A = 20/2 ✓.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ BLOCO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Transformador real: perdas, ensaios, rendimento e regulação</h2></div>
+  <p class="edital-ref">Edital, item 5.3</p>
+
+  <h3>O que o transformador real tem a mais</h3>
+  <ul>
+    <li><b>Resistência dos enrolamentos</b> → perdas no cobre (efeito Joule, I²R), que <b>variam com o quadrado da corrente</b>, isto é, da carga.</li>
+    <li><b>Fluxo de dispersão</b>: parte do fluxo não enlaça os dois enrolamentos, o que aparece como uma reatância em série e causa queda de tensão com carga.</li>
+    <li><b>Corrente de magnetização</b>: mesmo a vazio, o primário absorve uma pequena corrente para criar o fluxo.</li>
+    <li><b>Perdas no ferro</b> (histerese + correntes parasitas): praticamente <b>constantes</b>, pois dependem da tensão e da frequência, não da carga.</li>
+  </ul>
+  <figure><svg viewBox="0 0 640 230" role="img" aria-label="Circuito equivalente aproximado do transformador">
+<circle cx="40" cy="50" r="5" class="comp"/><circle cx="40" cy="170" r="5" class="comp"/>
+<circle cx="580" cy="50" r="5" class="comp"/><circle cx="580" cy="170" r="5" class="comp"/>
+<path d="M45 50 H260 M320 50 H350 M430 50 H575 M45 170 H575" class="wire"/>
+<path d="M140 50 V85 M140 135 V170" class="wire"/><rect x="132" y="85" width="16" height="50" class="zbox"/>
+<path d="M205 50 V82 M205 154 V170" class="wire"/><path d="M205 82 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18 a9 9 0 0 1 0 18" class="wire"/>
+<rect x="260" y="42" width="60" height="16" class="zbox"/><path d="M350 50 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0" class="wire"/>
+<circle cx="140" cy="50" r="3.5" class="f-ink"/><circle cx="205" cy="50" r="3.5" class="f-ink"/><circle cx="140" cy="170" r="3.5" class="f-ink"/><circle cx="205" cy="170" r="3.5" class="f-ink"/>
+<text x="120" y="115" class="ts" text-anchor="end">R<tspan class="sub" dy="3">c</tspan></text>
+<text x="226" y="120" class="ts">X<tspan class="sub" dy="3">m</tspan></text>
+<text x="290" y="34" class="ts" text-anchor="middle">R<tspan class="sub" dy="3">eq</tspan></text>
+<text x="390" y="30" class="ts" text-anchor="middle">X<tspan class="sub" dy="3">eq</tspan></text>
+<text x="22" y="115" class="tl" text-anchor="middle">V<tspan class="sub" dy="4">1</tspan></text>
+<text x="604" y="115" class="tl" text-anchor="middle">V<tspan class="sub" dy="4">2</tspan><tspan dy="-4">′</tspan></text>
+<text x="150" y="198" class="tm" text-anchor="middle">ramo magnetizante</text>
+<text x="150" y="214" class="tm" text-anchor="middle">perdas no ferro (ensaio a vazio)</text>
+<text x="410" y="198" class="tm" text-anchor="middle">impedância série</text>
+<text x="410" y="214" class="tm" text-anchor="middle">perdas no cobre (ensaio de curto)</text>
+</svg><figcaption>Figura 8. Circuito equivalente aproximado, referido ao primário. O ramo em paralelo (R<sub>c</sub>, X<sub>m</sub>) representa o núcleo; a impedância em série (R<sub>eq</sub>, X<sub>eq</sub>), os enrolamentos e a dispersão.</figcaption></figure>
+
+  <h3>Os dois ensaios clássicos</h3>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Ensaio a vazio (circuito aberto)</th><th>Ensaio de curto-circuito</th></tr></thead>
+    <tbody>
+      <tr><td>Como se faz</td><td>Aplica-se a tensão nominal num lado (normalmente o de baixa tensão), com o outro aberto</td><td>Curto-circuita-se um lado (normalmente o de baixa) e alimenta-se o outro com tensão reduzida, até circular a corrente nominal</td></tr>
+      <tr><td>O que o wattímetro mede</td><td>Perdas no ferro (a corrente é pequena, e as perdas no cobre são desprezíveis)</td><td>Perdas no cobre à plena carga (a tensão é baixa, e o fluxo e as perdas no ferro são desprezíveis)</td></tr>
+      <tr><td>O que mais se obtém</td><td>Corrente de excitação (de magnetização), relação de transformação, R<sub>c</sub> e X<sub>m</sub></td><td>Impedância percentual (Z%), R<sub>eq</sub> e X<sub>eq</sub></td></tr>
+    </tbody>
+  </table></div>
+  <p>A <b>impedância percentual</b> (Z%) é a tensão de curto-circuito, em porcentagem da nominal: a tensão que precisa ser aplicada para circular a corrente nominal com o outro lado em curto. Ela aparece na placa e serve para calcular a corrente de curto-circuito nos terminais (aproximadamente I<sub>nominal</sub> × 100/Z%) e para verificar se dois transformadores podem operar em paralelo.</p>
+
+  <h3>Rendimento</h3>
+  <div class="eq">
+    <p class="eq-name">Rendimento do transformador</p>
+    <div class="eq-main"><var>η</var> = <span class="frac"><span><var>P</var><sub>saída</sub></span><span><var>P</var><sub>saída</sub> + <var>P</var><sub>Fe</sub> + <var>P</var><sub>Cu</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>P</var><sub>Cu</sub> = <var>x</var>² · <var>P</var><sub>Cu,nom</sub></div>
+    <dl>
+      <dt><var>η</var></dt><dd>rendimento (adimensional ou %)</dd>
+      <dt><var>P</var><sub>saída</sub></dt><dd>potência ativa entregue à carga (W) = x · S<sub>nom</sub> · FP</dd>
+      <dt><var>P</var><sub>Fe</sub></dt><dd>perdas no ferro (W), constantes</dd>
+      <dt><var>P</var><sub>Cu,nom</sub></dt><dd>perdas no cobre à carga nominal (W), do ensaio de curto</dd>
+      <dt><var>x</var></dt><dd>fração da carga nominal (0,5 = meia carga)</dd>
+    </dl>
+  </div>
+  <p><b>Rendimento máximo</b>: ocorre quando as perdas variáveis (cobre) igualam as fixas (ferro), ou seja, na fração de carga <var>x</var> = √(P<sub>Fe</sub>/P<sub>Cu,nom</sub>). Transformadores costumam ter rendimentos muito altos, acima de 95%.</p>
+  <figure><svg viewBox="0 0 620 300" role="img" aria-label="Curva de rendimento do transformador em função da carga">
+<line x1="70.0" y1="250" x2="70.0" y2="255" class="ax"/><text x="70.0" y="270" class="tm" text-anchor="middle">0%</text><line x1="174.0" y1="250" x2="174.0" y2="255" class="ax"/><text x="174.0" y="270" class="tm" text-anchor="middle">25%</text><line x1="278.0" y1="250" x2="278.0" y2="255" class="ax"/><text x="278.0" y="270" class="tm" text-anchor="middle">50%</text><line x1="382.0" y1="250" x2="382.0" y2="255" class="ax"/><text x="382.0" y="270" class="tm" text-anchor="middle">75%</text><line x1="486.0" y1="250" x2="486.0" y2="255" class="ax"/><text x="486.0" y="270" class="tm" text-anchor="middle">100%</text><line x1="590.0" y1="250" x2="590.0" y2="255" class="ax"/><text x="590.0" y="270" class="tm" text-anchor="middle">125%</text><line x1="65" y1="250.0" x2="590" y2="250.0" class="grid"/><text x="60" y="254.0" class="tm" text-anchor="end">90%</text><line x1="65" y1="195.0" x2="590" y2="195.0" class="grid"/><text x="60" y="199.0" class="tm" text-anchor="end">92%</text><line x1="65" y1="140.0" x2="590" y2="140.0" class="grid"/><text x="60" y="144.0" class="tm" text-anchor="end">94%</text><line x1="65" y1="85.0" x2="590" y2="85.0" class="grid"/><text x="60" y="89.0" class="tm" text-anchor="end">96%</text><line x1="65" y1="30.0" x2="590" y2="30.0" class="grid"/><text x="60" y="34.0" class="tm" text-anchor="end">98%</text>
+<line x1="70" y1="250" x2="590" y2="250" class="ax"/><line x1="70" y1="250" x2="70" y2="20" class="ax"/>
+<path d="M99.1,245.8 L103.3,216.2 L107.4,192.8 L111.6,174.0 L115.8,158.5 L119.9,145.5 L124.1,134.6 L128.2,125.2 L132.4,117.1 L136.6,110.1 L140.7,104.0 L144.9,98.6 L149.0,93.9 L153.2,89.6 L157.4,85.9 L161.5,82.5 L165.7,79.5 L169.8,76.8 L174.0,74.4 L178.2,72.2 L182.3,70.2 L186.5,68.5 L190.6,66.9 L194.8,65.4 L199.0,64.1 L203.1,62.9 L207.3,61.9 L211.4,60.9 L215.6,60.1 L219.8,59.3 L223.9,58.6 L228.1,58.0 L232.2,57.5 L236.4,57.0 L240.6,56.6 L244.7,56.3 L248.9,56.0 L253.0,55.7 L257.2,55.5 L261.4,55.4 L265.5,55.2 L269.7,55.2 L273.8,55.1 L278.0,55.1 L282.2,55.1 L286.3,55.2 L290.5,55.2 L294.6,55.3 L298.8,55.5 L303.0,55.6 L307.1,55.8 L311.3,56.0 L315.4,56.2 L319.6,56.4 L323.8,56.6 L327.9,56.9 L332.1,57.2 L336.2,57.5 L340.4,57.8 L344.6,58.1 L348.7,58.4 L352.9,58.8 L357.0,59.2 L361.2,59.5 L365.4,59.9 L369.5,60.3 L373.7,60.7 L377.8,61.1 L382.0,61.6 L386.2,62.0 L390.3,62.4 L394.5,62.9 L398.6,63.3 L402.8,63.8 L407.0,64.3 L411.1,64.8 L415.3,65.3 L419.4,65.8 L423.6,66.3 L427.8,66.8 L431.9,67.3 L436.1,67.8 L440.2,68.3 L444.4,68.9 L448.6,69.4 L452.7,69.9 L456.9,70.5 L461.0,71.0 L465.2,71.6 L469.4,72.1 L473.5,72.7 L477.7,73.3 L481.8,73.8 L486.0,74.4 L490.2,75.0 L494.3,75.6 L498.5,76.1 L502.6,76.7 L506.8,77.3 L511.0,77.9 L515.1,78.5 L519.3,79.1 L523.4,79.7 L527.6,80.3 L531.8,80.9 L535.9,81.5 L540.1,82.1 L544.2,82.7 L548.4,83.4 L552.6,84.0 L556.7,84.6 L560.9,85.2 L565.0,85.9 L569.2,86.5 L573.4,87.1 L577.5,87.7 L581.7,88.4 L585.8,89.0 L590.0,89.6" class="w pc"/>
+<line x1="278.0" y1="55.1" x2="278.0" y2="250" class="dash pa"/>
+<circle cx="278.0" cy="55.1" r="5" class="f-pa"/>
+<text x="288.0" y="45.1" class="ts fa">η máx ≈ 97,1% (P<tspan class="sub" dy="3">Cu</tspan><tspan dy="-3"> = P</tspan><tspan class="sub" dy="3">Fe</tspan><tspan dy="-3">)</tspan></text>
+<text x="330" y="292" class="tm" text-anchor="middle">carga, em % da nominal</text>
+</svg><figcaption>Figura 9. Rendimento de um transformador de 50 kVA (FP 0,8) com P<sub>Fe</sub> = 300 W e P<sub>Cu,nom</sub> = 1.200 W. O máximo ocorre a 50% da carga, onde as perdas no cobre valem 0,5² × 1.200 = 300 W.</figcaption></figure>
+
+  <div class="lab" id="lab2">
+    <h4>Laboratório: rendimento em função da carga</h4>
+    <p class="hint">Mude as perdas e a carga e veja onde fica o ponto de rendimento máximo.</p>
+    <div class="calc">
+      <label><span>Potência nominal (kVA)</span><input id="rS" type="number" value="50" min="0.1" step="any"></label>
+      <label><span>Perdas no ferro (W)</span><input id="rFe" type="number" value="300" min="0" step="any"></label>
+      <label><span>Perdas no cobre nominais (W)</span><input id="rCu" type="number" value="1200" min="0" step="any"></label>
+      <label><span>Fator de potência</span><input id="rFP" type="number" value="0.8" min="0.05" max="1" step="0.05"></label>
+    </div>
+    <div class="ctrl" style="margin-top:12px">
+      <label for="rX">Carga (% da nominal)</label><input id="rX" type="range" min="5" max="125" step="1" value="75"><output id="rXo">75%</output>
+    </div>
+    <svg id="rsvg" viewBox="0 0 620 230" role="img" aria-label="Curva de rendimento calculada"></svg>
+    <div class="lab-out" id="rOut"></div>
+  </div>
+
+  <h3>Regulação de tensão</h3>
+  <div class="eq">
+    <p class="eq-name">Regulação</p>
+    <div class="eq-main">Reg (%) = <span class="frac"><span><var>V</var><sub>vazio</sub> − <var>V</var><sub>carga</sub></span><span><var>V</var><sub>carga</sub></span></span> × 100</div>
+    <dl>
+      <dt><var>V</var><sub>vazio</sub></dt><dd>tensão no secundário sem carga (V)</dd>
+      <dt><var>V</var><sub>carga</sub></dt><dd>tensão no secundário com carga nominal (V)</dd>
+    </dl>
+  </div>
+  <p>Quanto menor a regulação, melhor: a tensão varia pouco entre vazio e plena carga. Cargas indutivas pioram a regulação; cargas capacitivas podem até torná-la negativa (a tensão sobe com a carga). Algumas referências dividem por V<sub>vazio</sub>; se a questão não disser, a forma acima, com V<sub>carga</sub>, é a mais usada.</p>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Transformador de 100 kVA, com P<sub>Fe</sub> = 500 W e P<sub>Cu,nom</sub> = 1.500 W, alimenta metade da carga nominal com FP = 1. Calcule o rendimento.</p>
+    <ol class="steps">
+      <li>x = 0,5 → P<sub>saída</sub> = 0,5 × 100 × 1 = 50 kW.</li>
+      <li>P<sub>Cu</sub> = 0,5² × 1.500 = 375 W; P<sub>Fe</sub> = 500 W (não muda).</li>
+      <li>η = 50.000 / (50.000 + 500 + 375) = 50.000 / 50.875 ≈ <b>98,3%</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Perdas no cobre variam com o <b>quadrado</b> da carga: à meia carga são 1/4 das nominais, não metade. E as perdas no ferro <b>não</b> caem com a carga: elas existem enquanto o transformador está energizado, mesmo a vazio.</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<!-- ============ BLOCO 7 ============ -->
+<section id="b7" class="block">
+  <div class="block-head"><span class="block-num">7</span><h2>Transformadores trifásicos e transformadores de instrumento</h2></div>
+  <p class="edital-ref">Edital, item 5.3</p>
+
+  <h3>Transformador trifásico</h3>
+  <p>Pode ser um banco de três monofásicos ou, mais comum, uma unidade com três colunas no mesmo núcleo. Cada lado pode ser ligado em estrela (Y), triângulo (D ou Δ) ou zigue-zague (Z). Na notação de placa, a letra <b>maiúscula</b> é o lado de alta tensão e a <b>minúscula</b>, o de baixa; o “n” indica neutro acessível. Assim, <b>Dyn</b> = alta em triângulo, baixa em estrela com neutro.</p>
+  <p>Em distribuição é muito comum a ligação <b>Dyn</b>: triângulo na média tensão (por exemplo 13,8 kV, sem precisar de neutro) e estrela aterrada na baixa tensão, fornecendo dois níveis de tensão (por exemplo 380/220 V ou 220/127 V).</p>
+  <div class="eq">
+    <p class="eq-name">Grandezas nominais do trifásico</p>
+    <div class="eq-main"><var>S</var> = √3 · <var>V</var><sub>L</sub> · <var>I</var><sub>L</sub> &nbsp;&nbsp;&nbsp;&nbsp; <span class="frac"><span><var>V</var><sub>L1</sub></span><span><var>V</var><sub>L2</sub></span></span> = relação das tensões de <b>linha</b> da placa</div>
+    <dl>
+      <dt><var>S</var></dt><dd>potência aparente nominal trifásica (VA)</dd>
+      <dt><var>V</var><sub>L</sub>, <var>I</var><sub>L</sub></dt><dd>tensão e corrente de linha do lado considerado</dd>
+      <dt><var>V</var><sub>L1</sub>, <var>V</var><sub>L2</sub></dt><dd>tensões de linha do primário e do secundário; a relação de espiras por coluna pode diferir desta quando as ligações são diferentes (ex.: D-y)</dd>
+    </dl>
+  </div>
+
+  <h3>Defasamento angular e índice horário</h3>
+  <p>Ligações diferentes nos dois lados (como D-y) introduzem uma <b>defasagem</b> entre as tensões de linha do primário e do secundário, sempre em múltiplos de 30°. Essa defasagem é informada pelo <b>índice horário</b>, o número após as letras (Dyn1, Dy5, Yd11, Yy0...). Imagina-se um relógio: o fasor da alta tensão aponta para as 12 h; o da baixa aponta para a hora indicada pelo índice. Cada hora vale 30°, e o sentido horário indica <b>atraso</b> da baixa em relação à alta.</p>
+  <div class="eq">
+    <p class="eq-name">Defasagem pelo índice horário</p>
+    <div class="eq-main">defasagem = índice × 30° &nbsp;(tensão da BT atrasada em relação à da AT)</div>
+    <dl>
+      <dt>Yy0, Dd0</dt><dd>0°: em fase</dd>
+      <dt>Dyn1</dt><dd>BT atrasada 30°</dd>
+      <dt>Dy5</dt><dd>BT atrasada 150°</dd>
+      <dt>Dyn11</dt><dd>BT atrasada 330°, o que equivale a <b>adiantada 30°</b></dd>
+    </dl>
+  </div>
+  <figure class="narrow"><svg viewBox="0 0 360 330" role="img" aria-label="Relógio do índice horário: Dyn1">
+<circle cx="180" cy="168" r="138" class="comp"/>
+<text x="180.0" y="61.0" class="ts" text-anchor="middle">12</text><line x1="180.0" y1="40.0" x2="180.0" y2="32.0" class="wire"/><text x="236.0" y="76.0" class="ts" text-anchor="middle">1</text><line x1="244.0" y1="57.1" x2="248.0" y2="50.2" class="wire"/><text x="277.0" y="117.0" class="ts" text-anchor="middle">2</text><line x1="290.9" y1="104.0" x2="297.8" y2="100.0" class="wire"/><text x="292.0" y="173.0" class="ts" text-anchor="middle">3</text><line x1="308.0" y1="168.0" x2="316.0" y2="168.0" class="wire"/><text x="277.0" y="229.0" class="ts" text-anchor="middle">4</text><line x1="290.9" y1="232.0" x2="297.8" y2="236.0" class="wire"/><text x="236.0" y="270.0" class="ts" text-anchor="middle">5</text><line x1="244.0" y1="278.9" x2="248.0" y2="285.8" class="wire"/><text x="180.0" y="285.0" class="ts" text-anchor="middle">6</text><line x1="180.0" y1="296.0" x2="180.0" y2="304.0" class="wire"/><text x="124.0" y="270.0" class="ts" text-anchor="middle">7</text><line x1="116.0" y1="278.9" x2="112.0" y2="285.8" class="wire"/><text x="83.0" y="229.0" class="ts" text-anchor="middle">8</text><line x1="69.1" y1="232.0" x2="62.2" y2="236.0" class="wire"/><text x="68.0" y="173.0" class="ts" text-anchor="middle">9</text><line x1="52.0" y1="168.0" x2="44.0" y2="168.0" class="wire"/><text x="83.0" y="117.0" class="ts" text-anchor="middle">10</text><line x1="69.1" y1="104.0" x2="62.2" y2="100.0" class="wire"/><text x="124.0" y="76.0" class="ts" text-anchor="middle">11</text><line x1="116.0" y1="57.1" x2="112.0" y2="50.2" class="wire"/>
+<line x1="180" y1="168" x2="180" y2="73" class="ar pa thick" marker-end="url(#ah-pa)"/>
+<line x1="180" y1="168" x2="220.0" y2="98.7" class="ar pc thick" marker-end="url(#ah-pc)"/>
+<path d="M 180 123 A 45 45 0 0 1 202.5 129.0" class="arc"/>
+<text x="184" y="116" class="ts">30°</text>
+<circle cx="180" cy="168" r="4" class="f-ink"/>
+<text x="172" y="108" class="ts fa" text-anchor="end">AT</text>
+<text x="226.0" y="116.7" class="ts fc">BT</text>
+<text x="180" y="228" class="tm" text-anchor="middle">cada hora = 30°</text>
+</svg><figcaption>Figura 10. Relógio do índice horário para Dyn1: o fasor da alta tensão às 12 h e o da baixa à 1 h, isto é, 30° de atraso.</figcaption></figure>
+
+  <h3>Operação em paralelo</h3>
+  <p>Para ligar transformadores em paralelo sem correntes de circulação entre eles, é preciso que tenham:</p>
+  <ul>
+    <li>mesmas tensões nominais, ou seja, a mesma relação de transformação;</li>
+    <li>mesmo defasamento angular (mesmo índice horário);</li>
+    <li>mesma sequência de fases e polaridade corretamente ligada;</li>
+    <li>impedâncias percentuais próximas, para que a carga se divida proporcionalmente às potências.</li>
+  </ul>
+  <p>Potências iguais <b>não</b> são obrigatórias, mas, se forem muito diferentes, a divisão de carga tende a ficar ruim. Na prática, costuma-se limitar a diferença a cerca de 3:1.</p>
+
+  <h3>Transformadores de instrumento: TC e TP</h3>
+  <p>Em média e alta tensão não se liga um amperímetro, um voltímetro ou um relé diretamente ao circuito. Usam-se transformadores que reproduzem a grandeza em escala reduzida e padronizada, <b>isolando</b> os instrumentos da alta tensão.</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Transformador de corrente (TC)</th><th>Transformador de potencial (TP)</th></tr></thead>
+    <tbody>
+      <tr><td>Ligação do primário</td><td><b>Em série</b> com o circuito (muitas vezes o próprio condutor passa por dentro do TC)</td><td><b>Em paralelo</b> (entre fases ou entre fase e terra)</td></tr>
+      <tr><td>Secundário padronizado</td><td>5 A (também existe 1 A)</td><td>115 V (ou 115/√3 V)</td></tr>
+      <tr><td>Relação</td><td>ex.: 200-5 A → RTC = 40</td><td>ex.: 13.800-115 V → RTP = 120</td></tr>
+      <tr><td>Nunca fazer</td><td><b>Abrir o secundário</b> com o primário energizado: sem a carga do secundário, toda a corrente primária vira magnetização, o núcleo satura e surgem tensões perigosas nos terminais</td><td><b>Curto-circuitar o secundário</b>: circularia uma corrente muito alta, que destrói o TP</td></tr>
+      <tr><td>Na manutenção</td><td>Antes de retirar um medidor ou relé, curto-circuitar os terminais do secundário (chaves de aferição fazem isso)</td><td>Proteger o secundário com fusíveis ou disjuntor</td></tr>
+    </tbody>
+  </table></div>
+  <figure><svg viewBox="0 0 600 255" role="img" aria-label="Ligação de transformador de corrente e de potencial">
+<line x1="30" y1="60" x2="575" y2="60" class="wire pa-s" style="stroke-width:3"/>
+<line x1="30" y1="225" x2="575" y2="225" class="wire"/>
+<text x="24" y="65" class="ts fa" text-anchor="end">F</text><text x="24" y="230" class="ts" text-anchor="end">N</text>
+<circle cx="180" cy="60" r="22" class="ring"/>
+<path d="M166 77 V150 H164 M194 77 V150 H196" class="wire"/>
+<circle cx="180" cy="150" r="16" class="comp"/><text x="180" y="156" class="ts" text-anchor="middle">A</text>
+<text x="180" y="24" class="ts" text-anchor="middle">TC: primário em série</text>
+<text x="180" y="188" class="tm" text-anchor="middle">secundário: 5 A (ou 1 A)</text>
+<text x="180" y="204" class="tm" text-anchor="middle">nunca abrir energizado</text>
+<path d="M420 60 V90 M420 150 V225" class="wire"/><path d="M420 90 a8 8 0 0 1 0 15 a8 8 0 0 1 0 15 a8 8 0 0 1 0 15 a8 8 0 0 1 0 15" class="wire"/><path d="M446 90 a8 8 0 0 0 0 15 a8 8 0 0 0 0 15 a8 8 0 0 0 0 15 a8 8 0 0 0 0 15" class="wire"/>
+<line x1="430" y1="88" x2="430" y2="152" class="wire"/><line x1="436" y1="88" x2="436" y2="152" class="wire"/>
+<path d="M446 90 H520 V104 M520 136 V150 H446" class="wire"/>
+<circle cx="520" cy="120" r="16" class="comp"/><text x="520" y="126" class="ts" text-anchor="middle">V</text>
+<text x="440" y="24" class="ts" text-anchor="middle">TP: primário em paralelo</text>
+<text x="515" y="178" class="tm" text-anchor="middle">secundário: 115 V</text>
+<text x="515" y="194" class="tm" text-anchor="middle">nunca curto-circuitar</text>
+</svg><figcaption>Figura 11. Ligação de um TC (primário em série com a fase) alimentando um amperímetro e de um TP (primário entre fase e neutro) alimentando um voltímetro.</figcaption></figure>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Transformador trifásico de 225 kVA, Dyn1, 13,8 kV / 380 V. Calcule as correntes nominais e a tensão fase-neutro do secundário.</p>
+    <ol class="steps">
+      <li>Primário: I = 225.000 / (√3 × 13.800) ≈ <b>9,4 A</b>.</li>
+      <li>Secundário: I = 225.000 / (√3 × 380) ≈ <b>342 A</b>.</li>
+      <li>Fase-neutro na BT (estrela): 380/√3 ≈ <b>220 V</b>. A BT fica atrasada 30° em relação à AT (índice 1).</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b7"></div>
+</section>
+
+<!-- ============ FORMULARIO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Fluxo e densidade</td><td>Φ = B·A·cosα; B = Φ/A</td><td>1 T = 1 Wb/m²; 1 cm² = 10⁻⁴ m²</td></tr>
+      <tr><td>Permeabilidade</td><td>B = μH; μ = μ<sub>r</sub>μ<sub>0</sub>; μ<sub>0</sub> = 4π×10⁻⁷</td><td>ferromagnéticos: μ<sub>r</sub> ≫ 1</td></tr>
+      <tr><td>Fio retilíneo</td><td>B = μ<sub>0</sub>I/(2πr) = 2×10⁻⁷·I/r</td><td>regra da mão direita</td></tr>
+      <tr><td>Espira / solenoide</td><td>B = μ<sub>0</sub>I/(2R); B = μNI/l</td><td>núcleo de ferro multiplica por μ<sub>r</sub></td></tr>
+      <tr><td>Circuito magnético</td><td>ℱ = NI; ℛ = l/(μA); Φ = ℱ/ℛ</td><td>ℱ em A·e</td></tr>
+      <tr><td>Força no condutor</td><td>F = B·I·L·senθ</td><td>mão esquerda (motor)</td></tr>
+      <tr><td>Condutores paralelos</td><td>F/L = 2×10⁻⁷·I<sub>1</sub>I<sub>2</sub>/d</td><td>mesmo sentido: atração</td></tr>
+      <tr><td>Faraday</td><td>e = −N·ΔΦ/Δt</td><td>sinal: lei de Lenz</td></tr>
+      <tr><td>Fem de movimento</td><td>e = B·L·v·senθ</td><td>mão direita (gerador)</td></tr>
+      <tr><td>Autoindução</td><td>e = −L·Δi/Δt; W = ½LI²</td><td>sobretensão ao abrir bobinas</td></tr>
+      <tr><td>Equação do transformador</td><td>E = 4,44·f·N·Φ<sub>máx</sub></td><td>V↑ ou f↓ → saturação</td></tr>
+      <tr><td>Transformador ideal</td><td>a = N<sub>1</sub>/N<sub>2</sub> = V<sub>1</sub>/V<sub>2</sub> = I<sub>2</sub>/I<sub>1</sub></td><td>V<sub>1</sub>I<sub>1</sub> = V<sub>2</sub>I<sub>2</sub></td></tr>
+      <tr><td>Impedância refletida</td><td>Z′ = a²·Z<sub>2</sub></td><td></td></tr>
+      <tr><td>Perdas no cobre</td><td>P<sub>Cu</sub> = x²·P<sub>Cu,nom</sub></td><td>ensaio de curto</td></tr>
+      <tr><td>Rendimento</td><td>η = P<sub>s</sub>/(P<sub>s</sub> + P<sub>Fe</sub> + P<sub>Cu</sub>)</td><td>máximo quando P<sub>Cu</sub> = P<sub>Fe</sub></td></tr>
+      <tr><td>Regulação</td><td>(V<sub>vazio</sub> − V<sub>carga</sub>)/V<sub>carga</sub> × 100</td><td></td></tr>
+      <tr><td>Corrente nominal trifásica</td><td>I = S/(√3·V<sub>L</sub>)</td><td></td></tr>
+      <tr><td>Índice horário</td><td>defasagem = índice × 30°</td><td>BT atrasada; Dyn11 = 30° adiantada</td></tr>
+      <tr><td>TC e TP</td><td>I<sub>prim</sub> = RTC × I<sub>sec</sub>; V<sub>prim</sub> = RTP × V<sub>sec</sub></td><td>TC: não abrir; TP: não curto-circuitar</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, conteúdo programático da Ênfase 8 (Manutenção – Elétrica), itens 5.1, 5.3 e 7.2 — conferido no PDF do projeto.</li>
+    <li>Caderno de questões da prova Cesgranrio 2023, Transpetro, Prova 6 – Manutenção – Elétrica (Edital nº 01 – 2023.1), disponível no <a href="https://arquivos.qconcursos.com/prova/arquivo_prova/101201/cesgranrio-2023-transpetro-tecnico-de-manutencao-eletrica-prova.pdf">Qconcursos</a> (usado apenas para identificar o estilo de cobrança).</li>
+    <li>Bibliografia de apoio: S. J. Chapman, <i>Fundamentos de Máquinas Elétricas</i> (AMGH); I. L. Kosow, <i>Máquinas Elétricas e Transformadores</i> (Globo); R. L. Boylestad, <i>Introdução à Análise de Circuitos</i> (Pearson).</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+<script>
+const QUIZ = {
+b1:[
+ {s:"Durante a desmontagem de um equipamento, um ímã permanente em forma de barra se parte exatamente ao meio. Cada um dos pedaços resultantes",
+  o:["passa a ter apenas um polo, norte ou sul","perde completamente o magnetismo","torna-se um ímã completo, com polo norte e polo sul","passa a ter dois polos norte","passa a atrair apenas materiais diamagnéticos"],a:2,
+  c:"Os polos magnéticos são inseparáveis: não existe monopolo magnético. Cada pedaço vira um ímã completo, com seu próprio norte e sul."},
+ {s:"Um fluxo magnético de 4 mWb atravessa perpendicularmente a seção de um núcleo com área de 20 cm². A densidade de fluxo no núcleo é de",
+  o:["0,2 T","0,5 T","2 T","20 T","200 T"],a:2,
+  c:"A = 20 cm² = 20 × 10⁻⁴ = 0,002 m². B = Φ/A = 0,004/0,002 = 2 T. Converter 20 cm² como 0,02 m² (erro de potência de 10) leva a 0,2 T."},
+ {s:"Sobre as linhas de campo magnético de um ímã, é correto afirmar que",
+  o:["fora do ímã, saem do polo sul e entram no polo norte","são linhas abertas, que começam num polo e terminam no outro","fora do ímã, saem do polo norte e entram no polo sul, formam curvas fechadas e nunca se cruzam","cruzam-se nas regiões próximas aos polos, onde o campo é mais intenso","ficam mais espaçadas onde o campo é mais intenso"],a:2,
+  c:"As linhas saem do norte e entram no sul por fora do ímã e completam o caminho por dentro, formando curvas fechadas. Nunca se cruzam, e ficam mais concentradas onde o campo é mais intenso."},
+ {s:"O material mais adequado para o núcleo de um transformador de potência é um material",
+  o:["diamagnético, como o cobre, por ter baixa resistividade","paramagnético, como o alumínio, por ser leve","ferromagnético de alta permeabilidade, como o aço-silício","com permeabilidade relativa menor que 1, para evitar saturação","com permeabilidade relativa igual a 1, como o ar, para reduzir perdas"],a:2,
+  c:"O núcleo deve conduzir o fluxo com baixa relutância, o que exige μᵣ muito alto. O aço-silício é ferromagnético e ainda tem baixas perdas por histerese e por correntes parasitas."},
+ {s:"No Sistema Internacional de Unidades, o fluxo magnético, a densidade de fluxo magnético e a intensidade de campo magnético são medidos, respectivamente, em",
+  o:["tesla, weber e ampère por metro","weber, tesla e ampère por metro","henry, tesla e ampère-espira","weber, gauss e henry por metro","tesla, ampère por metro e weber"],a:1,
+  c:"Fluxo Φ: weber (Wb). Densidade B: tesla (T) = Wb/m². Intensidade H: ampère por metro (A/m). O gauss não é unidade do SI (1 T = 10⁴ G), e o henry é a unidade de indutância."}
+],
+b2:[
+ {s:"Um condutor retilíneo longo é percorrido por uma corrente de 10 A. Considerando μ₀ = 4π × 10⁻⁷ T·m/A, a densidade de fluxo magnético a 5 cm do eixo do condutor é",
+  o:["2 × 10⁻⁵ T","4 × 10⁻⁵ T","8 × 10⁻⁵ T","2,5 × 10⁻⁴ T","4 × 10⁻³ T"],a:1,
+  c:"B = μ₀I/(2πr) = 2 × 10⁻⁷ × 10 / 0,05 = 4 × 10⁻⁵ T. Esquecer o 2π dá cerca de 2,5 × 10⁻⁴ T; usar 2,5 cm (confundir raio com diâmetro) dá 8 × 10⁻⁵ T."},
+ {s:"Um solenoide com núcleo de ar tem 500 espiras, 20 cm de comprimento e é percorrido por 2 A. Com μ₀ = 4π × 10⁻⁷ T·m/A, a densidade de fluxo no seu interior é de, aproximadamente,",
+  o:["0,628 mT","3,14 mT","6,28 mT","12,6 mT","62,8 mT"],a:2,
+  c:"B = μ₀NI/l = 4π × 10⁻⁷ × 500 × 2 / 0,2 = 4π × 10⁻⁷ × 5.000 ≈ 6,28 × 10⁻³ T = 6,28 mT."},
+ {s:"Uma bobina de 200 espiras, percorrida por 3 A, está enrolada num núcleo cuja relutância é de 3 × 10⁵ A·e/Wb. O fluxo no núcleo é de",
+  o:["0,2 mWb","2 mWb","20 mWb","500 Wb","1,8 × 10⁸ Wb"],a:1,
+  c:"ℱ = N·I = 600 A·e. Φ = ℱ/ℛ = 600 / 3 × 10⁵ = 2 × 10⁻³ Wb = 2 mWb. Multiplicar em vez de dividir dá 1,8 × 10⁸; inverter a divisão dá 500."},
+ {s:"Um condutor retilíneo é visto em corte, com a corrente saindo do plano da página. As linhas de campo magnético em torno dele são",
+  o:["retas radiais, saindo do condutor","circunferências concêntricas, no sentido horário","circunferências concêntricas, no sentido anti-horário","retas paralelas ao condutor","inexistentes, pois o campo só aparece em bobinas"],a:2,
+  c:"Pela regra da mão direita, com o polegar apontando para fora da página (sentido da corrente), os dedos se curvam no sentido anti-horário."},
+ {s:"Ao se introduzir um núcleo de aço-silício num solenoide de núcleo de ar, mantendo a corrente, verifica-se que a densidade de fluxo no interior",
+  o:["diminui, pois o aço aumenta a relutância","permanece igual, pois depende apenas de N e I","aumenta aproximadamente μᵣ vezes, até o limite de saturação do material","se anula, pois o aço blinda o campo","passa a depender apenas da resistividade do aço"],a:2,
+  c:"B = μᵣμ₀NI/l: o material ferromagnético reduz a relutância e multiplica B, até a saturação. É o princípio do eletroímã."}
+],
+b3:[
+ {s:"Um condutor de 40 cm, percorrido por uma corrente de 15 A, está totalmente imerso num campo uniforme de 0,5 T, perpendicular a ele. A força sobre o condutor é de",
+  o:["1,5 N","3 N","6 N","7,5 N","30 N"],a:1,
+  c:"F = B·I·L·sen90° = 0,5 × 15 × 0,4 × 1 = 3 N. 7,5 N resulta de esquecer o comprimento (B·I); 30 N, de usar 40 no lugar de 0,4 m em parte da conta."},
+ {s:"Um condutor percorrido por corrente é colocado paralelo às linhas de um campo magnético uniforme. A força magnética sobre ele é",
+  o:["máxima","nula","igual à metade da máxima","perpendicular ao campo e de valor B·I·L","paralela ao condutor"],a:1,
+  c:"F = B·I·L·senθ, com θ = 0°: sen0° = 0, e a força é nula. A força é máxima quando o condutor é perpendicular ao campo."},
+ {s:"Um condutor horizontal de 20 cm é percorrido por 25 A, da esquerda para a direita, numa região em que o campo magnético de 0,8 T aponta para fora do plano da página. A força sobre o condutor é de",
+  o:["4 N, para cima","4 N, para baixo","4 N, saindo do plano","20 N, para baixo","0,16 N, para baixo"],a:1,
+  c:"Módulo: F = 0,8 × 25 × 0,2 = 4 N. Sentido: <b>F</b> = I·<b>L</b> × <b>B</b>, com L para a direita (x̂) e B para fora (ẑ): x̂ × ẑ = −ŷ, para baixo. A força é sempre perpendicular ao campo, então nunca aponta “saindo do plano”."},
+ {s:"Dois condutores paralelos e próximos conduzem correntes no mesmo sentido. Sobre a interação entre eles, é correto afirmar que",
+  o:["se repelem, e a força é proporcional à distância","se atraem, e a força cresce com o produto das correntes e diminui com a distância","não interagem, pois as correntes têm o mesmo sentido","se atraem apenas em corrente contínua","se repelem, e a força só é relevante em alta frequência"],a:1,
+  c:"Correntes no mesmo sentido se atraem; em sentidos opostos, se repelem. F/L = μ₀I₁I₂/(2πd): proporcional ao produto das correntes e inversamente proporcional à distância. Por isso os esforços em barramentos durante curtos-circuitos são tão grandes."},
+ {s:"Durante um curto-circuito, duas barras paralelas de um painel, afastadas 20 cm entre eixos, conduzem 2 kA cada. Com μ₀ = 4π × 10⁻⁷ T·m/A, a força por metro de barra é de",
+  o:["0,4 N/m","2 N/m","4 N/m","8 N/m","40 N/m"],a:2,
+  c:"F/L = 2 × 10⁻⁷ × I₁I₂/d = 2 × 10⁻⁷ × (2.000 × 2.000)/0,2 = 2 × 10⁻⁷ × 2 × 10⁷ = 4 N/m. Como a força cresce com o quadrado da corrente, correntes de curto dezenas de vezes maiores produzem esforços centenas de vezes maiores."}
+],
+b4:[
+ {s:"O fluxo que atravessa uma bobina de 100 espiras cai uniformemente de 0,05 Wb para 0,01 Wb em 0,2 s. O módulo da fem média induzida é",
+  o:["0,2 V","2 V","20 V","25 V","200 V"],a:2,
+  c:"|e| = N·ΔΦ/Δt = 100 × (0,05 − 0,01)/0,2 = 100 × 0,2 = 20 V. Usar o fluxo final ou inicial no lugar da variação dá valores errados, como 25 V."},
+ {s:"Um condutor de 0,5 m se desloca a 10 m/s, perpendicularmente às linhas de um campo de 0,6 T. A fem induzida entre suas extremidades é",
+  o:["0,3 V","3 V","6 V","12 V","30 V"],a:1,
+  c:"e = B·L·v = 0,6 × 0,5 × 10 = 3 V. É o princípio do gerador: condutor cortando linhas de campo."},
+ {s:"O polo norte de um ímã é aproximado de uma espira condutora fechada. De acordo com a lei de Lenz, a corrente induzida na espira",
+  o:["é nula, pois o ímã não toca a espira","cria um polo sul voltado para o ímã, atraindo-o","cria um polo norte voltado para o ímã, opondo-se à aproximação","tem sentido que depende apenas da resistência da espira","só aparece se o ímã estiver parado"],a:2,
+  c:"A corrente induzida se opõe à variação que a produziu. O fluxo está aumentando com a aproximação, então a espira cria um polo norte voltado para o ímã, o que o repele."},
+ {s:"A corrente numa bobina de 0,5 H cai de 4 A para zero em 10 ms quando um contato se abre. O módulo da fem média de autoindução é",
+  o:["0,2 V","2 V","20 V","200 V","2.000 V"],a:3,
+  c:"|e| = L·Δi/Δt = 0,5 × 4 / 0,01 = 200 V. É por isso que bobinas de contatores e relés geram sobretensões ao serem desligadas e precisam de supressores."},
+ {s:"Na construção de núcleos de transformadores, adicionar silício ao aço e montar o núcleo com chapas finas isoladas entre si tem como principal objetivo",
+  o:["aumentar a relutância do núcleo","reduzir as perdas no cobre dos enrolamentos","reduzir as perdas por histerese e por correntes parasitas (Foucault)","aumentar a corrente de magnetização","aumentar a remanência do núcleo"],a:2,
+  c:"O silício estreita o laço de histerese e aumenta a resistividade do aço. A laminação corta o caminho das correntes parasitas. As duas medidas reduzem as perdas no ferro. Perdas no cobre dependem dos enrolamentos, não do núcleo."},
+ {s:"Comparando materiais pelo laço de histerese, é correto afirmar que o núcleo de um transformador deve ser feito de material com laço",
+  o:["largo e alta coercitividade, como os ímãs permanentes","estreito e baixa coercitividade, pois a área do laço representa perda por ciclo","largo, pois isso reduz a corrente de magnetização","de qualquer formato, pois a histerese só existe em corrente contínua","estreito e alta remanência, para manter o fluxo quando desligado"],a:1,
+  c:"A área do laço é a energia perdida por ciclo; em 60 Hz, isso se repete 60 vezes por segundo. Núcleos usam materiais magneticamente “moles” (laço estreito). Laço largo e alta coercitividade são desejáveis em ímãs permanentes."}
+],
+b5:[
+ {s:"Um transformador ideal tem 1.000 espiras no primário e 50 no secundário. Aplicando-se 2.200 V ao primário, a tensão no secundário é",
+  o:["22 V","55 V","110 V","220 V","44.000 V"],a:2,
+  c:"V₂ = V₁·N₂/N₁ = 2.200 × 50/1.000 = 110 V. Inverter a relação dá 44.000 V (seria um elevador)."},
+ {s:"Um transformador monofásico ideal de 10 kVA, 2.200/220 V, opera em plena carga. A corrente no secundário é de, aproximadamente,",
+  o:["4,55 A","22,7 A","45,5 A","100 A","454,5 A"],a:2,
+  c:"I₂ = S/V₂ = 10.000/220 ≈ 45,5 A. A corrente no primário é 10 vezes menor: 10.000/2.200 ≈ 4,55 A. O lado de menor tensão tem a maior corrente."},
+ {s:"Uma carga resistiva de 5 Ω é ligada ao secundário de um transformador ideal de relação 2.200/220 V. A resistência vista pela fonte, no primário, é de",
+  o:["0,05 Ω","0,5 Ω","50 Ω","500 Ω","5.000 Ω"],a:3,
+  c:"a = 10; Z′ = a²·Z₂ = 100 × 5 = 500 Ω. Usar a em vez de a² dá 50 Ω."},
+ {s:"Por engano, o primário de um transformador de 220 V, 60 Hz, é ligado a uma fonte de 220 V em corrente contínua. O que se espera?",
+  o:["O secundário fornece a tensão nominal em CC","O secundário fornece o dobro da tensão nominal","Não há tensão induzida no secundário, e o primário é percorrido por corrente elevada, limitada apenas pela resistência do enrolamento","O transformador funciona normalmente, com rendimento maior","A corrente do primário fica nula, pois o núcleo bloqueia a CC"],a:2,
+  c:"Sem variação de fluxo não há indução, logo não há tensão no secundário nem a fem que limitaria a corrente no primário. A corrente fica limitada só pela resistência do cobre e pode queimar o enrolamento."},
+ {s:"O primário de um transformador tem 400 espiras e é alimentado com 220 V, 60 Hz. O fluxo máximo no núcleo é de, aproximadamente,",
+  o:["0,206 mWb","2,06 mWb","2,92 mWb","9,17 mWb","20,6 mWb"],a:1,
+  c:"Φmáx = E/(4,44·f·N) = 220/(4,44 × 60 × 400) = 220/106.560 ≈ 2,06 × 10⁻³ Wb. Esquecer o 4,44 dá 9,17 mWb; usar o valor de pico de 311 V dá 2,92 mWb."},
+ {s:"No teste de polaridade de um transformador de 440/110 V, interligam-se H1 e X1 e aplicam-se 220 V entre H1 e H2. Um voltímetro entre H2 e X2 indica 165 V. A polaridade do transformador é",
+  o:["aditiva, pois a leitura é maior que 110 V","subtrativa, pois a leitura é a diferença entre 220 V e a tensão induzida de 55 V","aditiva, pois a leitura é a soma das tensões dos dois lados","subtrativa, pois a leitura é a soma das tensões","impossível de determinar sem aplicar a tensão nominal"],a:1,
+  c:"Com a = 4, aplicando 220 V no lado de alta, o lado de baixa fica com 55 V. Leitura 220 − 55 = 165 V: polaridade subtrativa. Se fosse aditiva, o voltímetro leria 220 + 55 = 275 V."}
+],
+b6:[
+ {s:"No ensaio a vazio de um transformador, com um dos enrolamentos em aberto e tensão nominal aplicada ao outro, o wattímetro indica essencialmente",
+  o:["as perdas no cobre à plena carga","as perdas no ferro (núcleo)","a potência nominal do transformador","a impedância percentual","as perdas por dispersão de fluxo à plena carga"],a:1,
+  c:"A vazio, a corrente é pequena (só a de excitação), e as perdas no cobre são desprezíveis. Com tensão nominal, o fluxo é o nominal, então o wattímetro mede as perdas no ferro. O ensaio também fornece a corrente de excitação."},
+ {s:"Sobre o ensaio de curto-circuito de um transformador, é correto afirmar que",
+  o:["aplica-se a tensão nominal com o secundário curto-circuitado","aplica-se tensão reduzida até circular a corrente nominal, e medem-se as perdas no cobre e a impedância percentual","mede-se a corrente de magnetização","o wattímetro indica as perdas no ferro","é realizado com o secundário em aberto"],a:1,
+  c:"Com um lado em curto, basta uma pequena fração da tensão nominal para circular a corrente nominal. Com a tensão baixa, o fluxo e as perdas no ferro são desprezíveis, e o wattímetro mede as perdas no cobre. A tensão aplicada, em % da nominal, é a impedância percentual."},
+ {s:"Um transformador de 50 kVA alimenta sua carga nominal com fator de potência 0,8. Suas perdas no ferro são de 300 W e as perdas no cobre, em plena carga, de 700 W. O rendimento é de, aproximadamente,",
+  o:["95,0%","97,6%","98,0%","98,3%","99,3%"],a:1,
+  c:"P saída = 50 × 0,8 = 40 kW. η = 40.000/(40.000 + 300 + 700) = 40.000/41.000 ≈ 97,6%. 98,0% resulta de usar 50 kVA no lugar da potência ativa; 98,3% e 99,3%, de esquecer uma das perdas."},
+ {s:"Um transformador tem perdas no cobre de 700 W em plena carga. Operando com metade da carga nominal, as perdas no cobre passam a ser de",
+  o:["87,5 W","175 W","350 W","700 W","1.400 W"],a:1,
+  c:"As perdas no cobre variam com o quadrado da corrente: 0,5² × 700 = 0,25 × 700 = 175 W. O erro comum é reduzir pela metade (350 W)."},
+ {s:"Um transformador tem perdas no ferro de 300 W e perdas no cobre de 1.200 W em carga nominal. O rendimento máximo ocorre com carga de, aproximadamente,",
+  o:["25% da nominal","40% da nominal","50% da nominal","75% da nominal","100% da nominal"],a:2,
+  c:"O rendimento é máximo quando P<sub>Cu</sub> = P<sub>Fe</sub>: x²·1.200 = 300 → x² = 0,25 → x = 0,5, ou seja, 50% da carga nominal."},
+ {s:"A tensão no secundário de um transformador é de 230 V a vazio e cai para 220 V em plena carga. A regulação de tensão é de, aproximadamente,",
+  o:["1,05%","4,35%","4,55%","10%","45,5%"],a:2,
+  c:"Reg = (230 − 220)/220 × 100 ≈ 4,55%. Dividir por 230 dá 4,35%, a forma alternativa menos usada; na dúvida, use a tensão em carga no denominador."}
+],
+b7:[
+ {s:"Um transformador trifásico de distribuição Dyn, 13,8 kV / 380 V, alimenta cargas monofásicas ligadas entre fase e neutro no secundário. A tensão aplicada a essas cargas é de, aproximadamente,",
+  o:["127 V","220 V","380 V","658 V","7.967 V"],a:1,
+  c:"O secundário é em estrela com neutro, e 380 V é a tensão de linha. Fase-neutro: 380/√3 ≈ 220 V. 7.967 V seria 13,8 kV/√3, mas o primário está em triângulo e não tem neutro."},
+ {s:"A corrente nominal no secundário de um transformador trifásico de 150 kVA, com tensão de linha de 380 V no secundário, é de, aproximadamente,",
+  o:["22,8 A","131,6 A","228 A","394,7 A","682 A"],a:2,
+  c:"I = S/(√3·V<sub>L</sub>) = 150.000/(1,732 × 380) ≈ 228 A. Sem o √3: 394,7 A; com 3 no lugar de √3: 131,6 A."},
+ {s:"A placa de um transformador indica a ligação Dyn1. Em relação à tensão de linha da alta tensão, a tensão de linha da baixa tensão está",
+  o:["em fase","adiantada 30°","atrasada 30°","atrasada 1°","atrasada 60°"],a:2,
+  c:"Índice horário 1 → 1 × 30° = 30°, com a baixa tensão atrasada em relação à alta (sentido horário no relógio). Dyn11 corresponderia a 330° de atraso, ou 30° de adiantamento."},
+ {s:"Para a operação de dois transformadores trifásicos em paralelo, NÃO é condição obrigatória que eles tenham",
+  o:["a mesma relação de transformação","o mesmo defasamento angular (índice horário)","a mesma sequência de fases","impedâncias percentuais próximas","a mesma potência nominal"],a:4,
+  c:"Potências diferentes são aceitáveis, desde que as impedâncias percentuais sejam próximas, para que a carga se divida proporcionalmente. Relação, defasamento e sequência diferentes provocam correntes de circulação ou até curto-circuito."},
+ {s:"Durante a manutenção de um painel de média tensão energizado, um técnico precisa retirar um amperímetro ligado ao secundário de um TC. O procedimento correto é",
+  o:["desconectar o amperímetro e deixar o secundário do TC aberto","curto-circuitar os terminais do secundário do TC antes de desconectar o amperímetro","abrir o primário do TC","ligar um resistor de alto valor no lugar do amperímetro","aterrar apenas um terminal e desligar o outro"],a:1,
+  c:"O secundário de um TC energizado nunca pode ficar aberto: a corrente do primário passa a magnetizar o núcleo, que satura, e surgem tensões elevadas e perigosas nos terminais, além de aquecimento. Deve-se curto-circuitar o secundário (as chaves de aferição fazem isso)."},
+ {s:"Um TC de relação 200-5 A alimenta um amperímetro que indica 3,5 A. A corrente no circuito primário é de",
+  o:["3,5 A","87,5 A","140 A","175 A","200 A"],a:2,
+  c:"RTC = 200/5 = 40. I primária = 40 × 3,5 = 140 A. Os 200 A são a corrente nominal do primário, não a corrente medida."}
+]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+
+const fmt=(x,d=0)=>x.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const cell=(t,v)=>`<div><span>${t}</span><b>${v}</b></div>`;
+function lt(){
+  const V1=+tV1.value,N1=+tN1.value,N2=+tN2.value,R2=+tR2.value,f=+tF.value;
+  if(!(V1>0&&N1>0&&N2>0&&f>0)||R2<0){tOut.innerHTML=cell("Aviso","Use valores positivos.");return;}
+  const a=N1/N2,V2=V1/a,I2=R2>0?V2/R2:0,I1=I2/a,S=V2*I2,Z=a*a*R2,phi=V1/(4.44*f*N1);
+  const tipo=a>1?"abaixador":a<1?"elevador":"isolador";
+  tOut.innerHTML=cell("Relação a",fmt(a,3)+" ("+tipo+")")+cell("V<sub>2</sub>",fmt(V2,1)+" V")+
+    cell("I<sub>2</sub>",R2>0?fmt(I2,2)+" A":"a vazio")+cell("I<sub>1</sub>",R2>0?fmt(I1,2)+" A":"a vazio")+
+    cell("Potência S",S>=1000?fmt(S/1000,2)+" kVA":fmt(S,1)+" VA")+cell("Z′ no primário",fmt(Z,2)+" Ω")+
+    cell("Φ<sub>máx</sub>",fmt(phi*1000,3)+" mWb");
+}
+[tV1,tN1,tN2,tR2,tF].forEach(e=>e.addEventListener("input",lt)); lt();
+
+function lr(){
+  const S=+rS.value,Fe=+rFe.value,Cu=+rCu.value,fp=+rFP.value,x=+rX.value/100;
+  rXo.textContent=Math.round(x*100)+"%";
+  if(!(S>0&&Fe>=0&&Cu>=0&&fp>0&&fp<=1)){rOut.innerHTML=cell("Aviso","Confira os dados.");rsvg.innerHTML="";return;}
+  const eta=q=>{const P=q*S*fp*1000;return 100*P/(P+Fe+q*q*Cu);};
+  const xm=Cu>0?Math.sqrt(Fe/Cu):null;
+  const X0=60,X1=600,Y0=195,Y1=15,xs=[];for(let k=5;k<=125;k++)xs.push(k/100);
+  const ys=xs.map(eta),lo=Math.floor(Math.min(...ys)),hi=Math.ceil(Math.max(...ys)+0.2);
+  const px=q=>X0+(X1-X0)*(q-0.05)/1.2, py=e=>Y0-(Y0-Y1)*(e-lo)/Math.max(hi-lo,0.5);
+  let d="",g="";xs.forEach((q,i)=>{d+=(i?"L":"M")+px(q).toFixed(1)+","+py(ys[i]).toFixed(1);});
+  [0.25,0.5,0.75,1,1.25].forEach(q=>g+=`<text x="${px(q)}" y="${Y0+18}" class="tm" text-anchor="middle">${q*100}%</text>`);
+  const step=(hi-lo)>6?2:1;for(let e=lo;e<=hi;e+=step)g+=`<line x1="${X0}" y1="${py(e)}" x2="${X1}" y2="${py(e)}" class="grid"/><text x="${X0-8}" y="${py(e)+4}" class="tm" text-anchor="end">${e}%</text>`;
+  let m="";if(xm&&xm>=0.05&&xm<=1.25)m=`<line x1="${px(xm)}" y1="${py(eta(xm))}" x2="${px(xm)}" y2="${Y0}" class="dash pa"/>`;
+  rsvg.innerHTML=g+`<line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" class="ax"/><path d="${d}" class="w pc"/>`+m+
+    `<circle cx="${px(Math.max(x,0.05))}" cy="${py(eta(Math.max(x,0.05)))}" r="6" class="f-pa"/>`;
+  const P=x*S*fp*1000,pc=x*x*Cu;
+  rOut.innerHTML=cell("Potência de saída",fmt(P/1000,2)+" kW")+cell("Perdas no cobre",fmt(pc,0)+" W")+cell("Perdas totais",fmt(pc+Fe,0)+" W")+
+    cell("Rendimento",fmt(eta(Math.max(x,0.0001)),2)+"%")+cell("η máximo em",xm?fmt(xm*100,0)+"% da carga":"—")+cell("η máximo",xm?fmt(eta(xm),2)+"%":"—");
+}
+[rS,rFe,rCu,rFP,rX].forEach(e=>e.addEventListener("input",lr)); lr();
+
+</script>
+</body>
+</html>

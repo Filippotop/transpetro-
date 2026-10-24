@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instalações elétricas prediais e NBR 5410 — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+</style>
+<style>
+.dsh{stroke-dasharray:5 4}
+.tn{font-size:11px;fill:var(--mut)}
+.coilr{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.coilc{fill:none;stroke:var(--ink);stroke-width:2}
+.lampon{fill:var(--pb);stroke:var(--ink);stroke-width:2}
+.cell{fill:var(--paper);stroke:var(--rule);stroke-width:1}
+.wall{fill:none;stroke:var(--ink);stroke-width:5}
+.door{stroke:var(--card);stroke-width:7}
+.ring2{fill:none;stroke:var(--pb);stroke-width:4}
+.relay{fill:var(--pc-bg);stroke:var(--pc);stroke-width:1.8}
+.on{stroke:var(--pc)!important;stroke-width:3.4!important}
+</style><style>.hl{fill:var(--pc-bg);opacity:.6}.band{fill-opacity:.25;stroke-width:2}.band.pa{fill:var(--pa)}.band.pb{fill:var(--pb)}.band.pc{fill:var(--pc)}</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. Estrutura e princípios<small>Itens 8.1 e 10.1</small></a></li>
+    <li><a href="#b2">2. Previsão de cargas e circuitos<small>Itens 8.1 e 10.1</small></a></li>
+    <li><a href="#b3">3. Condutores e proteção<small>Itens 8.1 e 10.1</small></a></li>
+    <li><a href="#b4">4. Choque elétrico, DR e DPS<small>Itens 8.1 e 10.1</small></a></li>
+    <li><a href="#b5">5. Aterramento e equipotencialização<small>Itens 8.1, 8.3 e 10.1</small></a></li>
+    <li><a href="#form">Quadro-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Instalações elétricas prediais e NBR 5410</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Teoria, figuras, regras da norma com cada símbolo nomeado, exemplos resolvidos, duas calculadoras e exercícios comentados ao fim de cada bloco.</p>
+  <svg class="hero-wave" viewBox="0 0 960 180" role="img" aria-label="Símbolos de planta elétrica estilizados"><path d="M0 150 H960" class="wire pc-s"/><circle cx="60" cy="60" r="18" class="comp"/><text x="60" y="66" class="ts" text-anchor="middle">a</text><path d="M60 78 Q90 120 115 146" class="wire"/><polygon points="105,150 115,133 125,150" class="comp"/><path d="M78 60 H162" class="wire pa-s"/><circle cx="180" cy="60" r="18" class="comp"/><text x="180" y="66" class="ts" text-anchor="middle">b</text><path d="M180 78 Q210 120 235 146" class="wire"/><polygon points="225,150 235,133 245,150" class="comp"/><path d="M198 60 H282" class="wire pa-s"/><circle cx="300" cy="60" r="18" class="comp"/><text x="300" y="66" class="ts" text-anchor="middle">c</text><path d="M300 78 Q330 120 355 146" class="wire"/><polygon points="345,150 355,133 365,150" class="comp"/><path d="M318 60 H402" class="wire pa-s"/><circle cx="420" cy="60" r="18" class="comp"/><text x="420" y="66" class="ts" text-anchor="middle">d</text><path d="M420 78 Q450 120 475 146" class="wire"/><polygon points="465,150 475,133 485,150" class="comp"/><path d="M438 60 H522" class="wire pa-s"/><circle cx="540" cy="60" r="18" class="comp"/><text x="540" y="66" class="ts" text-anchor="middle">e</text><path d="M540 78 Q570 120 595 146" class="wire"/><polygon points="585,150 595,133 605,150" class="comp"/><path d="M558 60 H642" class="wire pa-s"/><circle cx="660" cy="60" r="18" class="comp"/><text x="660" y="66" class="ts" text-anchor="middle">f</text><path d="M660 78 Q690 120 715 146" class="wire"/><polygon points="705,150 715,133 725,150" class="comp"/><path d="M678 60 H762" class="wire pa-s"/><circle cx="780" cy="60" r="18" class="comp"/><text x="780" y="66" class="ts" text-anchor="middle">g</text><path d="M780 78 Q810 120 835 146" class="wire"/><polygon points="825,150 835,133 845,150" class="comp"/><path d="M798 60 H882" class="wire pa-s"/><circle cx="900" cy="60" r="18" class="comp"/><text x="900" y="66" class="ts" text-anchor="middle">h</text><path d="M900 78 Q930 120 955 146" class="wire"/><polygon points="945,150 955,133 965,150" class="comp"/></svg>
+  <div class="hero-legend"><span class="a">Eletroduto no teto</span><span class="c">Eletroduto no piso ou parede</span></div>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>O Anexo IV da <b>Ênfase 8 — Manutenção – Elétrica</b> não usa a expressão “instalações prediais”. O assunto está em dois itens, conferidos no texto oficial:</p>
+  <ul>
+    <li><b>8.1</b> Instalações elétricas de baixa tensão;</li>
+    <li><b>10.1</b> Conhecimentos básicos das normas: ABNT NBR-5410.</li>
+  </ul>
+  <p>Instalações prediais (residenciais, comerciais) são o caso mais comum de baixa tensão, e é nelas que este material se concentra. O Bloco 5 também cobre a parte de baixa tensão do item <b>8.3</b> (esquemas de aterramento e equipotencialização). Ficam de fora, para materiais próprios: redes aéreas de 1 a 17,5 kV (<b>8.2</b>), SPDA (<b>8.4</b>) e NR-10 (<b>10.4</b>).</p>
+  <div class="box alert">
+    <p class="box-title">Qual versão da NBR 5410 estudar</p>
+    <p>A versão em vigor é a <b>ABNT NBR 5410:2004, versão corrigida de 2008</b>. A norma está em revisão, mas, até a data deste material, o novo texto ainda estava em fase de consulta nacional, sem publicação. Por isso, as regras abaixo seguem a versão vigente, que é a cobrada em prova. Algumas mudanças discutidas na revisão (como estender o DR a mais circuitos) ainda <b>não</b> valem.</p>
+  </div>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da Transpetro (Manutenção – Elétrica, que está nos arquivos do projeto), cinco questões específicas foram deste tema:</p>
+    <ul>
+      <li>o comportamento da corrente de falta num esquema TN, num choque por contato indireto;</li>
+      <li>a causa de uma sobretensão numa fase do quadro (resposta ligada ao rompimento do neutro com cargas mal distribuídas);</li>
+      <li>o comprimento máximo de um circuito para não passar de um limite de queda de tensão, usando a queda unitária em V/(A·km);</li>
+      <li>os princípios fundamentais da NBR 5410;</li>
+      <li>se as canalizações metálicas de água podem ser eletrodo de aterramento e se fazem parte da equipotencialização principal.</li>
+    </ul>
+    <p>É um <b>padrão observado</b>, não garantia de repetição. O estilo mistura cálculo curto (queda de tensão, previsão de carga) com afirmações conceituais tiradas quase literalmente do texto da norma.</p>
+  </div>
+</section>
+
+<!-- ============ BLOCO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Estrutura da instalação e princípios da NBR 5410</h2></div>
+  <p class="edital-ref">Edital, itens 8.1 e 10.1</p>
+
+  <h3>Campo de aplicação</h3>
+  <p>A NBR 5410 vale para instalações em <b>baixa tensão</b>: até <b>1.000 V em corrente alternada</b> (frequências abaixo de 400 Hz) e até <b>1.500 V em corrente contínua</b>. Abrange edificações residenciais, comerciais, públicas, industriais, áreas externas e canteiros de obra. Instalações de média tensão (1 a 36,2 kV) seguem outra norma, a NBR 14039.</p>
+
+  <h3>Do poste à tomada</h3>
+  <figure><svg viewBox="0 0 710 230" role="img" aria-label="Da rede da distribuidora aos circuitos terminais"><rect x="10" y="70" width="110" height="70" class="relay"/><text x="65.0" y="94.0" class="ts" text-anchor="middle">rede de</text><text x="65.0" y="110.0" class="ts" text-anchor="middle">distribuição</text><text x="65.0" y="126.0" class="ts" text-anchor="middle">(BT)</text><line x1="120" y1="105" x2="160" y2="105" class="wire"/><rect x="160" y="70" width="110" height="70" class="relay"/><text x="215.0" y="94.0" class="ts" text-anchor="middle">ramal de</text><text x="215.0" y="110.0" class="ts" text-anchor="middle">ligação e</text><text x="215.0" y="126.0" class="ts" text-anchor="middle">medição</text><text x="215" y="58" class="tm" text-anchor="middle">ponto de entrega</text><line x1="270" y1="105" x2="310" y2="105" class="wire"/><rect x="310" y="70" width="110" height="70" class="core"/><text x="365.0" y="94.0" class="ts" text-anchor="middle">quadro de</text><text x="365.0" y="110.0" class="ts" text-anchor="middle">distribuição</text><text x="365.0" y="126.0" class="ts" text-anchor="middle">(QD)</text><path d="M420 105 C 450 105, 450 30, 480 30" class="wire"/><text x="488" y="35" class="ts" text-anchor="start">iluminação</text><path d="M420 105 C 450 105, 450 80, 480 80" class="wire"/><text x="488" y="85" class="ts" text-anchor="start">tomadas de uso geral</text><path d="M420 105 C 450 105, 450 130, 480 130" class="wire"/><text x="488" y="135" class="ts" text-anchor="start">tomadas de uso específico</text><path d="M420 105 C 450 105, 450 180, 480 180" class="wire"/><text x="488" y="185" class="ts" text-anchor="start">chuveiro, ar-condicionado...</text><text x="560" y="222" class="tm" text-anchor="middle">circuitos terminais</text><text x="215" y="170" class="tm" text-anchor="middle">responsabilidade da</text><text x="215" y="186" class="tm" text-anchor="middle">distribuidora até aqui</text></svg><figcaption>Figura 1. Caminho da energia numa instalação predial. Até o ponto de entrega, a responsabilidade é da distribuidora; dali para dentro, do consumidor, e é aí que se aplica a NBR 5410.</figcaption></figure>
+  <ul>
+    <li><b>Ponto de entrega</b>: limite entre a rede da distribuidora e a instalação do consumidor. O padrão de entrada (caixa de medição, disjuntor geral, aterramento) segue as regras de cada distribuidora.</li>
+    <li><b>Quadro de distribuição (QD)</b>: recebe o circuito de distribuição e reparte a energia nos circuitos terminais, cada um com seu dispositivo de proteção.</li>
+    <li><b>Circuito de distribuição</b>: alimenta um ou mais quadros. <b>Circuito terminal</b>: sai de um quadro e alimenta diretamente os equipamentos e pontos de utilização.</li>
+  </ul>
+
+  <h3>Princípios fundamentais</h3>
+  <p>A norma é organizada em torno da segurança de pessoas, animais e bens. Os princípios que a banca costuma transformar em alternativas:</p>
+  <ul>
+    <li><b>Proteção contra choques elétricos</b>, tanto por contato com partes vivas quanto por falhas que ponham uma massa sob tensão. As duas são obrigatórias.</li>
+    <li><b>Proteção contra efeitos térmicos</b> (incêndio e queimaduras), contra <b>sobrecorrentes</b> e contra <b>sobretensões</b>.</li>
+    <li><b>Seccionamento e comando</b>: a instalação deve permitir desligar a alimentação dela, de seus circuitos e equipamentos para manutenção, verificação, localização de defeitos e reparos.</li>
+    <li><b>Correntes de falta</b>: condutores que não são vivos, mas que escoam correntes de falta (como o condutor de proteção), devem suportá-las sem atingir temperaturas excessivas.</li>
+    <li><b>Qualificação</b>: projeto, execução, verificação e manutenção devem ser feitos por pessoas qualificadas.</li>
+    <li><b>Verificação final</b>: toda instalação nova, ampliação ou reforma deve ser inspecionada e ensaiada antes de entrar em funcionamento.</li>
+  </ul>
+
+  <h3>Vocabulário essencial</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Termo</th><th>Significado</th></tr></thead>
+    <tbody>
+      <tr><td>Parte viva</td><td>condutor ou parte condutora destinada a ficar sob tensão em uso normal (fases e também o neutro)</td></tr>
+      <tr><td>Massa</td><td>parte condutora acessível (carcaça metálica de um equipamento), normalmente sem tensão, mas que pode ficar energizada numa falha</td></tr>
+      <tr><td>Contato direto</td><td>contato com uma parte viva</td></tr>
+      <tr><td>Contato indireto</td><td>contato com uma massa que ficou energizada por uma falha de isolamento</td></tr>
+      <tr><td>Condutor de proteção (PE)</td><td>o “fio terra”: liga as massas ao aterramento e escoa as correntes de falta</td></tr>
+      <tr><td>Corrente de projeto (I<sub>B</sub>)</td><td>corrente que o circuito deve conduzir em serviço normal</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ BLOCO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Previsão de cargas e divisão de circuitos</h2></div>
+  <p class="edital-ref">Edital, itens 8.1 e 10.1 (seção 9 da NBR 5410, locais de habitação)</p>
+  <p>Antes de dimensionar qualquer condutor, o projeto estima a carga mínima de cada cômodo. A NBR 5410 dá regras mínimas para unidades residenciais; o projetista pode prever mais, nunca menos.</p>
+
+  <h3>Iluminação</h3>
+  <p>Em cada cômodo, pelo menos um ponto de luz no teto, comandado por interruptor. A carga mínima depende da área:</p>
+  <div class="eq">
+    <p class="eq-name">Carga mínima de iluminação por cômodo</p>
+    <div class="eq-main">A ≤ 6 m²: <b>100 VA</b> &nbsp;&nbsp;&nbsp;&nbsp; A &gt; 6 m²: <b>100 VA</b> + <b>60 VA</b> a cada 4 m² <b>inteiros</b> acima dos 6 m²</div>
+    <dl>
+      <dt>A</dt><dd>área do cômodo (m²)</dd>
+      <dt>“inteiros”</dt><dd>a sobra de área que não completa 4 m² não acrescenta nada: 12 m² = 6 + 4 + 2 → 100 + 60 = 160 VA</dd>
+    </dl>
+  </div>
+  <p>Esses valores são <b>para previsão de carga</b>, não para escolha de lâmpadas: o projeto luminotécnico é outra coisa.</p>
+
+  <h3>Tomadas de uso geral (TUG): quantidade mínima</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Cômodo</th><th>Quantidade mínima de pontos</th></tr></thead>
+    <tbody>
+      <tr><td>Banheiro</td><td>pelo menos 1 ponto próximo ao lavatório (respeitando as restrições dos locais com chuveiro ou banheira)</td></tr>
+      <tr><td>Cozinha, copa, copa-cozinha, área de serviço, lavanderia</td><td>1 ponto a cada <b>3,5 m</b>, ou fração, de perímetro; acima da bancada da pia, no mínimo 2 tomadas</td></tr>
+      <tr><td>Varanda</td><td>pelo menos 1 ponto</td></tr>
+      <tr><td>Sala e dormitório</td><td>1 ponto a cada <b>5 m</b>, ou fração, de perímetro, espaçados tão uniformemente quanto possível</td></tr>
+      <tr><td>Demais cômodos</td><td>1 ponto se a área for até 6 m²; acima disso, 1 a cada 5 m, ou fração, de perímetro</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Tomadas de uso geral: potência mínima</h3>
+  <div class="eq">
+    <p class="eq-name">Potência atribuída a cada ponto de tomada</p>
+    <div class="eq-main">locais molhados: <b>600 VA</b> por ponto até 3 pontos + <b>100 VA</b> por ponto excedente &nbsp;&nbsp;&nbsp;&nbsp; demais: <b>100 VA</b> por ponto</div>
+    <dl>
+      <dt>locais molhados</dt><dd>banheiros, cozinhas, copas, copas-cozinhas, áreas de serviço, lavanderias e análogos; cada cômodo é calculado separadamente</dd>
+      <dt>exceção</dt><dd>se o conjunto desses ambientes tiver mais de 6 pontos, admite-se 600 VA só para os 2 primeiros pontos de cada cômodo, e 100 VA para os demais</dd>
+    </dl>
+  </div>
+
+  <h3>Tomadas de uso específico (TUE)</h3>
+  <p>São previstas para equipamentos fixos ou de potência conhecida: chuveiro, torneira elétrica, ar-condicionado, forno, máquina de lavar. A potência atribuída é a <b>potência nominal do equipamento</b>. A tomada (ou a ligação direta) deve ficar a no máximo 1,5 m do local previsto para o equipamento.</p>
+
+  <h3>Divisão dos circuitos</h3>
+  <ul>
+    <li>Circuitos de <b>iluminação</b> e de <b>tomadas</b> devem, em regra, ser separados. A norma admite circuito comum para iluminação e tomadas (exceto as dos locais do item seguinte) desde que a corrente de projeto não passe de <b>16 A</b> e que nem toda a iluminação, nem todas as tomadas fiquem num único circuito.</li>
+    <li>As tomadas de <b>cozinhas, copas, áreas de serviço, lavanderias</b> e locais análogos devem ter circuitos <b>exclusivos</b> para elas.</li>
+    <li>Todo equipamento com corrente nominal <b>superior a 10 A</b> deve ter <b>circuito independente</b>.</li>
+    <li>Distribuir as cargas entre as fases, para equilibrar o quadro. O desequilíbrio é o que torna perigoso um rompimento de neutro (Bloco 5).</li>
+  </ul>
+  <figure><svg viewBox="0 0 620 300" role="img" aria-label="Exemplo de previsão de carga numa sala de 4 m por 3 m"><rect x="90" y="40" width="320" height="200" class="wall"/><line x1="90" y1="262" x2="410" y2="262" class="ar mut" marker-start="url(#ah-mut)" marker-end="url(#ah-mut)"/><text x="250" y="282" class="ts" text-anchor="middle">4 m</text><line x1="432" y1="40" x2="432" y2="240" class="ar mut" marker-start="url(#ah-mut)" marker-end="url(#ah-mut)"/><text x="440" y="145" class="ts" text-anchor="start">3 m</text><circle cx="250" cy="140" r="22" class="comp"/><text x="250" y="146" class="tl" text-anchor="middle">a</text><text x="280" y="120" class="ts fa" text-anchor="start">160 VA</text><polygon points="140,240 150,224 160,240" class="comp"/><polygon points="340,240 350,224 360,240" class="comp"/><polygon points="90,110 106,120 90,130" class="comp"/><text x="150" y="218" class="tm" text-anchor="middle">100 VA</text><text x="350" y="218" class="tm" text-anchor="middle">100 VA</text><text x="112" y="108" class="tm" text-anchor="start">100 VA</text><circle cx="395" cy="225" r="7" class="comp"/><text x="395" y="214" class="tm" text-anchor="middle">a</text><text x="470" y="70" class="ts" text-anchor="start">área: 12 m²</text><text x="470" y="90" class="ts" text-anchor="start">perímetro: 14 m</text></svg><figcaption>Figura 2. Sala de 4 m × 3 m: 12 m² de área dão 160 VA de iluminação (100 + 60); 14 m de perímetro exigem ⌈14/5⌉ = 3 pontos de tomada, de 100 VA cada.</figcaption></figure>
+
+  <div class="lab" id="labp">
+    <h4>Calculadora: previsão mínima de carga por cômodo</h4>
+    <p class="hint">Escolha o tipo de cômodo e informe as dimensões. Os resultados são os mínimos da NBR 5410 para locais de habitação.</p>
+    <div class="calc">
+      <label><span>Tipo de cômodo</span><select id="pT">
+        <option value="sala">Sala ou dormitório</option>
+        <option value="cozinha">Cozinha, copa, área de serviço, lavanderia</option>
+        <option value="banheiro">Banheiro</option>
+        <option value="varanda">Varanda</option>
+        <option value="outro">Outro (corredor, hall...)</option></select></label>
+      <label><span>Comprimento (m)</span><input id="pA" type="number" value="4" min="0.1" step="any"></label>
+      <label><span>Largura (m)</span><input id="pB" type="number" value="3" min="0.1" step="any"></label>
+    </div>
+    <div class="lab-out" id="pOut"></div>
+  </div>
+
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Cozinha de 3 m × 4 m. Calcule a previsão mínima de iluminação e de TUG.</p>
+    <ol class="steps">
+      <li>Área 12 m²: iluminação 100 + 60 = <b>160 VA</b>.</li>
+      <li>Perímetro 2 × (3 + 4) = 14 m; 14/3,5 = 4 → <b>4 pontos</b> de tomada.</li>
+      <li>Potência: 3 × 600 + 1 × 100 = <b>1.900 VA</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinhas clássicas</p>
+    <ul>
+      <li>“Ou fração” arredonda <b>para cima</b> o número de tomadas (14 m de perímetro em sala → 2,8 → 3); “4 m² inteiros” arredonda <b>para baixo</b> o acréscimo de iluminação.</li>
+      <li>Os 600 VA valem até 3 pontos <b>por cômodo</b>; os seguintes são de 100 VA.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ BLOCO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Dimensionamento de condutores e dispositivos de proteção</h2></div>
+  <p class="edital-ref">Edital, itens 8.1 e 10.1</p>
+  <p>O condutor de um circuito precisa atender a vários critérios ao mesmo tempo; fica valendo a <b>maior</b> seção que algum deles exigir. Para prova de nível técnico, os quatro principais são: seção mínima, capacidade de condução de corrente, queda de tensão e coordenação com a proteção.</p>
+
+  <h3>1. Seção mínima (condutores de cobre)</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo de circuito</th><th>Seção mínima</th></tr></thead>
+    <tbody>
+      <tr><td>Iluminação</td><td>1,5 mm²</td></tr>
+      <tr><td>Força (inclui tomadas)</td><td>2,5 mm²</td></tr>
+      <tr><td>Sinalização e controle</td><td>0,5 mm²</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>2. Capacidade de condução de corrente</h3>
+  <p>A corrente que um condutor suporta (I<sub>z</sub>) depende de como ele está instalado (método de referência), da isolação, do número de condutores carregados, da temperatura ambiente e do agrupamento com outros circuitos. O caso mais comum em residências é o <b>método B1</b>: condutores isolados em eletroduto embutido em alvenaria.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Seção (mm²)</th><th>2 condutores carregados</th><th>3 condutores carregados</th></tr></thead>
+    <tbody>
+      <tr><td>1,5</td><td>17,5 A</td><td>15,5 A</td></tr>
+      <tr><td>2,5</td><td>24 A</td><td>21 A</td></tr>
+      <tr><td>4</td><td>32 A</td><td>28 A</td></tr>
+      <tr><td>6</td><td>41 A</td><td>36 A</td></tr>
+    </tbody>
+  </table></div>
+  <p class="sans" style="font-size:.92rem;color:var(--mut)">Trecho da tabela 36 da NBR 5410: cobre, isolação de PVC (70 °C), temperatura ambiente de 30 °C, método B1. Circuito monofásico (fase e neutro) ou bifásico a dois fios: 2 condutores carregados.</p>
+  <p><b>Fator de agrupamento.</b> Vários circuitos no mesmo eletroduto se aquecem mutuamente, e a capacidade de cada um cai. Os fatores para condutores agrupados em eletroduto são: 1 circuito, 1,00; 2 circuitos, 0,80; 3 circuitos, 0,70; 4 circuitos, 0,65; 5 circuitos, 0,60. Há também fatores para temperatura ambiente diferente de 30 °C.</p>
+  <div class="eq">
+    <p class="eq-name">Capacidade corrigida</p>
+    <div class="eq-main"><var>I</var><sub>z</sub>′ = <var>I</var><sub>z</sub> · <var>k</var><sub>agrup</sub> · <var>k</var><sub>temp</sub> &nbsp;&nbsp;&nbsp;&nbsp; condição: <var>I</var><sub>z</sub>′ ≥ <var>I</var><sub>B</sub></div>
+    <dl>
+      <dt><var>I</var><sub>z</sub></dt><dd>capacidade de condução da tabela (A)</dd>
+      <dt><var>k</var></dt><dd>fatores de correção de agrupamento e temperatura</dd>
+      <dt><var>I</var><sub>B</sub></dt><dd>corrente de projeto do circuito (A) = P/V em monofásico com fator de potência unitário</dd>
+    </dl>
+  </div>
+
+  <h3>3. Queda de tensão</h3>
+  <p>Condutores longos ou finos derrubam a tensão que chega à carga. A NBR 5410 limita a queda total, contada da origem da instalação até o ponto de utilização:</p>
+  <ul>
+    <li><b>7%</b> quando a origem são os terminais secundários de um transformador próprio (ou da distribuidora, se o ponto de entrega estiver ali) ou de um gerador próprio;</li>
+    <li><b>5%</b> a partir do ponto de entrega, quando o fornecimento é em baixa tensão pela rede da distribuidora;</li>
+    <li>em nenhum caso a queda nos <b>circuitos terminais</b> pode passar de <b>4%</b>.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Duas formas de calcular</p>
+    <div class="eq-main">Δ<var>V</var> = Δ<var>V</var><sub>unit</sub> · <var>I</var> · <var>L</var> &nbsp;&nbsp;&nbsp;&nbsp; Δ<var>V</var><sub>mono</sub> = <span class="frac"><span>2 · <var>ρ</var> · <var>L</var> · <var>I</var></span><span><var>S</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; Δ<var>V</var>% = 100 · <span class="frac"><span>Δ<var>V</var></span><span><var>V</var></span></span></div>
+    <dl>
+      <dt>Δ<var>V</var><sub>unit</sub></dt><dd>queda de tensão unitária, dada em tabelas de fabricantes em V/(A·km); já considera ida e volta do circuito</dd>
+      <dt><var>L</var></dt><dd>comprimento do circuito: em km na primeira fórmula, em m na segunda</dd>
+      <dt><var>ρ</var></dt><dd>resistividade do cobre ≈ 0,0172 Ω·mm²/m; o fator 2 conta a ida e a volta</dd>
+      <dt><var>S</var></dt><dd>seção do condutor (mm²)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2 (no formato da prova de 2023)</p>
+    <p>Um equipamento de 4.400 VA em 220 V é alimentado por um circuito com queda unitária de 8 V/(A·km). Qual o comprimento máximo para que a queda não passe de 3%?</p>
+    <ol class="steps">
+      <li>I = 4.400/220 = 20 A.</li>
+      <li>Queda máxima: 3% de 220 V = 6,6 V.</li>
+      <li>L = ΔV/(ΔV<sub>unit</sub> · I) = 6,6/(8 × 20) = 0,04125 km ≈ <b>41,3 m</b>.</li>
+    </ol>
+  </div>
+
+  <h3>4. Coordenação com o dispositivo de proteção</h3>
+  <figure><svg viewBox="0 0 640 200" role="img" aria-label="Coordenação entre corrente de projeto, disjuntor e condutor"><line x1="40" y1="110" x2="610" y2="110" class="ax" marker-end="url(#ah-mut)"/><text x="612" y="130" class="tm" text-anchor="end">A</text><line x1="150" y1="90" x2="150" y2="130" class="wire thick"/><text x="150" y="78" class="tl fc" text-anchor="middle">I<tspan class="sub" dy="4">B</tspan><tspan dy="-4">&#8203;</tspan></text><text x="150" y="152" class="tm" text-anchor="middle">corrente de projeto</text><line x1="330" y1="90" x2="330" y2="130" class="wire thick"/><text x="330" y="78" class="tl fa" text-anchor="middle">I<tspan class="sub" dy="4">n</tspan><tspan dy="-4">&#8203;</tspan></text><text x="330" y="152" class="tm" text-anchor="middle">corrente nominal do disjuntor</text><line x1="500" y1="90" x2="500" y2="130" class="wire thick"/><text x="500" y="78" class="tl fb" text-anchor="middle">I<tspan class="sub" dy="4">z</tspan><tspan dy="-4">&#8203;</tspan></text><text x="500" y="152" class="tm" text-anchor="middle">capacidade do condutor</text><text x="325" y="40" class="tl" text-anchor="middle">I<tspan class="sub" dy="4">B</tspan><tspan dy="-4">&#8203;</tspan>  ≤  I<tspan class="sub" dy="4">n</tspan><tspan dy="-4">&#8203;</tspan>  ≤  I<tspan class="sub" dy="4">z</tspan><tspan dy="-4">&#8203;</tspan></text><rect x="150" y="100" width="350" height="20" class="hl"/><text x="325" y="186" class="ts" text-anchor="middle">o disjuntor deve aguentar a carga e proteger o cabo</text></svg><figcaption>Figura 3. A corrente nominal do disjuntor fica entre a corrente que a carga pede e a corrente que o cabo aguenta.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Proteção contra sobrecarga</p>
+    <div class="eq-main"><var>I</var><sub>B</sub> ≤ <var>I</var><sub>n</sub> ≤ <var>I</var><sub>z</sub> &nbsp;&nbsp;&nbsp;&nbsp; <var>I</var><sub>2</sub> ≤ 1,45 · <var>I</var><sub>z</sub></div>
+    <dl>
+      <dt><var>I</var><sub>n</sub></dt><dd>corrente nominal do dispositivo de proteção (A)</dd>
+      <dt><var>I</var><sub>2</sub></dt><dd>corrente que garante a atuação do dispositivo no tempo convencional; disjuntores conforme as normas usuais já atendem essa segunda condição quando atendem a primeira</dd>
+    </dl>
+  </div>
+  <p><b>Disjuntor termomagnético.</b> Tem dois disparadores: o <b>térmico</b> (lâmina bimetálica), que atua com atraso em sobrecargas, e o <b>magnético</b> (bobina), que atua instantaneamente em correntes de curto-circuito. A <b>curva</b> diz a partir de quantas vezes a corrente nominal o disparo magnético acontece:</p>
+  <figure><svg viewBox="0 0 640 260" role="img" aria-label="Faixas de disparo magnético das curvas B, C e D"><line x1="60.0" y1="40" x2="60.0" y2="200" class="grid"/><text x="60.0" y="220" class="tm" text-anchor="middle">1×In</text><line x1="170.0" y1="40" x2="170.0" y2="200" class="grid"/><text x="170.04932542887335" y="220" class="tm" text-anchor="middle">2×In</text><line x1="234.4" y1="40" x2="234.4" y2="200" class="grid"/><text x="234.42405403442342" y="220" class="tm" text-anchor="middle">3×In</text><line x1="315.5" y1="40" x2="315.5" y2="200" class="grid"/><text x="315.52662053670326" y="220" class="tm" text-anchor="middle">5×In</text><line x1="425.6" y1="40" x2="425.6" y2="200" class="grid"/><text x="425.5759459655766" y="220" class="tm" text-anchor="middle">10×In</text><line x1="535.6" y1="40" x2="535.6" y2="200" class="grid"/><text x="535.62527139445" y="220" class="tm" text-anchor="middle">20×In</text><line x1="600.0" y1="40" x2="600.0" y2="200" class="grid"/><text x="600.0" y="220" class="tm" text-anchor="middle">30×In</text><rect x="234.4" y="60" width="81.1" height="28" class="band pc"/><text x="66.0" y="79" class="ts" text-anchor="start">curva B: 3 a 5 × In</text><rect x="315.5" y="105" width="110.0" height="28" class="band pa"/><text x="66.0" y="124" class="ts" text-anchor="start">curva C: 5 a 10 × In</text><rect x="425.6" y="150" width="110.0" height="28" class="band pb"/><text x="66.0" y="169" class="ts" text-anchor="start">curva D: 10 a 20 × In</text><line x1="60" y1="200" x2="600" y2="200" class="ax"/><text x="330" y="248" class="tm" text-anchor="middle">múltiplos da corrente nominal (escala logarítmica)</text></svg><figcaption>Figura 4. Faixas de disparo instantâneo dos disjuntores. Curva B: cargas resistivas e circuitos longos. Curva C: uso geral, cargas indutivas e motores pequenos (é a mais comum em quadros residenciais). Curva D: correntes de partida muito altas, como transformadores e motores grandes.</figcaption></figure>
+
+  <div class="lab" id="labd">
+    <h4>Calculadora: dimensionamento simplificado de um circuito monofásico</h4>
+    <p class="hint">Considera cobre, PVC 70 °C, método B1, 2 condutores carregados e fator de potência unitário. Escolhe a menor seção (até 6 mm²) que atende os critérios e um disjuntor coordenado.</p>
+    <div class="calc">
+      <label><span>Potência (W)</span><input id="dP" type="number" value="5500" min="1" step="any"></label>
+      <label><span>Tensão (V)</span><select id="dV"><option>127</option><option selected>220</option></select></label>
+      <label><span>Comprimento (m)</span><input id="dL" type="number" value="20" min="1" step="any"></label>
+      <label><span>Circuitos no eletroduto</span><select id="dG"><option value="1">1</option><option value="0.8">2</option><option value="0.7">3</option><option value="0.65">4</option><option value="0.6">5</option></select></label>
+      <label><span>Tipo</span><select id="dTp"><option value="1.5">Iluminação</option><option value="2.5" selected>Força / tomadas</option></select></label>
+      <label><span>Queda máxima (%)</span><input id="dDV" type="number" value="4" min="0.5" step="0.5"></label>
+    </div>
+    <div class="lab-out" id="dOut"></div>
+    <p class="sans" id="dTxt" style="margin:10px 0 0;font-size:.95rem"></p>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ BLOCO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Proteção contra choques: DR, DPS e identificação dos condutores</h2></div>
+  <p class="edital-ref">Edital, itens 8.1 e 10.1</p>
+
+  <h3>As três camadas de proteção contra choques</h3>
+  <ul>
+    <li><b>Proteção básica</b> (contra contato direto): isolação das partes vivas, barreiras, invólucros, obstáculos.</li>
+    <li><b>Proteção supletiva</b> (contra contato indireto): equipotencialização das massas e <b>seccionamento automático</b> da alimentação quando uma falha energiza uma massa.</li>
+    <li><b>Proteção adicional</b>: o dispositivo <b>DR de alta sensibilidade</b> (I<sub>Δn</sub> ≤ 30 mA), que cobre falhas das outras camadas e descuidos do usuário.</li>
+  </ul>
+
+  <h3>Dispositivo diferencial-residual (DR)</h3>
+  <p>O DR passa a fase e o neutro (ou todas as fases e o neutro) por dentro de um núcleo toroidal. Em funcionamento normal, a corrente que vai é igual à que volta e o fluxo resultante no núcleo é zero. Se parte da corrente escapa para a terra (por uma pessoa ou por uma falha de isolamento), a diferença magnetiza o núcleo, induz tensão na bobina de detecção e o dispositivo desarma.</p>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Princípio de funcionamento do dispositivo DR"><line x1="40" y1="80" x2="520" y2="80" class="wire pa-s"/><line x1="40" y1="130" x2="520" y2="130" class="wire pc-s"/><text x="30" y="85" class="tl fa" text-anchor="end">F</text><text x="30" y="135" class="tl fc" text-anchor="end">N</text><ellipse cx="190" cy="105" rx="26" ry="52" class="ring"/><path d="M216 105 H260 V200 H300" class="wire"/><rect x="300" y="180" width="90" height="40" class="relay"/><text x="345.0" y="197.0" class="ts" text-anchor="middle">bobina de</text><text x="345.0" y="213.0" class="ts" text-anchor="middle">disparo</text><text x="190" y="180" class="tm" text-anchor="middle">toróide</text><rect x="520" y="60" width="80" height="90" class="core"/><text x="560.0" y="102.0" class="ts" text-anchor="middle">aparelho</text><text x="560.0" y="118.0" class="ts" text-anchor="middle">(massa)</text><path d="M560 150 C 560 190, 520 230, 470 238" class="ar pa dsh" marker-end="url(#ah-pa)"/><line x1="460" y1="238" x2="460" y2="250" class="wire"/><line x1="449" y1="250" x2="471" y2="250" class="wire"/><line x1="453" y1="255" x2="467" y2="255" class="wire"/><line x1="457" y1="260" x2="463" y2="260" class="wire"/><text x="476" y="214" class="ts fa" text-anchor="end">fuga I∆</text><line x1="90" y1="66" x2="140" y2="66" class="ar pc" marker-end="url(#ah-pc)"/><text x="115.0" y="60.0" class="ts fc" text-anchor="middle">I<tspan class="sub" dy="4">F</tspan><tspan dy="-4">&#8203;</tspan></text><line x1="140" y1="144" x2="90" y2="144" class="ar pc" marker-end="url(#ah-pc)"/><text x="115.0" y="166.0" class="ts fc" text-anchor="middle">I<tspan class="sub" dy="4">N</tspan><tspan dy="-4">&#8203;</tspan></text><text x="330" y="48" class="ts" text-anchor="middle">normal: I<tspan class="sub" dy="4">F</tspan><tspan dy="-4">&#8203;</tspan> = I<tspan class="sub" dy="4">N</tspan><tspan dy="-4">&#8203;</tspan> → soma no toróide = 0</text><text x="330" y="270" class="ts fa" text-anchor="middle">com fuga: I<tspan class="sub" dy="4">F</tspan><tspan dy="-4">&#8203;</tspan> − I<tspan class="sub" dy="4">N</tspan><tspan dy="-4">&#8203;</tspan> = I∆ ≥ I∆n → desarma</text></svg><figcaption>Figura 5. Princípio do DR: ele compara a corrente que entra com a que sai. Uma fuga para a terra acima do limiar I<sub>Δn</sub> provoca o desligamento.</figcaption></figure>
+  <p>Consequências que caem em prova:</p>
+  <ul>
+    <li>O DR <b>não</b> protege contra sobrecarga nem contra curto entre fase e neutro: nesses casos a corrente que vai continua igual à que volta. Por isso existem os disjuntores DR, que somam as duas funções.</li>
+    <li>Pelo mesmo motivo, uma pessoa que toque <b>ao mesmo tempo</b> a fase e o neutro, isolada da terra, não é protegida pelo DR.</li>
+    <li>O neutro de um circuito protegido por DR <b>não</b> pode ser ligado ao PE depois do DR, senão parte da corrente de retorno passa pelo terra e o DR desarma sem motivo aparente.</li>
+    <li>O botão de teste deve ser acionado periodicamente para verificar o mecanismo.</li>
+  </ul>
+  <div class="box">
+    <p class="box-title">Onde o DR de 30 mA é obrigatório (NBR 5410, 5.1.3.2.2)</p>
+    <ul>
+      <li>circuitos que sirvam a pontos de utilização em locais com <b>banheira ou chuveiro</b>;</li>
+      <li>circuitos que alimentem <b>tomadas em áreas externas</b> à edificação;</li>
+      <li>circuitos de tomadas em áreas internas que possam alimentar <b>equipamentos no exterior</b>;</li>
+      <li>em locais de habitação, circuitos que sirvam a pontos de utilização em <b>cozinhas, copas-cozinhas, lavanderias, áreas de serviço, garagens</b> e demais dependências internas molhadas em uso normal ou sujeitas a lavagens.</li>
+    </ul>
+  </div>
+
+  <h3>Dispositivo de proteção contra surtos (DPS)</h3>
+  <p>O DPS protege a instalação e os equipamentos contra <b>sobretensões transitórias</b>, causadas por descargas atmosféricas (diretas ou induzidas na rede) e por manobras na rede. Em condições normais, ele se comporta como um isolante; durante o surto, conduz e desvia a corrente para o aterramento, limitando a tensão. É instalado tipicamente no quadro, junto ao barramento de equipotencialização. Não deve ser confundido com o DR (choque) nem com o disjuntor (sobrecorrente).</p>
+
+  <h3>Identificação dos condutores por cores</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Condutor</th><th>Cor exigida pela NBR 5410</th></tr></thead>
+    <tbody>
+      <tr><td>Neutro (N)</td><td><b>azul-claro</b></td></tr>
+      <tr><td>Proteção (PE)</td><td><b>verde-amarela</b> (ou verde)</td></tr>
+      <tr><td>PEN (neutro e proteção combinados)</td><td>azul-claro, com anilhas verde-amarelas nos pontos visíveis</td></tr>
+      <tr><td>Fases</td><td>qualquer cor, <b>exceto</b> as anteriores (preto, vermelho, marrom, branco e cinza são comuns)</td></tr>
+    </tbody>
+  </table></div>
+  <p>As tomadas e plugues de uso doméstico seguem o padrão brasileiro de três pinos (NBR 14136), com versões de 10 A e 20 A; o pino central é o de proteção.</p>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ BLOCO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Esquemas de aterramento e equipotencialização</h2></div>
+  <p class="edital-ref">Edital, itens 8.1, 8.3 (parte de baixa tensão) e 10.1</p>
+
+  <h3>As letras do esquema de aterramento</h3>
+  <ul>
+    <li><b>Primeira letra</b>, a alimentação em relação à terra: <b>T</b> = um ponto (normalmente o neutro) diretamente aterrado; <b>I</b> = isolação de todas as partes vivas em relação à terra, ou aterramento por impedância.</li>
+    <li><b>Segunda letra</b>, as massas: <b>T</b> = massas ligadas a um eletrodo de aterramento próprio, independente do da alimentação; <b>N</b> = massas ligadas ao ponto aterrado da alimentação (pelo condutor de proteção).</li>
+    <li><b>Letras seguintes</b>, no esquema TN: <b>S</b> = neutro e proteção em condutores <b>separados</b>; <b>C</b> = funções de neutro e proteção <b>combinadas</b> num único condutor, o PEN.</li>
+  </ul>
+  <figure><svg viewBox="0 0 660 520" role="img" aria-label="Esquemas de aterramento TN-S, TN-C, TN-C-S, TT e IT"><rect x="20" y="40" width="56" height="96" class="core"/><text x="48.0" y="93.0" class="tm" text-anchor="middle">fonte</text><line x1="76" y1="60" x2="210" y2="60" class="wire pa-s"/><text x="96" y="56" class="tn" text-anchor="start">L</text><line x1="76" y1="90" x2="210" y2="90" class="wire pc-s"/><line x1="76" y1="120" x2="210" y2="120" class="wire pb-s"/><text x="96" y="86" class="tn" text-anchor="start">N</text><text x="96" y="116" class="tn" text-anchor="start">PE</text><line x1="48" y1="136" x2="48" y2="148" class="wire"/><line x1="48" y1="148" x2="48" y2="160" class="wire"/><line x1="37" y1="160" x2="59" y2="160" class="wire"/><line x1="41" y1="165" x2="55" y2="165" class="wire"/><line x1="45" y1="170" x2="51" y2="170" class="wire"/><line x1="88" y1="90" x2="88" y2="120" class="wire"/><circle cx="88" cy="90" r="3.5" class="f-ink"/><circle cx="88" cy="120" r="3.5" class="f-ink"/><line x1="190" y1="120" x2="190" y2="150" class="wire"/><line x1="190" y1="150" x2="220" y2="150" class="wire"/><rect x="210" y="40" width="90" height="96" class="relay"/><text x="255.0" y="93.0" class="tm" text-anchor="middle">massa</text><line x1="220" y1="150" x2="220" y2="136" class="wire"/><text x="160" y="26" class="tl" text-anchor="middle">TN-S</text><rect x="350" y="40" width="56" height="96" class="core"/><text x="378.0" y="93.0" class="tm" text-anchor="middle">fonte</text><line x1="406" y1="60" x2="540" y2="60" class="wire pa-s"/><text x="426" y="56" class="tn" text-anchor="start">L</text><line x1="406" y1="90" x2="540" y2="90" class="wire pb-s"/><text x="412" y="86" class="tn" text-anchor="start">PEN</text><line x1="378" y1="136" x2="378" y2="148" class="wire"/><line x1="378" y1="148" x2="378" y2="160" class="wire"/><line x1="367" y1="160" x2="389" y2="160" class="wire"/><line x1="371" y1="165" x2="385" y2="165" class="wire"/><line x1="375" y1="170" x2="381" y2="170" class="wire"/><line x1="520" y1="90" x2="520" y2="150" class="wire"/><line x1="520" y1="150" x2="550" y2="150" class="wire"/><circle cx="520" cy="90" r="3.5" class="f-ink"/><rect x="540" y="40" width="90" height="96" class="relay"/><text x="585.0" y="93.0" class="tm" text-anchor="middle">massa</text><line x1="550" y1="150" x2="550" y2="136" class="wire"/><text x="490" y="26" class="tl" text-anchor="middle">TN-C</text><rect x="20" y="215" width="56" height="96" class="core"/><text x="48.0" y="268.0" class="tm" text-anchor="middle">fonte</text><line x1="76" y1="235" x2="210" y2="235" class="wire pa-s"/><text x="96" y="231" class="tn" text-anchor="start">L</text><line x1="76" y1="265" x2="140" y2="265" class="wire pb-s"/><text x="82" y="261" class="tn" text-anchor="start">PEN</text><line x1="140" y1="265" x2="210" y2="265" class="wire pc-s"/><line x1="140" y1="265" x2="140" y2="295" class="wire"/><line x1="140" y1="295" x2="210" y2="295" class="wire pb-s"/><circle cx="140" cy="265" r="3.5" class="f-ink"/><text x="170" y="261" class="tn" text-anchor="start">N</text><text x="170" y="291" class="tn" text-anchor="start">PE</text><line x1="48" y1="311" x2="48" y2="323" class="wire"/><line x1="48" y1="323" x2="48" y2="335" class="wire"/><line x1="37" y1="335" x2="59" y2="335" class="wire"/><line x1="41" y1="340" x2="55" y2="340" class="wire"/><line x1="45" y1="345" x2="51" y2="345" class="wire"/><line x1="190" y1="295" x2="190" y2="325" class="wire"/><line x1="190" y1="325" x2="220" y2="325" class="wire"/><rect x="210" y="215" width="90" height="96" class="relay"/><text x="255.0" y="268.0" class="tm" text-anchor="middle">massa</text><line x1="220" y1="325" x2="220" y2="311" class="wire"/><text x="160" y="201" class="tl" text-anchor="middle">TN-C-S</text><rect x="350" y="215" width="56" height="96" class="core"/><text x="378.0" y="268.0" class="tm" text-anchor="middle">fonte</text><line x1="406" y1="235" x2="540" y2="235" class="wire pa-s"/><text x="426" y="231" class="tn" text-anchor="start">L</text><line x1="406" y1="265" x2="540" y2="265" class="wire pc-s"/><text x="412" y="261" class="tn" text-anchor="start">N</text><line x1="378" y1="311" x2="378" y2="323" class="wire"/><line x1="378" y1="323" x2="378" y2="335" class="wire"/><line x1="367" y1="335" x2="389" y2="335" class="wire"/><line x1="371" y1="340" x2="385" y2="340" class="wire"/><line x1="375" y1="345" x2="381" y2="345" class="wire"/><line x1="585" y1="311" x2="585" y2="323" class="wire"/><line x1="585" y1="323" x2="585" y2="335" class="wire"/><line x1="574" y1="335" x2="596" y2="335" class="wire"/><line x1="578" y1="340" x2="592" y2="340" class="wire"/><line x1="582" y1="345" x2="588" y2="345" class="wire"/><text x="575" y="343" class="tm" text-anchor="end">eletrodo próprio</text><rect x="540" y="215" width="90" height="96" class="relay"/><text x="585.0" y="268.0" class="tm" text-anchor="middle">massa</text><text x="490" y="201" class="tl" text-anchor="middle">TT</text><rect x="185" y="390" width="56" height="96" class="core"/><text x="213.0" y="443.0" class="tm" text-anchor="middle">fonte</text><line x1="241" y1="410" x2="375" y2="410" class="wire pa-s"/><text x="261" y="406" class="tn" text-anchor="start">L</text><line x1="241" y1="440" x2="375" y2="440" class="wire pc-s"/><text x="247" y="436" class="tn" text-anchor="start">N</text><line x1="213" y1="486" x2="213" y2="496" class="wire"/><rect x="205" y="496" width="16" height="14" class="comp"/><text x="229" y="508" class="tm" text-anchor="start">Z ou isolado</text><line x1="420" y1="486" x2="420" y2="498" class="wire"/><line x1="420" y1="498" x2="420" y2="510" class="wire"/><line x1="409" y1="510" x2="431" y2="510" class="wire"/><line x1="413" y1="515" x2="427" y2="515" class="wire"/><line x1="417" y1="520" x2="423" y2="520" class="wire"/><rect x="375" y="390" width="90" height="96" class="relay"/><text x="420.0" y="443.0" class="tm" text-anchor="middle">massa</text><text x="325" y="376" class="tl" text-anchor="middle">IT</text></svg><figcaption>Figura 6. Os cinco esquemas da NBR 5410. No TN-C-S, o PEN chega da fonte e se divide em N e PE num ponto da instalação; a partir dali, eles nunca mais podem ser religados.</figcaption></figure>
+
+  <div class="tw"><table>
+    <thead><tr><th>Esquema</th><th>Falta fase-massa</th><th>Proteção típica</th></tr></thead>
+    <tbody>
+      <tr><td><b>TN</b></td><td>vira um curto-circuito pelo condutor de proteção: corrente <b>elevada</b></td><td>o próprio disjuntor desliga rápido; DR como proteção adicional</td></tr>
+      <tr><td><b>TT</b></td><td>a corrente passa pela terra e é <b>limitada</b> pelas resistências dos dois aterramentos; costuma ser baixa para o disjuntor</td><td>DR é praticamente indispensável</td></tr>
+      <tr><td><b>IT</b></td><td>na <b>primeira</b> falta, a corrente é muito pequena e não há desligamento obrigatório; a segunda falta, em outra fase, vira curto</td><td>dispositivo supervisor de isolamento (DSI) para sinalizar a primeira falta</td></tr>
+    </tbody>
+  </table></div>
+  <p>O esquema IT é usado onde um desligamento inesperado é pior do que manter a operação com uma falta: salas cirúrgicas, UTIs e alguns processos industriais contínuos.</p>
+  <p><b>Regras do condutor PEN.</b> Só é admitido em instalação fixa, com seção mínima de <b>10 mm² em cobre</b> (16 mm² em alumínio). Não pode ser seccionado nem passar por dispositivo DR (o DR não conseguiria distinguir corrente de retorno de corrente de falta).</p>
+
+  <h3>Seção do condutor de proteção</h3>
+  <div class="eq">
+    <p class="eq-name">Seção mínima do PE em função da seção da fase (mesmo material)</p>
+    <div class="eq-main"><var>S</var> ≤ 16 mm² → <var>S</var><sub>PE</sub> = <var>S</var> &nbsp;&nbsp;&nbsp; 16 &lt; <var>S</var> ≤ 35 → <var>S</var><sub>PE</sub> = 16 mm² &nbsp;&nbsp;&nbsp; <var>S</var> &gt; 35 → <var>S</var><sub>PE</sub> = <var>S</var>/2</div>
+    <dl>
+      <dt><var>S</var></dt><dd>seção dos condutores de fase (mm²)</dd>
+      <dt><var>S</var><sub>PE</sub></dt><dd>seção mínima do condutor de proteção (mm²)</dd>
+    </dl>
+  </div>
+
+  <h3>Equipotencialização</h3>
+  <p>Equipotencializar é ligar entre si todos os elementos condutores que possam ter potenciais diferentes, para que, numa falta ou num surto, não apareça tensão perigosa entre eles. Toda edificação deve ter uma <b>equipotencialização principal</b>, reunida no <b>barramento de equipotencialização principal (BEP)</b>, junto ao ponto de entrada da alimentação.</p>
+  <figure><svg viewBox="-50 0 740 330" role="img" aria-label="Barramento de equipotencialização principal e suas ligações"><line x1="320" y1="157" x2="70" y2="50" class="wire"/><line x1="320" y1="157" x2="320" y2="30" class="wire"/><line x1="320" y1="157" x2="570" y2="50" class="wire"/><line x1="320" y1="157" x2="70" y2="270" class="wire"/><line x1="320" y1="157" x2="320" y2="300" class="wire"/><line x1="320" y1="157" x2="570" y2="270" class="wire"/><rect x="250" y="140" width="140" height="34" class="core"/><text x="320" y="162" class="tl" text-anchor="middle">BEP</text><rect x="-35" y="36" width="210" height="28" class="relay"/><text x="70" y="55" class="ts" text-anchor="middle">condutor PE do quadro</text><rect x="215" y="16" width="210" height="28" class="relay"/><text x="320" y="35" class="ts" text-anchor="middle">canalização de água</text><rect x="465" y="36" width="210" height="28" class="relay"/><text x="570" y="55" class="ts" text-anchor="middle">canalização de gás</text><rect x="-35" y="256" width="210" height="28" class="relay"/><text x="70" y="275" class="ts" text-anchor="middle">eletrodo de aterramento</text><rect x="215" y="286" width="210" height="28" class="relay"/><text x="320" y="305" class="ts" text-anchor="middle">estrutura metálica / armaduras</text><rect x="465" y="256" width="210" height="28" class="relay"/><text x="570" y="275" class="ts" text-anchor="middle">SPDA e telecom (blindagens)</text><line x1="70" y1="284" x2="70" y2="296" class="wire"/><line x1="59" y1="296" x2="81" y2="296" class="wire"/><line x1="63" y1="301" x2="77" y2="301" class="wire"/><line x1="67" y1="306" x2="73" y2="306" class="wire"/></svg><figcaption>Figura 7. O BEP reúne o condutor de aterramento, os condutores de proteção, as canalizações metálicas que entram na edificação, os elementos estruturais metálicos e as blindagens e o SPDA.</figcaption></figure>
+  <div class="box trap">
+    <p class="box-title">A pegadinha das canalizações (caiu em 2023)</p>
+    <p>As canalizações metálicas de água, gás e outros serviços <b>não podem ser usadas como eletrodo de aterramento</b> (podem ser substituídas por tubos plásticos, ou ter trechos isolantes, e o aterramento sumiria sem ninguém perceber). Mas elas <b>devem ser incluídas na equipotencialização principal</b>, porque são condutoras e entram na edificação. O eletrodo preferencial é a <b>armadura das fundações</b>; na falta dela, hastes, fitas ou cabos enterrados.</p>
+  </div>
+
+  <h3>Rompimento do neutro</h3>
+  <p>Num sistema trifásico com neutro e cargas monofásicas distribuídas entre as fases, o neutro mantém a tensão de cada carga em torno da tensão de fase. Se ele se rompe e as cargas estão <b>desequilibradas</b>, as cargas de fases diferentes passam a ficar em série entre as fases: a tensão de linha se divide entre elas na proporção das impedâncias. A carga de <b>menor potência</b> (maior impedância) recebe tensão muito acima da nominal e queima.</p>
+  <figure><svg viewBox="0 0 640 260" role="img" aria-label="Rompimento do neutro com cargas desequilibradas"><line x1="40" y1="50" x2="600" y2="50" class="wire pa-s"/><line x1="40" y1="210" x2="600" y2="210" class="wire pb-s"/><line x1="40" y1="130" x2="250" y2="130" class="wire pc-s"/><text x="30" y="55" class="ts fa" text-anchor="end">L1</text><text x="30" y="215" class="ts fb" text-anchor="end">L2</text><text x="30" y="135" class="ts fc" text-anchor="end">N</text><line x1="250" y1="122" x2="262" y2="138" class="wire thick"/><line x1="262" y1="122" x2="250" y2="138" class="wire thick"/><text x="256" y="112" class="ts fa" text-anchor="middle">rompido</text><line x1="270" y1="130" x2="420" y2="130" class="wire dsh"/><circle cx="420" cy="130" r="3.5" class="f-ink"/><text x="440" y="134" class="tm" text-anchor="start">neutro flutua</text><path d="M0.0,0.0 L18.0,0.0 L21.7,-7.0 L29.0,7.0 L36.3,-7.0 L43.7,7.0 L51.0,-7.0 L58.3,7.0 L62.0,0.0 L80.0,0.0" class="wire" transform="translate(420 50) rotate(90.00)"/><text x="350.0" y="94.0" class="ts" text-anchor="middle">lâmpada 100 W</text><path d="M0.0,0.0 L18.0,0.0 L21.7,-7.0 L29.0,7.0 L36.3,-7.0 L43.7,7.0 L51.0,-7.0 L58.3,7.0 L62.0,0.0 L80.0,0.0" class="wire" transform="translate(420 130) rotate(90.00)"/><text x="336.0" y="180.0" class="ts" text-anchor="middle">aquecedor 1.000 W</text><circle cx="420" cy="50" r="3.5" class="f-ink"/><circle cx="420" cy="210" r="3.5" class="f-ink"/><text x="560" y="94" class="tl fa" text-anchor="middle">≈ 200 V</text><text x="560" y="176" class="tl fb" text-anchor="middle">≈ 20 V</text></svg><figcaption>Figura 8. Rede 220/127 V com o neutro rompido. A lâmpada de 100 W (cerca de 161 Ω) e o aquecedor de 1.000 W (cerca de 16 Ω) ficam em série sob 220 V: a lâmpada recebe cerca de 200 V e queima; o aquecedor, cerca de 20 V.</figcaption></figure>
+  <p>Por isso o neutro nunca deve ter fusível ou disjuntor isolado, as conexões dele precisam ser bem feitas e as cargas devem ser equilibradas entre as fases.</p>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ QUADRO RESUMO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Quadro-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Assunto</th><th>O que lembrar</th></tr></thead>
+    <tbody>
+      <tr><td>Versão vigente</td><td>NBR 5410:2004, versão corrigida de 2008 (revisão em andamento, ainda não publicada)</td></tr>
+      <tr><td>Campo de aplicação</td><td>até 1.000 V CA e 1.500 V CC</td></tr>
+      <tr><td>Iluminação</td><td>≤ 6 m²: 100 VA; acima: 100 VA + 60 VA a cada 4 m² inteiros</td></tr>
+      <tr><td>Quantidade de TUG</td><td>molhados: 1 a cada 3,5 m de perímetro; salas e dormitórios: 1 a cada 5 m; banheiro: ≥ 1 junto ao lavatório</td></tr>
+      <tr><td>Potência de TUG</td><td>molhados: 600 VA até 3 pontos, 100 VA os demais; outros: 100 VA</td></tr>
+      <tr><td>Circuitos</td><td>iluminação e tomadas separados (comum só até 16 A e fora de áreas molhadas); equipamento &gt; 10 A: circuito próprio</td></tr>
+      <tr><td>Seções mínimas</td><td>iluminação 1,5 mm²; força 2,5 mm²; controle 0,5 mm²</td></tr>
+      <tr><td>B1, PVC, 2 carregados</td><td>1,5 → 17,5 A; 2,5 → 24 A; 4 → 32 A; 6 → 41 A</td></tr>
+      <tr><td>Agrupamento</td><td>2 circuitos 0,80; 3 → 0,70; 4 → 0,65; 5 → 0,60</td></tr>
+      <tr><td>Queda de tensão</td><td>7% (trafo/gerador próprio); 5% (entrega em BT); terminais ≤ 4%</td></tr>
+      <tr><td>Coordenação</td><td>I<sub>B</sub> ≤ I<sub>n</sub> ≤ I<sub>z</sub>; I<sub>2</sub> ≤ 1,45 I<sub>z</sub></td></tr>
+      <tr><td>Curvas de disjuntor</td><td>B 3–5 In; C 5–10 In; D 10–20 In</td></tr>
+      <tr><td>DR 30 mA obrigatório</td><td>chuveiro/banheira; tomadas externas; tomadas internas que alimentem o exterior; cozinhas, lavanderias, áreas de serviço, garagens</td></tr>
+      <tr><td>Cores</td><td>N azul-claro; PE verde-amarelo; PEN azul-claro com anilhas verde-amarelas</td></tr>
+      <tr><td>Esquemas</td><td>TN: falta = curto, disjuntor atua; TT: corrente limitada, exige DR; IT: 1ª falta não desliga, DSI</td></tr>
+      <tr><td>PEN</td><td>≥ 10 mm² Cu; não seccionar; não passar por DR</td></tr>
+      <tr><td>PE</td><td>S ≤ 16: igual; 16–35: 16 mm²; &gt; 35: S/2</td></tr>
+      <tr><td>Canalizações metálicas</td><td>não são eletrodo; entram na equipotencialização principal</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, Ênfase 8 (Manutenção – Elétrica), itens 8.1, 8.3 e 10.1 — conferido no PDF do projeto.</li>
+    <li>Caderno de questões Cesgranrio 2023, Transpetro, Prova 6 – Manutenção – Elétrica (arquivo do projeto), usado apenas para identificar o estilo de cobrança.</li>
+    <li>ABNT NBR 5410:2004 (versão corrigida 2008), por meio de materiais didáticos que reproduzem seus critérios: previsão de cargas (USP, e-Disciplinas; IFSC), capacidade de condução e fatores de agrupamento (tabelas técnicas de fabricantes de condutores, como SIL e Nambei), obrigatoriedade do DR (catálogo Siemens e artigo técnico apresentado no CONTECC/Confea).</li>
+    <li>Situação da revisão da norma: reportagens e colunas técnicas da revista <a href="https://www.osetoreletrico.com.br/nbr-5410-instalacoes-eletricas-de-baixa-tensao/">O Setor Elétrico</a>.</li>
+    <li>Bibliografia de apoio: H. Creder, <i>Instalações Elétricas</i> (LTC); A. A. M. Cotrim, <i>Instalações Elétricas</i> (Pearson); J. Mamede Filho, <i>Instalações Elétricas Industriais</i> (LTC).</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais. Valores de tabela reproduzidos em trecho; para projeto real, consulte o texto completo da norma.</footer>
+</section>
+</main>
+</div>
+<script>
+const QUIZ = {
+b1:[
+ {s:"A ABNT NBR 5410 aplica-se a instalações elétricas alimentadas sob tensão nominal igual ou inferior a",
+  o:["220 V em corrente alternada","380 V em corrente alternada e 600 V em corrente contínua","1.000 V em corrente alternada e 1.500 V em corrente contínua","13,8 kV em corrente alternada","36,2 kV em corrente alternada"],a:2,
+  c:"Baixa tensão, no escopo da NBR 5410, vai até 1.000 V CA (frequências abaixo de 400 Hz) e 1.500 V CC. Acima disso, até 36,2 kV, aplica-se a NBR 14039."},
+ {s:"Um usuário encosta na carcaça metálica de uma máquina de lavar que ficou energizada por uma falha de isolamento interna. Trata-se de um contato",
+  o:["direto, com parte viva","indireto, com uma massa energizada por falha","direto, com o condutor neutro","indireto, com o condutor de proteção em funcionamento normal","que não oferece risco, pois a carcaça não é parte viva"],a:1,
+  c:"A carcaça é uma massa: normalmente sem tensão, mas energizada numa falha. Tocá-la é contato indireto. Contato direto é com parte viva (fase ou neutro)."},
+ {s:"Entre os princípios fundamentais da NBR 5410, está o de que",
+  o:["a proteção contra choques é obrigatória apenas contra contato direto","é proibido seccionar a instalação para manutenção, a fim de não comprometer a continuidade","a instalação deve dispor de meios de seccionamento da alimentação, de seus circuitos e equipamentos para manutenção, verificação, localização de defeitos e reparos","instalações reformadas dispensam verificação se a original já foi inspecionada","a manutenção pode ser feita por pessoal não qualificado se o projeto for de profissional habilitado"],a:2,
+  c:"A norma exige meios de seccionamento e comando. A proteção contra choques vale tanto para contato direto quanto indireto; reformas exigem verificação; e manutenção exige pessoal qualificado."},
+ {s:"O circuito que sai de um quadro de distribuição e alimenta diretamente pontos de tomada e de iluminação é denominado circuito",
+  o:["de distribuição","terminal","alimentador principal","de entrada","de serviço da concessionária"],a:1,
+  c:"Circuito terminal: liga o quadro aos pontos de utilização. Circuito de distribuição: alimenta quadros."},
+ {s:"Sobre o condutor de proteção (PE) e as correntes de falta, a NBR 5410 estabelece que",
+  o:["o PE só conduz corrente em funcionamento normal","condutores que não são vivos, mas devem escoar correntes de falta, precisam suportá-las sem atingir temperaturas excessivas","o PE pode ter qualquer seção, pois só é usado em falha","o PE deve ser ligado ao neutro depois do DR","o PE dispensa identificação por cor"],a:1,
+  c:"O PE não conduz corrente em serviço normal, mas, numa falta, é por ele que a corrente circula; por isso precisa ter seção suficiente para suportá-la (ver tabela de seções do Bloco 5)."}
+],
+b2:[
+ {s:"Um dormitório mede 4 m × 4,5 m. A carga mínima de iluminação prevista pela NBR 5410 é de",
+  o:["160 VA","220 VA","280 VA","300 VA","340 VA"],a:2,
+  c:"Área = 18 m². 100 VA pelos primeiros 6 m²; sobram 12 m², ou seja, três blocos inteiros de 4 m²: 3 × 60 = 180 VA. Total: 280 VA."},
+ {s:"Uma sala retangular mede 5 m × 4 m. O número mínimo de pontos de tomada de uso geral é",
+  o:["2","3","4","5","6"],a:2,
+  c:"Perímetro = 18 m. Em salas e dormitórios, 1 ponto a cada 5 m, ou fração: 18/5 = 3,6 → 4 pontos (a fração arredonda para cima)."},
+ {s:"Uma cozinha mede 3 m × 3,5 m. A potência mínima atribuída às suas tomadas de uso geral é de",
+  o:["400 VA","1.300 VA","1.900 VA","2.000 VA","2.400 VA"],a:2,
+  c:"Perímetro = 13 m; 13/3,5 = 3,7 → 4 pontos. Potência: 3 × 600 + 1 × 100 = 1.900 VA. Atribuir 600 VA aos quatro daria 2.400 VA."},
+ {s:"Um aparelho de ar-condicionado de 2.500 W, em 220 V, será instalado num dormitório. Segundo a NBR 5410, ele deve ser alimentado por",
+  o:["qualquer tomada de uso geral do dormitório","um circuito independente, pois sua corrente nominal supera 10 A","o circuito de iluminação do dormitório","o mesmo circuito das tomadas da cozinha","uma extensão a partir da tomada mais próxima"],a:1,
+  c:"I ≈ 2.500/220 ≈ 11,4 A. Equipamentos com corrente nominal acima de 10 A exigem circuito independente."},
+ {s:"Sobre a divisão de circuitos numa residência, é correto afirmar que",
+  o:["tomadas de cozinha podem compartilhar o circuito de iluminação da sala, desde que a corrente não passe de 16 A","é obrigatório um circuito exclusivo para cada tomada de uso geral","admite-se circuito comum de iluminação e tomadas (exceto as de cozinhas, áreas de serviço e locais análogos) se a corrente de projeto não passar de 16 A","toda a iluminação da casa deve estar num único circuito, por simplicidade","não há restrição para circuitos de tomadas de lavanderias"],a:2,
+  c:"Circuito misto é admitido com I<sub>B</sub> ≤ 16 A, sem concentrar toda a iluminação ou todas as tomadas num só circuito. As tomadas de cozinhas, copas, áreas de serviço e lavanderias exigem circuitos exclusivos."}
+],
+b3:[
+ {s:"As seções mínimas de condutores de cobre para circuitos de iluminação e de tomadas (força) são, respectivamente,",
+  o:["0,5 mm² e 1,5 mm²","1,0 mm² e 1,5 mm²","1,5 mm² e 2,5 mm²","2,5 mm² e 4 mm²","1,5 mm² e 4 mm²"],a:2,
+  c:"Iluminação: 1,5 mm²; força: 2,5 mm²; sinalização e controle: 0,5 mm²."},
+ {s:"Um circuito tem corrente de projeto de 18 A, e seus condutores têm capacidade de condução de 24 A nas condições de instalação. O disjuntor adequado tem corrente nominal de",
+  o:["16 A","20 A","25 A","32 A","40 A"],a:1,
+  c:"I<sub>B</sub> ≤ I<sub>n</sub> ≤ I<sub>z</sub> → 18 ≤ I<sub>n</sub> ≤ 24: o valor padronizado é 20 A. 16 A desarmaria com a carga normal; 25 A não protegeria o cabo."},
+ {s:"Um condutor de 2,5 mm² (24 A no método B1, dois condutores carregados) é instalado num eletroduto com outros dois circuitos, num total de três. Considerando o fator de agrupamento de 0,70, sua capacidade passa a ser de",
+  o:["8,4 A","16,8 A","21 A","24 A","34,3 A"],a:1,
+  c:"I<sub>z</sub>′ = 24 × 0,70 = 16,8 A. Dividir em vez de multiplicar daria 34,3 A, aumentando a capacidade, o que não faz sentido."},
+ {s:"Um equipamento de 2.540 VA, em 127 V, é alimentado por um circuito com queda de tensão unitária de 20 V/(A·km). Para que a queda não ultrapasse 4%, o comprimento máximo do circuito é de, aproximadamente,",
+  o:["6,4 m","12,7 m","25,4 m","31,8 m","50,8 m"],a:1,
+  c:"I = 2.540/127 = 20 A. ΔV máx = 0,04 × 127 = 5,08 V. L = 5,08/(20 × 20) = 0,0127 km = 12,7 m."},
+ {s:"Numa instalação alimentada em baixa tensão pela rede da distribuidora, a NBR 5410 limita a queda de tensão total, a partir do ponto de entrega, e a queda nos circuitos terminais, respectivamente, a",
+  o:["7% e 5%","5% e 4%","4% e 2%","10% e 5%","5% e 7%"],a:1,
+  c:"5% a partir do ponto de entrega em BT (7% quando há transformador ou gerador próprio); e, em nenhum caso, mais de 4% nos circuitos terminais."},
+ {s:"Para proteger um circuito que alimenta um motor monofásico com corrente de partida em torno de 6 vezes a nominal, a curva de disjuntor mais adequada, entre as usuais, é a",
+  o:["B, que dispara entre 3 e 5 vezes In","C, que dispara entre 5 e 10 vezes In","D, que dispara entre 10 e 20 vezes In","B, pois é a mais sensível","qualquer uma, pois a curva só interfere na sobrecarga"],a:1,
+  c:"Com partida de 6 × In, a curva B dispararia na partida. A C (5 a 10 × In) suporta a partida e ainda atua rápido num curto. A D é para partidas bem mais severas."}
+],
+b4:[
+ {s:"O dispositivo DR atua quando",
+  o:["a corrente do circuito supera a corrente nominal do condutor","há curto-circuito entre fase e neutro","a soma das correntes que passam pelo seu núcleo toroidal deixa de ser nula, indicando fuga de corrente superior a I∆n","a tensão da rede supera o valor nominal","o neutro é desligado"],a:2,
+  c:"O DR compara a corrente que vai com a que volta. Sobrecarga e curto fase-neutro não geram diferença, por isso não são detectados por ele; sobretensão é função do DPS."},
+ {s:"Numa residência, o uso de DR de alta sensibilidade é obrigatório, segundo a NBR 5410, no circuito que alimenta",
+  o:["a iluminação de um dormitório","as tomadas de uso geral de um dormitório","as tomadas da lavanderia","a iluminação da sala de estar","a campainha"],a:2,
+  c:"Lavanderias estão entre os locais molhados em que a NBR 5410:2004 exige DR de 30 mA. Dormitórios e salas não estão na lista obrigatória da versão vigente (a revisão em andamento discute ampliá-la)."},
+ {s:"Uma pessoa, isolada da terra, toca simultaneamente os condutores fase e neutro de um circuito protegido por DR de 30 mA. Nessa situação,",
+  o:["o DR atua, pois a corrente pela pessoa supera 30 mA","o DR não detecta o choque, pois a corrente que entra pela fase retorna integralmente pelo neutro","o disjuntor atua instantaneamente","o DPS desvia a corrente para a terra","o DR atua só se o neutro estiver aterrado depois dele"],a:1,
+  c:"A pessoa vira uma carga entre fase e neutro: não há corrente para a terra, então a soma no toróide continua nula. Por isso o DR é proteção adicional, não substitui a proteção básica (isolação)."},
+ {s:"Pela NBR 5410, os condutores neutro e de proteção, quando identificados por cor, devem ser, respectivamente,",
+  o:["preto e verde","azul-claro e verde-amarelo","branco e verde","azul-claro e preto","vermelho e verde-amarelo"],a:1,
+  c:"Neutro: azul-claro. Proteção: verde-amarelo (ou verde). Fases: qualquer outra cor."},
+ {s:"O dispositivo de proteção contra surtos (DPS) tem como função",
+  o:["proteger pessoas contra choques por contato indireto","proteger condutores contra sobrecarga","limitar sobretensões transitórias, desviando a corrente de surto para o aterramento","detectar falhas de isolamento em sistemas IT","substituir o aterramento da instalação"],a:2,
+  c:"O DPS atua contra sobretensões transitórias de descargas atmosféricas ou de manobras. Choque é função do DR; sobrecarga, do disjuntor; falha de isolamento em IT, do DSI."},
+ {s:"Num disjuntor termomagnético, as funções dos disparadores térmico e magnético são, respectivamente,",
+  o:["proteger contra curto e contra sobrecarga","proteger contra sobrecarga, com atraso, e contra curto-circuito, instantaneamente","proteger contra choque e contra surto","detectar fuga à terra e sobretensão","ambos protegem apenas contra curto-circuito"],a:1,
+  c:"Térmico (bimetal): sobrecargas moderadas, com tempo inversamente proporcional à corrente. Magnético (bobina): correntes altas de curto, instantaneamente."}
+],
+b5:[
+ {s:"No esquema de aterramento TN-S,",
+  o:["a alimentação é isolada da terra e as massas são aterradas localmente","um ponto da alimentação é diretamente aterrado, as massas são ligadas a esse ponto por condutor de proteção, e neutro e proteção são condutores separados","neutro e proteção são combinados num único condutor PEN em toda a instalação","as massas são ligadas a um eletrodo independente do da alimentação","não existe condutor de proteção"],a:1,
+  c:"T: alimentação aterrada; N: massas ligadas ao ponto aterrado da alimentação; S: N e PE separados. PEN em toda a instalação é TN-C; eletrodo independente é TT; alimentação isolada é IT."},
+ {s:"Numa instalação em esquema TT, ocorre uma falta entre a fase e a carcaça de um equipamento. É correto afirmar que",
+  o:["a corrente de falta é muito elevada e o disjuntor sempre atua rapidamente","a corrente de falta é limitada pelas resistências de aterramento, muitas vezes insuficiente para o disjuntor atuar, por isso o DR é praticamente indispensável","não há corrente de falta, pois o esquema é isolado","a falta só é detectada por DSI","o PEN conduz a corrente de falta"],a:1,
+  c:"No TT a corrente volta à fonte pela terra, passando pelos dois eletrodos. As resistências limitam a corrente. Já no TN a falta vira curto pelo PE e o disjuntor atua (foi o tema da questão de 2023)."},
+ {s:"O esquema IT é preferido em salas cirúrgicas e processos contínuos porque",
+  o:["dispensa qualquer dispositivo de proteção","na primeira falta à terra a corrente é muito pequena, não exigindo desligamento, e um dispositivo supervisor de isolamento sinaliza a falha","nele a corrente de falta é sempre máxima","usa PEN em toda a instalação","não tem massas"],a:1,
+  c:"Com a alimentação isolada (ou aterrada por alta impedância), a primeira falta não fecha um circuito de baixa impedância. O DSI avisa para que a falta seja corrigida antes de uma segunda, em outra fase, que seria um curto."},
+ {s:"Sobre o condutor PEN, é correto afirmar que",
+  o:["pode ser seccionado por disjuntor unipolar","deve passar pelo dispositivo DR","não pode ser seccionado nem passar por DR, e sua seção mínima em cobre é de 10 mm²","pode ter qualquer cor, desde que diferente das fases","é obrigatório em instalações TT"],a:2,
+  c:"O PEN acumula as funções de neutro e proteção: seccioná-lo deixaria massas sem proteção, e o DR não conseguiria distinguir corrente de retorno de corrente de falta. Mínimo de 10 mm² em cobre (16 mm² em alumínio)."},
+ {s:"Os condutores de fase de um alimentador têm seção de 50 mm². A seção mínima do condutor de proteção, do mesmo material, é de",
+  o:["10 mm²","16 mm²","25 mm²","35 mm²","50 mm²"],a:2,
+  c:"Acima de 35 mm², S<sub>PE</sub> = S/2 = 25 mm². Entre 16 e 35 mm² seria 16 mm²; até 16 mm², igual à fase."},
+ {s:"Sobre as canalizações metálicas de água e de gás que entram numa edificação, segundo a NBR 5410,",
+  o:["devem ser usadas como eletrodo de aterramento","podem ser usadas como eletrodo e dispensam equipotencialização","não podem ser usadas como eletrodo de aterramento, mas devem ser ligadas à equipotencialização principal","não podem ser eletrodo nem fazer parte da equipotencialização","só a de gás pode ser eletrodo"],a:2,
+  c:"Elas podem ser trocadas ou ter trechos isolantes, o que tornaria o aterramento incerto; por isso não servem de eletrodo. Mas são condutoras que entram no prédio e devem ir ao BEP."},
+ {s:"Numa rede 220/127 V, uma lâmpada de 100 W/127 V está ligada entre L1 e o neutro, e um aquecedor de 1.000 W/127 V entre L2 e o neutro. Se o neutro se rompe, a tensão na lâmpada passa a ser de, aproximadamente,",
+  o:["20 V","110 V","127 V","200 V","220 V"],a:3,
+  c:"R<sub>lâmpada</sub> = 127²/100 ≈ 161 Ω; R<sub>aquecedor</sub> ≈ 16,1 Ω. Em série sob 220 V: V<sub>lâmpada</sub> = 220 × 161/177 ≈ 200 V. A carga menor recebe sobretensão e queima."}
+]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+
+const fmt=(x,d=0)=>x.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const cell=(t,v)=>`<div><span>${t}</span><b>${v}</b></div>`;
+function lp(){
+  const t=pT.value,a=+pA.value,b=+pB.value;
+  if(!(a>0&&b>0)){pOut.innerHTML=cell("Aviso","Informe dimensões positivas.");return;}
+  const A=a*b,P=2*(a+b);
+  const il=A<=6?100:100+60*Math.floor((A-6)/4+1e-9);
+  let n,obs="";
+  if(t==="cozinha"){n=Math.ceil(P/3.5-1e-9);obs="acima da bancada da pia: mínimo 2 tomadas";}
+  else if(t==="sala"){n=Math.ceil(P/5-1e-9);}
+  else if(t==="banheiro"){n=1;obs="próximo ao lavatório";}
+  else if(t==="varanda"){n=1;}
+  else{n=A<=6?1:Math.ceil(P/5-1e-9);}
+  const mol=(t==="cozinha"||t==="banheiro");
+  const pot=mol?600*Math.min(n,3)+100*Math.max(n-3,0):100*n;
+  pOut.innerHTML=cell("Área",fmt(A,2)+" m²")+cell("Perímetro",fmt(P,2)+" m")+cell("Iluminação mínima",fmt(il)+" VA")+cell("Pontos de TUG (mín.)",n+(obs?" ("+obs+")":""))+cell("Potência das TUG",fmt(pot)+" VA")+cell("DR 30 mA obrigatório?",(t==="cozinha"||t==="banheiro")?"sim":(t==="varanda"?"sim, se a tomada for externa à edificação":"não, na versão vigente"));
+}
+[pT,pA,pB].forEach(e=>e.addEventListener("input",lp)); lp();
+
+const TAB=[[1.5,17.5],[2.5,24],[4,32],[6,41]], DJ=[6,10,13,16,20,25,32,40,50];
+function ld(){
+  const P=+dP.value,V=+dV.value,L=+dL.value,g=+dG.value,smin=+dTp.value,lim=+dDV.value;
+  if(!(P>0&&L>0&&lim>0)){dOut.innerHTML=cell("Aviso","Confira os dados.");dTxt.textContent="";return;}
+  const IB=P/V; let ok=null, motivo="";
+  for(const [S,Iz] of TAB){
+    if(S<smin) continue;
+    const Izc=Iz*g, dv=100*(2*0.0172*L*IB/S)/V;
+    const dj=DJ.find(d=>d>=IB&&d<=Izc);
+    if(Izc>=IB && dv<=lim && dj){ok={S,Izc,dv,dj};break;}
+  }
+  if(!ok){dOut.innerHTML=cell("Corrente de projeto",fmt(IB,1)+" A")+cell("Resultado","acima de 6 mm²");dTxt.textContent="Nenhuma seção até 6 mm² atende aos critérios; consulte a tabela completa da norma (seções maiores, outro método de instalação ou tensão maior).";return;}
+  dOut.innerHTML=cell("Corrente de projeto I<sub>B</sub>",fmt(IB,1)+" A")+cell("Seção escolhida",String(ok.S).replace(".",",")+" mm²")+cell("I<sub>z</sub> corrigida",fmt(ok.Izc,1)+" A")+cell("Disjuntor I<sub>n</sub>",ok.dj+" A")+cell("Queda de tensão",fmt(ok.dv,2)+"%");
+  dTxt.textContent=`Conferência: ${fmt(IB,1)} A ≤ ${ok.dj} A ≤ ${fmt(ok.Izc,1)} A, e queda de ${fmt(ok.dv,2)}% ≤ ${fmt(lim,1)}%. Simplificação didática: não substitui o projeto pela norma completa.`;
+}
+[dP,dV,dL,dG,dTp,dDV].forEach(e=>e.addEventListener("input",ld)); ld();
+
+</script>
+</body>
+</html>
