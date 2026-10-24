@@ -33,7 +33,7 @@ export default {
     { errata: 'E3-1', de: 'Por isso a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual o consumidor atendido nessas condições paga pelo excedente de reativos.',
       para: 'Por isso a regulação da ANEEL (Resolução Normativa nº 1.000/2021) fixa o fator de potência de referência em 0,92, indutivo ou capacitivo: as unidades consumidoras do <b>grupo A</b> (atendidas em média ou alta tensão, como indústrias) que ficam abaixo dele pagam pelo excedente de reativos. Consumidores do grupo B (baixa tensão, como residências) não têm essa cobrança.' },
     { errata: 'E3-2', de: '<dd>adimensional, entre 0 e 1; “indutivo” (atrasado) se a corrente atrasa, “capacitivo” (adiantado) se adianta</dd>',
-      para: '<dd>adimensional, entre 0 e 1; “indutivo” (atrasado) se a corrente atrasa, “capacitivo” (adiantado) se adianta. FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e fica ≤ cos φ, com φ medido entre as fundamentais (60 Hz) da tensão e da corrente</dd>' },
+      para: '<dd>adimensional, entre 0 e 1; “indutivo” (atrasado) se a corrente atrasa, “capacitivo” (adiantado) se adianta. FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e, com a tensão senoidal, fica ≤ cos φ, com φ medido entre as fundamentais (60 Hz) da tensão e da corrente</dd>' },
     /* ---- figuras: rótulo que a fonte do app (mais larga que a da apostila) jogava sobre o fio da linha C ---- */
     { de: '<text x="420" y="240" class="ts">cada Z fica sob V', para: '<text x="372" y="268" class="ts">cada Z fica sob V' },
     /* ---- contexto do app ---- */

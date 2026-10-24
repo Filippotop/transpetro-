@@ -357,6 +357,100 @@
     calc();
   };
 
+  /* ---- I1: previsão mínima de cargas por cômodo (NBR 5410, 9.5), dimensionamento simplificado e queda de tensão
+     pela queda unitária em V/(A·km). ---- */
+  function opcoes(lista, atual) { return lista.map(function (o) { return '<option value="' + o[0] + '"' + (String(o[0]) === String(atual) ? ' selected' : '') + '>' + o[1] + '</option>'; }).join(''); }
+  function escolha(id, rotulo, lista, atual) { return '<label for="' + id + '"><span>' + rotulo + '</span><select id="' + id + '">' + opcoes(lista, atual) + '</select></label>'; }
+
+  W['previsao-carga'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'pc' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    var TIPOS = [['sala', 'Sala ou quarto'], ['cozinha', 'Cozinha e afins'], ['banheiro', 'Banheiro'], ['varanda', 'Varanda'], ['outro', 'Outro cômodo']];
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + escolha(p + 'T', 'Tipo de cômodo', TIPOS, val('pT', 'sala')) + campo(p + 'A', 'Comprimento (m)', val('pA', 4), ' min="0.1"') + campo(p + 'B', 'Largura (m)', val('pB', 3), ' min="0.1"') + '</div>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt');
+    function calc() {
+      var t = q('T').value, a = +q('A').value, b = +q('B').value;
+      if (!(a > 0 && b > 0)) { out.innerHTML = cell('Aviso', 'Informe dimensões positivas.'); txt.textContent = ''; return; }
+      var A = a * b, P = 2 * (a + b), blocos = A <= 6 ? 0 : Math.floor((A - 6) / 4 + 1e-9), il = 100 + 60 * blocos;
+      var n, regra;
+      if (t === 'cozinha') { n = Math.ceil(P / 3.5 - 1e-9); regra = '(cozinha, copa, área de serviço ou lavanderia) ' + fmt(P, 1) + ' m ÷ 3,5 = ' + fmt(P / 3.5, 2) + ' → ' + n + ' pontos (fração arredonda para cima; acima da pia, no mínimo 2 tomadas)'; }
+      else if (t === 'sala') { n = Math.ceil(P / 5 - 1e-9); regra = fmt(P, 1) + ' m ÷ 5 = ' + fmt(P / 5, 2) + ' → ' + n + ' pontos'; }
+      else if (t === 'banheiro') { n = 1; regra = '1 ponto junto ao lavatório, fora das zonas restritas do chuveiro ou da banheira'; }
+      else if (t === 'varanda') { n = 1; regra = 'pelo menos 1 ponto'; }
+      else { n = A <= 6 ? 1 : Math.ceil(P / 5 - 1e-9); regra = A <= 6 ? 'área até 6 m²: 1 ponto' : fmt(P, 1) + ' m ÷ 5 = ' + fmt(P / 5, 2) + ' → ' + n + ' pontos'; }
+      var mol = t === 'cozinha' || t === 'banheiro', pot = mol ? 600 * Math.min(n, 3) + 100 * Math.max(n - 3, 0) : 100 * n;
+      var dr = mol ? 'sim' : t === 'varanda' ? 'se for área externa' : 'não exigido';
+      out.innerHTML = cell('Área', fmt(A) + ' m²') + cell('Perímetro', fmt(P) + ' m') + cell('Iluminação mínima', fmt(il, 0) + ' VA') + cell('Pontos de TUG (mín.)', String(n)) + cell('Potência das TUG', fmt(pot, 0) + ' VA') + cell('DR de 30 mA', dr);
+      txt.innerHTML = 'Iluminação: ' + (A <= 6 ? 'até 6 m², 100 VA' : fmt(A) + ' m² = 6 + ' + fmt(A - 6) + ' m² → ' + blocos + ' bloco' + (blocos === 1 ? '' : 's') + ' inteiro' + (blocos === 1 ? '' : 's') + ' de 4 m² → 100 + ' + blocos + ' × 60 = ' + fmt(il, 0) + ' VA') +
+        '. Tomadas: ' + regra + '; ' + (mol ? Math.min(n, 3) + ' × 600' + (n > 3 ? ' + ' + (n - 3) + ' × 100' : '') : n + ' × 100') + ' = ' + fmt(pot, 0) + ' VA.' +
+        (mol ? ' Se o conjunto de banheiros, cozinha e área de serviço passar de 6 pontos, a norma admite 600 VA só nos 2 primeiros de cada cômodo.' : '') +
+        (t === 'varanda' ? ' DR: obrigatório para tomadas em áreas externas à edificação ou que possam alimentar equipamentos no exterior.' : t === 'sala' || t === 'outro' ? ' DR: não exigido pela versão vigente, salvo tomada que possa alimentar equipamento no exterior.' : '');
+    }
+    ['T', 'A', 'B'].forEach(function (k) { q(k).addEventListener('input', calc); q(k).addEventListener('change', calc); });
+    calc();
+  };
+
+  W['dimensiona-circuito'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'dc' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'P', 'Potência (W)', val('dP', 5500), ' min="1"') + escolha(p + 'V', 'Tensão (V)', [[127, '127'], [220, '220']], val('dV', 220)) +
+      campo(p + 'L', 'Comprimento (m)', val('dL', 20), ' min="1"') + escolha(p + 'G', 'Circuitos no eletroduto', [[1, '1 (fator 1,00)'], [0.8, '2 (fator 0,80)'], [0.7, '3 (fator 0,70)'], [0.65, '4 (fator 0,65)'], [0.6, '5 (fator 0,60)']], val('dG', 1)) +
+      escolha(p + 'Tp', 'Tipo de circuito', [[1.5, 'Iluminação'], [2.5, 'Força (tomadas)']], val('dTp', 2.5)) + campo(p + 'DV', 'Queda máxima (%)', val('dDV', 4), ' min="0.5" step="0.5"') + '</div>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt');
+    var TAB = [[1.5, 17.5], [2.5, 24], [4, 32], [6, 41]], DJ = [6, 10, 13, 16, 20, 25, 32, 40, 50];
+    var mm = function (s) { return String(s).replace('.', ',') + ' mm²'; };
+    function calc() {
+      var P = +q('P').value, V = +q('V').value, L = +q('L').value, g = +q('G').value, smin = +q('Tp').value, lim = +q('DV').value;
+      if (!(P > 0 && L > 0 && lim > 0)) { out.innerHTML = cell('Aviso', 'Confira os dados.'); txt.textContent = ''; return; }
+      var IB = P / V, ok = null, nao = [];
+      for (var i = 0; i < TAB.length; i++) {
+        var S = TAB[i][0], Izc = TAB[i][1] * g, dv = 100 * (2 * 0.0172 * L * IB / S) / V;
+        if (S < smin) continue;
+        var dj = DJ.filter(function (d) { return d >= IB && d <= Izc; })[0];
+        if (Izc >= IB && dv <= lim && dj) { ok = { S: S, Izc: Izc, dv: dv, dj: dj }; break; }
+        nao.push(mm(S) + ': ' + (Izc < IB ? 'I<sub>z</sub>′ = ' + fmt(Izc, 1) + ' A &lt; I<sub>B</sub>' : dv > lim ? 'queda de ' + fmt(dv) + '% &gt; ' + fmt(lim, 1) + '%' : 'nenhum disjuntor padronizado entre I<sub>B</sub> e I<sub>z</sub>′'));
+      }
+      if (!ok) { out.innerHTML = cell('Corrente de projeto I<sub>B</sub>', fmt(IB, 1) + ' A') + cell('Resultado', 'acima de 6 mm²'); txt.innerHTML = 'Nenhuma seção até 6 mm² atende (' + nao.join('; ') + '). Use a tabela completa da norma: seção maior, outro método de instalação ou tensão maior.'; return; }
+      out.innerHTML = cell('Corrente de projeto I<sub>B</sub>', fmt(IB, 1) + ' A') + cell('Seção escolhida', mm(ok.S)) + cell('I<sub>z</sub> corrigida', fmt(ok.Izc, 1) + ' A') + cell('Disjuntor I<sub>n</sub>', ok.dj + ' A') + cell('Queda de tensão', fmt(ok.dv) + '%');
+      txt.innerHTML = (nao.length ? 'Descartadas: ' + nao.join('; ') + '. ' : '') + 'Conferência: ' + fmt(IB, 1) + ' A ≤ ' + ok.dj + ' A ≤ ' + fmt(ok.Izc, 1) + ' A, e queda de ' + fmt(ok.dv) + '% ≤ ' + fmt(lim, 1) + '%. Simplificação didática (cobre, PVC 70 °C, método B1, 2 condutores carregados, FP 1): não substitui o projeto pela norma completa.';
+    }
+    ['P', 'V', 'L', 'G', 'Tp', 'DV'].forEach(function (k) { q(k).addEventListener('input', calc); q(k).addEventListener('change', calc); });
+    calc();
+  };
+
+  W['queda-unitaria'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'qu' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'S', 'Potência (VA)', val('qS', 4400), ' min="1"') + campo(p + 'V', 'Tensão (V)', val('qV', 220), ' min="1"') +
+      campo(p + 'U', 'Queda unitária (V/(A·km))', val('qU', 8), ' min="0.01"') + campo(p + 'Lim', 'Limite (%)', val('qLim', 3), ' min="0.1"') + campo(p + 'L', 'Comprimento real (m)', val('qL', 30), ' min="0"') + '</div>' +
+      '<svg viewBox="0 0 600 92" role="img" aria-label="Queda de tensão no comprimento informado, comparada com o limite"></svg>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt'), svg = el.querySelector('svg');
+    function calc() {
+      var S = +q('S').value, V = +q('V').value, U = +q('U').value, lim = +q('Lim').value, L = +q('L').value;
+      if (!(S > 0 && V > 0 && U > 0 && lim > 0 && L >= 0)) { out.innerHTML = cell('Aviso', 'Use valores positivos.'); txt.textContent = ''; svg.innerHTML = ''; return; }
+      var I = S / V, dvMax = lim / 100 * V, Lmax = dvMax / (U * I) * 1000, dv = U * I * L / 1000, pc = 100 * dv / V, cabe = pc <= lim + 1e-9;
+      /* Barra: 0 a max(2 × limite, queda), com a marca do limite. */
+      var top = Math.max(2 * lim, pc * 1.1), X0 = 20, X1 = 580, px = function (x) { return X0 + (X1 - X0) * Math.min(x, top) / top; };
+      svg.innerHTML = '<rect x="' + X0 + '" y="30" width="' + (X1 - X0) + '" height="20" class="s-comp"/>' +
+        '<rect x="' + X0 + '" y="30" width="' + (px(pc) - X0).toFixed(1) + '" height="20" class="' + (cabe ? 's-f-pc' : 's-f-pa') + '"/>' +
+        '<line x1="' + px(lim).toFixed(1) + '" y1="22" x2="' + px(lim).toFixed(1) + '" y2="58" class="s-wire s-thick"/>' +
+        '<text x="' + px(lim).toFixed(1) + '" y="17" class="s-ts" text-anchor="middle">limite ' + fmt(lim, 1) + '%</text>' +
+        '<text x="' + X0 + '" y="78" class="s-tm">0%</text>' +
+        '<text x="' + Math.min(Math.max(px(pc), X0 + 60), X1).toFixed(1) + '" y="78" class="s-ts ' + (cabe ? 's-fc' : 's-fa') + '" text-anchor="end">' + fmt(L, 0) + ' m: ' + fmt(pc) + '%</text>';
+      out.innerHTML = cell('Corrente I = S/V', fmt(I) + ' A') + cell('Queda máxima', fmt(dvMax) + ' V') + cell('Comprimento máximo', fmt(Lmax + 1e-9, 1) + ' m') + cell('Queda em ' + fmt(L, 0) + ' m', fmt(dv) + ' V (' + fmt(pc) + '%)');
+      txt.innerHTML = 'L<sub>máx</sub> = ΔV<sub>máx</sub> ÷ (ΔV<sub>unit</sub> × I) = ' + fmt(dvMax) + ' ÷ (' + fmt(U) + ' × ' + fmt(I) + ') = ' + fmt(Lmax / 1000, 5) + ' km = ' + fmt(Lmax + 1e-9, 1) + ' m. ' +
+        (cabe ? 'Com ' + fmt(L, 0) + ' m, o circuito atende ao limite.' : 'Com ' + fmt(L, 0) + ' m, o circuito passa do limite: encurte o trajeto ou use um cabo de seção maior (queda unitária menor).');
+    }
+    ['S', 'V', 'U', 'Lim', 'L'].forEach(function (k) { q(k).addEventListener('input', calc); });
+    calc();
+  };
+
   /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar. */
   W['exercicios'] = function (el) {
     var qs = el.querySelectorAll('.exq'), n = qs.length;

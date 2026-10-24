@@ -46,7 +46,7 @@ abaixo são de precisão.
 | Id | Arquivo/estação | O que dizia | O que diz agora | Fonte |
 |---|---|---|---|---|
 | E3-1 | `circuitos-ca-trifasicos.html`, bloco 5, "Por que o fator de potência baixo é um problema" → E3, seção 1 | "a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual **o consumidor atendido nessas condições** paga pelo excedente de reativos" | "a regulação da ANEEL (Resolução Normativa nº 1.000/2021) fixa o fator de potência de referência em 0,92, **indutivo ou capacitivo**: as unidades consumidoras do **grupo A** (atendidas em média ou alta tensão, como indústrias) que ficam abaixo dele pagam pelo excedente de reativos. Consumidores do grupo B (baixa tensão, como residências) não têm essa cobrança." O texto antigo deixava a entender que a cobrança vale para qualquer consumidor. | ANEEL, REN nº 1.000/2021, seção VIII ("Do fator de potência e do reativo excedente"), arts. 302 e 303, citados em [O Setor Elétrico, "A Resolução 1000 da Aneel"](https://www.osetoreletrico.com.br/?p=42765) (fonte secundária: o texto oficial da ANEEL não abriu nesta revisão, HTTP 403; as Fontes da E3 dizem "conforme citada em O Setor Elétrico") |
-| E3-2 | `circuitos-ca-trifasicos.html`, bloco 5, quadro "Fator de potência" → E3, seção 1 | FP = cos φ = P/S, sem ressalva | Acrescentado: "FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e fica ≤ cos φ, com φ medido entre as fundamentais (60 Hz) da tensão e da corrente". (Revisão da T3a: a primeira redação dizia "fica menor que cos φ", sem dizer de qual φ; o certo é ≤ o cos φ da fundamental, o fator de deslocamento.) Os instrumentos da E2 já falam de ondas distorcidas (inversores, fontes chaveadas), e o estudante não pode sair achando que as duas definições são sempre iguais. | Alexander e Sadiku, cap. 11 (potência em CA: FP = P/S); IEEE Std 1459 (fator de potência total = fator de deslocamento × fator de distorção, com tensão senoidal) |
+| E3-2 | `circuitos-ca-trifasicos.html`, bloco 5, quadro "Fator de potência" → E3, seção 1 | FP = cos φ = P/S, sem ressalva | Acrescentado: "FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e, com a tensão senoidal, fica ≤ cos φ, com φ medido entre as fundamentais (60 Hz) da tensão e da corrente". (Revisão da T3a: a primeira redação dizia "fica menor que cos φ", sem dizer de qual φ; o certo é ≤ o cos φ da fundamental, o fator de deslocamento.) (Revisão da T3c: acrescentado "com a tensão senoidal": a desigualdade FP ≤ cos φ<sub>1</sub> vale quando só a corrente é distorcida; com tensão e corrente distorcidas, potências de harmônicos podem quebrá-la.) Os instrumentos da E2 já falam de ondas distorcidas (inversores, fontes chaveadas), e o estudante não pode sair achando que as duas definições são sempre iguais. | Alexander e Sadiku, cap. 11 (potência em CA: FP = P/S); IEEE Std 1459 (fator de potência total = fator de deslocamento × fator de distorção, com tensão senoidal) |
 
 Seção nova (escrita para o app, não é correção): energia (E = P·Δt, 1 kWh = 3,6 MJ), medidor de energia de disco
 (N = E/K<sub>d</sub>, K<sub>d</sub> = 1.000/K<sub>r</sub>, P = 3.600·K<sub>d</sub>·N/Δt) e método dos dois wattímetros
@@ -136,3 +136,57 @@ Ajustes de contexto: "Bloco N" virou "seção N"; itens 5.4 e 5.5 apontam para a
 relógio para Dy5 (figura 11) e a pegadinha "o índice conta horas, não graus"; exercício novo (Dyn11) na seção 7; na
 figura 1, "N" e "S" eram texto branco sobre o ímã colorido (some num dos temas) e passaram a texto colorido num ímã em
 contorno; na figura 6, "curva inicial" e "−H<sub>c</sub>" saíram de cima das curvas (com linha de chamada).
+
+M1, revisão da T3c (figura 5): a 390 px, os rótulos "(NF, cogumelo, com trava)" e "(acionada mecanicamente)" se
+encavalavam com o símbolo vizinho; cada um foi quebrado em duas linhas (sem mudar o texto).
+
+## I1 · Instalações prediais e NBR 5410 (`fontes/instalacoes-nbr5410.html`)
+
+Revisão de 2026-10-24: os 2 exemplos resolvidos e os 29 exercícios da apostila foram refeitos à mão; mais 2 exemplos
+novos (3: escolha da seção pela queda unitária; 4: corrente de falta no TN e no TT). 41 contas em `contas`, inclusive a
+legenda das figuras 2 e 8 e os distratores com número. Nenhuma conta estava errada. Conferidos: campo de aplicação
+(1.000 V CA, 1.500 V CC; NBR 14039 de 1,0 a 36,2 kV); princípios; previsão de cargas de 9.5 (iluminação 100 VA + 60 VA
+por 4 m² inteiros; TUG por 3,5 m e 5 m de perímetro; 600 VA até 3 pontos e 100 VA os demais, com a exceção dos 6
+pontos; TUE a 1,5 m; circuito independente acima de 10 A; circuito misto até 16 A; tomadas de cozinha e área de serviço
+em circuitos só delas); seções mínimas (1,5 / 2,5 / 0,5 mm²); capacidade no método B1 (17,5 / 24 / 32 / 41 A e 15,5 /
+21 / 28 / 36 A); fatores de agrupamento (0,80 / 0,70 / 0,65 / 0,60); I<sub>B</sub> ≤ I<sub>n</sub> ≤ I<sub>z</sub> e
+I<sub>2</sub> ≤ 1,45·I<sub>z</sub>; curvas B, C e D; princípio do DR e as suas limitações; lista de 5.1.3.2.2; cores
+(N azul-claro, PE verde-amarelo ou verde, PEN azul-claro com anilhas); esquemas TN-S, TN-C, TN-C-S, TT e IT; seção do
+PE (S, 16, S/2); equipotencialização principal e BEP; canalizações × eletrodo; neutro rompido (161 Ω e 16 Ω em série
+sob 220 V: 200 V e 20 V).
+
+| Id | Arquivo/estação | O que dizia | O que diz agora | Fonte |
+|---|---|---|---|---|
+| I1-1 | `instalacoes-nbr5410.html`, bloco 3, "Queda de tensão" → I1, seção 3 | "limita a queda total, contada da origem"; 7% (transformador ou gerador próprio); **5% a partir do ponto de entrega** em BT; 4% nos circuitos terminais, como se os três fossem igualmente certos | 6.2.7: 7% a partir dos terminais secundários do transformador MT/BT próprio (ou do da distribuidora, quando o ponto de entrega fica nele) ou do gerador próprio; 4% nos circuitos terminais "seja qual for a alimentação"; o de **5% leva `confira`** (decisão da spec: o guia de fabricante transcreve 6.2.7.1 c) com 5%, mas o texto da norma não foi lido). Também na aba Fórmulas e no cartão. O resumo do estudante dizia "4% do ponto de entrada até o ponto mais distante": isso não aparece em lugar nenhum da estação, e o V ou F 7 ensina que está errado. | Prysmian, [Guia de dimensionamento de cabos para baixa tensão, Rev. 9](https://br.prysmian.com/sites/default/files/atoms/files/Guia_de_Dimensionamento-Baixa_Tensao_Rev9.pdf), 6.1 (transcreve 6.2.7.1 a–d e a nota dos 4%); [Manual Prysmian de Instalações Elétricas](https://br.prysmian.com/sites/default/files/atoms/files/Manual_Instalacoes_Eletricas.pdf) (2010), cap. VI; Nambei, [Tabela do eletricista](https://api.aecweb.com.br/cls/catalogos/nambei/nambei_tabela_do_eletricista.pdf) (4% nos terminais) |
+| I1-2 | `instalacoes-nbr5410.html`, exercício 5 do bloco 3 → I1, seção 3 | "alimentada em BT pela rede da distribuidora ... a partir do ponto de entrega ... respectivamente: 5% e 4%" | o gabarito dependia do valor sem confirmação; o exercício passou a ser o do transformador próprio (7% e 4%), com o 5% como distrator explicado | as de I1-1 |
+| I1-3 | `instalacoes-nbr5410.html`, exercício 6 do bloco 3 → I1, seção 3 | motor com partida "em torno de 6 vezes a corrente nominal" → curva C (5 a 10 × I<sub>n</sub>) | com 6 × I<sub>n</sub>, a curva C (faixa de 5 a 10) também pode disparar: o enunciado era ambíguo. Agora: partida de cerca de **4 vezes a corrente nominal do disjuntor** (B pode disparar acima de 3; C só acima de 5), com um comentário para cada alternativa | IEC 60898-1 (faixas B > 3 a 5, C > 5 a 10, D > 10 a 20 × I<sub>n</sub>), as mesmas da figura 4 |
+| I1-4 | `instalacoes-nbr5410.html`, bloco 5, caixa das canalizações | "O eletrodo preferencial é a armadura das fundações; na falta dela, **hastes**, fitas ou cabos enterrados" | "as alternativas da norma são fitas, barras ou cabos imersos no concreto das fundações, ou malhas metálicas enterradas no nível das fundações, complementadas por hastes quando preciso" (haste sozinha não é uma das opções de 6.4.1.1) | a lista de opções de eletrodo reproduzida em questões de concurso sobre a NBR 5410 (armaduras, fitas/cabos imersos no concreto, malhas enterradas); Creder e Cotrim |
+| I1-5 | `instalacoes-nbr5410.html`, bloco 3, quadro "Proteção contra sobrecarga" | "disjuntores conforme as normas usuais já atendem essa segunda condição" | "os disjuntores residenciais (NBR NM 60898) têm I<sub>2</sub> = 1,45·I<sub>n</sub>, então atendem essa segunda condição sempre que atendem a primeira" (não vale, por exemplo, para fusíveis gG) | NBR NM 60898 / IEC 60898-1 (corrente convencional de atuação 1,45·I<sub>n</sub>) |
+
+Marcado com `confira` (não lido no texto da norma): o limite de 5% desde o ponto de entrega (I1-1); a alínea das
+edificações não residenciais na lista do DR de 30 mA; a seção mínima do PEN (10 mm² Cu, 16 mm² Al; está na apostila e
+na IEC 60364-5-54, mas não achei fonte aberta brasileira); "a NBR 5410 não admite DR em circuito TN-C" (a física, que o
+texto explica, é certa: a corrente de falta volta pelo PEN dentro do núcleo do DR); a data "até outubro de 2026, a nova
+edição não tinha sido publicada" (O Setor Elétrico, setembro de 2025, previa a 2ª consulta e a publicação até o fim de
+2026).
+
+Exercícios reescritos por originalidade (não são erro técnico): o exercício 3 do bloco 1 e o 6 do bloco 5 repetiam,
+quase palavra por palavra, as alternativas das questões 55 e 59 de 2023; viraram situações novas (a reforma de um
+galpão e a vistoria de uma casa com o aterramento ligado só à tubulação de água), com o mesmo conteúdo.
+
+Acrescentado para ensinar os padrões de 2023 (não são correções): caixa "o princípio com uma palavra trocada" (questão
+55); quadro da queda unitária mais preciso (o valor de 14,3 V/(A·km) da tabela Nambei), a calculadora de comprimento
+máximo, o exemplo 3 e a caixa de pegadinhas da queda (questão 45); faixa de atuação do DR (50% a 100% de
+I<sub>Δn</sub>; catálogo [Crabtree](https://storage.electrika.com/flips/0170-crabtree-ind-07-a/files/assets/basic-html/page-76.html));
+classes I, II e III de DPS e as correntes mínimas de 12,5 kA e 5 kA (O Setor Elétrico,
+["Especificando minimamente um DPS"](https://www.osetoreletrico.com.br/?p=13779)); regras do PEN e do TN-C; caixa e
+exemplo 4 sobre a corrente de falta no TN e no TT, com R<sub>A</sub>·I<sub>Δn</sub> ≤ U<sub>L</sub> = 50 V (questão 37;
+tabela de R<sub>A</sub> máximo do Manual Prysmian, 1.667 Ω com 30 mA); caixa da sobretensão numa fase, com link para a
+E3 (questão 42); exercício novo para a canalização (questão 59).
+
+Ajustes de contexto: "Bloco 5" virou "seção 5"; "Antes de começar" virou "Escopo do edital e como a banca cobra", com
+os itens 5.6, 8.1, 8.3 e 10.1, a situação da revisão da norma e as questões 37, 42, 45, 55 e 59 de 2023 conferidas no
+caderno; a figura 6 (esquemas de aterramento) foi redesenhada em duas colunas, com rótulos de 14 px e legenda dos
+condutores (a original, com 660 de largura e rótulos de 11 px, ficava ilegível a 390 px); a figura 3 usava a classe
+`hl` sem estilo no app (preenchimento preto no tema escuro): agora é um fundo decorativo; o `<select>` de tensão da
+calculadora de dimensionamento ganhou `value` nas opções.

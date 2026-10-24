@@ -606,6 +606,8 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/estacoes/E3.js"></script>
 <script src="data/estacoes/M1.js"></script>
 <script src="data/estacoes/M2.js"></script>
+<script src="data/estacoes/I1.js"></script>
+<script src="data/embreve.js"></script>
 <script src="js/calc.js"></script>
 <script src="merge.js"></script>
 <script>
@@ -826,7 +828,7 @@ function vMod(){
     /* Tabela larga rola de lado: a área de rolagem recebe foco pelo teclado (axe: scrollable-region-focusable). */
     body.querySelectorAll('.prose .tw').forEach(t=>{ const sc=t.scrollWidth>t.clientWidth+2; t.classList.toggle('scrolls',sc); if(sc){ t.tabIndex=0; t.setAttribute('role','region'); t.setAttribute('aria-label','Tabela: deslize para o lado'); } });
     body.querySelectorAll('#prose a[data-ex]').forEach(a=>a.onclick=e=>{ e.preventDefault(); openQView(a.dataset.ex,a.dataset.n); });
-    body.querySelectorAll('#prose a[data-ir]').forEach(a=>a.onclick=e=>{ e.preventDefault(); go(a.dataset.ir); });
+    body.querySelectorAll('#prose a[data-ir]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const [v,id]=a.dataset.ir.split(':'); if(v==='mod'&&!(M[id]&&!M[id].emBreve)) return; go(v, id?{id,tab:'teoria'}:null); });
     if(window.montarCalculadoras) montarCalculadoras(body);
     $('#readbar').hidden=false; readProgress();
     $('#toResumo').onclick=()=>{ if(!S.read[m.id]){S.read[m.id]=Date.now(); save();} param.tab='resumo'; vMod(); window.scrollTo({top:0}); };

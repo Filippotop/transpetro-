@@ -60,7 +60,7 @@ const strip = s => s.replace(/<[^>]+>/g, '').trim();
 /* Classes do SVG ganham o prefixo s- (o app já usa .tl, .fc, .ar, .cell, .grid… para outras coisas). */
 /* Elementos só de fundo (a grade e as células do quadro de símbolos) ganham também s-grid: são decorativos, e o teste
    de contraste das figuras não os cobra. */
-const DECOR = new Set(['cell']);
+const DECOR = new Set(['cell', 'hl']);
 const svgClasses = svg => svg.replace(/\sclass="([^"]*)"/g, (_, c) => ` class="${c.split(/\s+/).filter(Boolean).flatMap(x => DECOR.has(x) ? ['s-' + x, 's-grid'] : ['s-' + x]).join(' ')}"`);
 
 function exercicios(set, n) {

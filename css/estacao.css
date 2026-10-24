@@ -62,6 +62,7 @@
 .estacao .s-sub{font-size:.72em}
 .estacao .s-grid{stroke:var(--rule);stroke-width:1}
 .estacao .s-relay{fill:var(--pc-bg);stroke:var(--pc);stroke-width:1.8}
+.estacao .s-hl.s-grid{fill:var(--pc-bg);stroke:none;opacity:.8} .estacao .s-band{fill-opacity:.25;stroke-width:2} .estacao .s-band.s-pa{fill:var(--pa)} .estacao .s-band.s-pb{fill:var(--pb)} .estacao .s-band.s-pc{fill:var(--pc)}
 .estacao .s-fl{fill:none;stroke:var(--ink);stroke-width:1.5}
 .estacao .s-cond{fill:var(--surface);stroke:var(--ink);stroke-width:2.2}
 .estacao .s-coilc{fill:none;stroke:var(--ink);stroke-width:2}

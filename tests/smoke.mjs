@@ -69,8 +69,11 @@ function testIntegrity() {
   const mids = new Set();
   for (const m of DATA.modules) {
     check(!mids.has(m.id), `módulo ${m.id}: id repetido`); mids.add(m.id);
-    check(m.html && m.html.trim().length > 0, `módulo ${m.id}: sem teoria`);
-    check(Array.isArray(m.resumo) && m.resumo.length > 0, `módulo ${m.id}: sem resumo`);
+    if (m.emBreve) check(!m.html && Array.isArray(m.resumo) && Array.isArray(m.qs) && !m.qs.length, `estação em breve ${m.id}: com conteúdo, ou sem resumo/qs vazios`);
+    else {
+      check(m.html && m.html.trim().length > 0, `módulo ${m.id}: sem teoria`);
+      check(Array.isArray(m.resumo) && m.resumo.length > 0, `módulo ${m.id}: sem resumo`);
+    }
     for (const q of m.qs) check(ids.has(q), `módulo ${m.id}: questão ${q} não existe`);
     /* Esquema da estação (spec, seção 2): vol, linha, itens do edital, faixa e peso em 2023. */
     check(m.vol === (m.line === 'X' ? 'MT' : 'EL'), `estação ${m.id}: vol "${m.vol}" não combina com a linha ${m.line}`);
@@ -297,14 +300,23 @@ async function testLines(browser) {
     }
     await ctx.close();
   }
-  /* Estação marcada emBreve: aparece, mas não abre. */
+  /* Estações marcadas emBreve: todas aparecem no mapa como "em breve", na linha certa, e não abrem (nem por link
+     direto). Sem nenhuma nos dados, uma de teste é acrescentada. */
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
   const page = await ctx.newPage();
-  await withExtra(page, "window.DATA.modules.push({id:'M3',vol:'EL',line:'M',title:'Máquinas rotativas',itens:'5.2',faixa:'B',peso2023:0,note:'',html:'',resumo:[],formulas:[],qs:[],emBreve:true});");
+  let soon = loadData().modules.filter(m => m.emBreve);
+  if (!soon.length) { soon = [{ id: 'Z9', line: 'M' }]; await withExtra(page, "window.DATA.modules.push({id:'Z9',vol:'EL',line:'M',title:'Estação de teste',itens:'5.2',faixa:'B',peso2023:0,note:'',html:'',resumo:[],formulas:[],qs:[],emBreve:true});"); }
   await page.goto(URL_); await page.waitForTimeout(300);
-  const st = page.locator('.st[data-m="M3"]');
-  check(await st.count() === 1 && /em breve/i.test(await st.textContent()), 'linhas: a estação emBreve não aparece como "em breve"');
+  for (const m of soon) {
+    const st = page.locator(`.line.lc-${m.line} .st[data-m="${m.id}"]`);
+    check(await st.count() === 1 && /em breve/i.test(await st.textContent()), `linhas: a estação ${m.id} (em breve) não aparece como "em breve" na linha ${m.line}`);
+  }
+  const st = page.locator(`.st[data-m="${soon[0].id}"]`);
   if (await st.count()) { await st.click(); await page.waitForTimeout(150); check(await page.evaluate(() => view) === 'linhas', 'linhas: tocar numa estação "em breve" abriu a estação vazia'); }
+  const next = await page.evaluate(() => [...document.querySelectorAll('.hero .next b, .hero .task b')].map(b => b.textContent).join(' | '));
+  for (const m of soon) check(!next.includes(m.id + ' ·'), `linhas: a Missão de hoje sugere a estação ${m.id}, que ainda está em breve`);
+  const p2 = await ctx.newPage(); await p2.goto(URL_ + '#' + soon[0].id); await p2.waitForTimeout(250);
+  check(await p2.evaluate(() => view) !== 'mod', `link direto: #${soon[0].id} (em breve) abriu a estação vazia`);
   await ctx.close();
 }
 
@@ -631,6 +643,27 @@ const CALC_CHECKS = {
     check(/30,00 kW/.test(await o()) && /Rendimento\s*96,85%/.test(await o()) && /η máximo em\s*50% da carga/.test(await o()) && await w.locator('svg path').count() >= 1, `rendimento (50 kVA, 300 W, 1.200 W, FP 0,8, 75%) não dá 96,85% e máximo a 50%${tag} ("${(await o()).slice(0, 200)}")`);
     await w.locator('input[type=range]').fill('50'); await w.page().waitForTimeout(80);
     check(/Rendimento\s*97,09%/.test(await o()), `rendimento a 50% da carga não dá 97,09%${tag} ("${(await o()).slice(0, 200)}")`);
+  },
+  'previsao-carga': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/Iluminação mínima\s*160 VA/.test(await o()) && /Pontos de TUG \(mín\.\)\s*3/.test(await o()) && /Potência das TUG\s*300 VA/.test(await o()), `previsão de carga (sala 4 × 3) não dá 160 VA, 3 pontos e 300 VA${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('select').selectOption('cozinha'); await w.page().waitForTimeout(80);
+    check(/Pontos de TUG \(mín\.\)\s*4/.test(await o()) && /Potência das TUG\s*1\.900 VA/.test(await o()) && /DR de 30 mA\s*sim/.test(await o()), `previsão de carga (cozinha 4 × 3) não dá 4 pontos, 1.900 VA e DR${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('select').selectOption('sala'); await w.page().waitForTimeout(80);
+  },
+  'dimensiona-circuito': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/25,0 A/.test(await o()) && /Seção escolhida\s*4 mm²/.test(await o()) && /Disjuntor I\s*n\s*25 A/.test(await o()) && /1,95%/.test(await o()), `dimensionamento (5.500 W, 220 V, 20 m) não dá 4 mm², 25 A e 1,95%${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('select').nth(1).selectOption('0.7'); await w.page().waitForTimeout(80);
+    check(/Seção escolhida\s*6 mm²/.test(await o()) && /28,7 A/.test(await o()) && /Descartadas/.test(await w.locator('.lab-txt').textContent()), `dimensionamento com 3 circuitos no eletroduto não sobe para 6 mm²${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('select').nth(1).selectOption('1'); await w.page().waitForTimeout(80);
+  },
+  'queda-unitaria': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/20,00 A/.test(await o()) && /6,60 V/.test(await o()) && /Comprimento máximo\s*41,3 m/.test(await o()) && /4,80 V \(2,18%\)/.test(await o()) && /atende/.test(await w.locator('.lab-txt').textContent()), `queda unitária (4.400 VA, 220 V, 8 V/(A·km), 3%) não dá 41,3 m${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('input').nth(3).fill('2'); await w.page().waitForTimeout(80);
+    check(/Comprimento máximo\s*27,5 m/.test(await o()) && /passa do limite/.test(await w.locator('.lab-txt').textContent()), `queda unitária com limite de 2% não dá 27,5 m e "passa do limite"${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('input').nth(3).fill('3'); await w.page().waitForTimeout(80);
   },
 };
 async function testCalc(browser) {

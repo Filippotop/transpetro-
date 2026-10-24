@@ -24,6 +24,11 @@ export default {
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   labs: { sim1: 'partida-direta', sim2: 'reversao' },
   trocas: [
+    /* ---- figura 5: a 390 px, dois rótulos de baixo se encavalavam com o vizinho; cada um vai em duas linhas ---- */
+    { de: '<text x="80" y="301" class="tm" text-anchor="middle">(NF, cogumelo, com trava)</text>',
+      para: '<text x="80" y="299" class="tm" text-anchor="middle">(NF, cogumelo,</text><text x="80" y="313" class="tm" text-anchor="middle">com trava)</text>' },
+    { de: '<text x="240" y="301" class="tm" text-anchor="middle">(acionada mecanicamente)</text>',
+      para: '<text x="240" y="299" class="tm" text-anchor="middle">(acionada</text><text x="240" y="313" class="tm" text-anchor="middle">mecanicamente)</text>' },
     /* ---- correções técnicas (fontes/ERRATA.md) ---- */
     { errata: 'M1-1', de: 'selo ligado em paralelo com o S0 em vez de com o S1',
       para: 'selo ligado de modo a contornar também o S0 (em paralelo com o conjunto S0 + S1, e não só com o S1)' },

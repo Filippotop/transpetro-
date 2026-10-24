@@ -130,6 +130,19 @@ for (const f of ST_FILES) {
     for (const k of ['s', 'why']) { const e = wellFormed(v[k]); check(!e, `${where}: V ou F ${v.id}.${k} mal formado: ${e}`); }
   }
 }
+/* Estações "em breve": só o esqueleto (título, itens, faixa, peso e uma nota), sem conteúdo, e nenhuma com arquivo em
+   data/estacoes/. */
+const SOON = (DATA.modules || []).filter(m => m.emBreve);
+for (const m of SOON) {
+  const where = `estação em breve ${m.id}`;
+  check(!ST_IDS.includes(m.id), `${where}: tem arquivo em data/estacoes/ e ainda está marcada emBreve`);
+  for (const k of ['id', 'vol', 'line', 'title', 'itens', 'faixa', 'note']) check(typeof m[k] === 'string' && m[k].trim(), `${where}: campo ${k} vazio`);
+  check(['E', 'M', 'I', 'A', 'N', 'X'].includes(m.line) && m.vol === (m.line === 'X' ? 'MT' : 'EL'), `${where}: linha "${m.line}" ou vol "${m.vol}" inválidos`);
+  check(['A', 'B', 'C'].includes(m.faixa) && typeof m.peso2023 === 'number', `${where}: faixa "${m.faixa}" ou peso2023 inválidos`);
+  check(!m.html && [m.resumo, m.formulas, m.qs].every(x => Array.isArray(x) && !x.length), `${where}: tem conteúdo (html, resumo, fórmulas ou questões)`);
+  check(m.note.length <= 220 && !/</.test(m.note), `${where}: a nota deve ser uma linha curta, sem HTML`);
+}
+for (const f of DATA_FILES) check(SW.includes(`'${f}'`), `offline: ${f} (carregado pelo index.html) fora da lista de arquivos do sw.js`);
 /* Ids únicos entre estações. */
 const seen = new Set();
 for (const x of [...(DATA.cards || []), ...(DATA.vf || [])]) { check(!seen.has(x.id), `id repetido: ${x.id}`); seen.add(x.id); }
@@ -137,4 +150,4 @@ for (const x of [...(DATA.cards || []), ...(DATA.vf || [])]) { check(!seen.has(x
 if (fs.existsSync(path.join(ROOT, 'js/calc.js'))) { const b = read('js/calc.js').match(FIXED); check(!b, `widgets: js/calc.js desenha com cor fixa "${b && b[0]}"`); }
 
 if (fails.length) { console.error(`estações FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
-console.log(`estações OK: ${ST_IDS.join(', ')} (campos, HTML, contas, widgets ${WIDGETS.join('/')}, SVG nos dois temas, cartões e V ou F)`);
+console.log(`estações OK: ${ST_IDS.join(', ')}; em breve: ${SOON.map(m => m.id).join(', ') || 'nenhuma'} (campos, HTML, contas, widgets ${WIDGETS.join('/')}, SVG nos dois temas, cartões e V ou F)`);
