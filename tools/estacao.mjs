@@ -36,6 +36,8 @@ const qm = src.match(/const QUIZ\s*=\s*(\{[\s\S]*?\});\s*\n\s*const L\b/);
 const QUIZ = qm ? vm.runInNewContext('(' + qm[1] + ')') : {};
 /* Exercícios de seções novas, escritas para a estação (campo quiz dos metadados). */
 Object.assign(QUIZ, M.quiz || {});
+/* Exercícios novos no fim de um bloco que já existe na apostila (campo quizMais: {b5: […]}). */
+for (const [k, v] of Object.entries(M.quizMais || {})) { if (!QUIZ[k]) throw new Error('quizMais para bloco sem exercícios: ' + k); QUIZ[k] = [...QUIZ[k], ...v]; }
 const LET = 'ABCDE';
 
 /* Seções <section id="…" class="block">. */
@@ -56,7 +58,10 @@ const attr = s => s.replace(/&/g, '&amp;').replace(/'/g, '&#39;');
 const strip = s => s.replace(/<[^>]+>/g, '').trim();
 
 /* Classes do SVG ganham o prefixo s- (o app já usa .tl, .fc, .ar, .cell, .grid… para outras coisas). */
-const svgClasses = svg => svg.replace(/\sclass="([^"]*)"/g, (_, c) => ` class="${c.split(/\s+/).filter(Boolean).map(x => 's-' + x).join(' ')}"`);
+/* Elementos só de fundo (a grade e as células do quadro de símbolos) ganham também s-grid: são decorativos, e o teste
+   de contraste das figuras não os cobra. */
+const DECOR = new Set(['cell']);
+const svgClasses = svg => svg.replace(/\sclass="([^"]*)"/g, (_, c) => ` class="${c.split(/\s+/).filter(Boolean).flatMap(x => DECOR.has(x) ? ['s-' + x, 's-grid'] : ['s-' + x]).join(' ')}"`);
 
 function exercicios(set, n) {
   const qs = QUIZ[set] || [];

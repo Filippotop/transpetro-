@@ -65,6 +65,16 @@
 .estacao .s-fl{fill:none;stroke:var(--ink);stroke-width:1.5}
 .estacao .s-cond{fill:var(--surface);stroke:var(--ink);stroke-width:2.2}
 .estacao .s-coilc{fill:none;stroke:var(--ink);stroke-width:2}
+.estacao .s-cell{fill:var(--sunk);stroke:var(--rule);stroke-width:1}
+.estacao .s-wall{fill:none;stroke:var(--ink);stroke-width:5}
+.estacao .s-ring{fill:none;stroke:var(--pb);stroke-width:7} .estacao .s-ring2{fill:none;stroke:var(--pb);stroke-width:4}
+.estacao .s-xmark{stroke:var(--pc);stroke-width:3;fill:none} .estacao .s-xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.estacao .s-coil{fill:none;stroke:var(--pb);stroke-width:2.4} .estacao .s-wind{stroke-width:3.2;fill:none}
+.estacao .s-core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.estacao .s-mag{stroke-width:3} .estacao .s-mag.s-pa-s{fill:var(--pa-bg)} .estacao .s-mag.s-pc-s{fill:var(--pc-bg)}
+/* Simuladores de comando (M1): trecho com tensão em azul e grosso; bobina e sinaleiro acesos em âmbar. */
+.estacao .s-on{stroke:var(--pc)!important;stroke-width:3.4!important}
+.estacao .s-lampon{fill:var(--pb);stroke:var(--ink);stroke-width:2}
 
 /* Calculadoras (js/calc.js). */
 .estacao .lab{background:var(--surface);border:1px solid var(--rule);border-top:4px solid var(--lc,var(--f));border-radius:var(--r-sm);padding:16px;margin:22px 0;box-shadow:var(--shadow-1);font-family:var(--display);font-size:15px;line-height:1.45}
@@ -84,6 +94,7 @@
 .estacao .lab-out span{display:block;color:var(--muted);font-size:12px}
 .estacao .lab-out b{font-family:var(--mono);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
 .estacao .lab-txt{margin:10px 0 0;font-size:14px}
+.estacao .lab-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 /* Duas figuras lado a lado (ondas e triângulo de potências); no celular, uma embaixo da outra. */
 .estacao .lab-figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;align-items:center}
 .estacao .lab-figs svg{margin-top:8px}

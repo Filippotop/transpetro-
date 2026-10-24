@@ -45,8 +45,8 @@ abaixo são de precisão.
 
 | Id | Arquivo/estação | O que dizia | O que diz agora | Fonte |
 |---|---|---|---|---|
-| E3-1 | `circuitos-ca-trifasicos.html`, bloco 5, "Por que o fator de potência baixo é um problema" → E3, seção 1 | "a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual **o consumidor atendido nessas condições** paga pelo excedente de reativos" | "a regulação da ANEEL (Resolução Normativa nº 1.000/2021) fixa o fator de potência de referência em 0,92, **indutivo ou capacitivo**: as unidades consumidoras do **grupo A** (atendidas em média ou alta tensão, como indústrias) que ficam abaixo dele pagam pelo excedente de reativos. Consumidores do grupo B (baixa tensão, como residências) não têm essa cobrança." O texto antigo deixava a entender que a cobrança vale para qualquer consumidor. | ANEEL, REN nº 1.000/2021, seção VIII ("Do fator de potência e do reativo excedente"), arts. 302 e 303, citados em [O Setor Elétrico, "A Resolução 1000 da Aneel"](https://www.osetoreletrico.com.br/?p=42765); confira os números dos artigos no texto oficial da ANEEL se for citá-los |
-| E3-2 | `circuitos-ca-trifasicos.html`, bloco 5, quadro "Fator de potência" → E3, seção 1 | FP = cos φ = P/S, sem ressalva | Acrescentado: "FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e fica menor que cos φ". Os instrumentos da E2 já falam de ondas distorcidas (inversores, fontes chaveadas), e o estudante não pode sair achando que as duas definições são sempre iguais. | Alexander e Sadiku, cap. 11 (potência em CA: FP = P/S); IEEE Std 1459 (fator de potência total = fator de deslocamento × fator de distorção, com tensão senoidal) |
+| E3-1 | `circuitos-ca-trifasicos.html`, bloco 5, "Por que o fator de potência baixo é um problema" → E3, seção 1 | "a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual **o consumidor atendido nessas condições** paga pelo excedente de reativos" | "a regulação da ANEEL (Resolução Normativa nº 1.000/2021) fixa o fator de potência de referência em 0,92, **indutivo ou capacitivo**: as unidades consumidoras do **grupo A** (atendidas em média ou alta tensão, como indústrias) que ficam abaixo dele pagam pelo excedente de reativos. Consumidores do grupo B (baixa tensão, como residências) não têm essa cobrança." O texto antigo deixava a entender que a cobrança vale para qualquer consumidor. | ANEEL, REN nº 1.000/2021, seção VIII ("Do fator de potência e do reativo excedente"), arts. 302 e 303, citados em [O Setor Elétrico, "A Resolução 1000 da Aneel"](https://www.osetoreletrico.com.br/?p=42765) (fonte secundária: o texto oficial da ANEEL não abriu nesta revisão, HTTP 403; as Fontes da E3 dizem "conforme citada em O Setor Elétrico") |
+| E3-2 | `circuitos-ca-trifasicos.html`, bloco 5, quadro "Fator de potência" → E3, seção 1 | FP = cos φ = P/S, sem ressalva | Acrescentado: "FP = cos φ vale com tensão e corrente senoidais; com correntes distorcidas (harmônicos), FP = P/S continua valendo e fica ≤ cos φ, com φ medido entre as fundamentais (60 Hz) da tensão e da corrente". (Revisão da T3a: a primeira redação dizia "fica menor que cos φ", sem dizer de qual φ; o certo é ≤ o cos φ da fundamental, o fator de deslocamento.) Os instrumentos da E2 já falam de ondas distorcidas (inversores, fontes chaveadas), e o estudante não pode sair achando que as duas definições são sempre iguais. | Alexander e Sadiku, cap. 11 (potência em CA: FP = P/S); IEEE Std 1459 (fator de potência total = fator de deslocamento × fator de distorção, com tensão senoidal) |
 
 Seção nova (escrita para o app, não é correção): energia (E = P·Δt, 1 kWh = 3,6 MJ), medidor de energia de disco
 (N = E/K<sub>d</sub>, K<sub>d</sub> = 1.000/K<sub>r</sub>, P = 3.600·K<sub>d</sub>·N/Δt) e método dos dois wattímetros
@@ -66,3 +66,73 @@ Ajustes de contexto: blocos 5 e 6 viraram seções 1 e 2; figuras renumeradas na
 a figura 9 antes da 8), com as referências do texto acompanhando; exemplos 5 e 6 viraram 1 e 2; a frase "o cálculo
 detalhado de bancos de capacitores ... fica para o material de potência" saiu (esta estação é o material de potência);
 o rótulo "cada Z fica sob V<sub>L</sub>" da figura do triângulo saiu de cima do fio da linha C.
+
+Revisão da T3b (2026-10-24), pedida pela revisão da E3: o exemplo resolvido 3 da seção nova dizia que o medidor
+"alimenta a bancada de uma oficina" durante "uma aula"; um medidor não alimenta nada, e o cenário lembrava o da questão
+21 de 2023. Agora: o medidor "mede a energia consumida pela oficina de manutenção de uma base", durante "um turno"
+(números iguais). As Fontes da E3 citam a REN nº 1.000/2021 "conforme citada em O Setor Elétrico", porque o texto
+oficial da ANEEL não abriu (HTTP 403) e não foi lido nesta revisão.
+
+## M1 · Simbologia e diagramas elétricos (`fontes/simbologia-diagramas.html`)
+
+Revisão de 2026-10-24: os 2 exemplos resolvidos e os 30 exercícios da apostila foram refeitos; a apostila quase não tem
+contas, então as 7 contas em `contas` são do exemplo 2 e do exercício novo (estrela-triângulo com números, escritos
+para o app). Conferidos: as três convenções (repouso; força × comando; letra + número), a numeração dos terminais
+(A1-A2; 1L1-2T1, 3L2-4T2, 5L3-6T3; x3-x4 NA, x1-x2 NF; 95-96 NF e 97-98 NA do relé de sobrecarga), as letras K, F, Q,
+S, H, M, a numeração ANSI (27, 49, 50, 51, 52, 59, 63, 86, 87, 89; N = neutro), o selo, as regras série × paralelo, a
+condição de sequência, o intertravamento elétrico e mecânico, a equação booleana, a sutileza do Ladder com botão NF
+físico, a reversão (troca de duas fases; a figura 7 entrega L3-L2-L1 em K2, conferido fio a fio), a sequência e as
+condições da estrela-triângulo (6 terminais, tensão de Δ = tensão da rede, corrente e conjugado a ~1/3) e a NBR 5444
+(cancelada em 10/11/2014 sem substituta; a apostila já dizia isso corretamente e não a apresenta como vigente).
+
+| Id | Arquivo/estação | O que dizia | O que diz agora | Fonte |
+|---|---|---|---|---|
+| M1-1 | `simbologia-diagramas.html`, bloco 5, tabela de diagnóstico → M1, seção 5 | "O motor não desliga pelo S0": "selo ligado em paralelo com o S0 em vez de com o S1" | "selo ligado de modo a contornar também o S0 (em paralelo com o conjunto S0 + S1, e não só com o S1)". Com o selo só em paralelo com o S0, o S1 (pulsador) ficaria sozinho em série com a bobina e o motor nem se manteria ligado; o defeito que impede o desligamento é o selo que contorna o S0 **e** o S1. | análise do próprio circuito (figura do simulador 1); C. M. Franchi, *Acionamentos Elétricos*, comando da partida direta |
+| M1-2 | `simbologia-diagramas.html`, bloco 2, figura 3 (planta baixa) → M1, figura 3 | tomada rotulada "TUG 100 VA", logo depois de o texto dizer que a potência da tomada é dispensada quando é de 100 VA | rótulo "600 VA", e a legenda explica: "tomada baixa de 600 VA do circuito 2 (se fosse de 100 VA, a potência nem seria escrita)" | ABNT NBR 5444:1989, tabela de tomadas (potência indicada em VA ao lado do símbolo, dispensada quando é de 100 VA), cópia didática da UFPR citada nas Fontes |
+| M1-3 | `simbologia-diagramas.html`, bloco 3, tabela "A numeração dos terminais" → M1, seção 3 | só x3-x4 (NA), x1-x2 (NF) e 95-96/97-98 | acrescentada a linha "x5-x6 e x7-x8: contatos de função especial, NF (5-6) e NA (7-8), como os do relé de sobrecarga e os temporizados de um relé de tempo", e citadas as regras (IEC 60947 e a antiga EN 50005). Sem ela, 95-96 e 97-98 pareciam exceção sem regra. | IEC 60947-1 (marcação de terminais) e EN 50005; [IMD/UFRN](https://materialpublic.imd.ufrn.br/curso/disciplina/1/58/5/11); catálogos de contatores |
+
+Marcado com `confira`: a questão Cesgranrio 2014 (Petrobras, Técnico de Manutenção Júnior – Elétrica) com o diagrama
+de F1, S0, S1 e K1 a converter em Ladder, que a apostila cita pelo Qconcursos; a página não abriu (HTTP 403) e uma busca
+não achou o enunciado.
+
+Ajustes de contexto: "(Bloco 5)" virou "(seção 5)"; a frase "a teoria está no material de trifásicos e será
+aprofundada no item 5.7" virou a explicação curta do 1/3 (em estrela, a bobina recebe V<sub>L</sub>/√3) com as
+referências às estações E3 e M3; o exemplo resolvido 2 (estrela-triângulo com números: 210 A → 70 A, 219 V por bobina)
+e o exercício 7 da seção 5 são novos, e o exemplo de diagnóstico virou o 3; caixa "Pratique na Bancada" (OS 1 e OS 3)
+com link para a aba Bancada; três rótulos de figura saíram de cima dos fios (figuras 3 e 7) e a porta da planta baixa
+passou a ser um vão na parede (antes era um traço da cor do fundo, que some num dos temas); "Antes de começar" virou
+"Escopo do edital e como a banca cobra", com a questão 38 de 2023 conferida no caderno.
+
+## M2 · Eletromagnetismo e transformadores (`fontes/eletromagnetismo-transformadores.html`)
+
+Revisão de 2026-10-24: os 7 exemplos resolvidos e os 39 exercícios da apostila foram refeitos à mão (mais 1 exercício
+novo, Dyn11); 70 contas em `contas`, inclusive a legenda da figura 9 (0,5² × 1.200 = 300 W; η máx = 20.000/20.600 =
+97,1%) e os distratores explicados. Nenhuma conta estava errada. Conferidos: unidades (Φ em Wb, B em T = Wb/m² = 10⁴ G,
+H em A/m, μ em H/m, μ<sub>0</sub> = 4π × 10⁻⁷); classificação dos materiais; regra da mão direita e do saca-rolhas;
+B = μ<sub>0</sub>I/(2πr), B<sub>espira</sub>, B<sub>solenoide</sub> = μNI/l; circuito magnético; F = B·I·L·sen θ e
+F = I·L × B (figura 5 e exercício 3 da seção 3 recalculados com o produto vetorial); regra da mão esquerda de Fleming
+(indicador = B, médio = I, polegar = F) e da mão direita (gerador); força entre condutores paralelos; Faraday-Lenz e o
+sinal; fem de movimento; autoindução e W = ½LI²; histerese (B<sub>r</sub>, H<sub>c</sub>, saturação, laço da figura 6
+simétrico); laminação × correntes parasitas e silício × as duas perdas; E = 4,44·f·N·Φ<sub>máx</sub> (4,44 = 2π/√2) e a
+saturação com V↑ ou f↓; relações do transformador ideal e Z′ = a²·Z<sub>2</sub>; autotransformador; construção;
+ensaios a vazio e de curto; P<sub>Fe</sub> constante e P<sub>Cu</sub> = x²·P<sub>Cu,nom</sub>; rendimento máximo em
+x = √(P<sub>Fe</sub>/P<sub>Cu,nom</sub>); regulação (V<sub>vazio</sub> − V<sub>carga</sub>)/V<sub>carga</sub>, a
+convenção de Chapman, com a outra forma citada; Z% e I<sub>cc</sub> ≈ I<sub>n</sub>·100/Z%; notação Dyn (maiúscula =
+AT, n = neutro); índice horário (cada hora = 30°, BT atrasada, IEC 60076-1); condições de paralelismo (relação, índice,
+sequência e polaridade, Z% próximas; potência até ~3:1); TC em série, nunca aberto, secundário 5 A ou 1 A; TP em
+paralelo, nunca em curto, 115 V ou 115/√3 V.
+
+| Id | Arquivo/estação | O que dizia | O que diz agora | Fonte |
+|---|---|---|---|---|
+| M2-1 | `eletromagnetismo-transformadores.html`, bloco 5, "Polaridade", e exercício 6 do bloco 5 → M2, seção 5 | "ligam-se H1 e X1 com um jumper ... mede-se entre H2 e X2. Se a leitura for a diferença, subtrativa; se for a soma, aditiva" (e o exercício: "interligam-se H1 e X1 ... voltímetro entre H2 e X2") | liga-se H1 ao terminal de **baixa tensão adjacente a ele** e mede-se entre H2 e o outro terminal de baixa; diferença → subtrativa (X1 do lado de H1), soma → aditiva (X1 do lado oposto). O teste serve para descobrir qual terminal é o X1: com os terminais já marcados, ligar H1 a X1 daria sempre a diferença, e a regra não decidiria nada. O exercício passou a "interliga-se H1 ao terminal de baixa tensão adjacente a ele ... voltímetro entre H2 e o outro terminal de baixa" (gabarito e números iguais: 220 − 55 = 165 V, subtrativa). | ensaio de polaridade pelo método da tensão alternada (IEEE Std C57.12.90, seção de polaridade); I. L. Kosow, *Máquinas Elétricas e Transformadores*, polaridade de transformadores |
+| M2-2 | `eletromagnetismo-transformadores.html`, exercício 1 do bloco 3 (comentário) → M2, seção 3 | "30 N, de usar 40 no lugar de 0,4 m em parte da conta" | "30 N, de converter 40 cm em 4 m" (0,5 × 15 × 4 = 30 N; com 40 m daria 300 N) | a própria conta |
+
+Questão 28 de 2023 (Dy5): a regra dá a tensão de linha da BT **150° atrasada**; nenhuma das alternativas impressas no
+caderno (5° adiantada, 5° atrasada, 120° atrasada, 120° adiantada, 30° adiantada) traz 150°. O app ensina a regra, diz
+isso na caixa "Como a Cesgranrio tem cobrado" e **não** aponta gabarito oficial (a Task 5 confere o gabarito).
+
+Ajustes de contexto: "Bloco N" virou "seção N"; itens 5.4 e 5.5 apontam para a estação M3; "Antes de começar" virou
+"Escopo do edital e como a banca cobra", com as questões 26, 27, 28 e 54 de 2023 conferidas no caderno; figura nova do
+relógio para Dy5 (figura 11) e a pegadinha "o índice conta horas, não graus"; exercício novo (Dyn11) na seção 7; na
+figura 1, "N" e "S" eram texto branco sobre o ímã colorido (some num dos temas) e passaram a texto colorido num ímã em
+contorno; na figura 6, "curva inicial" e "−H<sub>c</sub>" saíram de cima das curvas (com linha de chamada).

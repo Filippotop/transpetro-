@@ -602,6 +602,36 @@ const CALC_CHECKS = {
     await w.locator('input[type=range]').fill('75'); await w.page().waitForTimeout(80);
     check(/W2\s*−/.test(await o()) && /negativo/.test(await t()), `dois wattímetros com φ = 75° não mostra W2 negativo${tag} ("${(await o()).slice(0, 120)}")`);
   },
+  'partida-direta': async (w, check, tag) => {
+    const t = async () => w.locator('.lab-txt').textContent();
+    const b = async (i, ms = 800) => { await w.locator('.lab-btns button').nth(i).click(); await w.page().waitForTimeout(ms); };
+    await b(0);
+    check(/K1: energizado/.test(await t()) && /selo/.test(await t()) && await w.locator('.s-on').count() > 10, `partida direta: depois de soltar S1, K1 não fica pelo selo${tag} ("${await t()}")`);
+    await b(1); check(/desenergizado/.test(await t()), `partida direta: S0 não desliga K1${tag} ("${await t()}")`);
+    await b(2, 100); await b(0); check(/desenergizado/.test(await t()) && /atuado/.test(await t()), `partida direta: com F7 atuado, S1 ainda liga${tag} ("${await t()}")`);
+    await b(3, 100);
+  },
+  'reversao': async (w, check, tag) => {
+    const t = async () => w.locator('.lab-txt').textContent();
+    const b = async (i) => { await w.locator('.lab-btns button').nth(i).click(); await w.page().waitForTimeout(800); };
+    await b(0); check(/sentido 1/.test(await t()), `reversão: S1 não liga o sentido 1${tag} ("${await t()}")`);
+    await b(1); check(/sentido 1/.test(await t()) && /intertravamento/.test(await t()), `reversão: S2 com K1 ligado não fica bloqueado${tag} ("${await t()}")`);
+    await b(2); await b(1); check(/sentido 2/.test(await t()), `reversão: depois de S0, S2 não liga o sentido 2${tag} ("${await t()}")`);
+    await b(2);
+  },
+  'transformador-ideal': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/V\s*2\s*220,0 V/.test(await o()) && /I\s*1\s*5,50 A/.test(await o()) && /400,00 Ω/.test(await o()) && /8,258 mWb/.test(await o()), `transformador ideal (2.200 V, 1.000/100, 4 Ω) não dá V2 = 220 V, I1 = 5,5 A, Z′ = 400 Ω e Φ = 8,258 mWb${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('input').nth(3).fill('11'); await w.page().waitForTimeout(80);
+    check(/I\s*2\s*20,00 A/.test(await o()), `transformador ideal com R2 = 11 Ω não dá I2 = 20 A${tag} ("${(await o()).slice(0, 160)}")`);
+    await w.locator('input').nth(3).fill('4'); await w.page().waitForTimeout(80);
+  },
+  'rendimento-trafo': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/30,00 kW/.test(await o()) && /Rendimento\s*96,85%/.test(await o()) && /η máximo em\s*50% da carga/.test(await o()) && await w.locator('svg path').count() >= 1, `rendimento (50 kVA, 300 W, 1.200 W, FP 0,8, 75%) não dá 96,85% e máximo a 50%${tag} ("${(await o()).slice(0, 200)}")`);
+    await w.locator('input[type=range]').fill('50'); await w.page().waitForTimeout(80);
+    check(/Rendimento\s*97,09%/.test(await o()), `rendimento a 50% da carga não dá 97,09%${tag} ("${(await o()).slice(0, 200)}")`);
+  },
 };
 async function testCalc(browser) {
   const D = loadData();

@@ -118,6 +118,9 @@
       s += '<text x="' + (ox + px / 2 + 18 * nx).toFixed(1) + '" y="' + (oy - qy / 2 + 18 * ny + 5).toFixed(1) + '" class="s-ts s-fc" text-anchor="middle">S</text>';
       if (Math.abs(f) >= 12) s += '<text x="' + (ox + 46 * Math.cos(r / 2)).toFixed(1) + '" y="' + (oy - 46 * Math.sin(r / 2) + 5).toFixed(1) + '" class="s-tm">φ</text>';
       tri.innerHTML = s;
+      /* O SVG acompanha o triângulo (sem faixa vazia em cima ou embaixo), com altura mínima para não pular tanto. */
+      var y0 = Math.min(oy, oy - qy) - 26, y1 = Math.max(oy, oy - qy) + 30, hh = Math.max(y1 - y0, 96);
+      y0 = (y0 + y1 - hh) / 2; tri.setAttribute('viewBox', '0 ' + y0.toFixed(1) + ' 300 ' + hh.toFixed(1));
       out.innerHTML = cell('Ativa P', fmt(P, 0) + ' W') + cell('Reativa Q', sinal(Q, 0) + ' var') + cell('Aparente S', fmt(S, 0) + ' VA') +
         cell('Fator de potência', fmt(Math.cos(r), 2) + (f > 0 ? ' indutivo' : f < 0 ? ' capacitivo' : ' (resistivo)'));
     }
@@ -191,6 +194,166 @@
         : 'Leituras positivas e diferentes: FP entre 0,5 e 1. A maior é a do wattímetro com cos(φ − 30°) se a carga é indutiva.';
     }
     ['VL', 'IL', 'F'].forEach(function (k) { q(k).addEventListener('input', calc); });
+    calc();
+  };
+
+  /* ---- M1: simuladores de comando (partida direta e reversão), desenhados como na apostila. Trechos com tensão da
+     fase ficam em azul e grossos (s-on); S0, S1 e S2 são pulsadores (ficam 0,55 s pressionados e voltam). ---- */
+  function cmdDesenho() {
+    var Wl = function (x1, y1, x2, y2, on) { return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" class="s-wire' + (on ? ' s-on' : '') + '"/>'; };
+    var T = function (x, y, s, c, a) { return '<text x="' + x + '" y="' + y + '" class="' + (c || 's-ts') + '" text-anchor="' + (a || 'start') + '">' + s + '</text>'; };
+    /* Contato entre y1 e y2: NA ou NF, fechado ou aberto, com acionamento por botão (push) ou térmico (therm). */
+    var C = function (x, y1, y2, o) {
+      var s = Wl(x, y1, x, y1 + 12, o.onTop) + Wl(x, y2 - 12, x, y2, o.onBot), py = y2 - 12, tip;
+      if ((o.kind || 'na') === 'na') tip = o.closed ? [x, y1 + 12] : [x - 13, y1 + 14];
+      else { s += Wl(x, y1 + 12, x + 10, y1 + 12, o.onTop); tip = o.closed ? [x + 10, y1 + 12] : [x - 12, y1 + 16]; }
+      s += Wl(x, py, tip[0], tip[1], o.onBot);
+      var ym = (py + tip[1]) / 2, xm = (x + tip[0]) / 2;
+      if (o.act === 'push') s += '<line x1="' + (xm - 2) + '" y1="' + ym + '" x2="' + (x - 28) + '" y2="' + ym + '" class="s-wire s-dsh"/><path d="M' + (x - 24) + ' ' + (ym - 7) + ' H' + (x - 30) + ' V' + (ym + 7) + ' H' + (x - 24) + '" class="s-wire"/>';
+      if (o.act === 'therm') s += '<line x1="' + (xm - 2) + '" y1="' + ym + '" x2="' + (x - 26) + '" y2="' + ym + '" class="s-wire s-dsh"/>';
+      if (o.t1) s += T(x + 8, y1 + 9, o.t1, 's-tn'); if (o.t2) s += T(x + 8, y2 - 2, o.t2, 's-tn');
+      if (o.label) s += T(x - 36, (y1 + y2) / 2 + 5, o.label, 's-ts', 'end');
+      return s;
+    };
+    var K = function (x, y1, y2, label, on) { return Wl(x, y1, x, y1 + 8, on) + Wl(x, y2 - 8, x, y2, false) + '<rect x="' + (x - 16) + '" y="' + (y1 + 8) + '" width="32" height="' + (y2 - y1 - 16) + '" class="' + (on ? 's-lampon' : 's-coilr') + '"/>' + T(x - 22, (y1 + y2) / 2 + 5, label, 's-ts', 'end') + T(x + 20, y1 + 12, 'A1', 's-tn') + T(x + 20, y2 - 2, 'A2', 's-tn'); };
+    var H = function (x, y1, y2, label, on) { var c = (y1 + y2) / 2, r = 13, d = r * 0.707; return Wl(x, y1, x, c - r, on) + Wl(x, c + r, x, y2, false) + '<circle cx="' + x + '" cy="' + c + '" r="' + r + '" class="' + (on ? 's-lampon' : 's-comp') + '"/>' + Wl(x - d, c - d, x + d, c + d) + Wl(x + d, c - d, x - d, c + d) + T(x - 20, c + 5, label, 's-ts', 'end'); };
+    var rails = function (w) { return Wl(40, 40, w - 20, 40, true) + Wl(40, 440, w - 20, 440, false) + T(28, 45, 'L', 's-ts s-fa', 'end') + T(28, 445, 'N', 's-ts s-fc', 'end'); };
+    return { W: Wl, T: T, C: C, K: K, H: H, rails: rails };
+  }
+  function cmdBotoes(p, lista) { return '<div class="lab-btns">' + lista.map(function (b) { return '<button type="button" class="btn" id="' + p + b[0] + '">' + b[1] + '</button>'; }).join('') + '</div>'; }
+  function pulso(st, k, desenha) { st[k] = true; desenha(); setTimeout(function () { st[k] = false; desenha(); }, 550); }
+
+  W['partida-direta'] = function (el, cfg) {
+    var p = 'pd' + (++seq) + '-', D = cmdDesenho(), S = { s1: false, s0: false, trip: false, k1: false };
+    el.innerHTML = cabeca(cfg) + '<svg viewBox="0 0 540 470" role="img" aria-label="Diagrama de comando da partida direta com selo e sinalização"></svg>' +
+      cmdBotoes(p, [['on', 'Pressionar S1 (liga)'], ['off', 'Pressionar S0 (desliga)'], ['trip', 'Simular sobrecarga'], ['reset', 'Rearmar F7']]) +
+      '<p class="lab-txt" aria-live="polite"></p>';
+    var svg = el.querySelector('svg'), txt = el.querySelector('.lab-txt');
+    function r() {
+      var f7 = !S.trip, s0c = !S.s0;
+      for (var i = 0; i < 3; i++) S.k1 = f7 && s0c && (S.s1 || S.k1);
+      var A = f7 && s0c, B = A && (S.s1 || S.k1), s = D.rails(540);
+      s += D.W(140, 40, 140, 60, true) + D.C(140, 60, 110, { kind: 'nf', closed: f7, act: 'therm', t1: '95', t2: '96', label: 'F7', onTop: true, onBot: f7 });
+      s += D.W(140, 110, 140, 130, f7) + D.C(140, 130, 180, { kind: 'nf', closed: s0c, act: 'push', label: 'S0', onTop: f7, onBot: A });
+      s += D.W(140, 180, 140, 205, A) + D.W(140, 205, 240, 205, A) + D.W(140, 205, 140, 215, A) + D.W(240, 205, 240, 215, A);
+      s += D.C(140, 215, 265, { kind: 'na', closed: S.s1, act: 'push', label: 'S1', onTop: A, onBot: B });
+      s += D.C(240, 215, 265, { kind: 'na', closed: S.k1, t1: '13', t2: '14', onTop: A, onBot: B }) + D.T(222, 244, 'K1', 's-ts', 'end');
+      s += D.W(140, 265, 140, 285, B) + D.W(240, 265, 240, 285, B) + D.W(140, 285, 240, 285, B) + D.W(140, 285, 140, 330, B);
+      s += D.K(140, 330, 390, 'K1', S.k1) + D.W(140, 390, 140, 440, false);
+      s += D.W(340, 40, 340, 215, true) + D.C(340, 215, 265, { kind: 'na', closed: S.k1, t1: '23', t2: '24', onTop: true, onBot: S.k1 }) + D.T(322, 244, 'K1', 's-ts', 'end');
+      s += D.W(340, 265, 340, 330, S.k1) + D.H(340, 330, 390, 'H1', S.k1) + D.W(340, 390, 340, 440, false) + D.T(354, 414, 'ligado', 's-tm');
+      s += D.W(460, 40, 460, 215, true) + D.C(460, 215, 265, { kind: 'na', closed: S.trip, act: 'therm', t1: '97', t2: '98', onTop: true, onBot: S.trip }) + D.T(430, 244, 'F7', 's-ts', 'end');
+      s += D.W(460, 265, 460, 330, S.trip) + D.H(460, 330, 390, 'H2', S.trip) + D.W(460, 390, 460, 440, false) + D.T(474, 414, 'falha', 's-tm');
+      svg.innerHTML = s;
+      txt.textContent = 'Contator K1: ' + (S.k1 ? 'energizado, motor funcionando' : 'desenergizado, motor parado') + (S.trip ? '. Relé de sobrecarga atuado: 95-96 aberto e 97-98 fechado; rearme antes de religar.' : S.k1 && !S.s1 ? '. A bobina se mantém pelo selo (13-14).' : '.');
+    }
+    var q = function (k) { return el.querySelector('#' + p + k); };
+    q('on').addEventListener('click', function () { pulso(S, 's1', r); });
+    q('off').addEventListener('click', function () { pulso(S, 's0', r); });
+    q('trip').addEventListener('click', function () { S.trip = true; r(); });
+    q('reset').addEventListener('click', function () { S.trip = false; r(); });
+    r();
+  };
+
+  W['reversao'] = function (el, cfg) {
+    var p = 'rv' + (++seq) + '-', D = cmdDesenho(), S = { s1: false, s2: false, s0: false, trip: false, k1: false, k2: false };
+    el.innerHTML = cabeca(cfg) + '<svg viewBox="0 0 560 480" role="img" aria-label="Diagrama de comando da reversão com intertravamento elétrico"></svg>' +
+      cmdBotoes(p, [['a', 'Pressionar S1 (sentido 1)'], ['b', 'Pressionar S2 (sentido 2)'], ['off', 'Pressionar S0 (desliga)'], ['trip', 'Simular sobrecarga'], ['reset', 'Rearmar F7']]) +
+      '<p class="lab-txt" aria-live="polite"></p>';
+    var svg = el.querySelector('svg'), txt = el.querySelector('.lab-txt'), bloq = '';
+    function r() {
+      var f7 = !S.trip, s0c = !S.s0, A = f7 && s0c;
+      for (var i = 0; i < 3; i++) { var n1 = A && (S.s1 || S.k1) && !S.k2, n2 = A && (S.s2 || S.k2) && !n1; S.k1 = n1; S.k2 = n2; }
+      var B1 = A && (S.s1 || S.k1), B2 = A && (S.s2 || S.k2), s = D.rails(560);
+      s += D.W(120, 40, 120, 55, true) + D.C(120, 55, 105, { kind: 'nf', closed: f7, act: 'therm', t1: '95', t2: '96', label: 'F7', onTop: true, onBot: f7 });
+      s += D.W(120, 105, 120, 120, f7) + D.C(120, 120, 170, { kind: 'nf', closed: s0c, act: 'push', label: 'S0', onTop: f7, onBot: A });
+      s += D.W(120, 170, 120, 188, A) + D.W(120, 188, 420, 188, A);
+      s += D.W(120, 188, 120, 198, A) + D.W(200, 188, 200, 198, A);
+      s += D.C(120, 198, 248, { kind: 'na', closed: S.s1, act: 'push', label: 'S1', onTop: A, onBot: B1 });
+      s += D.C(200, 198, 248, { kind: 'na', closed: S.k1, t1: '13', t2: '14', onTop: A, onBot: B1 }) + D.T(184, 228, 'K1', 's-ts', 'end');
+      s += D.W(120, 248, 120, 262, B1) + D.W(200, 248, 200, 262, B1) + D.W(120, 262, 200, 262, B1) + D.W(120, 262, 120, 280, B1);
+      var c1 = !S.k2; s += D.C(120, 280, 330, { kind: 'nf', closed: c1, t1: '21', t2: '22', onTop: B1, onBot: B1 && c1 }) + D.T(104, 310, 'K2', 's-ts', 'end');
+      s += D.W(120, 330, 120, 345, B1 && c1) + D.K(120, 345, 405, 'K1', S.k1) + D.W(120, 405, 120, 440, false);
+      s += D.W(340, 188, 340, 198, A) + D.W(420, 188, 420, 198, A);
+      s += D.C(340, 198, 248, { kind: 'na', closed: S.s2, act: 'push', label: 'S2', onTop: A, onBot: B2 });
+      s += D.C(420, 198, 248, { kind: 'na', closed: S.k2, t1: '13', t2: '14', onTop: A, onBot: B2 }) + D.T(404, 228, 'K2', 's-ts', 'end');
+      s += D.W(340, 248, 340, 262, B2) + D.W(420, 248, 420, 262, B2) + D.W(340, 262, 420, 262, B2) + D.W(340, 262, 340, 280, B2);
+      var c2 = !S.k1; s += D.C(340, 280, 330, { kind: 'nf', closed: c2, t1: '21', t2: '22', onTop: B2, onBot: B2 && c2 }) + D.T(324, 310, 'K1', 's-ts', 'end');
+      s += D.W(340, 330, 340, 345, B2 && c2) + D.K(340, 345, 405, 'K2', S.k2) + D.W(340, 405, 340, 440, false);
+      s += D.T(150, 470, 'NF de K2 trava K1', 's-tm', 'middle') + D.T(390, 470, 'NF de K1 trava K2', 's-tm', 'middle');
+      svg.innerHTML = s;
+      txt.textContent = 'Motor: ' + (S.k1 ? 'girando no sentido 1 (K1)' : S.k2 ? 'girando no sentido 2 (K2)' : 'parado') + (S.trip ? '. Relé de sobrecarga atuado.' : bloq ? '. ' + bloq : '.');
+    }
+    var q = function (k) { return el.querySelector('#' + p + k); };
+    /* Tentar o outro sentido com um contator ligado: o NF dele está aberto, e nada acontece. */
+    var tenta = function (k, outro, nome) { return function () { bloq = S[outro] ? nome + ' não liga: o NF de ' + (outro === 'k1' ? 'K1' : 'K2') + ' está aberto (intertravamento). Desligue em S0 primeiro.' : ''; pulso(S, k, r); }; };
+    q('a').addEventListener('click', tenta('s1', 'k2', 'K1'));
+    q('b').addEventListener('click', tenta('s2', 'k1', 'K2'));
+    q('off').addEventListener('click', function () { bloq = ''; pulso(S, 's0', r); });
+    q('trip').addEventListener('click', function () { bloq = ''; S.trip = true; r(); });
+    q('reset').addEventListener('click', function () { S.trip = false; r(); });
+    r();
+  };
+
+  /* ---- M2: transformador ideal (carga resistiva) e rendimento em função da carga. ---- */
+  W['transformador-ideal'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'ti' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'V1', 'V<sub>1</sub> (V)', val('tV1', 2200), ' min="0"') + campo(p + 'N1', 'Espiras N<sub>1</sub>', val('tN1', 1000), ' min="1"') +
+      campo(p + 'N2', 'Espiras N<sub>2</sub>', val('tN2', 100), ' min="1"') + campo(p + 'R2', 'Carga R<sub>2</sub> (Ω)', val('tR2', 4), ' min="0"') + campo(p + 'F', 'f (Hz)', val('tF', 60), ' min="1"') + '</div>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt');
+    function calc() {
+      var V1 = +q('V1').value, N1 = +q('N1').value, N2 = +q('N2').value, R2 = +q('R2').value, f = +q('F').value;
+      if (!(V1 > 0 && N1 > 0 && N2 > 0 && f > 0) || !(R2 >= 0)) { out.innerHTML = cell('Aviso', 'Use valores positivos (R<sub>2</sub> = 0 é a vazio).'); txt.textContent = ''; return; }
+      var a = N1 / N2, V2 = V1 / a, I2 = R2 > 0 ? V2 / R2 : 0, I1 = I2 / a, S = V2 * I2, Z = a * a * R2, phi = V1 / (4.44 * f * N1);
+      var tipo = a > 1 ? 'abaixador' : a < 1 ? 'elevador' : 'isolador';
+      out.innerHTML = cell('Relação a', fmt(a, 3) + ' (' + tipo + ')') + cell('V<sub>2</sub>', fmt(V2, 1) + ' V') + cell('I<sub>2</sub>', R2 > 0 ? fmt(I2) + ' A' : 'a vazio') +
+        cell('I<sub>1</sub>', R2 > 0 ? fmt(I1) + ' A' : 'a vazio') + cell('Potência S', S >= 1000 ? fmt(S / 1000) + ' kVA' : fmt(S, 1) + ' VA') +
+        cell('Z′ no primário', R2 > 0 ? fmt(Z) + ' Ω' : '—') + cell('Φ<sub>máx</sub>', fmt(phi * 1000, 3) + ' mWb');
+      txt.innerHTML = R2 > 0 ? 'Confira: V<sub>1</sub>·I<sub>1</sub> = ' + fmt(V1 * I1, 0) + ' VA = V<sub>2</sub>·I<sub>2</sub>, e a fonte “vê” a carga de ' + fmt(R2) + ' Ω como ' + fmt(Z) + ' Ω (a² vezes).'
+        : 'A vazio, o transformador ideal não puxa corrente; o real puxa só a de magnetização.';
+    }
+    ['V1', 'N1', 'N2', 'R2', 'F'].forEach(function (k) { q(k).addEventListener('input', calc); });
+    calc();
+  };
+
+  W['rendimento-trafo'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'rt' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'S', 'S nominal (kVA)', val('rS', 50), ' min="0.1"') + campo(p + 'Fe', 'P<sub>Fe</sub> (W)', val('rFe', 300), ' min="0"') +
+      campo(p + 'Cu', 'P<sub>Cu,nom</sub> (W)', val('rCu', 1200), ' min="0"') + campo(p + 'FP', 'Fator de potência', val('rFP', 0.8), ' min="0.05" max="1" step="0.05"') + '</div>' +
+      '<div class="lab-ctrl">' + faixa(p + 'X', 'Carga (% da nominal)', 5, 125, 1, val('rX', 75)) + '</div>' +
+      '<svg viewBox="0 0 620 250" role="img" aria-label="Rendimento do transformador em função da carga"></svg>' +
+      '<div class="lab-out" aria-live="polite"></div>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), svg = el.querySelector('svg');
+    function calc() {
+      var S = +q('S').value, Fe = +q('Fe').value, Cu = +q('Cu').value, fp = +q('FP').value, x = +q('X').value / 100;
+      q('X').nextElementSibling.textContent = Math.round(x * 100) + '%';
+      if (!(S > 0 && Fe >= 0 && Cu >= 0 && fp > 0 && fp <= 1) || !(Fe + Cu > 0)) { out.innerHTML = cell('Aviso', 'Confira os dados: S &gt; 0, perdas ≥ 0 (não as duas nulas) e FP entre 0 e 1.'); svg.innerHTML = ''; return; }
+      var eta = function (c) { var P = c * S * fp * 1000; return 100 * P / (P + Fe + c * c * Cu); };
+      var xm = Cu > 0 ? Math.sqrt(Fe / Cu) : null, xs = [];
+      for (var k = 5; k <= 125; k++) xs.push(k / 100);
+      var ys = xs.map(eta), lo = Math.floor(Math.min.apply(null, ys)), hi = Math.ceil(Math.max.apply(null, ys) + 0.2);
+      var X0 = 78, X1 = 600, Y0 = 200, Y1 = 22;
+      var px = function (c) { return X0 + (X1 - X0) * (c - 0.05) / 1.2; }, py = function (e) { return Y0 - (Y0 - Y1) * (e - lo) / Math.max(hi - lo, 0.5); };
+      var s = '', d = '', step = Math.max(1, Math.ceil((hi - lo) / 5));
+      for (var e = lo; e <= hi; e += step) s += '<line x1="' + X0 + '" y1="' + py(e).toFixed(1) + '" x2="' + X1 + '" y2="' + py(e).toFixed(1) + '" class="s-grid"/><text x="' + (X0 - 8) + '" y="' + (py(e) + 6).toFixed(1) + '" class="s-tm" text-anchor="end">' + e + '%</text>';
+      [0.25, 0.5, 0.75, 1, 1.25].forEach(function (c) { s += '<text x="' + px(c).toFixed(1) + '" y="' + (Y0 + 22) + '" class="s-tm" text-anchor="middle">' + Math.round(c * 100) + '%</text>'; });
+      s += '<text x="' + X1 + '" y="' + (Y0 + 46) + '" class="s-tm" text-anchor="end">carga, em % da nominal</text>';
+      xs.forEach(function (c, i) { d += (i ? 'L' : 'M') + px(c).toFixed(1) + ',' + py(ys[i]).toFixed(1); });
+      s += '<line x1="' + X0 + '" y1="' + Y0 + '" x2="' + X1 + '" y2="' + Y0 + '" class="s-ax"/><path d="' + d + '" class="s-w s-pc"/>';
+      if (xm && xm >= 0.05 && xm <= 1.25) s += '<line x1="' + px(xm).toFixed(1) + '" y1="' + py(eta(xm)).toFixed(1) + '" x2="' + px(xm).toFixed(1) + '" y2="' + Y0 + '" class="s-dash s-pa"/>';
+      var xc = Math.max(x, 0.05);
+      s += '<circle cx="' + px(xc).toFixed(1) + '" cy="' + py(eta(xc)).toFixed(1) + '" r="7" class="s-f-pa"/>';
+      svg.innerHTML = s;
+      var P = x * S * fp * 1000, pc = x * x * Cu;
+      out.innerHTML = cell('Potência de saída', fmt(P / 1000) + ' kW') + cell('Perdas no cobre', fmt(pc, 0) + ' W') + cell('Perdas totais', fmt(pc + Fe, 0) + ' W') +
+        cell('Rendimento', fmt(eta(Math.max(x, 0.0001))) + '%') + cell('η máximo em', xm ? fmt(xm * 100, 0) + '% da carga' : '—') + cell('η máximo', xm ? fmt(eta(xm)) + '%' : '—');
+    }
+    ['S', 'Fe', 'Cu', 'FP', 'X'].forEach(function (k) { q(k).addEventListener('input', calc); });
     calc();
   };
 
