@@ -25,7 +25,7 @@ const energia = `
 <li>Aplicando: um chuveiro de 5.400 W ligado por 20 min gasta 5,4 kW × (20/60) h = 1,8 kWh. Em joules: 1,8 × 3,6·10<sup>6</sup> = 6,48·10<sup>6</sup> J, isto é, 6.480.000 J.</li>
 </ol>
 <p><strong>Resposta:</strong> 1 kWh = 3,6·10<sup>6</sup> J.</p>
-<p><strong>Como a banca tenta te enganar:</strong> alternativas que esquecem o "k" (3,6·10<sup>3</sup>) ou que usam 60 s em vez de 3.600 s numa hora.</p>
+<p><strong>Como a banca tenta te enganar:</strong> alternativas que esquecem o "k" (3,6·10<sup>3</sup> J, isto é, 3.600 J) ou que usam 60 s em vez de 3.600 s numa hora.</p>
 </div>
 <div class="texto">
 <p>O <strong>medidor de energia eletromecânico</strong> (de indução) tem um disco de alumínio que gira com velocidade proporcional à potência da carga. Por isso o <em>número de voltas</em> é proporcional à <em>energia</em>.</p>
@@ -57,7 +57,7 @@ const triangulo = `
 <li><strong>Potência aparente</strong> S, em VA: S = V · I. É ela que dimensiona cabo, transformador e gerador.</li>
 </ul>
 <p>As três formam um triângulo retângulo:</p>
-<p class="tw">P = S · cos φ &nbsp;·&nbsp; Q = S · sen φ &nbsp;·&nbsp; S<sup>2</sup> = P<sup>2</sup> + Q<sup>2</sup></p>
+<p class="tw">P = S · cos φ<br>Q = S · sen φ<br>S<sup>2</sup> = P<sup>2</sup> + Q<sup>2</sup></p>
 <p>O <strong>fator de potência</strong> é FP = P / S. Com tensão e corrente senoidais, FP = cos φ.</p>
 <p>O sinal de Q diz o tipo de carga:</p>
 <ul>
@@ -175,27 +175,28 @@ const medicao = `
 <li><strong>A três fios</strong> (sem neutro): basta o <strong>método dos dois wattímetros</strong>. As bobinas de corrente ficam em duas linhas, e as de potencial, entre cada uma dessas linhas e a terceira. Vale para carga equilibrada ou não.</li>
 </ul>
 <p>Com carga equilibrada, cada wattímetro lê:</p>
-<p class="tw">W<sub>1</sub> = V<sub>L</sub> · I<sub>L</sub> · cos(φ − 30°) &nbsp;·&nbsp; W<sub>2</sub> = V<sub>L</sub> · I<sub>L</sub> · cos(φ + 30°)</p>
+<p class="tw">W<sub>1</sub> = V<sub>L</sub> · I<sub>L</sub> · cos(φ − 30°)<br>W<sub>2</sub> = V<sub>L</sub> · I<sub>L</sub> · cos(φ + 30°)</p>
 <p>Daí saem as consequências:</p>
 <ul>
 <li>FP = 1 (φ = 0°): W<sub>1</sub> = W<sub>2</sub>.</li>
 <li>FP = 0,5 (φ = 60°): W<sub>2</sub> = 0, e W<sub>1</sub> mostra toda a potência.</li>
 <li>FP &lt; 0,5 (φ &gt; 60°): W<sub>2</sub> fica negativo. O ponteiro analógico bate no batente; inverte-se a bobina de potencial e a leitura entra com sinal negativo.</li>
-<li>Bônus: Q = √3 · (W<sub>1</sub> − W<sub>2</sub>).</li>
+<li>Bônus, também só com carga equilibrada: Q = √3 · (W<sub>1</sub> − W<sub>2</sub>).</li>
 </ul>
 </div>
 <div class="cai">
 <p><strong>Dois wattímetros: P = W<sub>1</sub> + W<sub>2</sub>, em soma algébrica.</strong></p>
 <ul>
-<li>Leitura negativa não é defeito: indica FP &lt; 0,5.</li>
-<li>Uma leitura igual a zero indica FP = 0,5.</li>
+<li>Leitura negativa não é defeito: com carga equilibrada, indica FP &lt; 0,5.</li>
+<li>Com carga equilibrada, uma leitura igual a zero indica FP = 0,5.</li>
+<li>Com carga equilibrada, Q = √3 · (W<sub>1</sub> − W<sub>2</sub>).</li>
 </ul>
 </div>
 <div class="exres">
 <p><strong>Num motor trifásico a três fios, operando quase a vazio, os wattímetros indicam W<sub>1</sub> = 8 kW e W<sub>2</sub> = −2 kW. Quanto valem P, Q e o FP?</strong></p>
 <ol>
 <li>Soma algébrica: P = 8 + (−2) = 6 kW.</li>
-<li>Q = √3 × (8 − (−2)) = √3 × 10 ≈ 17,3 kvar.</li>
+<li>Motor é carga equilibrada, então vale Q = √3 · (W<sub>1</sub> − W<sub>2</sub>): Q = √3 × (8 − (−2)) = √3 × 10 ≈ 17,3 kvar.</li>
 <li>S = √(6<sup>2</sup> + 17,3<sup>2</sup>) ≈ 18,3 kVA, e FP = 6/18,3 ≈ 0,327.</li>
 <li>Coerência: houve leitura negativa, então o FP tinha de dar menos que 0,5. Deu.</li>
 </ol>
@@ -252,6 +253,7 @@ const ligacoes = `
 </ol>
 <p><strong>Resposta:</strong> 27,3 A por linha (10 A da carga Y e 17,3 A da carga Δ).</p>
 <p><strong>Como a banca tenta te enganar:</strong> "as duas têm 10 A de fase, logo a rede fornece 20 A". Isso esquece o √3 do Δ. Somar módulos só vale quando as cargas têm o mesmo ângulo φ. Com ângulos diferentes, some P e Q.</p>
+<p>Mesmo ângulo não quer dizer só carga resistiva. Duas cargas puramente indutivas, por exemplo j6 Ω por fase em Δ e j8 Ω por fase em Y, têm as duas φ = 90°: as correntes de linha delas também estão em fase entre si e se somam em módulo. O mesmo vale para duas cargas puramente capacitivas.</p>
 </div>
 <div class="pega">
 <p><strong>Corrente de fase × corrente de linha.</strong> Em Δ, o alicate no cabo mede I<sub>L</sub>, mas dentro do enrolamento circula I<sub>L</sub>/√3.</p>
@@ -263,7 +265,7 @@ const potencia3f = `
 <div class="texto">
 <p>Numa carga trifásica equilibrada, cada um dos três ramos consome V<sub>F</sub> · I<sub>F</sub> · cos φ. Então P = 3 · V<sub>F</sub> · I<sub>F</sub> · cos φ.</p>
 <p>Substituindo as relações de Y (V<sub>F</sub> = V<sub>L</sub>/√3, I<sub>F</sub> = I<sub>L</sub>) ou de Δ (V<sub>F</sub> = V<sub>L</sub>, I<sub>F</sub> = I<sub>L</sub>/√3), as duas ligações dão a mesma expressão:</p>
-<p class="tw"><strong>P = √3 · V<sub>L</sub> · I<sub>L</sub> · cos φ</strong> &nbsp;·&nbsp; Q = √3 · V<sub>L</sub> · I<sub>L</sub> · sen φ &nbsp;·&nbsp; S = √3 · V<sub>L</sub> · I<sub>L</sub></p>
+<p class="tw"><strong>P = √3 · V<sub>L</sub> · I<sub>L</sub> · cos φ</strong><br>Q = √3 · V<sub>L</sub> · I<sub>L</sub> · sen φ<br>S = √3 · V<sub>L</sub> · I<sub>L</sub></p>
 <p>A fórmula usa grandezas de linha porque V<sub>L</sub> vem da rede e I<sub>L</sub> se mede no cabo, sem saber como a carga está ligada.</p>
 <p><strong>O que diz a placa:</strong></p>
 <ul>
@@ -364,7 +366,7 @@ export default {
     'S² = P² + Q² e FP = P/S = cos φ. Indutivo: Q > 0, corrente atrasada. Capacitivo: Q < 0, corrente adiantada.',
     'Várias cargas: some P com P e Q com Q (capacitor entra negativo), nunca os kVA. Banco: Qc = P · (tg φ₁ − tg φ₂).',
     'O banco de capacitores reduz Q, S e a corrente da rede. P e os kWh não mudam.',
-    'Dois wattímetros (3 fios): P = W₁ + W₂ em soma algébrica. FP = 0,5: uma leitura zera. FP < 0,5: uma fica negativa.',
+    'Dois wattímetros (3 fios): P = W₁ + W₂ em soma algébrica. Com carga equilibrada: FP = 0,5, uma leitura zera; FP < 0,5, uma fica negativa; Q = √3 · (W₁ − W₂).',
     'Estrela: VL = √3 · VF e IL = IF. Triângulo: VL = VF e IL = √3 · IF. Em ambas, P = √3 · VL · IL · cos φ.',
     'Neutro rompido com cargas desequilibradas: sobretensão na fase menos carregada e subtensão na mais carregada.',
   ],
@@ -448,6 +450,7 @@ export default {
   ],
   contas: [
     { secao: 'energia', expr: '1000*3600', valor: '3.600.000' },
+    { secao: 'energia', expr: '1*3600', valor: '3.600' },
     { secao: 'energia', expr: '5.4*20/60', valor: '1,8' },
     { secao: 'energia', expr: '1.8*3.6e6', valor: '6.480.000' },
     { secao: 'energia', expr: '1000*6/60', valor: '100' },

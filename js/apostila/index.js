@@ -1,5 +1,5 @@
-/* Catálogo da apostila. Para criar um módulo, siga o formato de potencia-trifasicos.js e acrescente-o aqui
-   (e tire o id de PLANEJADOS em tests/apostila.test.mjs). */
+/* Catálogo da apostila. Para criar um módulo, siga o formato de potencia-trifasicos.js e acrescente-o aqui,
+   tire o id de PLANEJADOS em tests/apostila.test.mjs e ponha o arquivo em FILES no sw.js (mudando VER). */
 import potenciaTrifasicos from './potencia-trifasicos.js';
 
 export { EDITAL } from './edital.js';

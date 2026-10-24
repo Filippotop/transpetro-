@@ -1,4 +1,4 @@
-/* Bancada: teste de fumaça num Chromium de verdade. Joga uma OS inteira pela interface e falha se aparecer
+/* Bancada: teste de fumaça num Chromium de verdade. Estuda um módulo da apostila e joga uma OS inteira pela interface; falha se aparecer
    erro de JavaScript, rolagem lateral, falha séria de acessibilidade (WCAG AA) ou se o app não abrir offline.
    Rodar (na raiz do repositório): npm install && npm test */
 import http from 'node:http';
@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { chromium } from 'playwright';
+import MOD from '../js/apostila/potencia-trifasicos.js';
 
 const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,6 +37,94 @@ async function axe(page, where) {
 async function noHScroll(page, where) {
   const w = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
   check(w[0] <= w[1], `${where}: rolagem lateral na página (${w[0]} > ${w[1]})`);
+}
+
+const visible = (page, sel) => page.$$eval(sel, els => els.length > 0 && els.every(e => e.checkVisibility()));
+const hidden = (page, sel) => page.$$eval(sel, els => els.length > 0 && els.every(e => !e.checkVisibility()));
+const glyph = async (page, n) => (await page.textContent(`.item-edital[data-n="${n}"] .ie-st`)).trim();
+const tab = (page, id) => page.click(`.tabs a[href="#${id}"]`);
+
+/** Apostila: mapa → leitor → só o essencial → checagem → mapa; link da bancada; rota inválida; letra grande. */
+async function apostila(page, where, vw) {
+  const ax = where === '1280 claro' || where === '320 escuro';
+  await page.waitForSelector('.item-edital');
+  check(await page.evaluate(() => location.hash) === '#estudar', `${where}: o app não abriu em #estudar`);
+  check(/Estudar/.test(await page.textContent('.tabs a[aria-current="page"]') || ''), `${where}: a aba Estudar não está marcada como atual`);
+  check((await page.$$('.item-edital')).length === 10, `${where}: o mapa não tem as 10 linhas do edital`);
+  check(await glyph(page, 3) === '○', `${where}: item 3 não começa como ○ (“${await glyph(page, 3)}”)`);
+  check(/em breve/i.test(await page.textContent('.item-edital[data-n="1"]')), `${where}: item sem módulo não aparece como "em breve"`);
+  check(/5 questões em 2023/.test(await page.textContent('.item-edital[data-n="3"]')), `${where}: item 3 sem o peso de 2023`);
+  check(!!(await page.$('.proximo a[href="#mod/potencia-trifasicos"]')), `${where}: o próximo passo não aponta para potencia-trifasicos`);
+  if (vw !== '1280') {
+    const r = await page.$eval('.tabs', e => e.getBoundingClientRect().bottom);
+    check(Math.abs(r - (await page.evaluate(() => innerHeight))) <= 1, `${where}: abas não estão fixas embaixo`);
+  }
+  await noHScroll(page, `${where} · mapa`);
+  if (ax) await axe(page, `${where} · mapa`);
+
+  // leitor: cada sentinela entra na tela, uma por vez (Ruling 5)
+  await page.click('.proximo a[href="#mod/potencia-trifasicos"]');
+  await page.waitForSelector('.leitor [data-fim]');
+  check((await page.$$('.leitor section[id^="s-"]')).length === MOD.secoes.length, `${where}: o leitor não mostra as ${MOD.secoes.length} seções`);
+  check((await page.$$('.sumario a[href^="#s-"]')).length === MOD.secoes.length, `${where}: sumário incompleto`);
+  for (const s of await page.$$('.leitor [data-fim]')) { await s.scrollIntoViewIfNeeded(); await page.waitForTimeout(120); }
+  await page.waitForTimeout(150);
+  check(new RegExp(`${MOD.secoes.length} de ${MOD.secoes.length}`).test(await page.textContent('.lprog')), `${where}: progresso de leitura não chegou ao fim (“${await page.textContent('.lprog')}”)`);
+  await noHScroll(page, `${where} · leitor`);
+  if (ax) await axe(page, `${where} · leitor`);
+  await page.goBack(); await page.waitForSelector('.item-edital');
+  check(await glyph(page, 3) === '◐', `${where}: item 3 não virou ◐ depois da leitura (“${await glyph(page, 3)}”)`);
+
+  // só o essencial (Ruling 13: fórmulas e tabelas .tw ficam)
+  await page.click('.item-edital[data-n="3"] a[href="#mod/potencia-trifasicos"]');
+  await page.waitForSelector('.leitor');
+  await page.click('[data-nav="essencial"]');
+  check(await hidden(page, '.leitor .texto > p:not(.tw), .leitor .texto > ul'), `${where}: "Só o essencial" não escondeu o texto corrido`);
+  for (const c of ['.cai', '.pega', '.exres', '.essencial', '.tw']) check(await visible(page, `.leitor ${c}`), `${where}: "Só o essencial" escondeu ${c}`);
+  check(await page.getAttribute('[data-nav="essencial"]', 'aria-pressed') === 'true', `${where}: botão "Só o essencial" sem aria-pressed`);
+  // impressão: sem abas, texto completo mesmo no modo essencial
+  await page.emulateMedia({ media: 'print' });
+  check(!(await page.isVisible('.tabs')), `${where}: as abas aparecem na impressão`);
+  check(await visible(page, '.leitor .texto > p'), `${where}: a impressão não expandiu o texto no modo essencial`);
+  await page.emulateMedia({ media: 'screen' });
+  await page.click('[data-nav="essencial"]');
+  check(await visible(page, '.leitor .texto > p'), `${where}: desligar "Só o essencial" não trouxe o texto de volta`);
+  if (vw === '320') {
+    for (let i = 0; i < 2; i++) await page.click('[data-nav="fonte"]');
+    check(await page.getAttribute('.leitor', 'data-fonte') === '2', `${where}: o botão de letra não chegou ao maior tamanho`);
+    check(await page.evaluate(() => localStorage.getItem('bancada-fonte')) === '2', `${where}: tamanho da letra não foi gravado`);
+    await noHScroll(page, `${where} · leitor com letra grande`);
+    await page.click('[data-nav="fonte"]');
+  }
+
+  // checagem com o gabarito
+  await page.click('.leitor a[href="#mod/potencia-trifasicos/checagem"]');
+  await page.waitForSelector('.checagem .q');
+  check((await page.$$('.checagem .q')).length === 4, `${where}: a checagem não tem 4 questões`);
+  for (const [i, q] of MOD.checagem.entries()) {
+    const sel = `.q[data-q="ap/potencia-trifasicos/${i}"]`;
+    await page.click(`${sel} [data-opt="${q.a}"]`);
+    check(await page.isVisible(`${sel} .fbk`), `${where}: questão ${i + 1} da checagem sem correção`);
+  }
+  check(/4 de 4/.test(await page.textContent('.chk-res')), `${where}: resultado da checagem não mostra 4 de 4`);
+  await noHScroll(page, `${where} · checagem`);
+  if (ax) await axe(page, `${where} · checagem`);
+  await tab(page, 'estudar'); await page.waitForSelector('.item-edital');
+  check(await glyph(page, 3) === '●' && await glyph(page, 4) === '●', `${where}: itens 3 e 4 não viraram ● depois da checagem (“${await glyph(page, 3)}”, “${await glyph(page, 4)}”)`);
+
+  // rota inválida volta ao mapa
+  await page.evaluate(() => { location.hash = '#mod/nao-existe'; });
+  await page.waitForFunction(() => location.hash === '#estudar');
+  check(!!(await page.$('.item-edital')), `${where}: #mod/nao-existe não voltou ao mapa`);
+  await page.reload(); await page.waitForSelector('.item-edital');
+
+  // bancada: "Antes de atender, leia"
+  await tab(page, 'bancada'); await page.waitForSelector('.mcard');
+  const os2 = page.locator('.mcard', { hasText: 'OS 2' });
+  check(/Antes de atender, leia/.test(await os2.textContent()), `${where}: OS 2 sem "Antes de atender, leia"`);
+  await os2.locator('a[href="#mod/potencia-trifasicos"]').click();
+  check(await page.waitForSelector('.leitor').then(() => true, () => false), `${where}: o link da OS 2 não abriu o módulo`);
+  await tab(page, 'bancada'); await page.waitForSelector('.mcard');
 }
 
 /** Joga a OS 1 até o relatório usando só a interface. */
@@ -83,19 +172,23 @@ try {
     page.on('console', m => { if (m.type() === 'error' && !/fonts\.(googleapis|gstatic)/.test(m.text()) && !/ERR_(NAME|INTERNET|CONNECTION)/.test(m.text())) errs.push(m.text()); });
     page.on('dialog', d => d.accept());
     await page.goto(URL_);
-    await page.waitForSelector('.mcard');
+    await apostila(page, where, vw);
     check((await page.$$('.mcard')).length === 4, `${where}: painel sem as 4 OS`);
     await noHScroll(page, `${where} · painel`);
     if (vw === '1280' || vw === '320') await axe(page, `${where} · painel`);
     await playOS1(page, where);
-    // revisão espaçada: a questão respondida entrou no baralho
-    await page.click('[data-nav="home"]');
+    // revisão espaçada: as questões respondidas (OS e checagem) entraram no baralho
+    await page.click('[data-nav="bancada"]'); await page.waitForSelector('.mcard');
+    await tab(page, 'revisar');
     const rev = await page.textContent('[data-nav="review"]');
-    check(/Revisão/.test(rev) && !(await page.isDisabled('[data-nav="review"]')), `${where}: revisão não foi liberada (“${rev}”)`);
+    check(/revis/i.test(rev) && !(await page.isDisabled('[data-nav="review"]')), `${where}: revisão não foi liberada (“${rev}”)`);
     await page.click('[data-nav="review"]'); await page.waitForSelector('.q');
+    await page.click('.q .opts button[data-opt="0"]');
+    check(await page.isVisible('.q .fbk'), `${where}: questão da revisão sem correção`);
     if (where === '1280 claro') await axe(page, `${where} · revisão`);
     // progresso persiste após recarregar
-    await page.reload(); await page.waitForSelector('.mcard');
+    await page.reload(); await page.waitForSelector('.tabs a[aria-current="page"][href="#revisar"]');
+    await tab(page, 'bancada'); await page.waitForSelector('.mcard');
     check(/1 atendimento/.test(await page.textContent('.mcard:first-child .mfoot')), `${where}: progresso não persistiu após recarregar`);
     // modo prova: sem botão de dica, com contagem regressiva
     await page.click('[data-nav="prova"]'); await page.waitForSelector('#clock');
@@ -113,17 +206,24 @@ try {
   // offline: depois da primeira visita, o app abre sem rede
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
-  await page.goto(URL_); await page.waitForSelector('.mcard');
+  await page.goto(URL_); await page.waitForSelector('.item-edital');
   await page.evaluate(() => navigator.serviceWorker.ready);
-  await page.reload(); await page.waitForSelector('.mcard');
+  await page.reload(); await page.waitForSelector('.item-edital');
   await ctx.setOffline(true);
   await page.reload();
-  const ok = await page.waitForSelector('.mcard', { timeout: 5000 }).then(() => true, () => false);
+  const ok = await page.waitForSelector('.item-edital', { timeout: 5000 }).then(() => true, () => false);
   check(ok, 'offline: o app não abriu sem internet depois da primeira visita');
-  if (ok) { await page.click('[data-nav="start:dr"]'); check(await page.isVisible('#scheme svg'), 'offline: a OS 4 não abriu sem internet'); }
+  if (ok) {
+    await page.evaluate(() => { location.hash = '#mod/potencia-trifasicos'; });
+    check(await page.waitForSelector('.leitor [data-fim]', { timeout: 5000 }).then(() => true, () => false), 'offline: o módulo da apostila não abriu sem internet');
+    await page.goto(URL_ + '#mod/potencia-trifasicos/checagem');
+    check(await page.waitForSelector('.checagem .q', { timeout: 5000 }).then(() => true, () => false), 'offline: a checagem não abriu sem internet (recarregando)');
+    await tab(page, 'bancada'); await page.waitForSelector('.mcard');
+    await page.click('[data-nav="start:dr"]'); check(await page.isVisible('#scheme svg'), 'offline: a OS 4 não abriu sem internet');
+  }
   await ctx.close();
 } finally {
   await browser.close(); server.close();
 }
 if (fails.length) { console.error('bancada: FALHOU\n- ' + fails.join('\n- ')); process.exit(1); }
-console.log('bancada OK: OS jogada de ponta a ponta em 3 tamanhos × 2 temas, acessibilidade, revisão, modo prova e offline.');
+console.log('bancada OK: apostila (mapa, leitor, essencial, checagem) e OS de ponta a ponta em 3 tamanhos × 2 temas, acessibilidade, revisão, modo prova e offline.');

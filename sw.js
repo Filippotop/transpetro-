@@ -1,10 +1,12 @@
 /* Bancada Virtual de Manutenção: service worker (app offline).
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova. */
-const VER = '2026-10-23.1';
+const VER = '2026-10-24.1';
 const SHELL = 'bancada-shell-' + VER, RUNTIME = 'bancada-runtime-v1';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js', 'js/engine.js', 'js/store.js', 'js/review.js', 'js/util.js', 'js/instruments.js', 'js/draw.js',
   'js/missions/index.js', 'js/missions/cmd.js', 'js/missions/qd.js', 'js/missions/mot.js', 'js/missions/dr.js',
+  'js/mastery.js', 'js/ui/apostila.js',
+  'js/apostila/index.js', 'js/apostila/edital.js', 'js/apostila/potencia-trifasicos.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(SHELL).then(c => c.addAll(FILES))); });

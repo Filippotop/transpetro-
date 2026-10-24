@@ -1,6 +1,9 @@
 /* =====================================================================
-   Interface: painel, bancada, relatório, revisão. Toda a lógica de jogo
-   fica em engine.js; aqui só há telas, eventos e persistência.
+   Interface: abas (Estudar, Bancada, Revisar), rotas, bancada, relatório e
+   revisão. A lógica de jogo fica em engine.js e as telas da apostila em
+   ui/apostila.js; aqui só há telas da bancada, eventos e persistência.
+   Rotas (hash): #estudar · #mod/<id> · #mod/<id>/checagem · #bancada ·
+   #revisar · #run · #debrief.
    ===================================================================== */
 import { INSTR, NR10, NR10RE, EXAM_DATE, EXAM_DATE_NOTE } from './instruments.js';
 import { MISSIONS, missionById, totalFaults, allQuestions } from './missions/index.js';
@@ -8,15 +11,17 @@ import * as E from './engine.js';
 import * as S from './store.js';
 import { answer, dueIds, boxes } from './review.js';
 import { mmss, shuffle, pick, esc } from './util.js';
+import { moduloById } from './apostila/index.js';
+import { mapaV, leitorV, checagemV, observeSecoes, atualizaLeitura, marcaRolaveis, questaoHTML, feedbackHTML, questoesApostila, resumoChecagem, antesHTML, FONTES } from './ui/apostila.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const view = $('#view');
 const dlg = $('#modal');
-const L = 'ABCDE';
 
 let P = S.load();
-let VIEW = 'home', RUN = null, TICK = null, REV = null;
+let VIEW = 'estudar', MODID = null, RUN = null, TICK = null, REV = null;
+let ESS = false, UNOBS = null; // "Só o essencial" (vale para a sessão) e o desligador do observador de leitura
 const persist = () => { const ok = S.save(P); $('#pill-save').textContent = ok ? 'Progresso salvo neste aparelho' : 'Atenção: este navegador não está salvando o progresso'; $('#pill-save').classList.toggle('bad', !ok); };
 
 /* ---------------------------------------------------------------- utilidades de tela */
@@ -35,20 +40,94 @@ function keepFocus(fn) {
   if (sel) { const el = view.querySelector(sel); if (el) el.focus({ preventScroll: true }); }
 }
 
-/** Troca de tela. `how`: 'push' (nova entrada no histórico), 'replace' ou 'none'. */
-function go(v, how = 'push') {
-  VIEW = v;
-  const url = v === 'home' ? location.pathname : '#' + v;
-  if (how === 'push') history.pushState({ v }, '', url); else if (how === 'replace') history.replaceState({ v }, '', url);
-  render(); window.scrollTo({ top: 0 });
+/* ---------------------------------------------------------------- rotas */
+const TELAS = ['estudar', 'bancada', 'revisar', 'run', 'debrief'];
+/** Lê uma rota ("mod/x", "bancada"…) e ajusta VIEW/MODID. Rota inválida ou sem estado cai numa tela válida.
+    Devolve a rota canônica (a que vai para a barra de endereço). */
+function apply(h) {
+  h = (h || '').replace(/^#/, ''); try { h = decodeURIComponent(h); } catch { h = ''; }
+  const m = /^mod\/([^/]+)(\/checagem)?$/.exec(h);
+  MODID = null;
+  if (m && moduloById(m[1])) { VIEW = m[2] ? 'checagem' : 'mod'; MODID = m[1]; }
+  else VIEW = h === 'review' ? 'revisar' : TELAS.includes(h) ? h : 'estudar';
+  if (VIEW === 'run' && RUN && RUN.result) VIEW = 'debrief';
+  if ((VIEW === 'run' && !RUN) || (VIEW === 'debrief' && !(RUN && RUN.result))) VIEW = 'bancada';
+  return VIEW === 'mod' ? `mod/${MODID}` : VIEW === 'checagem' ? `mod/${MODID}/checagem` : VIEW;
 }
-function render() {
+const runAtivo = () => VIEW === 'run' && RUN && !RUN.result;
+/** Troca de tela. `how`: 'push' (nova entrada no histórico), 'replace' ou 'none'. */
+function go(h, how = 'push') {
+  const r = apply(h);
+  if (how === 'push') history.pushState({ v: r }, '', '#' + r); else if (how === 'replace') history.replaceState({ v: r }, '', '#' + r);
+  render({ top: true, focus: how === 'push' });
+}
+/** Navegação pedida pelo usuário (aba ou link): no meio de uma OS, pergunta antes de sair. */
+function navigate(h) { if (runAtivo()) return abandon(h); if (h === 'revisar') REV = null; go(h); }
+
+const ABA = { estudar: 'estudar', mod: 'estudar', checagem: 'estudar', bancada: 'bancada', run: 'bancada', debrief: 'bancada', revisar: 'revisar' };
+function render({ top = false, focus = false } = {}) {
+  if (UNOBS) { UNOBS(); UNOBS = null; }
   $('#pill-days').textContent = `Faltam ${daysLeft()} dias para a prova (data do edital original)`; $('#pill-days').title = EXAM_DATE_NOTE;
   document.body.dataset.view = VIEW;
-  if (VIEW === 'run' && RUN) return drawRun();
-  if (VIEW === 'debrief' && RUN && RUN.result) { view.innerHTML = debriefV(); return; }
-  if (VIEW === 'review') { view.innerHTML = reviewV(); return; }
-  VIEW = 'home'; view.innerHTML = homeV();
+  $$('.tabs a').forEach(a => { if (a.dataset.tab === ABA[VIEW]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  let alvo = null;
+  if (VIEW === 'run' && RUN) drawRun();
+  else if (VIEW === 'debrief') view.innerHTML = debriefV();
+  else if (VIEW === 'revisar') view.innerHTML = REV ? reviewV() : revisarV();
+  else if (VIEW === 'bancada') view.innerHTML = bancadaV();
+  else if (VIEW === 'mod') alvo = drawLeitor(top);
+  else if (VIEW === 'checagem') view.innerHTML = checagemV(moduloById(MODID));
+  else view.innerHTML = mapaV(P);
+  if (top) { if (alvo) alvo.scrollIntoView({ block: 'start', behavior: 'instant' }); else window.scrollTo({ top: 0, behavior: 'instant' }); }
+  if (focus) { const h = view.querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
+}
+
+/* ---------------------------------------------------------------- leitor da apostila */
+function getFonte() { try { const f = +localStorage.getItem('bancada-fonte'); return f === 1 || f === 2 ? f : 0; } catch { return 0; } }
+function setFonte(f) { try { localStorage.setItem('bancada-fonte', String(f)); } catch { /* sem armazenamento: vale só nesta tela */ } }
+/** Desenha o leitor e liga o observador de leitura. Devolve a seção onde retomar (a seguinte à última lida), se houver. */
+function drawLeitor(retomar) {
+  const mod = moduloById(MODID);
+  view.innerHTML = leitorV(mod, P, { essencial: ESS, fonte: getFonte() });
+  marcaRolaveis(view);
+  UNOBS = observeSecoes(view, mod, id => secaoVista(mod, id));
+  if (!retomar) return null;
+  const L = P.leitura[mod.id], i = L && L.ultima ? mod.secoes.findIndex(s => s.id === L.ultima) : -1;
+  if (i < 0 || i >= mod.secoes.length - 1) return null;
+  const s = mod.secoes[i + 1];
+  toast(`Continuando de onde você parou: ${i + 2}. ${s.titulo}`);
+  return view.querySelector(`#s-${CSS.escape(s.id)}`);
+}
+function secaoVista(mod, id) {
+  const L = P.leitura[mod.id] || (P.leitura[mod.id] = { vistas: [], ultima: null, em: 0 });
+  const nova = !L.vistas.includes(id);
+  if (nova) L.vistas.push(id);
+  L.ultima = id; L.em = Date.now(); persist();
+  if (nova) atualizaLeitura(view, mod, P);
+}
+/** Muda o leitor sem perder o lugar: a seção que estava no topo continua no topo. */
+function semPerderOLugar(fn) {
+  const art = view.querySelector('.leitor'); if (!art) return;
+  const topo = (view.querySelector('.ltools')?.getBoundingClientRect().bottom || 0) + 1;
+  const sec = [...art.querySelectorAll('.secao')].find(s => s.getBoundingClientRect().bottom > topo);
+  const longe = sec && art.querySelector('.corpo').getBoundingClientRect().top < topo;
+  fn(art);
+  marcaRolaveis(view);
+  if (longe) sec.scrollIntoView({ block: 'start', behavior: 'instant' });
+}
+function toggleEssencial(btn) {
+  ESS = !ESS;
+  semPerderOLugar(art => { art.classList.toggle('so-essencial', ESS); btn.setAttribute('aria-pressed', String(ESS)); });
+}
+function trocaFonte(btn) {
+  const f = (getFonte() + 1) % FONTES.length; setFonte(f);
+  semPerderOLugar(art => { art.dataset.fonte = f; btn.querySelector('.fz').textContent = FONTES[f] + '%'; btn.setAttribute('aria-label', `Tamanho da letra: ${FONTES[f]}%. Toque para mudar.`); });
+}
+function irParaSecao(a) {
+  const el = view.querySelector(a.getAttribute('href').replace(/^#s-(.*)$/, (_, id) => `#s-${CSS.escape(id)}`));
+  if (!el) return;
+  el.scrollIntoView({ block: 'start' });
+  const h = el.querySelector('h3'); if (h) h.focus({ preventScroll: true });
 }
 
 /* ---------------------------------------------------------------- modal (<dialog> nativo: foco preso, Esc e fundo) */
@@ -67,9 +146,9 @@ function closeModal() {
 dlg.addEventListener('cancel', e => { if (modalLocked) e.preventDefault(); });
 dlg.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeModal(); });
 
-/* ---------------------------------------------------------------- painel inicial */
-function homeV() {
-  const f = S.foundFaults(P, MISSIONS), t = totalFaults(); const due = dueIds(P.srs).length; const nq = Object.keys(P.srs).length;
+/* ---------------------------------------------------------------- bancada (as OS) */
+function bancadaV() {
+  const f = S.foundFaults(P, MISSIONS), t = totalFaults();
   const best = P.exams.slice().sort((a, b) => b.score - a.score || a.secs - b.secs).slice(0, 5);
   return `<section class="intro">
   <p class="kicker">Plantão de manutenção elétrica</p>
@@ -80,7 +159,6 @@ function homeV() {
  <div class="toolbar">
   <button class="btn primary" data-nav="plantao">Plantão aleatório</button>
   <button class="btn" data-nav="prova">Modo prova <span class="tm">(8 min, sem ajuda)</span></button>
-  <button class="btn ${due ? 'warn' : ''}" data-nav="review" ${nq ? '' : 'disabled'}>Revisão${nq ? `: <b>${due}</b> pendente${due === 1 ? '' : 's'}` : ' (responda questões para liberar)'}</button>
  </div>
  <div class="toolbar">
   <label class="switch"><input type="checkbox" id="instrutor" ${P.instrutor ? 'checked' : ''}> Modo instrutor <span class="tm">(interpreta cada leitura)</span></label>
@@ -92,17 +170,12 @@ function homeV() {
     return `<article class="mcard">
    <div class="mhead"><span class="mn">OS ${m.n}</span><span class="area">${m.area}</span></div>
    <h3>${m.titulo}</h3><p class="mloc">${m.local}</p><p class="msint">${m.sintoma}</p>
-   <p class="ed">${m.edital}</p>
+   <p class="ed">${m.edital}</p>${antesHTML(m)}
    <p class="tm">${Object.keys(r.faults).length} de ${m.faults.length} defeitos descobertos</p>
    <div class="album" aria-label="Defeitos desta OS">${m.faults.map(fl => r.faults[fl.id] != null ? `<span class="fchip got" title="Melhor nota: ${r.faults[fl.id]}">${starHTML(E.starsOf(r.faults[fl.id]))} ${fl.nome}</span>` : '<span class="fchip" title="Defeito ainda não descoberto">?</span>').join('')}</div>
    <div class="mfoot"><span class="tm">${r.n ? `${r.n} atendimento(s) · melhor nota ${r.best}` : 'ainda não atendida'}</span><button class="btn primary" data-nav="start:${m.id}" aria-label="Atender OS ${m.n}: ${esc(m.titulo)}">Atender</button></div></article>`;
   }).join('')}</div>
  ${P.exams.length ? `<section class="panel ranking"><h3>Seu ranking no modo prova</h3><ol>${best.map(e => `<li><b>${e.score}</b> pontos · ${esc(missionById(e.m)?.titulo || e.m)} · ${mmss(e.secs)} · <span class="tm">${new Date(e.at).toLocaleDateString('pt-BR')}</span></li>`).join('')}</ol><p class="tm">${P.exams.length} prova(s) feitas · média ${Math.round(P.exams.reduce((s, e) => s + e.score, 0) / P.exams.length)} · acerto do diagnóstico ${Math.round(100 * P.exams.filter(e => e.ok).length / P.exams.length)}%</p></section>` : ''}
- ${nq ? `<section class="panel"><h3>Revisão espaçada</h3><p class="tm">Questões por caixa (1 = revisar já · 5 = dominada): ${boxes(P.srs).map((n, i) => `<span class="box-n">${i + 1}: <b>${n}</b></span>`).join(' ')}</p></section>` : ''}
- <details class="panel"><summary class="lbl">Seu progresso: cópia de segurança</summary>
-  <p class="tm">O progresso fica só neste aparelho. Para levá-lo a outro, exporte o arquivo e importe lá.</p>
-  <div class="actions"><button class="btn" data-nav="export">Exportar progresso</button><label class="btn file">Importar progresso<input type="file" id="importf" accept="application/json,.json" class="vh"></label><button class="btn danger" data-nav="reset">Zerar progresso</button></div>
- </details>
  <p class="note">Escopo: comandos elétricos, trifásicos, máquinas e proteção, instalações e NBR 5410, instrumentos de medição e NR-10 (itens 1.2, 4, 5.5 a 5.7, 7.3, 8.1, 8.3, 10.1 e 10.4 do Anexo IV, Ênfase 8). Os circuitos são modelos didáticos simplificados: os valores servem para treinar o raciocínio de medição, não para cálculo de projeto. A sequência da NR-10 usada é a do item 10.5.1 (redação vigente na data da prova).</p>`;
 }
 
@@ -249,20 +322,28 @@ function debriefV() {
   <div class="box cesg"><p class="box-title">Como a Cesgranrio cobra</p><p>${F.cesg} Padrão observado, não garantia.</p></div></section>
  <section class="panel"><h3>Fixe com duas questões</h3><p class="tm">As respostas entram na sua revisão espaçada: o que você errar volta amanhã.</p>${F.questoes.map((q, i) => questionHTML(q, `${M.id}/${F.id}/${i}`, i + 1)).join('')}</section>
  <details class="panel"><summary class="lbl">Seu caderno de campo (${R.log.length} registros)</summary><ol class="log">${R.log.slice().reverse().map(l => `<li class="${l.cls || ''}"><span class="lt">${mmss(l.t)}</span> ${l.txt}</li>`).join('')}</ol></details>
- <div class="actions"><button class="btn primary" data-nav="start:${M.id}">Atender esta OS de novo (outro defeito sorteado)</button><button class="btn" data-nav="plantao">Plantão aleatório</button><button class="btn" data-nav="home">Voltar ao painel</button></div>`;
+ <div class="actions"><button class="btn primary" data-nav="start:${M.id}">Atender esta OS de novo (outro defeito sorteado)</button><button class="btn" data-nav="plantao">Plantão aleatório</button><button class="btn" data-nav="bancada">Voltar à bancada</button></div>`;
 }
-function questionHTML(q, id, n) {
-  return `<div class="q" data-q="${id}"><p class="stem"><b class="n">${n}.</b> ${q.s}</p><ul class="opts">${q.o.map((o, k) => `<li><button type="button" data-opt="${k}"><span class="l">(${L[k]})</span><span>${o}</span></button></li>`).join('')}</ul><div class="fbk" hidden role="status"></div></div>`;
-}
-const QBY = new Map(allQuestions().map(q => [q.id, q]));
+const questionHTML = questaoHTML;
+/** Todas as questões que a revisão conhece: as das OS e as das checagens da apostila (`ap/<módulo>/<i>`). */
+const QBY = new Map([...allQuestions(), ...questoesApostila()].map(q => [q.id, q]));
 function answerQuestion(btn) {
-  const qe = btn.closest('.q'); const q = QBY.get(qe.dataset.q); const k = +btn.dataset.opt; const ok = k === q.a;
+  const qe = btn.closest('.q'); const q = QBY.get(qe.dataset.q); if (!q) return; const k = +btn.dataset.opt; const ok = k === q.a;
   qe.querySelectorAll('.opts button').forEach((x, i) => { x.disabled = true; if (i === q.a) x.classList.add('right'); if (i === k && !ok) x.classList.add('wrong'); });
   const fb = qe.querySelector('.fbk'); fb.hidden = false; fb.classList.toggle('no', !ok);
-  fb.innerHTML = `<strong>${ok ? 'Correto.' : 'Incorreto.'} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+  fb.innerHTML = feedbackHTML(q, k);
+  qe.dataset.ok = ok ? '1' : '0';
   const c = answer(P.srs, q.id, ok); persist();
-  if (VIEW === 'review') { REV.done++; if (ok) REV.right++; const nx = $('#rnext'); nx.hidden = false; nx.focus(); }
+  if (VIEW === 'revisar' && REV) { REV.done++; if (ok) REV.right++; const nx = $('#rnext'); nx.hidden = false; nx.focus(); }
+  if (VIEW === 'checagem') fimChecagem();
   return c;
+}
+/** Depois da última resposta da checagem, mostra o resultado e o novo status do módulo. */
+function fimChecagem() {
+  const qs = $$('.checagem .q'), feitas = qs.filter(x => x.dataset.ok);
+  if (feitas.length < qs.length) return;
+  const res = $('.chk-res');
+  res.innerHTML = resumoChecagem(moduloById(MODID), P, feitas.filter(x => x.dataset.ok === '1').length, qs.length);
 }
 
 /* ---------------------------------------------------------------- revisão espaçada */
@@ -270,15 +351,30 @@ function startReview() {
   let ids = dueIds(P.srs); const extra = !ids.length;
   if (extra) ids = shuffle(Object.keys(P.srs)).slice(0, 10);
   REV = { ids: ids.filter(id => QBY.has(id)), i: 0, done: 0, right: 0, extra };
-  go('review');
+  go('revisar');
+}
+/** Aba Revisar: situação do baralho, botão de começar e a cópia de segurança do progresso. */
+function revisarV() {
+  const due = dueIds(P.srs).filter(id => QBY.has(id)).length, nq = Object.keys(P.srs).filter(id => QBY.has(id)).length;
+  return `<header class="vhead"><p class="kicker">Revisar · revisão espaçada</p><h2>Revisar</h2>
+   <p class="lede">As questões das OS e das checagens da apostila voltam em intervalos crescentes. Acertou: a questão sobe uma caixa e demora mais para voltar. Errou: volta para a caixa 1. O intervalo nunca passa de 20% dos dias que faltam para a prova.</p></header>
+  <section class="panel">
+   <div class="score"><span class="big">${due}</span><span class="of">${due === 1 ? 'questão pendente hoje' : 'questões pendentes hoje'}</span></div>
+   ${nq ? `<p class="tm">No baralho: ${nq}. Por caixa (1 = revisar já · 5 = dominada): ${boxes(P.srs).map((n, i) => `<span class="box-n">${i + 1}: <b>${n}</b></span>`).join(' ')}</p>` : '<p class="tm">O baralho começa vazio. Responda a checagem de um módulo ou as questões do relatório de uma OS.</p>'}
+   <div class="actions"><button class="btn primary" data-nav="review" ${nq ? '' : 'disabled'}>${nq ? (due ? `Começar a revisão (${due})` : 'Revisão extra: nada vencido hoje') : 'Revisão (responda questões para liberar)'}</button></div>
+  </section>
+  <details class="panel"><summary class="lbl">Seu progresso: cópia de segurança</summary>
+   <p class="tm">O progresso (apostila, OS e revisão) fica só neste aparelho. Para levá-lo a outro, exporte o arquivo e importe lá.</p>
+   <div class="actions"><button class="btn" data-nav="export">Exportar progresso</button><label class="btn file">Importar progresso<input type="file" id="importf" accept="application/json,.json" class="vh"></label><button class="btn danger" data-nav="reset">Zerar progresso</button></div>
+  </details>`;
 }
 function reviewV() {
-  if (!REV || !REV.ids.length) return '<section class="panel"><h3>Nada para revisar</h3><p>Responda as questões do relatório de uma OS para começar.</p><button class="btn" data-nav="home">Voltar ao painel</button></section>';
-  if (REV.i >= REV.ids.length) return `<section class="panel"><h3>Revisão concluída</h3><p>Você acertou <b>${REV.right}</b> de ${REV.done}. ${dueIds(P.srs).length ? `Ainda há ${dueIds(P.srs).length} questão(ões) pendente(s) (as que você errou agora).` : 'Nada pendente por hoje.'}</p><div class="actions">${dueIds(P.srs).length ? '<button class="btn primary" data-nav="review">Revisar as pendentes</button>' : ''}<button class="btn" data-nav="home">Voltar ao painel</button></div></section>`;
+  if (!REV.ids.length) return '<section class="panel"><h2>Nada para revisar</h2><p>Responda a checagem de um módulo ou as questões do relatório de uma OS para começar.</p><button class="btn" data-nav="revisar">Voltar</button></section>';
+  if (REV.i >= REV.ids.length) return `<section class="panel"><h2>Revisão concluída</h2><p>Você acertou <b>${REV.right}</b> de ${REV.done}. ${dueIds(P.srs).length ? `Ainda há ${dueIds(P.srs).length} questão(ões) pendente(s) (as que você errou agora).` : 'Nada pendente por hoje.'}</p><div class="actions">${dueIds(P.srs).length ? '<button class="btn primary" data-nav="review">Revisar as pendentes</button>' : ''}<button class="btn" data-nav="revisar">Voltar</button></div></section>`;
   const q = QBY.get(REV.ids[REV.i]);
-  return `<section class="panel"><p class="kicker">Revisão ${REV.extra ? 'extra (nada vencido hoje)' : 'espaçada'} · ${REV.i + 1} de ${REV.ids.length}</p><p class="tm">${q.mission.area} · ${q.fault.nome}</p>
+  return `<section class="panel"><p class="kicker">Revisão ${REV.extra ? 'extra (nada vencido hoje)' : 'espaçada'} · ${REV.i + 1} de ${REV.ids.length}</p><h2 class="vh">Revisão</h2><p class="tm">${q.mission ? `${esc(q.mission.area)} · ${esc(q.fault.nome)}` : `Apostila · ${esc(q.modulo.titulo)}`}</p>
    ${questionHTML(q, q.id, REV.i + 1)}
-   <div class="actions"><button class="btn primary" id="rnext" data-nav="rnext" hidden>Próxima</button><button class="btn" data-nav="home">Parar</button></div></section>`;
+   <div class="actions"><button class="btn primary" id="rnext" data-nav="rnext" hidden>Próxima</button><button class="btn" data-nav="revisar">Parar</button></div></section>`;
 }
 
 /* ---------------------------------------------------------------- progresso: exportar, importar, zerar */
@@ -298,7 +394,8 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = fal
 
 /* ---------------------------------------------------------------- eventos (delegação: nada de onclick inline) */
 const NAV = {
-  plantao: () => startRun(null), prova: () => startRun(null, 'prova'), home: () => go('home'),
+  plantao: () => startRun(null), prova: () => startRun(null, 'prova'), home: () => go('bancada'), bancada: () => go('bancada'),
+  revisar: () => { REV = null; go('revisar'); }, refazer: () => render({ top: true }),
   review: startReview, rnext: () => { REV.i++; render(); const f = view.querySelector('.opts button'); if (f) f.focus(); },
   desen: askDesen, reen: askReen, diag: () => openDiag(),
   hint: () => { E.useHint(RUN); drawRun(); },
@@ -307,9 +404,10 @@ const NAV = {
   export: exportP,
   reset: () => openModal('<h3 id="mt">Zerar progresso?</h3><p>Apaga notas, defeitos descobertos, histórico do modo prova e revisão deste aparelho. Não dá para desfazer (a não ser que você tenha exportado uma cópia).</p><div class="actions"><button class="btn danger" id="rz">Zerar</button><button class="btn" data-close>Cancelar</button></div>', () => { $('#rz').onclick = () => { P = S.fresh(); persist(); closeModal(); render(); toast('Progresso zerado.'); }; })
 };
-function abandon() {
+/** Sair de uma OS em andamento; `para`: a rota pedida (aba ou link), ou a bancada. */
+function abandon(para = 'bancada') {
   openModal(`<h3 id="mt">Abandonar este atendimento?</h3><p>A ordem de serviço ficará sem diagnóstico e não conta no seu progresso.</p><div class="actions"><button class="btn danger" id="ab">Abandonar</button><button class="btn" data-close>Continuar medindo</button></div>`,
-    () => { $('#ab').onclick = () => { closeModal(); stopRun(); RUN = null; go('home'); }; });
+    () => { $('#ab').onclick = () => { closeModal(); stopRun(); RUN = null; if (para === 'revisar') REV = null; go(para); }; });
 }
 
 view.addEventListener('click', e => {
@@ -319,6 +417,8 @@ view.addEventListener('click', e => {
   if (nav && !nav.disabled) {
     const [k, arg] = nav.dataset.nav.split(':');
     if (k === 'start') return startRun(arg);
+    if (k === 'essencial') return toggleEssencial(nav);
+    if (k === 'fonte') return trocaFonte(nav);
     if (k === 'instr') { E.selectInstr(RUN, arg); return keepFocus(drawRun); }
     return NAV[k] && NAV[k]();
   }
@@ -333,19 +433,29 @@ view.addEventListener('change', e => {
   if (e.target.id === 'instrutor') { P.instrutor = e.target.checked; persist(); }
   if (e.target.id === 'importf' && e.target.files[0]) importP(e.target.files[0]);
 });
-/* Botão “voltar” do celular: não sai do app no meio de uma OS. */
+/* Links internos (abas, mapa, leitor): a rota muda pelo app, que pergunta antes de sair de uma OS.
+   Os do sumário (#s-…) só rolam até a seção, sem mexer na rota. */
+document.addEventListener('click', e => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const a = e.target.closest('a[href^="#"]'); if (!a) return;
+  const h = a.getAttribute('href');
+  if (h.startsWith('#s-')) { e.preventDefault(); return irParaSecao(a); }
+  if (/^#(estudar|bancada|revisar|mod\/)/.test(h)) { e.preventDefault(); navigate(h.slice(1)); }
+});
+/* Botão “voltar” do celular: não sai do app no meio de uma OS. Também trata o endereço digitado à mão. */
 window.addEventListener('popstate', () => {
   if (dlg.open) { closeModal(); }
-  if (VIEW === 'run' && RUN && !RUN.result) { history.pushState({ v: 'run' }, '', '#run'); abandon(); return; }
-  VIEW = (history.state && history.state.v) || 'home';
-  if ((VIEW === 'run' || VIEW === 'debrief') && !RUN) VIEW = 'home';
-  if (VIEW === 'run' && RUN && RUN.result) VIEW = 'debrief';
-  render();
+  if (runAtivo()) { history.pushState({ v: 'run' }, '', '#run'); abandon(); return; }
+  const h = location.hash.slice(1), r = apply(h);
+  if (r !== h) history.replaceState({ v: r }, '', '#' + r);
+  render({ top: true });
 });
-window.addEventListener('beforeunload', e => { if (VIEW === 'run' && RUN && !RUN.result && RUN.meas) e.preventDefault(); });
+let rsz = null;
+window.addEventListener('resize', () => { clearTimeout(rsz); rsz = setTimeout(() => { if (VIEW === 'mod') marcaRolaveis(view); }, 200); });
+window.addEventListener('beforeunload', e => { if (runAtivo() && RUN.meas) e.preventDefault(); });
 
 /* ---------------------------------------------------------------- início */
-history.replaceState({ v: 'home' }, '', location.pathname);
+{ const r = apply(location.hash); history.replaceState({ v: r }, '', '#' + r); }
 persist(); render();
 
 /* App instalável e offline. */
@@ -361,6 +471,6 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
       });
     });
     let reloaded = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && !(VIEW === 'run' && RUN && !RUN.result)) { reloaded = true; location.reload(); } });
+    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && !runAtivo()) { reloaded = true; location.reload(); } });
   }).catch(() => { /* sem service worker: o app funciona, só não fica offline */ });
 }

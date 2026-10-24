@@ -13,7 +13,10 @@ HTML + CSS + módulos ES nativos, sem etapa de build e sem dependências em temp
 | `js/missions/*.js` | Uma missão por arquivo (dados + modelo elétrico + desenho); `index.js` é o catálogo |
 | `js/store.js` | Persistência em `localStorage` com migração, exportação e importação |
 | `js/review.js` | Revisão espaçada (Leitner, caixas 1–5: 0, 1, 3, 7 e 16 dias) |
-| `js/app.js` | Telas e eventos (delegação; nenhum `onclick` inline), `<dialog>` nativo, histórico do navegador |
+| `js/mastery.js` | Domínio por módulo e por item do edital (leitura + checagem) e o “próximo passo”; funções puras |
+| `js/apostila/*.js` | Catálogo do Anexo IV (`edital.js`), um módulo por arquivo; `index.js` é o catálogo |
+| `js/ui/apostila.js` | Telas da apostila: mapa do edital, leitor (sumário, “Só o essencial”, letra), checagem; observador de leitura |
+| `js/app.js` | Abas (Estudar, Bancada, Revisar), rotas por hash (`#estudar`, `#mod/<id>`, `#mod/<id>/checagem`, `#bancada`, `#revisar`, `#run`, `#debrief`), telas da bancada e eventos (delegação; nenhum `onclick` inline), `<dialog>` nativo |
 | `sw.js` | Service worker próprio: cache versionado do app e das fontes |
 
 ## 2. Contrato de uma missão
@@ -41,7 +44,7 @@ O motor não conhece eletricidade: ele só chama estes membros.
 - `key` é a etiqueta da medição (ex.: `V:F21=hi`, `A:N=0`, `M:C2=NPE0`). As `provas` listam as etiquetas que demonstram o defeito; uma etiqueta terminada em `*` funciona como prefixo. Eventos observados também geram etiquetas (`E:selo`, `E:retrip`, `E:only:C2`).
 - **Regra**: uma medição feita com o circuito desenergizado (ou o motor parado) deve gerar uma etiqueta própria (`=desen`, `=parado`), nunca a mesma de uma leitura real de zero. O teste `missions.test.mjs` cobra isso.
 
-Ao criar uma missão, acrescente-a em `js/missions/index.js` e em `FILES` no `sw.js`. Os testes de integridade passam a cobri-la automaticamente.
+Ao criar uma missão, acrescente-a em `js/missions/index.js` e em `FILES` no `sw.js` (o teste `tests/sw.test.mjs` acusa o arquivo esquecido). Os testes de integridade passam a cobri-la automaticamente.
 
 ## 3. Modelos elétricos
 
