@@ -565,6 +565,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 .prow button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .ankip{margin-top:18px;display:grid;gap:10px}
 </style>
+<link rel="stylesheet" href="css/estacao.css">
 
 <header class="top">
   <div class="wrap">
@@ -600,6 +601,8 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <div class="toast" id="toast" hidden></div>
 
 <script src="data/base.js"></script>
+<script src="data/estacoes/E1.js"></script>
+<script src="js/calc.js"></script>
 <script src="merge.js"></script>
 <script>
 const DATA = window.DATA;
@@ -795,7 +798,7 @@ function vMod(){
     <div class="mod-head"><div class="row" tabindex="0" role="group" aria-label="Dados da estação"><span class="eyebrow">Linha ${LINES[m.line].name} · estação ${lineAll.indexOf(m)+1} de ${lineAll.length}</span><span class="chip ${m.faixa}">Faixa ${m.faixa}</span><span class="chip">Itens ${esc(m.itens||'')} do edital</span><span class="chip">${m.peso2023||0} ${m.peso2023===1?'questão':'questões'} em 2023</span><span class="chip">leitura ~${Math.max(3,Math.round(strip(m.html).split(/\s+/).length/180))} min</span></div>
       <h1>${m.id} · ${esc(m.title)}</h1>${m.note?`<p class="note">${m.note}</p>`:''}</div>
     <div class="subtabs">
-      ${[['teoria','Teoria'],['resumo','Cartões-resumo'],['vf','V ou F'],['q',`Questões ${s.done}/${s.n}`],['notas',S.snotes[m.id]?'Anotações ●':'Anotações'],['tutor','Pergunte ao tutor']].map(([k,l])=>`<button data-t="${k}" aria-current="${k===tab}" class="${k==='tutor'?'tutor-only':''}">${l}</button>`).join('')}
+      ${[['teoria','Teoria'],...(m.formulas&&m.formulas.length?[['formulas','Fórmulas']]:[]),['resumo','Cartões-resumo'],['vf','V ou F'],['q',`Questões ${s.done}/${s.n}`],['notas',S.snotes[m.id]?'Anotações ●':'Anotações'],['tutor','Pergunte ao tutor']].map(([k,l])=>`<button data-t="${k}" aria-current="${k===tab}" class="${k==='tutor'?'tutor-only':''}">${l}</button>`).join('')}
     </div>
     <div id="modbody"></div>
     <div class="row" style="justify-content:space-between;margin-top:26px">
@@ -808,8 +811,8 @@ function vMod(){
   app.querySelectorAll('.subtabs button').forEach(b=>b.onclick=()=>{param.tab=b.dataset.t; lsSet('edo-last',{id:m.id,tab:param.tab,t:Date.now()}); vMod();});
   const body=$('#modbody');
   if(tab==='teoria'){
-    body.innerHTML=`<div class="layout2"><article class="prose" id="prose"><details class="toc-m"><summary>Nesta estação</summary><nav class="toc" id="tocm"></nav></details>${modHtml(m)}
-      <div class="callout" style="margin-top:24px"><strong>Terminou a leitura?</strong> Vire os cartões-resumo e depois faça ${m.qs.length===1?'a questão':'as '+m.qs.length+' questões'}. A teoria fica marcada como lida.</div>
+    body.innerHTML=`<div class="layout2"><article class="prose estacao" id="prose"><details class="toc-m"><summary>Nesta estação</summary><nav class="toc" id="tocm"></nav></details>${modHtml(m)}
+      <div class="callout" style="margin-top:24px"><strong>Terminou a leitura?</strong> Confira as fórmulas, vire os cartões-resumo e ${m.qs.length?`depois faça ${m.qs.length===1?'a questão':'as '+m.qs.length+' questões'}`:'responda o V ou F (as questões desta estação chegam em breve)'}. A teoria fica marcada como lida.</div>
       <div class="row"><button class="btn primary" id="toResumo">Ir para os cartões-resumo →</button></div></article>
       <aside class="side"><div class="eyebrow">Nesta estação</div><nav class="toc" id="toc"></nav></aside></div>`;
     const hs=[...body.querySelectorAll('.prose h4')]; hs.forEach((h,i)=>h.id='s'+i);
@@ -818,15 +821,21 @@ function vMod(){
     body.querySelectorAll('.toc a').forEach(a=>a.onclick=e=>{e.preventDefault(); const d=a.closest('details'); if(d) d.open=false; hs[+a.dataset.i].scrollIntoView({behavior:'smooth',block:'start'});});
     body.querySelectorAll('.prose .tw').forEach(t=>t.classList.toggle('scrolls',t.scrollWidth>t.clientWidth+2));
     body.querySelectorAll('#prose a[data-ex]').forEach(a=>a.onclick=e=>{ e.preventDefault(); openQView(a.dataset.ex,a.dataset.n); });
+    if(window.montarCalculadoras) montarCalculadoras(body);
     $('#readbar').hidden=false; readProgress();
     $('#toResumo').onclick=()=>{ if(!S.read[m.id]){S.read[m.id]=Date.now(); save();} param.tab='resumo'; vMod(); window.scrollTo({top:0}); };
+  } else if(tab==='formulas'){
+    body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">O formulário-resumo da estação. Cada fórmula aparece explicada na Teoria, com o nome e a unidade de cada símbolo.</p>
+      <div class="estacao eq-grid">${(m.formulas||[]).map(f=>fItem(f)).join('')}</div>
+      <div class="row" style="margin-top:18px"><button class="btn primary" id="toResumo2">Ir para os cartões-resumo →</button></div>`;
+    $('#toResumo2').onclick=()=>{ if(!S.read[m.id]){S.read[m.id]=Date.now(); save();} param.tab='resumo'; vMod(); window.scrollTo({top:0}); };
   } else if(tab==='resumo'){
     if(!S.read[m.id]){S.read[m.id]=Date.now(); save();}
     body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Leia o termo, diga a resposta em voz alta e toque para conferir.</p>
       <div class="flipgrid">${m.resumo.map(r=>`<button class="flip"><div class="in"><div class="fa1"><span class="eyebrow">${m.id}</span><b>${r[0]}</b><span class="muted" style="font-size:12px">toque para virar</span></div><div class="fa2">${r[1]}</div></div></button>`).join('')}</div>
-      <div class="row" style="margin-top:18px"><button class="btn primary" id="toQ">Fazer as questões →</button></div>`;
+      <div class="row" style="margin-top:18px"><button class="btn primary" id="toQ">${m.qs.length?'Fazer as questões →':'Responder o V ou F →'}</button></div>`;
     body.querySelectorAll('.flip').forEach(f=>f.onclick=()=>f.classList.toggle('on'));
-    $('#toQ').onclick=()=>{param.tab='q'; vMod();};
+    $('#toQ').onclick=()=>{param.tab=m.qs.length?'q':'vf'; vMod();};
   } else if(tab==='notas'){
     body.innerHTML=`<div class="panel" style="max-width:760px"><p style="font-family:var(--read);margin-top:0">Escreva com suas palavras o que ficou desta estação: um resumo, um macete, uma dúvida para levar ao tutor. Fica salvo e aparece na busca.</p><textarea id="snote" style="min-height:220px" placeholder="Ex.: Thévenin = tensão em aberto nos terminais + resistência vista com as fontes zeradas. Norton é o mesmo circuito com fonte de corrente.">${esc(S.snotes[m.id]||'')}</textarea><p class="muted mono" id="snst" style="font-size:12px;margin:8px 0 0">${S.snotes[m.id]?'salvo':''}</p></div>`;
     const ta=$('#snote'); let tm; ta.addEventListener('input',()=>{ $('#snst').textContent='digitando…'; clearTimeout(tm); tm=setTimeout(()=>{ const v=ta.value.trim(); if(v) S.snotes[m.id]=v; else delete S.snotes[m.id]; markDel(['snotes',m.id],!v); IDX=null; save(); $('#snst').textContent='salvo'; },700); });
@@ -836,7 +845,7 @@ function vMod(){
     bindVF(body); $('#toQ2').onclick=()=>{param.tab='q'; vMod();};
   } else if(tab==='q'){
     body.innerHTML='';
-    body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Questões inéditas no formato da prova da Cesgranrio, escritas para o app. Questões de provas reais ficam na aba Provas.</p>`;
+    body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Questões inéditas no formato da prova da Cesgranrio, escritas para o app. Questões de provas reais ficam na aba Provas.</p>${m.qs.length?'':'<p class="empty">As questões desta estação chegam em breve. Por enquanto, faça os exercícios comentados no fim de cada seção da Teoria e o V ou F.</p>'}`;
     const ns=document.createElement('div');
     const showNext=()=>{ const s2=modStats(m.id); if(s2.done<s2.n){ ns.innerHTML=''; return; } const nx=nextModules(1)[0];
       ns.innerHTML=`<div class="nextstep"><b>Estação concluída: ${s2.ok} de ${s2.n} certas de primeira.</b><span style="font-family:var(--read)">${s2.ok/s2.n<0.6?'Abaixo de 60%: releia a teoria antes de seguir, e escreva no caderno de erros a regra de cada erro.':'Bom. Agora siga para a próxima estação da prioridade.'}</span><div class="row">${s2.ok/s2.n<0.6?'<button class="btn" id="nsT">Reler a teoria</button>':''}${nx&&nx.id!==m.id?`<button class="btn primary" id="nsN">Próxima: ${nx.id} · ${esc(nx.title)} →</button>`:''}<button class="btn" id="nsE">Caderno de erros</button></div></div>`;
@@ -1226,7 +1235,7 @@ function fItem(f,k){ return typeof f==='string'?f:`<p><b>${f.titulo||f.nome||k||
 function bForm(){
   const mods=DATA.modules.filter(m=>!m.emBreve&&Array.isArray(m.formulas)&&m.formulas.length);
   const gerais=Object.entries(DATA.formulas||{});
-  host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
+  host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose estacao eq-grid" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
     :'<p class="empty">O formulário geral chega junto com as estações: cada fórmula com o nome e a unidade de cada símbolo.</p>';
   bindStations(host());
 }

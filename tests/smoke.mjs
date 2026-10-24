@@ -87,8 +87,12 @@ function testIntegrity() {
 }
 
 
-/* Acrescenta código ao fim de data/base.js só neste teste (estações extras, tabelas largas etc.). */
-const withExtra = (page, js) => page.route('**/data/base.js', async r => { const res = await r.fetch(); r.fulfill({ response: res, body: (await res.text()) + '\n' + js }); });
+/* Acrescenta código ao fim do último data/*.js só neste teste (estações extras, tabelas largas etc.): depois dele as
+   estações de data/estacoes/ já estão em DATA. */
+const withExtra = (page, js) => page.route('**/' + DATA_FILES[DATA_FILES.length - 1], async r => { const res = await r.fetch(); r.fulfill({ response: res, body: (await res.text()) + '\n' + js }); });
+/* Questão de teste na E1 (as questões de verdade chegam com o banco, na Task 4). */
+const TEST_Q = { id: 'E1-T1', vol: 'EL', mod: 'E1', n: 1, tag: 'Questão de teste', base: ['Um resistor de 10 Ω é ligado a uma fonte de 20 V.'], src: '', cmd: 'A corrente no resistor vale', alts: ['0,5 A', '1 A', '2 A', '10 A', '200 A'], ans: 'C', ex: { A: 'a', B: 'b', C: 'c', D: 'd', E: 'e' }, hab: '2.1', dif: 'fácil', traps: {}, kind: 'fixacao' };
+const withTestQ = page => withExtra(page, `window.DATA.questions.push(${JSON.stringify(TEST_Q)}); window.DATA.modules.find(m => m.id === 'E1').qs.push('E1-T1');`);
 
 /* O aprofundamento (DATA.deep) entra no módulo: teoria no fim e questões novas na contagem. */
 async function testDeep(browser) {
@@ -121,6 +125,7 @@ async function testStorage(browser) {
   }, FOREIGN);
   const page = await ctx.newPage(); const errs = [];
   page.on('pageerror', e => errs.push(e.message));
+  await withTestQ(page);
   await page.goto(URL_); await page.waitForTimeout(400);
   /* Mexe em tudo que grava: questão, leitura, V ou F, anotação, preferências, foco, meta. */
   await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(150);
@@ -135,7 +140,7 @@ async function testStorage(browser) {
   await page.reload(); await page.waitForTimeout(400);
   const r = await page.evaluate(k => ({ touched: window.__touched.slice(), mine: JSON.parse(localStorage.getItem(k) || 'null'), all: Object.fromEntries(Object.keys(localStorage).map(x => [x, localStorage.getItem(x)])) }), KEY);
   check(r.mine && r.mine.ans && r.mine.ans['E1-T1'] && r.mine.ans['E1-T1'].first === 'C', `progresso: a resposta não foi salva em ${KEY}`);
-  check(r.mine && r.mine.read && r.mine.read.E1 && r.mine.vf && r.mine.vf['vf-E1-T1'] && r.mine.snotes && r.mine.snotes.E1, `progresso: leitura, V ou F ou anotação fora de ${KEY}`);
+  check(r.mine && r.mine.read && r.mine.read.E1 && r.mine.vf && Object.keys(r.mine.vf).some(k => k.startsWith('vf-E1-')) && r.mine.snotes && r.mine.snotes.E1, `progresso: leitura, V ou F ou anotação fora de ${KEY}`);
   check(r.mine && !(r.mine.ans || {})['HG-1'], 'progresso: o Elétrica de Ouro leu o progresso do Humanas de Ouro');
   const bad = [...new Set(r.touched.map(t => t.split(':').slice(1).join(':')))].filter(k => k !== KEY && !k.startsWith('edo-'));
   check(!bad.length, `progresso: o app mexeu em chaves que não são dele: ${bad.join(', ')}`);
@@ -211,7 +216,7 @@ async function testTabs(browser) {
         .filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => `${x.id} em ${x.nodes.slice(0, 2).map(n => n.target.join(' ')).join(', ')}`));
       for (const x of v) check(false, `${where}: acessibilidade: ${x}`);
     }
-    if (vpName === '375') for (const id of ['E1']) for (const tab of ['teoria', 'resumo', 'vf', 'q', 'notas']) {
+    if (vpName === '375') for (const id of ['E1']) for (const tab of ['teoria', 'formulas', 'resumo', 'vf', 'q', 'notas']) {
       await page.evaluate(([id, tab]) => go('mod', { id, tab }), [id, tab]); await page.waitForTimeout(150);
       await page.addScriptTag({ content: AXE });
       const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations.filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => x.id));
@@ -254,7 +259,7 @@ async function testNav(browser) {
 async function testAnswered(browser) {
   for (const colorScheme of ['light', 'dark']) {
     const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], colorScheme, serviceWorkers: 'block' });
-    const page = await ctx.newPage(); await page.goto(URL_); await page.waitForTimeout(300);
+    const page = await ctx.newPage(); await withTestQ(page); await page.goto(URL_); await page.waitForTimeout(300);
     await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(200);
     for (const k of ['A', 'B']) { const alt = page.locator(`.alt[data-k="${k}"]:not([disabled])`).first(); if (await alt.count()) { await alt.click(); await page.waitForTimeout(150); } }
     check(await page.locator('.alt.right').count() > 0 && await page.locator('.alt.wrong').count() > 0, `${colorScheme}: a questão não marcou certo e errado`);
@@ -345,7 +350,7 @@ async function testDeepLinks(browser) {
 async function testFormSim(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
   const page = await ctx.newPage();
-  await withExtra(page, "window.DATA.formulas={ohm:{titulo:'Lei de Ohm (geral)',html:'<p>V = R · I</p>'}};");
+  await withExtra(page, "window.DATA.formulas={ohm:{titulo:'Lei de Ohm (geral)',html:'<p>V = R · I</p>'}}; window.DATA.questions.push(" + JSON.stringify(TEST_Q) + ");");
   await page.goto(URL_); await page.waitForTimeout(300);
   await page.evaluate(() => go('treino', { s: 'sim' })); await page.waitForTimeout(150);
   const av = await page.textContent('#avail');
@@ -560,12 +565,72 @@ async function testOfflineConsent(browser) {
   await ctx.close();
 }
 
+/* Estação E1 (Review Focus 2 e 3): as calculadoras montam dentro da teoria posta por innerHTML e continuam vivas
+   depois de trocar de aba e voltar; a aba Fórmulas e a Biblioteca mostram o formulário; figuras e quadros de fórmula
+   legíveis nos dois temas (traço com contraste ≥ 3:1 e texto ≥ 4,5:1 sobre o fundo da figura). */
+async function testCalc(browser) {
+  const E1 = loadData().modules.find(m => m.id === 'E1');
+  for (const colorScheme of ['light', 'dark']) {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme, serviceWorkers: 'block' });
+    const page = await ctx.newPage(); const errs = [];
+    page.on('pageerror', e => errs.push(e.message));
+    await page.goto(URL_); await page.waitForTimeout(300);
+    const where = `estação E1/${colorScheme}`;
+    for (const volta of [false, true]) {
+      if (volta) { await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150); await page.click('.subtabs button[data-t="teoria"]'); }
+      else await page.evaluate(() => go('mod', { id: 'E1', tab: 'teoria' }));
+      await page.waitForTimeout(250);
+      const tag = volta ? ' (depois de voltar da aba Fórmulas)' : '';
+      const st = await page.evaluate(() => ({ n: document.querySelectorAll('#prose [data-calc]').length, ok: document.querySelectorAll('#prose [data-calc][data-montado]').length, err: [...document.querySelectorAll('[data-erro]')].map(e => e.dataset.erro) }));
+      check(st.n >= 7 && st.ok === st.n, `${where}: ${st.ok} de ${st.n} widgets montados${tag} ${st.err.join(' ')}`);
+      const k = page.locator('[data-calc="kirchhoff-2-malhas"]');
+      const va = async () => (await k.locator('.lab-out div').first().textContent()).replace(/\s+/g, ' ');
+      check(/7,00 V/.test(await va()), `${where}: calculadora da figura 7 não mostra V_A = 7,00 V${tag} ("${await va()}")`);
+      await k.locator('input').first().fill('30'); await page.waitForTimeout(80);
+      check(/9,50 V/.test(await va()), `${where}: calculadora da figura 7 não recalcula com E₁ = 30 V${tag} ("${await va()}")`);
+      const t = page.locator('[data-calc="thevenin-carga"]');
+      await t.locator('input[type=range]').fill('5'); await page.waitForTimeout(80);
+      const tout = (await t.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+      check(/Potência na carga\s*20,00 W/.test(tout) && /Rendimento\s*50,0%/.test(tout) && await t.locator('svg path').count() >= 2, `${where}: laboratório de Thévenin com R_L = 5 Ω não dá 20 W e 50%${tag} ("${tout.slice(0, 120)}")`);
+      const ex = page.locator('.exs').first();
+      await ex.locator('.exq-b').nth(0).click(); await page.waitForTimeout(60);
+      check(await ex.locator('.exq-b.right').count() === 1 && await ex.locator('details[open]').count() === 1, `${where}: exercício comentado não marca o gabarito ao responder${tag}`);
+    }
+    /* Figuras e quadros no tema: contraste de traços e textos sobre o fundo da figura. */
+    const bad = await page.evaluate(() => {
+      const lum = c => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r, g, b] = m.slice(0, 3).map(x => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+      const ratio = (a, b) => { const x = lum(a), y = lum(b); return x == null || y == null ? 99 : (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+      const out = [];
+      document.querySelectorAll('#prose figure svg, #prose .lab svg').forEach((svg, i) => {
+        const bg = getComputedStyle(svg).backgroundColor === 'rgba(0, 0, 0, 0)' ? getComputedStyle(svg.closest('.lab') || document.body).backgroundColor : getComputedStyle(svg).backgroundColor;
+        svg.querySelectorAll('line,path,circle,rect,polyline,polygon').forEach(e => { const cs = getComputedStyle(e); if (e.closest('marker') || e.classList.contains('s-grid')) return;
+          if (cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0 && ratio(cs.stroke, bg) < 3) out.push(`figura ${i + 1}: traço ${e.getAttribute('class')} ${cs.stroke} (${ratio(cs.stroke, bg).toFixed(2)}:1)`);
+          if (cs.fill !== 'none' && cs.stroke === 'none' && ratio(cs.fill, bg) < 3) out.push(`figura ${i + 1}: preenchimento ${e.getAttribute('class')} ${cs.fill}`); });
+        svg.querySelectorAll('text').forEach(e => { const r = ratio(getComputedStyle(e).fill, bg); if (r < 4.5) out.push(`figura ${i + 1}: texto "${e.textContent.slice(0, 20)}" (${r.toFixed(2)}:1)`); });
+      });
+      document.querySelectorAll('#prose .eq').forEach((q, i) => { const bg = getComputedStyle(q).backgroundColor; for (const e of q.querySelectorAll('.eq-main, dd, .eq-name')) { const r = ratio(getComputedStyle(e).color, bg); if (r < 4.5) out.push(`quadro ${i + 1}: ${e.className || e.tagName} (${r.toFixed(2)}:1)`); } });
+      return out;
+    });
+    for (const b of [...new Set(bad)].slice(0, 8)) check(false, `${where}: ${b}`);
+    check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}: rolagem horizontal na teoria`);
+    /* Aba Fórmulas e Biblioteca → Formulário. */
+    await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150);
+    const nf = await page.evaluate(() => document.querySelectorAll('#modbody .eq').length);
+    check(nf === E1.formulas.length, `${where}: a aba Fórmulas mostra ${nf} de ${E1.formulas.length} fórmulas`);
+    await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(150);
+    check(await page.evaluate(() => document.querySelectorAll('#host .estacao .eq').length) === E1.formulas.length, `${where}: Biblioteca → Formulário sem as fórmulas da E1`);
+    for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
+    await ctx.close();
+  }
+}
+
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const run = async (name, fn) => { if (!ONLY || ONLY.has(name)) await fn(browser); };
 try {
   await run('data', () => { testData(); testIntegrity(); });
   await run('storage', testStorage);
   await run('deep', testDeep);
+  await run('calc', testCalc);
   await run('offline', testOfflineShell);
   await run('stale', testStaleCache);
   await run('gist', testGistSync);
@@ -585,4 +650,4 @@ try {
 } finally { await browser.close(); server.close(); }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
-console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, progresso isolado, offline com a Bancada, Gist, navegação, 8 abas × 3 tamanhos × 2 temas.`);
+console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, estação E1 (calculadoras, fórmulas, figuras nos dois temas), progresso isolado, offline com a Bancada, Gist, navegação, 8 abas × 3 tamanhos × 2 temas.`);

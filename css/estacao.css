@@ -1,0 +1,121 @@
+/* Elétrica de Ouro: a teoria das estações (aprofundamentos do estudante) com o visual do app.
+   Os aprofundamentos usam tokens próprios (--ink, --mut, --card, --pa, --pb, --pc…); aqui eles apontam para os do
+   app, nos dois temas, e tudo fica dentro de .estacao. As classes do SVG têm o prefixo s- (tools/estacao.mjs). */
+.estacao{
+  --card:var(--surface); --paper:var(--bg); --grid:var(--sunk); --mut:var(--muted);
+  --pa:var(--bad); --pb:var(--warn); --pc:var(--f);
+  --pa-bg:var(--bad-soft); --pb-bg:var(--warn-soft); --pc-bg:color-mix(in srgb,var(--f) 13%,var(--surface)); --ok-bg:var(--ok-soft);
+  --sans:var(--display); --serif:var(--read);
+}
+.estacao var{font-style:italic}
+.estacao sub,.estacao sup{font-size:.72em;line-height:0}
+.estacao h5{font-family:var(--display);font-size:calc(17px*var(--scale));font-weight:800;letter-spacing:-.005em;margin:26px 0 8px;color:var(--ink)}
+.estacao .edital-ref{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);margin:-4px 0 14px}
+.estacao .steps{margin:.3em 0 .5em;padding-left:1.3em}
+.estacao .steps li{margin-bottom:4px}
+.estacao svg.defs{position:absolute;width:0;height:0;overflow:hidden}
+
+/* Quadro de fórmula: nome, a fórmula em destaque e cada símbolo com a unidade. */
+.estacao .eq{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--lc,var(--f));border-radius:0 var(--r-sm) var(--r-sm) 0;padding:12px 16px 14px;margin:18px 0;box-shadow:var(--shadow-1)}
+.estacao .eq-name{font-family:var(--display);font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--lc,var(--f));margin:0 0 4px}
+.estacao .eq-main{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 32px;font-family:var(--read);font-size:1.28em;line-height:1.3;text-align:center;padding:6px 0 12px;color:var(--ink)}
+.estacao .eq-part{max-width:100%;padding:2px 0;text-wrap:balance}
+.estacao .eq dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.92em;line-height:1.45}
+.estacao .eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.estacao .eq dd{margin:0;color:var(--ink)}
+.estacao .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.estacao .frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+@media (max-width:560px){
+  .estacao .eq{padding:10px 12px 12px}
+  .estacao .eq-main{font-size:1.16em;gap:6px 24px}
+  .estacao .eq dl{grid-template-columns:fit-content(8.5em) minmax(0,1fr);gap:6px 10px}
+  .estacao .eq dt{white-space:normal}
+}
+
+/* Caixas: o app já estiliza .box.exemplo/.pegadinha/.banca; aqui só listas e espaço. */
+.estacao .box ol,.estacao .box ul{margin-bottom:6px}
+.estacao .box>:last-child{margin-bottom:0}
+
+/* Figuras: o desenho segue o tema (traço = texto do app, fundo = superfície). */
+.estacao figure{margin:22px 0;max-width:720px}
+.estacao figure .fig-box{overflow-x:auto;border-radius:10px}
+.estacao figure svg{display:block;width:100%;height:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:8px}
+.estacao figure.zoom svg{width:auto;min-width:640px;max-width:none}
+.estacao figcaption{font-family:var(--display);font-size:calc(14px*var(--scale));line-height:1.45;color:var(--muted);margin-top:8px}
+.estacao .fig-zoom{display:none;margin-top:6px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 12px;font-family:var(--mono);font-size:12px;cursor:pointer}
+@media (max-width:640px){.estacao .fig-zoom{display:inline-block}}
+.estacao svg text{font-family:var(--display);fill:var(--ink)}
+.estacao .s-ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.estacao .s-w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.estacao .s-ink{stroke:var(--ink)} .estacao .s-pa{stroke:var(--pa)} .estacao .s-pb{stroke:var(--pb)} .estacao .s-pc{stroke:var(--pc)} .estacao .s-mut{stroke:var(--mut)}
+.estacao .s-pa-s{stroke:var(--pa)!important} .estacao .s-pb-s{stroke:var(--pb)!important} .estacao .s-pc-s{stroke:var(--pc)!important}
+.estacao .s-ar{stroke-width:1.8;fill:none} .estacao .s-thick{stroke-width:2.8}
+.estacao .s-guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.estacao .s-dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none} .estacao .s-dash-s{stroke-dasharray:7 5} .estacao .s-dsh{stroke-dasharray:5 4}
+.estacao .s-arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.estacao .s-wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.estacao .s-comp,.estacao .s-zbox,.estacao .s-coilr{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.estacao .s-f-ink{fill:var(--ink)} .estacao .s-f-mut{fill:var(--mut)} .estacao .s-f-pa{fill:var(--pa)} .estacao .s-f-pb{fill:var(--pb)} .estacao .s-f-pc{fill:var(--pc)}
+.estacao svg .s-tl{font-size:17px;font-weight:600} .estacao svg .s-ts{font-size:14px;font-weight:500} .estacao svg .s-tm{font-size:13px;fill:var(--mut)} .estacao svg .s-tn{font-size:11px;fill:var(--mut)}
+.estacao svg .s-fa{fill:var(--pa)} .estacao svg .s-fb{fill:var(--pb)} .estacao svg .s-fc{fill:var(--pc)}
+.estacao .s-sub{font-size:.72em}
+.estacao .s-grid{stroke:var(--rule);stroke-width:1}
+.estacao .s-relay{fill:var(--pc-bg);stroke:var(--pc);stroke-width:1.8}
+.estacao .s-fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.estacao .s-cond{fill:var(--surface);stroke:var(--ink);stroke-width:2.2}
+.estacao .s-coilc{fill:none;stroke:var(--ink);stroke-width:2}
+
+/* Calculadoras (js/calc.js). */
+.estacao .lab{background:var(--surface);border:1px solid var(--rule);border-top:4px solid var(--lc,var(--f));border-radius:var(--r-sm);padding:16px;margin:22px 0;box-shadow:var(--shadow-1);font-family:var(--display);font-size:15px;line-height:1.45}
+.estacao .lab:not([data-montado])::before{content:'Calculadora interativa: carregando…';color:var(--muted);font-size:13px}
+.estacao .lab-t{font-weight:800;font-size:17px;margin:0 0 2px}
+.estacao .lab-hint{color:var(--muted);margin:0 0 12px;font-size:14px}
+.estacao .lab-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.estacao .lab-in label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+.estacao .lab-in input{padding:8px 10px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.estacao .lab-ctrl{display:grid;grid-template-columns:auto minmax(0,1fr) 56px;gap:8px 12px;align-items:center;margin-top:14px;font-size:14px;font-weight:600}
+.estacao .lab-ctrl input[type=range]{width:100%;accent-color:var(--lc,var(--f))}
+.estacao .lab-ctrl output{font-family:var(--mono);text-align:right}
+.estacao .lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.estacao .lab svg .s-tm{font-size:17px} .estacao .lab svg .s-ts{font-size:19px;font-weight:600}
+.estacao .lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:14px}
+.estacao .lab-out div{border:1px solid var(--rule);border-radius:8px;padding:8px 10px;background:var(--sunk)}
+.estacao .lab-out span{display:block;color:var(--muted);font-size:12px}
+.estacao .lab-out b{font-family:var(--mono);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.estacao .lab-txt{margin:10px 0 0;font-size:14px}
+@media (max-width:460px){.estacao .lab-ctrl{grid-template-columns:minmax(0,1fr) 56px}.estacao .lab-ctrl label{grid-column:1/-1}}
+
+/* Exercícios comentados (data-calc="exercicios"). */
+.estacao .exs{margin:26px 0 8px;padding:16px;border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow-1)}
+.estacao .exs-t{font-family:var(--display);font-weight:800;font-size:17px;margin:0}
+.estacao .exs-h{font-family:var(--display);font-size:14px;color:var(--muted);margin:2px 0 4px}
+.estacao .exs-score{font-family:var(--mono);font-size:12px;color:var(--muted);margin:0 0 6px}
+.estacao .exs-l{list-style:none;padding:0;margin:0;counter-reset:ex}
+.estacao .exq{counter-increment:ex;padding:14px 0;border-top:1px dashed var(--rule);margin:0}
+.estacao .exq-s{margin:0 0 10px;font-size:calc(16.5px*var(--scale))}
+.estacao .exq-s::before{content:counter(ex) '. ';font-family:var(--mono);font-weight:600}
+.estacao .exq-o{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:6px}
+.estacao .exq-o li{margin:0}
+.estacao .exq-o>li:not(:has(button)){padding:7px 10px;border:1px solid var(--rule);border-radius:8px;font-size:calc(15.5px*var(--scale))}
+.estacao .exq-b{display:grid;grid-template-columns:34px 1fr;gap:6px;width:100%;text-align:left;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 10px;cursor:pointer;font-family:var(--read);font-size:calc(15.5px*var(--scale));line-height:1.4}
+.estacao .exq-b:hover:not(:disabled){border-color:var(--ink)}
+.estacao .exq-b:disabled{cursor:default}
+.estacao .exq-b.right{border-color:var(--ok);background:var(--ok-soft)}
+.estacao .exq-b.wrong{border-color:var(--bad);background:var(--bad-soft);text-decoration:line-through;text-decoration-color:var(--bad)}
+.estacao .exq-l{font-family:var(--mono);font-weight:600;font-size:13px;padding-top:2px}
+.estacao .exq-g summary{cursor:pointer;font-family:var(--display);font-size:14px;font-weight:600;color:var(--muted);padding:4px 0}
+.estacao .exq-g p{margin:6px 0 0;padding:10px 12px;border-left:4px solid var(--ok);background:var(--ok-soft);border-radius:0 8px 8px 0;font-size:calc(15.5px*var(--scale))}
+.estacao .exq.feita:not(.certa) .exq-g p{border-left-color:var(--bad);background:var(--bad-soft)}
+.estacao .exs-reset{margin-top:8px}
+.estacao .fontes li{font-size:calc(15px*var(--scale))}
+.estacao .nota{font-family:var(--display);font-size:13px;color:var(--muted)}
+
+/* Aba Fórmulas e Biblioteca → Formulário: um quadro por fórmula. */
+.eq-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px;max-width:none}
+.eq-grid .eq{margin:0;display:flex;flex-direction:column}
+.eq-grid .eq-main{flex:1;font-size:1.2em}
+.estacao .eq-obs{margin:0;padding-top:8px;border-top:1px dashed var(--rule);font-family:var(--display);font-size:13.5px;color:var(--muted)}
+
+/* Afirmação ainda não confirmada em fonte confiável. */
+.confira{background:var(--warn-soft);color:inherit;border-bottom:2px dotted var(--warn);border-radius:3px;padding:0 2px}
+.confira::after{content:' (confira)';font-family:var(--mono);font-size:.75em;color:var(--warn)}
