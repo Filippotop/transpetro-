@@ -9,7 +9,7 @@ import { fmt, noise, rand } from '../util.js';
 import { W, T, C, coil, lamp, fuseH, TPt, HIT } from '../draw.js';
 
 export default {
-  id: 'cmd', n: 1, titulo: 'A bomba que não parte', area: 'Comandos elétricos',
+  id: 'cmd', modulos: ['maquinas'], n: 1, titulo: 'A bomba que não parte', area: 'Comandos elétricos',
   edital: 'Itens 1.2, 5.6, 5.7, 7.3 e 10.4', local: 'Casa de bombas · CCM-02',
   equip: 'Partida direta da bomba de transferência P-101 · comando em 220 V',
   sintoma: 'O operador relata que a bomba P-101 “não funciona normalmente”. Verifique o circuito de comando e descubra a causa.',

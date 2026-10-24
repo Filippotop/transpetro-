@@ -9,7 +9,7 @@ import { fmt, noise } from '../util.js';
 import { W, T, earth, HIT, RING } from '../draw.js';
 
 export default {
-  id: 'dr', n: 4, titulo: 'O DR que não para ligado', area: 'Instalações e proteção',
+  id: 'dr', modulos: ['instalacoes', 'normas-seguranca'], n: 4, titulo: 'O DR que não para ligado', area: 'Instalações e proteção',
   edital: 'Itens 7.3, 8.1, 8.3 e 10.1', local: 'Vestiário e oficina · QD-VO',
   equip: 'Quadro QD-VO com DR geral de 30 mA alimentando quatro circuitos terminais',
   sintoma: 'O DR geral do QD-VO desarma várias vezes ao dia. A equipe já pediu para “retirar esse DR que só dá problema”. Descubra a causa.',

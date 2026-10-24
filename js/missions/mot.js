@@ -8,7 +8,7 @@ import { fmt, noise, rand, csub, cabs, polar } from '../util.js';
 import { W, T, C, fuseV, therm, TPt, HIT, RING } from '../draw.js';
 
 export default {
-  id: 'mot', n: 3, titulo: 'O motor que desarma sozinho', area: 'Máquinas e proteção',
+  id: 'mot', modulos: ['maquinas', 'potencia-trifasicos'], n: 3, titulo: 'O motor que desarma sozinho', area: 'Máquinas e proteção',
   edital: 'Itens 4.1, 5.5, 5.6, 5.7, 7.3 e 10.4', local: 'Estação de bombeamento · CCM-05',
   equip: 'Motor de indução trifásico da bomba P-201 · 380 V · placa: 10,2 A',
   sintoma: 'O motor da P-201 parte, funciona por algum tempo e é desligado pelo relé de sobrecarga. A operação já rearmou várias vezes. Descubra a causa antes de liberar.',

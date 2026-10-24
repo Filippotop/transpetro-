@@ -10,7 +10,7 @@ import { W, T, earth, TPt, HIT, RING } from '../draw.js';
 const PTS = ['P1', 'P2', 'P3', 'PN', 'Q1', 'Q2', 'Q3', 'QN', 'QPE'];
 
 export default {
-  id: 'qd', n: 2, titulo: 'Lâmpadas queimando no prédio administrativo', area: 'Instalações e trifásicos',
+  id: 'qd', modulos: ['potencia-trifasicos', 'instalacoes'], n: 2, titulo: 'Lâmpadas queimando no prédio administrativo', area: 'Instalações e trifásicos',
   edital: 'Itens 4.1, 4.2, 7.3, 8.1 e 10.1', local: 'Prédio administrativo · QD-ADM',
   equip: 'Quadro de distribuição QD-ADM, alimentado em 220/127 V a partir do padrão de entrada',
   sintoma: 'Reclamações de mau funcionamento nos equipamentos ligados ao QD-ADM: lâmpadas queimando ou fracas e aparelhos desligando sozinhos.',
