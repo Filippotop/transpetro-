@@ -602,6 +602,8 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 
 <script src="data/base.js"></script>
 <script src="data/estacoes/E1.js"></script>
+<script src="data/estacoes/E2.js"></script>
+<script src="data/estacoes/E3.js"></script>
 <script src="js/calc.js"></script>
 <script src="merge.js"></script>
 <script>
@@ -841,8 +843,10 @@ function vMod(){
     const ta=$('#snote'); let tm; ta.addEventListener('input',()=>{ $('#snst').textContent='digitando…'; clearTimeout(tm); tm=setTimeout(()=>{ const v=ta.value.trim(); if(v) S.snotes[m.id]=v; else delete S.snotes[m.id]; markDel(['snotes',m.id],!v); IDX=null; save(); $('#snst').textContent='salvo'; },700); });
   } else if(tab==='vf'){
     const items=DATA.vf.filter(v=>v.mod===m.id);
-    body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Decida antes de tocar. As afirmações falsas usam as mesmas armadilhas das alternativas: termo oposto, unidade errada, fórmula trocada, exagero.</p><div class="vfl">${items.map(vfItem).join('')}</div><div class="row" style="margin-top:16px"><button class="btn primary" id="toQ2">Fazer as questões →</button></div>`;
-    bindVF(body); $('#toQ2').onclick=()=>{param.tab='q'; vMod();};
+    /* Sem questões (o banco chega na Task 4), o botão não leva a uma aba vazia: volta às fórmulas (ou à teoria). */
+    const nextNoQ=m.formulas&&m.formulas.length?['formulas','Revisar as fórmulas →']:['teoria','Voltar à teoria →'];
+    body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Decida antes de tocar. As afirmações falsas usam as mesmas armadilhas das alternativas: termo oposto, unidade errada, fórmula trocada, exagero.</p><div class="vfl">${items.map(vfItem).join('')}</div><div class="row" style="margin-top:16px"><button class="btn primary" id="toQ2">${m.qs.length?'Fazer as questões →':nextNoQ[1]}</button></div>`;
+    bindVF(body); $('#toQ2').onclick=()=>{param.tab=m.qs.length?'q':nextNoQ[0]; vMod(); window.scrollTo({top:0});};
   } else if(tab==='q'){
     body.innerHTML='';
     body.innerHTML=`<p class="muted" style="font-family:var(--read);margin-top:0">Questões inéditas no formato da prova da Cesgranrio, escritas para o app. Questões de provas reais ficam na aba Provas.</p>${m.qs.length?'':'<p class="empty">As questões desta estação chegam em breve. Por enquanto, faça os exercícios comentados no fim de cada seção da Teoria e o V ou F.</p>'}`;

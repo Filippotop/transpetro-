@@ -216,7 +216,7 @@ async function testTabs(browser) {
         .filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => `${x.id} em ${x.nodes.slice(0, 2).map(n => n.target.join(' ')).join(', ')}`));
       for (const x of v) check(false, `${where}: acessibilidade: ${x}`);
     }
-    if (vpName === '375') for (const id of ['E1']) for (const tab of ['teoria', 'formulas', 'resumo', 'vf', 'q', 'notas']) {
+    if (vpName === '375') for (const id of loadData().modules.filter(m => !m.emBreve && m.formulas && m.formulas.length).map(m => m.id)) for (const tab of ['teoria', 'formulas', 'resumo', 'vf', 'q', 'notas']) {
       await page.evaluate(([id, tab]) => go('mod', { id, tab }), [id, tab]); await page.waitForTimeout(150);
       await page.addScriptTag({ content: AXE });
       const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations.filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => x.id));
@@ -565,61 +565,119 @@ async function testOfflineConsent(browser) {
   await ctx.close();
 }
 
-/* Estação E1 (Review Focus 2 e 3): as calculadoras montam dentro da teoria posta por innerHTML e continuam vivas
-   depois de trocar de aba e voltar; a aba Fórmulas e a Biblioteca mostram o formulário; figuras e quadros de fórmula
-   legíveis nos dois temas (traço com contraste ≥ 3:1 e texto ≥ 4,5:1 sobre o fundo da figura). */
+/* Estações (Review Focus 2 e 3 da Task 2, para todas): os widgets montam dentro da teoria posta por innerHTML e
+   continuam vivos depois de trocar de aba e voltar; a aba Fórmulas e a Biblioteca mostram o formulário; figuras e
+   quadros de fórmula legíveis nos dois temas (traço com contraste ≥ 3:1 e texto ≥ 4,5:1 sobre o fundo da figura);
+   sem questões, o botão do V ou F não leva a uma aba vazia. Cada calculadora conhecida é conferida com um valor. */
+const CALC_CHECKS = {
+  'kirchhoff-2-malhas': async (k, check, tag) => {
+    const va = async () => (await k.locator('.lab-out div').first().textContent()).replace(/\s+/g, ' ');
+    check(/7,00 V/.test(await va()), `calculadora da figura 7 não mostra V_A = 7,00 V${tag} ("${await va()}")`);
+    await k.locator('input').first().fill('30'); await k.page().waitForTimeout(80);
+    check(/9,50 V/.test(await va()), `calculadora da figura 7 não recalcula com E₁ = 30 V${tag} ("${await va()}")`);
+  },
+  'thevenin-carga': async (t, check, tag) => {
+    await t.locator('input[type=range]').fill('5'); await t.page().waitForTimeout(80);
+    const tout = (await t.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/Potência na carga\s*20,00 W/.test(tout) && /Rendimento\s*50,0%/.test(tout) && await t.locator('svg path').count() >= 2, `laboratório de Thévenin com R_L = 5 Ω não dá 20 W e 50%${tag} ("${tout.slice(0, 120)}")`);
+  },
+  'potencia-ca': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/Ativa P\s*1\.757 W/.test(await o()) && /0,80 indutivo/.test(await o()) && await w.locator('svg path').count() >= 2, `laboratório de potência não dá P = 1.757 W e FP 0,80 indutivo com 220 V, 10 A e 37°${tag} ("${(await o()).slice(0, 120)}")`);
+    await w.locator('input[type=range]').nth(2).fill('-30'); await w.page().waitForTimeout(80);
+    check(/Reativa Q\s*−1\.100 var/.test(await o()) && /0,87 capacitivo/.test(await o()), `laboratório de potência com φ = −30° não dá Q = −1.100 var capacitivo${tag} ("${(await o()).slice(0, 140)}")`);
+  },
+  'trifasica-equilibrada': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    check(/I\s*L\s*13,16 A/.test(await o()) && /P total\s*5\.198 W/.test(await o()), `calculadora trifásica (380 V, 30 + j40 Ω, Δ) não dá I_L = 13,16 A e P = 5.198 W${tag} ("${(await o()).slice(0, 160)}")`);
+    await w.locator('select').selectOption('Y'); await w.page().waitForTimeout(80);
+    check(/I\s*L\s*4,39 A/.test(await o()) && /P total\s*1\.733 W/.test(await o()), `calculadora trifásica em Y não dá I_L = 4,39 A e P = 1.733 W${tag} ("${(await o()).slice(0, 160)}")`);
+  },
+  'dois-wattimetros': async (w, check, tag) => {
+    const o = async () => (await w.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
+    const t = async () => w.locator('.lab-txt').textContent();
+    check(/W1\s*3\.772 W/.test(await o()) && /W2\s*1\.485 W/.test(await o()) && await w.locator('svg path').count() >= 3, `dois wattímetros (380 V, 10 A, 37°) não dá W1 = 3.772 W e W2 = 1.485 W${tag} ("${(await o()).slice(0, 120)}")`);
+    await w.locator('input[type=range]').fill('60'); await w.page().waitForTimeout(80);
+    check(/W2\s*0 W/.test(await o()) && /FP = 0,5/.test(await t()), `dois wattímetros com φ = 60° não zera W2${tag} ("${(await o()).slice(0, 120)}")`);
+    await w.locator('input[type=range]').fill('75'); await w.page().waitForTimeout(80);
+    check(/W2\s*−/.test(await o()) && /negativo/.test(await t()), `dois wattímetros com φ = 75° não mostra W2 negativo${tag} ("${(await o()).slice(0, 120)}")`);
+  },
+};
 async function testCalc(browser) {
-  const E1 = loadData().modules.find(m => m.id === 'E1');
+  const D = loadData();
+  const ST = D.modules.filter(m => !m.emBreve && Array.isArray(m.formulas) && m.formulas.length);
+  check(ST.length >= 3, `estações: só ${ST.length} estações com conteúdo`);
+  const totalF = ST.reduce((n, m) => n + m.formulas.length, 0);
   for (const colorScheme of ['light', 'dark']) {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme, serviceWorkers: 'block' });
     const page = await ctx.newPage(); const errs = [];
     page.on('pageerror', e => errs.push(e.message));
     await page.goto(URL_); await page.waitForTimeout(300);
-    const where = `estação E1/${colorScheme}`;
-    for (const volta of [false, true]) {
-      if (volta) { await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150); await page.click('.subtabs button[data-t="teoria"]'); }
-      else await page.evaluate(() => go('mod', { id: 'E1', tab: 'teoria' }));
-      await page.waitForTimeout(250);
-      const tag = volta ? ' (depois de voltar da aba Fórmulas)' : '';
-      const st = await page.evaluate(() => ({ n: document.querySelectorAll('#prose [data-calc]').length, ok: document.querySelectorAll('#prose [data-calc][data-montado]').length, err: [...document.querySelectorAll('[data-erro]')].map(e => e.dataset.erro) }));
-      check(st.n >= 7 && st.ok === st.n, `${where}: ${st.ok} de ${st.n} widgets montados${tag} ${st.err.join(' ')}`);
-      const k = page.locator('[data-calc="kirchhoff-2-malhas"]');
-      const va = async () => (await k.locator('.lab-out div').first().textContent()).replace(/\s+/g, ' ');
-      check(/7,00 V/.test(await va()), `${where}: calculadora da figura 7 não mostra V_A = 7,00 V${tag} ("${await va()}")`);
-      await k.locator('input').first().fill('30'); await page.waitForTimeout(80);
-      check(/9,50 V/.test(await va()), `${where}: calculadora da figura 7 não recalcula com E₁ = 30 V${tag} ("${await va()}")`);
-      const t = page.locator('[data-calc="thevenin-carga"]');
-      await t.locator('input[type=range]').fill('5'); await page.waitForTimeout(80);
-      const tout = (await t.locator('.lab-out').textContent()).replace(/\s+/g, ' ');
-      check(/Potência na carga\s*20,00 W/.test(tout) && /Rendimento\s*50,0%/.test(tout) && await t.locator('svg path').count() >= 2, `${where}: laboratório de Thévenin com R_L = 5 Ω não dá 20 W e 50%${tag} ("${tout.slice(0, 120)}")`);
-      const ex = page.locator('.exs').first();
-      await ex.locator('.exq-b').nth(0).click(); await page.waitForTimeout(60);
-      check(await ex.locator('.exq-b.right').count() === 1 && await ex.locator('details[open]').count() === 1, `${where}: exercício comentado não marca o gabarito ao responder${tag}`);
-    }
-    /* Figuras e quadros no tema: contraste de traços e textos sobre o fundo da figura. */
-    const bad = await page.evaluate(() => {
-      const lum = c => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r, g, b] = m.slice(0, 3).map(x => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-      const ratio = (a, b) => { const x = lum(a), y = lum(b); return x == null || y == null ? 99 : (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
-      const out = [];
-      document.querySelectorAll('#prose figure svg, #prose .lab svg').forEach((svg, i) => {
-        const bg = getComputedStyle(svg).backgroundColor === 'rgba(0, 0, 0, 0)' ? getComputedStyle(svg.closest('.lab') || document.body).backgroundColor : getComputedStyle(svg).backgroundColor;
-        svg.querySelectorAll('line,path,circle,rect,polyline,polygon').forEach(e => { const cs = getComputedStyle(e); if (e.closest('marker') || e.classList.contains('s-grid')) return;
-          if (cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0 && ratio(cs.stroke, bg) < 3) out.push(`figura ${i + 1}: traço ${e.getAttribute('class')} ${cs.stroke} (${ratio(cs.stroke, bg).toFixed(2)}:1)`);
-          if (cs.fill !== 'none' && cs.stroke === 'none' && ratio(cs.fill, bg) < 3) out.push(`figura ${i + 1}: preenchimento ${e.getAttribute('class')} ${cs.fill}`); });
-        svg.querySelectorAll('text').forEach(e => { const r = ratio(getComputedStyle(e).fill, bg); if (r < 4.5) out.push(`figura ${i + 1}: texto "${e.textContent.slice(0, 20)}" (${r.toFixed(2)}:1)`); });
+    for (const M of ST) {
+      const where = `estação ${M.id}/${colorScheme}`;
+      const ck = (ok, msg) => check(ok, `${where}: ${msg}`);
+      const nCalc = (M.html.match(/data-calc="/g) || []).length;
+      for (const volta of [false, true]) {
+        if (volta) { await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150); await page.click('.subtabs button[data-t="teoria"]'); }
+        else await page.evaluate(id => go('mod', { id, tab: 'teoria' }), M.id);
+        await page.waitForTimeout(250);
+        const tag = volta ? ' (depois de voltar da aba Fórmulas)' : '';
+        const st = await page.evaluate(() => ({ n: document.querySelectorAll('#prose [data-calc]').length, ok: document.querySelectorAll('#prose [data-calc][data-montado]').length, err: [...document.querySelectorAll('[data-erro]')].map(e => e.dataset.erro) }));
+        ck(st.n === nCalc && st.ok === st.n, `${st.ok} de ${st.n} widgets montados (esperado ${nCalc})${tag} ${st.err.join(' ')}`);
+        for (const [name, fn] of Object.entries(CALC_CHECKS)) {
+          const w = page.locator(`#prose [data-calc="${name}"]`);
+          if (await w.count()) await fn(w.first(), ck, tag);
+        }
+        const ex = page.locator('.exs').first();
+        await ex.locator('.exq-b').nth(0).click(); await page.waitForTimeout(60);
+        ck(await ex.locator('.exq-b.right').count() === 1 && await ex.locator('details[open]').count() === 1, `exercício comentado não marca o gabarito ao responder${tag}`);
+      }
+      /* Figuras e quadros no tema: contraste de traços e textos sobre o fundo da figura. */
+      const bad = await page.evaluate(() => {
+        const lum = c => { const m = c.match(/[\d.]+/g); if (!m) return null; const [r, g, b] = m.slice(0, 3).map(x => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+        const ratio = (a, b) => { const x = lum(a), y = lum(b); return x == null || y == null ? 99 : (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+        const out = [];
+        document.querySelectorAll('#prose figure svg, #prose .lab svg').forEach((svg, i) => {
+          const bg = getComputedStyle(svg).backgroundColor === 'rgba(0, 0, 0, 0)' ? getComputedStyle(svg.closest('.lab') || document.body).backgroundColor : getComputedStyle(svg).backgroundColor;
+          svg.querySelectorAll('line,path,circle,rect,polyline,polygon').forEach(e => { const cs = getComputedStyle(e); if (e.closest('marker') || e.classList.contains('s-grid')) return;
+            if (cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0 && ratio(cs.stroke, bg) < 3) out.push(`figura ${i + 1}: traço ${e.getAttribute('class')} ${cs.stroke} (${ratio(cs.stroke, bg).toFixed(2)}:1)`);
+            if (cs.fill !== 'none' && cs.stroke === 'none' && ratio(cs.fill, bg) < 3) out.push(`figura ${i + 1}: preenchimento ${e.getAttribute('class')} ${cs.fill}`); });
+          svg.querySelectorAll('text').forEach(e => { const r = ratio(getComputedStyle(e).fill, bg); if (r < 4.5) out.push(`figura ${i + 1}: texto "${e.textContent.slice(0, 20)}" (${r.toFixed(2)}:1)`); });
+        });
+        document.querySelectorAll('#prose .eq').forEach((q, i) => { const bg = getComputedStyle(q).backgroundColor; for (const e of q.querySelectorAll('.eq-main, dd, .eq-name')) { const r = ratio(getComputedStyle(e).color, bg); if (r < 4.5) out.push(`quadro ${i + 1}: ${e.className || e.tagName} (${r.toFixed(2)}:1)`); } });
+        return out;
       });
-      document.querySelectorAll('#prose .eq').forEach((q, i) => { const bg = getComputedStyle(q).backgroundColor; for (const e of q.querySelectorAll('.eq-main, dd, .eq-name')) { const r = ratio(getComputedStyle(e).color, bg); if (r < 4.5) out.push(`quadro ${i + 1}: ${e.className || e.tagName} (${r.toFixed(2)}:1)`); } });
-      return out;
-    });
-    for (const b of [...new Set(bad)].slice(0, 8)) check(false, `${where}: ${b}`);
-    check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}: rolagem horizontal na teoria`);
-    /* Aba Fórmulas e Biblioteca → Formulário. */
-    await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150);
-    const nf = await page.evaluate(() => document.querySelectorAll('#modbody .eq').length);
-    check(nf === E1.formulas.length, `${where}: a aba Fórmulas mostra ${nf} de ${E1.formulas.length} fórmulas`);
+      for (const b of [...new Set(bad)].slice(0, 8)) ck(false, b);
+      ck(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'rolagem horizontal na teoria');
+      /* Rótulos de figura que se encavalam (a fonte do app é mais larga que a da apostila). */
+      const over = await page.evaluate(() => {
+        const out = [];
+        document.querySelectorAll('#prose figure svg, #prose .lab svg').forEach((svg, i) => {
+          const r = [...svg.querySelectorAll('text')].map(t => ({ t: t.textContent, b: t.getBoundingClientRect() })).filter(x => x.b.width > 0);
+          for (let a = 0; a < r.length; a++) for (let b = a + 1; b < r.length; b++) {
+            const A = r[a].b, B = r[b].b, ox = Math.min(A.right, B.right) - Math.max(A.left, B.left), oy = Math.min(A.bottom, B.bottom) - Math.max(A.top, B.top);
+            if (ox > 2 && oy > 2) out.push(`figura ${i + 1}: "${r[a].t.slice(0, 18)}" sobre "${r[b].t.slice(0, 18)}"`);
+          }
+        });
+        return out;
+      });
+      for (const b of over.slice(0, 6)) ck(false, `rótulos encavalados: ${b}`);
+      /* Aba Fórmulas. */
+      await page.click('.subtabs button[data-t="formulas"]'); await page.waitForTimeout(150);
+      const nf = await page.evaluate(() => document.querySelectorAll('#modbody .eq').length);
+      ck(nf === M.formulas.length, `a aba Fórmulas mostra ${nf} de ${M.formulas.length} fórmulas`);
+      /* V ou F: sem questões, o botão não leva à aba Questões vazia. */
+      if (!M.qs.length) {
+        await page.click('.subtabs button[data-t="vf"]'); await page.waitForTimeout(150);
+        ck(!/Fazer as questões/.test(await page.locator('#toQ2').textContent()), 'V ou F sem questões oferece "Fazer as questões"');
+        await page.click('#toQ2'); await page.waitForTimeout(150);
+        ck(await page.evaluate(() => document.querySelector('.subtabs button[aria-current="true"]').dataset.t) === 'formulas', 'o botão do V ou F (sem questões) não leva às fórmulas');
+      }
+    }
     await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(150);
-    check(await page.evaluate(() => document.querySelectorAll('#host .estacao .eq').length) === E1.formulas.length, `${where}: Biblioteca → Formulário sem as fórmulas da E1`);
-    for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
+    const nb = await page.evaluate(() => document.querySelectorAll('#host .estacao .eq').length);
+    check(nb === totalF, `estações/${colorScheme}: Biblioteca → Formulário mostra ${nb} de ${totalF} fórmulas das estações`);
+    for (const e of errs) check(false, `estações/${colorScheme}: erro de JS: ${e}`);
     await ctx.close();
   }
 }
@@ -650,4 +708,4 @@ try {
 } finally { await browser.close(); server.close(); }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
-console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, estação E1 (calculadoras, fórmulas, figuras nos dois temas), progresso isolado, offline com a Bancada, Gist, navegação, 8 abas × 3 tamanhos × 2 temas.`);
+console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, estações (calculadoras, fórmulas, figuras e rótulos nos dois temas), progresso isolado, offline com a Bancada, Gist, navegação, 8 abas × 3 tamanhos × 2 temas.`);

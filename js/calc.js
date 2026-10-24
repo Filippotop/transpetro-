@@ -76,6 +76,124 @@
     lt();
   };
 
+  /* Faixa (range) com rótulo e valor ao lado, no padrão .lab-ctrl. */
+  function faixa(id, rotulo, min, max, step, valor) {
+    return '<label for="' + id + '">' + rotulo + '</label><input id="' + id + '" type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + valor + '"><output for="' + id + '"></output>';
+  }
+  function sinal(x, d) { return (x < 0 ? '−' : '') + fmt(Math.abs(x), d); }
+
+  /* E3, seção 1: tensão, corrente e o triângulo de potências de uma carga monofásica (φ > 0: indutiva). */
+  W['potencia-ca'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'pca' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-ctrl">' + faixa(p + 'V', 'Tensão eficaz (V)', 50, 400, 1, val('lv', 220)) + faixa(p + 'I', 'Corrente eficaz (A)', 1, 30, 0.5, val('li', 10)) + faixa(p + 'F', 'Ângulo φ (°)', -90, 90, 1, val('lf', 37)) + '</div>' +
+      '<div class="lab-figs"><svg class="lab-ondas" viewBox="0 0 400 200" role="img" aria-label="Tensão e corrente no tempo"></svg><svg class="lab-tri" viewBox="0 0 300 175" role="img" aria-label="Triângulo de potências"></svg></div>' +
+      '<div class="lab-out" aria-live="polite"></div>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), ondas = el.querySelector('.lab-ondas'), tri = el.querySelector('.lab-tri');
+    function calc() {
+      var V = +q('V').value, I = +q('I').value, f = +q('F').value, r = f * Math.PI / 180;
+      q('V').nextElementSibling.textContent = fmt(V, 0); q('I').nextElementSibling.textContent = fmt(I, 1); q('F').nextElementSibling.textContent = sinal(f, 0) + '°';
+      var S = V * I, P = S * Math.cos(r), Q = S * Math.sin(r);
+      /* Ondas: dois ciclos; a corrente desloca φ para a direita (atrasada) quando φ > 0. */
+      var x0 = 16, x1 = 390, yc = 92, n = 160, pv = '', pi = '';
+      for (var k = 0; k <= n; k++) { var x = x0 + (x1 - x0) * k / n, a = 4 * Math.PI * k / n;
+        pv += (k ? 'L' : 'M') + x.toFixed(1) + ',' + (yc - 72 * Math.sin(a)).toFixed(1); pi += (k ? 'L' : 'M') + x.toFixed(1) + ',' + (yc - 48 * Math.sin(a - r)).toFixed(1); }
+      ondas.innerHTML = '<line x1="' + x0 + '" y1="' + yc + '" x2="' + x1 + '" y2="' + yc + '" class="s-ax"/><path d="' + pv + '" class="s-w s-ink"/><path d="' + pi + '" class="s-w s-pc"/>' +
+        '<line x1="' + x0 + '" y1="186" x2="' + (x0 + 22) + '" y2="186" class="s-w s-ink"/><text x="' + (x0 + 28) + '" y="192" class="s-ts">v(t)</text>' +
+        '<line x1="' + (x0 + 100) + '" y1="186" x2="' + (x0 + 122) + '" y2="186" class="s-w s-pc"/><text x="' + (x0 + 128) + '" y="192" class="s-ts s-fc">i(t)</text>' +
+        '<text x="' + x1 + '" y="192" class="s-tm" text-anchor="end">' + (f > 0 ? 'i atrasada' : f < 0 ? 'i adiantada' : 'em fase') + '</text>';
+      /* Triângulo: hipotenusa sempre do mesmo tamanho (escala por S); Q para cima se indutiva, para baixo se capacitiva. */
+      var ox = 34, oy = f >= 0 ? 150 : 30, sc = 122 / Math.max(S, 1e-9), px = P * sc, qy = Q * sc, s = '';
+      s += '<line x1="' + ox + '" y1="' + oy + '" x2="' + (ox + 170) + '" y2="' + oy + '" class="s-guide"/>';
+      s += '<line x1="' + ox + '" y1="' + oy + '" x2="' + (ox + px) + '" y2="' + oy + '" class="s-wire s-thick"/>';
+      s += '<line x1="' + (ox + px) + '" y1="' + oy + '" x2="' + (ox + px) + '" y2="' + (oy - qy) + '" class="s-wire s-thick s-pa-s"/>';
+      s += '<line x1="' + ox + '" y1="' + oy + '" x2="' + (ox + px) + '" y2="' + (oy - qy) + '" class="s-wire s-thick s-pc-s"/>';
+      if (Math.abs(f) >= 4) { var ra = 34, ex = ox + ra * Math.cos(r), ey = oy - ra * Math.sin(r);
+        s += '<path d="M ' + (ox + ra) + ' ' + oy + ' A ' + ra + ' ' + ra + ' 0 0 ' + (f > 0 ? 0 : 1) + ' ' + ex.toFixed(1) + ' ' + ey.toFixed(1) + '" class="s-arc"/>'; }
+      var pyl = f >= 0 ? oy + 22 : oy - 10;
+      s += '<text x="' + (ox + Math.max(px, 30) / 2) + '" y="' + pyl + '" class="s-ts" text-anchor="middle">P</text>';
+      if (Math.abs(qy) > 14) s += '<text x="' + (ox + px + 8) + '" y="' + (oy - qy / 2 + 6) + '" class="s-ts s-fa">Q' + (Q < 0 ? ' (cap.)' : '') + '</text>';
+      var k = f >= 0 ? -1 : 1, nx = k * Math.sin(r), ny = k * Math.cos(r); /* normal à hipotenusa, para fora do triângulo */
+      s += '<text x="' + (ox + px / 2 + 18 * nx).toFixed(1) + '" y="' + (oy - qy / 2 + 18 * ny + 5).toFixed(1) + '" class="s-ts s-fc" text-anchor="middle">S</text>';
+      if (Math.abs(f) >= 12) s += '<text x="' + (ox + 46 * Math.cos(r / 2)).toFixed(1) + '" y="' + (oy - 46 * Math.sin(r / 2) + 5).toFixed(1) + '" class="s-tm">φ</text>';
+      tri.innerHTML = s;
+      out.innerHTML = cell('Ativa P', fmt(P, 0) + ' W') + cell('Reativa Q', sinal(Q, 0) + ' var') + cell('Aparente S', fmt(S, 0) + ' VA') +
+        cell('Fator de potência', fmt(Math.cos(r), 2) + (f > 0 ? ' indutivo' : f < 0 ? ' capacitivo' : ' (resistivo)'));
+    }
+    ['V', 'I', 'F'].forEach(function (k) { q(k).addEventListener('input', calc); });
+    calc();
+  };
+
+  /* E3, seção 2: carga trifásica equilibrada em Y ou Δ, a partir de V_L e de Z = R + jX por fase. */
+  W['trifasica-equilibrada'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'tri' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    var lig = val('cL', 'D') === 'Y' ? 'Y' : 'D';
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'VL', 'Tensão de linha V<sub>L</sub> (V)', val('cVL', 380), ' min="0"') + campo(p + 'R', 'R por fase (Ω)', val('cR', 30)) + campo(p + 'X', 'X por fase (Ω)', val('cX', 40)) +
+      '<label for="' + p + 'L"><span>Ligação</span><select id="' + p + 'L"><option value="D"' + (lig === 'D' ? ' selected' : '') + '>Triângulo (Δ)</option><option value="Y"' + (lig === 'Y' ? ' selected' : '') + '>Estrela (Y)</option></select></label></div>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt');
+    function calc() {
+      var VL = +q('VL').value, R = +q('R').value, X = +q('X').value, Y = q('L').value === 'Y', Z = Math.hypot(R, X);
+      if (!(VL > 0) || !(Z > 0) || !(R >= 0) || isNaN(X)) { out.innerHTML = cell('Aviso', 'Informe V<sub>L</sub> &gt; 0, R ≥ 0 e impedância diferente de zero.'); txt.textContent = ''; return; }
+      var VF = Y ? VL / Math.sqrt(3) : VL, IF = VF / Z, IL = Y ? IF : Math.sqrt(3) * IF;
+      var P = 3 * IF * IF * R, Q = 3 * IF * IF * X, S = 3 * VF * IF, fp = R / Z;
+      out.innerHTML = cell('|Z| por fase', fmt(Z) + ' Ω') + cell('V<sub>F</sub>', fmt(VF, 1) + ' V') + cell('I<sub>F</sub>', fmt(IF) + ' A') + cell('I<sub>L</sub>', fmt(IL) + ' A') +
+        cell('P total', fmt(P, 0) + ' W') + cell('Q total', sinal(Q, 0) + ' var') + cell('S total', fmt(S, 0) + ' VA') + cell('FP', fmt(fp, 3) + (X > 0 ? ' ind.' : X < 0 ? ' cap.' : ''));
+      txt.innerHTML = Y ? 'Estrela: cada Z recebe V<sub>L</sub>/√3 = ' + fmt(VF, 1) + ' V, e a corrente de linha é a própria corrente de fase.'
+        : 'Triângulo: cada Z recebe a tensão de linha inteira, e I<sub>L</sub> = √3·I<sub>F</sub> = ' + fmt(IL) + ' A.';
+    }
+    ['VL', 'R', 'X', 'L'].forEach(function (k) { q(k).addEventListener('input', calc); q(k).addEventListener('change', calc); });
+    calc();
+  };
+
+  /* E3, seção 3: método dos dois wattímetros numa carga equilibrada. W1 = V_L·I_L·cos(φ − 30°), W2 = V_L·I_L·cos(φ + 30°). */
+  W['dois-wattimetros'] = function (el, cfg) {
+    var v = cfg.valores || {}, p = 'w' + (++seq) + '-';
+    var val = function (k, d) { return v[k] != null ? v[k] : d; };
+    el.innerHTML = cabeca(cfg) +
+      '<div class="lab-in">' + campo(p + 'VL', 'V<sub>L</sub> (V)', val('wVL', 380), ' min="0"') + campo(p + 'IL', 'I<sub>L</sub> (A)', val('wIL', 10), ' min="0"') + '</div>' +
+      '<div class="lab-ctrl">' + faixa(p + 'F', 'Ângulo φ da carga (°)', -90, 90, 1, val('wF', 37)) + '</div>' +
+      '<svg viewBox="0 0 640 300" role="img" aria-label="Leituras dos dois wattímetros em função do ângulo da carga"></svg>' +
+      '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
+    var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt'), svg = el.querySelector('svg');
+    var D = Math.PI / 180;
+    function calc() {
+      var VL = +q('VL').value, IL = +q('IL').value, f = +q('F').value;
+      q('F').nextElementSibling.textContent = sinal(f, 0) + '°';
+      if (!(VL > 0) || !(IL > 0)) { out.innerHTML = cell('Aviso', 'Informe V<sub>L</sub> e I<sub>L</sub> maiores que zero.'); txt.textContent = ''; svg.innerHTML = ''; return; }
+      var K = VL * IL, W1 = K * Math.cos((f - 30) * D), W2 = K * Math.cos((f + 30) * D), P = W1 + W2, Q = Math.sqrt(3) * (W1 - W2);
+      /* Gráfico em por unidade de V_L·I_L: x = φ de −90° a 90°, y de −0,6 a 1,8. */
+      var X0 = 70, X1 = 570, px = function (a) { return X0 + (X1 - X0) * (a + 90) / 180; }, py = function (u) { return 210 - 100 * u; };
+      var c1 = '', c2 = '', cp = '';
+      for (var a = -90; a <= 90; a += 2) { var L = a > -90 ? 'L' : 'M';
+        c1 += L + px(a).toFixed(1) + ',' + py(Math.cos((a - 30) * D)).toFixed(1); c2 += L + px(a).toFixed(1) + ',' + py(Math.cos((a + 30) * D)).toFixed(1); cp += L + px(a).toFixed(1) + ',' + py(Math.sqrt(3) * Math.cos(a * D)).toFixed(1); }
+      var s = '<line x1="' + X0 + '" y1="' + py(0) + '" x2="' + X1 + '" y2="' + py(0) + '" class="s-ax"/><line x1="' + px(0) + '" y1="' + py(1.8) + '" x2="' + px(0) + '" y2="' + py(-0.6) + '" class="s-ax"/>';
+      [-60, 60].forEach(function (a) { s += '<line x1="' + px(a) + '" y1="' + py(1.8) + '" x2="' + px(a) + '" y2="' + py(-0.6) + '" class="s-guide"/>'; });
+      [-90, -60, 0, 60, 90].forEach(function (a) { s += '<text x="' + px(a) + '" y="' + (py(-0.6) + 22) + '" class="s-tm" text-anchor="middle">' + sinal(a, 0) + '°</text>'; });
+      s += '<text x="' + (X0 - 8) + '" y="' + (py(0) + 6) + '" class="s-tm" text-anchor="end">0</text><text x="' + (X0 - 8) + '" y="' + (py(1) + 6) + '" class="s-tm" text-anchor="end">1</text>';
+      s += '<text x="' + px(-60) + '" y="' + (py(1.8) - 6) + '" class="s-tm" text-anchor="middle">FP 0,5</text><text x="' + px(60) + '" y="' + (py(1.8) - 6) + '" class="s-tm" text-anchor="middle">FP 0,5</text>';
+      s += '<text x="' + (X0 + 4) + '" y="' + (py(-0.6) + 46) + '" class="s-tm">← capacitiva</text><text x="' + (X1 - 4) + '" y="' + (py(-0.6) + 46) + '" class="s-tm" text-anchor="end">indutiva →</text>';
+      s += '<path d="' + cp + '" class="s-dash s-ink"/><path d="' + c1 + '" class="s-w s-pc"/><path d="' + c2 + '" class="s-w s-pa"/>';
+      s += '<text x="' + (px(-45) - 14) + '" y="' + (py(Math.sqrt(3) * Math.cos(45 * D)) - 12) + '" class="s-ts" text-anchor="end">P</text>';
+      s += '<text x="' + px(30) + '" y="' + (py(1) - 12) + '" class="s-ts s-fc" text-anchor="middle">W1</text><text x="' + px(-30) + '" y="' + (py(1) - 12) + '" class="s-ts s-fa" text-anchor="middle">W2</text>';
+      s += '<line x1="' + px(f) + '" y1="' + py(1.8) + '" x2="' + px(f) + '" y2="' + py(-0.6) + '" class="s-mut" style="stroke-width:1.5"/>';
+      s += '<circle cx="' + px(f) + '" cy="' + py(W1 / K) + '" r="6" class="s-f-pc"/><circle cx="' + px(f) + '" cy="' + py(W2 / K) + '" r="6" class="s-f-pa"/>';
+      svg.innerHTML = s;
+      out.innerHTML = cell('W1', sinal(W1, 0) + ' W') + cell('W2', sinal(W2, 0) + ' W') + cell('P = W1 + W2', sinal(P, 0) + ' W') + cell('Q = √3·(W1 − W2)', sinal(Q, 0) + ' var') +
+        cell('FP', fmt(Math.cos(f * D), 2) + (f > 0 ? ' indutivo' : f < 0 ? ' capacitivo' : ''));
+      var neg = W1 < -0.5 ? 'W1' : W2 < -0.5 ? 'W2' : '';
+      txt.textContent = Math.abs(Math.abs(f) - 60) < 0.5 ? 'FP = 0,5: um dos wattímetros marca zero, e o outro mede a potência total.'
+        : neg ? neg + ' ficou negativo: o FP está abaixo de 0,5. Na prática, inverte-se a bobina de tensão (ou a de corrente) desse wattímetro para ler, e a leitura entra com sinal negativo na soma.'
+        : f === 0 ? 'FP = 1: as duas leituras são iguais, cada uma com metade da potência total.'
+        : 'Leituras positivas e diferentes: FP entre 0,5 e 1. A maior é a do wattímetro com cos(φ − 30°) se a carga é indutiva.';
+    }
+    ['VL', 'IL', 'F'].forEach(function (k) { q(k).addEventListener('input', calc); });
+    calc();
+  };
+
   /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar. */
   W['exercicios'] = function (el) {
     var qs = el.querySelectorAll('.exq'), n = qs.length;

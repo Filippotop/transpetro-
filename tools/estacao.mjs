@@ -19,8 +19,9 @@ if (!fonte || !id) { console.error('uso: node tools/estacao.mjs <fonte.html> <id
 const metaFile = path.join(ROOT, 'tools', 'estacoes', id + '.mjs');
 const M = (await import(pathToFileURL(metaFile))).default;
 
-/* Calculadoras conhecidas: id do .lab na apostila → widget de js/calc.js. */
-const LABS = { labk: 'kirchhoff-2-malhas', labt: 'thevenin-carga' };
+/* Calculadoras conhecidas: id do .lab na apostila → widget de js/calc.js. Cada estação pode acrescentar as suas
+   (campo labs do arquivo de metadados), porque apostilas diferentes repetem ids como lab1. */
+const LABS = { labk: 'kirchhoff-2-malhas', labt: 'thevenin-carga', ...(M.labs || {}) };
 
 let src = fs.readFileSync(path.resolve(ROOT, fonte), 'utf8');
 /* Trocas (correções e contexto): cada uma precisa existir exatamente uma vez na fonte. */
@@ -33,11 +34,15 @@ for (const t of M.trocas || []) {
 /* Exercícios: o objeto QUIZ do <script> da apostila. */
 const qm = src.match(/const QUIZ\s*=\s*(\{[\s\S]*?\});\s*\n\s*const L\b/);
 const QUIZ = qm ? vm.runInNewContext('(' + qm[1] + ')') : {};
+/* Exercícios de seções novas, escritas para a estação (campo quiz dos metadados). */
+Object.assign(QUIZ, M.quiz || {});
 const LET = 'ABCDE';
 
 /* Seções <section id="…" class="block">. */
 const secs = {};
 for (const m of src.matchAll(/<section id="([^"]+)" class="block">([\s\S]*?)<\/section>/g)) secs[m[1]] = m[2];
+/* Seções novas, escritas para a estação no mesmo formato da apostila (campo secoes dos metadados: {b7: '…'}). */
+for (const [k, v] of Object.entries(M.secoes || {})) { if (secs[k]) throw new Error('seção nova com id já usado: ' + k); secs[k] = v; }
 const range = si >= 0 ? args[si + 1].split('-').map(Number) : [1, Object.keys(secs).filter(k => /^b\d+$/.test(k)).length];
 const blocos = []; for (let i = range[0]; i <= (range[1] || range[0]); i++) blocos.push('b' + i);
 
@@ -61,10 +66,11 @@ function exercicios(set, n) {
     `\n</ol>\n</div>`;
 }
 
-function converte(key, body, titulo) {
+/* num: o número da seção dentro da estação (1, 2, 3…), que pode ser outro que o da apostila (a E3 começa no bloco 5). */
+function converte(key, body, titulo, num) {
   let h = body.replace(/<!--[\s\S]*?-->/g, '');
   /* Cabeçalho do bloco. */
-  h = h.replace(/<div class="block-head">(?:<span class="block-num">(\d+)<\/span>)?<h2>([\s\S]*?)<\/h2><\/div>/, (_, n, t) => `<h4>${n ? n + '. ' : ''}${titulo || t}</h4>`);
+  h = h.replace(/<div class="block-head">(?:<span class="block-num">(\d+)<\/span>)?<h2>([\s\S]*?)<\/h2><\/div>/, (_, n, t) => `<h4>${n ? (num || n) + '. ' : ''}${titulo || t}</h4>`);
   h = h.replace(/<h3>/g, '<h5>').replace(/<\/h3>/g, '</h5>');
   /* Calculadoras. */
   let i;
@@ -72,11 +78,13 @@ function converte(key, body, titulo) {
     const end = balanced(h, i, 'div'), lab = h.slice(i, end), lid = lab.match(/id="(\w+)"/)[1];
     if (!LABS[lid]) throw new Error('calculadora desconhecida: ' + lid);
     const valores = {}; for (const m of lab.matchAll(/<input id="(\w+)"[^>]*value="([^"]*)"/g)) valores[m[1]] = Number(m[2]);
+    /* <select>: a opção marcada (selected) ou a primeira. */
+    for (const m of lab.matchAll(/<select id="(\w+)">([\s\S]*?)<\/select>/g)) valores[m[1]] = (m[2].match(/<option value="([^"]*)" selected/) || m[2].match(/<option value="([^"]*)"/))[1];
     const cfg = { titulo: strip(lab.match(/<h4>([\s\S]*?)<\/h4>/)[1]), dica: strip(lab.match(/<p class="hint">([\s\S]*?)<\/p>/)[1]), valores };
     h = h.slice(0, i) + `<div class="lab" data-calc="${LABS[lid]}" data-cfg='${attr(JSON.stringify(cfg))}'></div>` + h.slice(end);
   }
   /* Exercícios. */
-  h = h.replace(/<div class="quiz" data-set="(\w+)"><\/div>/g, (_, s) => exercicios(s, s.slice(1)));
+  h = h.replace(/<div class="quiz" data-set="(\w+)"><\/div>/g, (_, s) => exercicios(s, num || s.slice(1)));
   /* Caixas no estilo do app: Exemplo, Pegadinha, Como a banca cobra. */
   const BOX = { ex: 'exemplo', trap: 'pegadinha', cesg: 'banca', alert: 'pegadinha' };
   h = h.replace(/<div class="box ([\w ]+)">/g, (_, c) => `<div class="box ${c.split(' ').map(x => BOX[x] || x).join(' ')}">`);
@@ -93,15 +101,27 @@ function converte(key, body, titulo) {
 const defs = (src.match(/<svg width="0" height="0"[\s\S]*?<\/svg>/) || [''])[0];
 const ren = M.renomear || {};
 const partes = [svgClasses(defs).replace('<svg ', '<svg class="defs" ')];
-for (const b of blocos) { if (!secs[b]) throw new Error('seção ausente: ' + b); partes.push(converte(b, secs[b])); }
+blocos.forEach((b, k) => { if (!secs[b]) throw new Error('seção ausente: ' + b); partes.push(converte(b, secs[b], null, k + 1)); });
 if (secs.antes) partes.push(converte('antes', secs.antes, ren.antes));
 if (secs.fontes) partes.push(converte('fontes', secs.fontes, ren.fontes));
-const html = partes.join('\n');
+let html = partes.join('\n');
+/* Figuras numeradas na ordem em que aparecem na estação (a apostila da E3 começa na figura 6 e põe a 9 antes da 8);
+   as referências no texto ("figura 8") seguem a nova numeração. */
+const figNum = {}; let nf = 0;
+for (const m of html.matchAll(/<figcaption>Figura (\d+)\./g)) { if (figNum[m[1]]) throw new Error('figura repetida: ' + m[1]); figNum[m[1]] = String(++nf); }
+html = html.replace(/\b([Ff]igura|[Ff]iguras) (\d+)\b/g, (x, w, n) => { if (!figNum[n]) throw new Error(`"${x}": a estação não tem essa figura`); return `${w} ${figNum[n]}`; });
 
 /* Formulário-resumo: uma fórmula por quadro. */
+/* A fonte de duas estações (E2 e E3) divide o formulário por assunto: M.formulario lista, na ordem, o nome de cada
+   linha da apostila que fica ou uma linha nova [nome, fórmula em HTML, observação]. Sem M.formulario, ficam todas. */
+const linhas = {};
+for (const r of (secs.form || '').matchAll(/<tr><td>([\s\S]*?)<\/td><td>([\s\S]*?)<\/td><td>([\s\S]*?)<\/td><\/tr>/g)) linhas[r[1]] = [r[2], r[3]];
+const nomes = M.formulario || Object.keys(linhas);
 const formulas = [];
-for (const r of (secs.form || '').matchAll(/<tr><td>([\s\S]*?)<\/td><td>([\s\S]*?)<\/td><td>([\s\S]*?)<\/td><\/tr>/g)) {
-  const [, nome, f, obs] = r;
+for (const nome of nomes) {
+  if (Array.isArray(nome)) { const [n, main, obs] = nome; formulas.push(`<div class="eq eq-f"><p class="eq-name">${n}</p><div class="eq-main">${main}</div><p class="eq-obs">${obs}</p></div>`); continue; }
+  if (!linhas[nome]) throw new Error('linha do formulário-resumo não encontrada: ' + nome);
+  const [f, obs] = linhas[nome];
   const main = (M.formulaHtml || {})[nome] || `<span class="eq-part">${f}</span>`;
   formulas.push(`<div class="eq eq-f"><p class="eq-name">${nome}</p><div class="eq-main">${main}</div><p class="eq-obs">${obs}</p></div>`);
 }

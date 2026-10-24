@@ -24,7 +24,7 @@ export default {
     { errata: 'E1-2', de: 'Com fontes dependentes, esse caminho é o correto, porque elas não podem ser zeradas.',
       para: 'Com fontes dependentes, que não podem ser zeradas, esse é um dos dois caminhos válidos; o outro é aplicar uma fonte de teste entre os terminais.' },
     { errata: 'E1-3', de: '<dd>conservação da energia: percorrendo uma malha fechada, as subidas de potencial (fontes) igualam as quedas (resistores)</dd>',
-      para: '<dd>conservação da energia: percorrendo uma malha fechada, a soma das subidas de potencial é igual à soma das quedas. Uma fonte pode ser subida ou queda, conforme o sentido do percurso: no exemplo 4, E<sub>2</sub> é uma queda, porque está sendo carregada</dd>' },
+      para: '<dd>conservação da energia: percorrendo uma malha fechada, a soma das subidas de potencial é igual à soma das quedas. Uma fonte pode ser subida ou queda, conforme o sentido do percurso: no exemplo 4, E<sub>2</sub> é uma queda, porque o percurso horário a atravessa do + para o −</dd>' },
     { errata: 'E1-4', de: '<dd>nesse ponto, metade da potência é perdida em R<sub>th</sub></dd>',
       para: '<dd>nesse ponto, metade da potência entregue pela fonte equivalente fica em R<sub>th</sub>. Numa fonte real (E com resistência interna r), é a perda dentro da própria fonte; num circuito qualquer, os 50% valem para o equivalente, e não para as perdas do circuito original</dd>' },
     /* ---- contexto do app ---- */
@@ -54,7 +54,7 @@ export default {
     'Ponte de Wheatstone': p(`${sub('R', '1')} · ${sub('R', 'x')} = ${sub('R', '2')} · ${sub('R', '3')}`),
     'Fonte real': p(`${v('V')} = ${v('E')} − ${v('r')}·${v('I')}`, `${sub('I', 'cc')} = ${fr(v('E'), v('r'))}`),
     'Kirchhoff': p(`Σ${sub('I', 'entram')} = Σ${sub('I', 'saem')}`, `Σ${v('V')} = 0 na malha`),
-    'Thévenin': p(`${sub('V', 'th')} = ${sub('V', 'ab')} em aberto`, `${sub('R', 'th')}: fontes zeradas`),
+    'Thévenin': p(`${sub('V', 'th')} = ${sub('V', 'ab')} em aberto`, `${sub('R', 'th')}: fontes independentes zeradas`),
     'Norton': p(`${sub('I', 'N')} = ${fr(sub('V', 'th'), sub('R', 'th'))}`, `${sub('R', 'N')} = ${sub('R', 'th')}`),
     'Máxima transferência': p(`${sub('R', 'L')} = ${sub('R', 'th')}`, `${sub('P', 'máx')} = ${fr(sub('V', 'th') + '²', '4·' + sub('R', 'th'))}`),
   },
@@ -65,7 +65,7 @@ export default {
     ['Divisores', 'Tensão: o maior R fica com a maior V. Corrente: I<sub>1</sub> = I·R<sub>2</sub>/(R<sub>1</sub> + R<sub>2</sub>), o outro R em cima.'],
     ['Fonte real', 'V = E − r·I e I<sub>cc</sub> = E/r. Com dois ensaios: r = ΔV/ΔI e E = V<sub>1</sub> + r·I<sub>1</sub>.'],
     ['Kirchhoff', 'Nó: Σ entra = Σ sai. Malha: ΣV = 0. São n − 1 equações de nó e r − n + 1 de malha.'],
-    ['Thévenin e Norton', 'V<sub>th</sub> em aberto; R<sub>th</sub> com fontes zeradas (tensão → curto, corrente → aberto); I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub>.'],
+    ['Thévenin e Norton', 'V<sub>th</sub> em aberto; R<sub>th</sub> com fontes independentes zeradas (tensão → curto, corrente → aberto); I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub>.'],
     ['Máxima transferência', 'R<sub>L</sub> = R<sub>th</sub> e P<sub>máx</sub> = V<sub>th</sub>²/(4R<sub>th</sub>), com rendimento de só 50%.'],
   ],
   cards: [

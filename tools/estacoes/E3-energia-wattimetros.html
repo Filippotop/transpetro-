@@ -1,0 +1,138 @@
+<!-- Seção nova da estação E3, escrita para o app no formato da apostila de CA (fontes/circuitos-ca-trifasicos.html):
+     mesmas classes de quadro (.eq), caixa (.box ex/trap), figura SVG e calculadora (.lab), que tools/estacao.mjs
+     converte como as outras. Entra como bloco "b7" (tools/estacoes/E3.mjs, campo secoes); os exercícios estão em
+     E3.mjs, campo quiz.b7. Item 3.1 do edital; padrões das questões 21 e 58 de 2023, com números originais. -->
+<div class="block-head"><span class="block-num">7</span><h2>Energia, medidor de energia e método dos dois wattímetros</h2></div>
+<p class="edital-ref">Edital, item 3.1 (e item 7.3, uso de instrumentos para medir potência)</p>
+<p>Potência é a rapidez com que a energia é entregue; <b>energia</b> é a potência acumulada ao longo do tempo. A conta de luz cobra energia (kWh), e é a energia ativa que o medidor da entrada registra. Para medir a potência ativa de uma carga trifásica sem neutro, o recurso clássico é o <b>método dos dois wattímetros</b>, também chamado de método de Aron.</p>
+
+<h3>Energia elétrica</h3>
+<div class="eq">
+  <p class="eq-name">Energia consumida</p>
+  <div class="eq-main"><var>E</var> = <var>P</var> · Δ<var>t</var> &nbsp;&nbsp;&nbsp;&nbsp; 1 kWh = 1.000 W × 3.600 s = 3,6 × 10<sup>6</sup> J</div>
+  <dl>
+    <dt><var>E</var></dt><dd>energia: em joules (J), com P em W e Δt em segundos; em watt-hora (Wh), com Δt em horas</dd>
+    <dt><var>P</var></dt><dd>potência ativa média (W)</dd>
+    <dt>Δ<var>t</var></dt><dd>tempo de funcionamento; dado em minutos, divida por 60 para ter horas</dd>
+  </dl>
+</div>
+<p>Com várias cargas, some a energia de cada uma, cada qual com o próprio tempo: <var>E</var> = <var>P</var><sub>1</sub>·Δ<var>t</var><sub>1</sub> + <var>P</var><sub>2</sub>·Δ<var>t</var><sub>2</sub> + … Somar as potências e multiplicar por um tempo só é um erro frequente.</p>
+
+<h3>O medidor de energia de disco</h3>
+<p>O medidor eletromecânico (de indução) tem uma <b>bobina de corrente</b>, em série com a carga, e uma <b>bobina de tensão</b>, em paralelo com ela. Os campos das duas induzem correntes num <b>disco de alumínio</b>, que gira com velocidade proporcional à potência ativa; um ímã permanente freia o disco, e um registrador de engrenagens conta as voltas. Assim, o <b>número de voltas</b> é proporcional à <b>energia ativa</b>. A placa traz a constante do disco, que diz quanta energia corresponde a uma volta:</p>
+<div class="eq">
+  <p class="eq-name">Constante do disco e número de voltas</p>
+  <div class="eq-main"><var>N</var> = <span class="frac"><span><var>E</var></span><span><var>K</var><sub>d</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>K</var><sub>d</sub> = <span class="frac"><span>1.000</span><span><var>K</var><sub>r</sub></span></span></div>
+  <dl>
+    <dt><var>N</var></dt><dd>número de voltas do disco</dd>
+    <dt><var>E</var></dt><dd>energia ativa, em Wh</dd>
+    <dt><var>K</var><sub>d</sub></dt><dd>constante do disco, em Wh por volta (Wh/volta, também escrito Wh/rot)</dd>
+    <dt><var>K</var><sub>r</sub></dt><dd>a mesma constante escrita ao contrário, em voltas por kWh (rev/kWh): 500 rev/kWh equivalem a K<sub>d</sub> = 2 Wh/volta</dd>
+  </dl>
+</div>
+<div class="eq">
+  <p class="eq-name">Potência a partir das voltas (cronometrando o disco)</p>
+  <div class="eq-main"><var>P</var> = <span class="frac"><span>3.600 · <var>K</var><sub>d</sub> · <var>N</var></span><span>Δ<var>t</var></span></span></div>
+  <dl>
+    <dt><var>P</var></dt><dd>potência ativa média da carga (W)</dd>
+    <dt><var>K</var><sub>d</sub></dt><dd>constante do disco (Wh/volta)</dd>
+    <dt><var>N</var></dt><dd>voltas contadas durante o intervalo</dd>
+    <dt>Δ<var>t</var></dt><dd>intervalo cronometrado, em segundos; o 3.600 converte Wh em W·s (J)</dd>
+  </dl>
+</div>
+<p>Nos medidores eletrônicos, o disco dá lugar a um LED que pisca a cada pulso; a constante vem em Wh/pulso ou em pulsos/kWh, e as contas são as mesmas.</p>
+
+<div class="box ex">
+  <p class="box-title">Exemplo resolvido 3</p>
+  <p>Um medidor monofásico de disco, com K<sub>d</sub> = 4 Wh/volta, alimenta a bancada de uma oficina. Durante uma aula, uma furadeira de 600 W funciona por 20 minutos, e quatro lâmpadas de 15 W ficam acesas por 2 horas. Quantas voltas o disco dá? Depois, com só um aquecedor ligado, o disco dá 12 voltas em 1 minuto: qual a potência do aquecedor?</p>
+  <ol class="steps">
+    <li>Furadeira: E<sub>1</sub> = 600 W × (20/60) h = <b>200 Wh</b>.</li>
+    <li>Lâmpadas: E<sub>2</sub> = 4 × 15 W × 2 h = <b>120 Wh</b>.</li>
+    <li>Total: E = 200 + 120 = 320 Wh → N = 320/4 = <b>80 voltas</b>.</li>
+    <li>Aquecedor: P = 3.600 × 4 × 12/60 = <b>2.880 W</b>. Conferência: 12 voltas × 4 Wh = 48 Wh em 1/60 h, e 48 × 60 = 2.880 W ✓.</li>
+  </ol>
+</div>
+
+<h3>Método dos dois wattímetros (Aron)</h3>
+<p>O <b>wattímetro</b> tem uma bobina de corrente, em série com a linha, e uma bobina de tensão, ligada entre dois pontos; ele indica a potência ativa V·I·cos(ângulo entre a tensão e a corrente que recebe). Num sistema trifásico a <b>três fios</b>, bastam <b>dois</b> wattímetros: cada um tem a bobina de corrente numa linha e a bobina de tensão entre essa linha e a terceira, que fica comum às duas bobinas de tensão (figura 11). É um caso do teorema de Blondel: um sistema de n fios precisa de n − 1 wattímetros; com neutro (quatro fios), são três.</p>
+<div class="eq">
+  <p class="eq-name">Potência ativa total (qualquer carga a três fios)</p>
+  <div class="eq-main"><var>P</var> = <var>W</var><sub>1</sub> + <var>W</var><sub>2</sub></div>
+  <dl>
+    <dt><var>P</var></dt><dd>potência ativa total da carga trifásica (W)</dd>
+    <dt><var>W</var><sub>1</sub>, <var>W</var><sub>2</sub></dt><dd>leituras dos dois wattímetros (W), cada uma com o seu sinal: a soma é <b>algébrica</b></dd>
+  </dl>
+</div>
+<p>Esse resultado vale com carga equilibrada ou não, em Y ou em Δ, desde que não haja quarto fio. Com carga <b>equilibrada</b> e tensões simétricas, cada leitura depende só de V<sub>L</sub>, I<sub>L</sub> e do ângulo φ da carga:</p>
+<div class="eq">
+  <p class="eq-name">Leituras com carga equilibrada</p>
+  <div class="eq-main"><var>W</var><sub>1</sub> = <var>V</var><sub>L</sub>·<var>I</var><sub>L</sub>·cos(<var>φ</var> − 30°) &nbsp;&nbsp;&nbsp;&nbsp; <var>W</var><sub>2</sub> = <var>V</var><sub>L</sub>·<var>I</var><sub>L</sub>·cos(<var>φ</var> + 30°)</div>
+  <dl>
+    <dt><var>V</var><sub>L</sub>, <var>I</var><sub>L</sub></dt><dd>tensão e corrente de linha, eficazes</dd>
+    <dt><var>φ</var></dt><dd>ângulo da impedância de cada fase (positivo se indutiva)</dd>
+    <dt>±30°</dt><dd>a tensão de linha que cada bobina recebe está a 30° da tensão de fase (figura 8)</dd>
+  </dl>
+</div>
+<p>Somando, W<sub>1</sub> + W<sub>2</sub> = V<sub>L</sub>I<sub>L</sub>[cos(φ − 30°) + cos(φ + 30°)] = 2·cos 30°·V<sub>L</sub>I<sub>L</sub>cos φ = √3·V<sub>L</sub>I<sub>L</sub>cos φ, que é a potência trifásica da seção 2. Subtraindo, W<sub>1</sub> − W<sub>2</sub> = 2·sen 30°·V<sub>L</sub>I<sub>L</sub>sen φ = V<sub>L</sub>I<sub>L</sub>sen φ. Daí:</p>
+<div class="eq">
+  <p class="eq-name">Reativa e ângulo da carga (carga equilibrada)</p>
+  <div class="eq-main"><var>Q</var> = √3·(<var>W</var><sub>1</sub> − <var>W</var><sub>2</sub>) &nbsp;&nbsp;&nbsp;&nbsp; tg <var>φ</var> = <span class="frac"><span>√3·(<var>W</var><sub>1</sub> − <var>W</var><sub>2</sub>)</span><span><var>W</var><sub>1</sub> + <var>W</var><sub>2</sub></span></span></div>
+  <dl>
+    <dt><var>Q</var></dt><dd>potência reativa total (var), positiva se a carga é indutiva</dd>
+    <dt>tg <var>φ</var></dt><dd>Q/P; dela sai o ângulo φ e o fator de potência, FP = cos φ</dd>
+  </dl>
+</div>
+<p>Qual dos dois aparelhos é o W<sub>1</sub> depende da ligação e da sequência de fases. Na figura 11, com sequência ABC e a linha C como comum, o wattímetro da linha A lê V<sub>L</sub>I<sub>L</sub>·cos(φ − 30°), e o da linha B, V<sub>L</sub>I<sub>L</sub>·cos(φ + 30°).</p>
+<figure class="narrow"><svg viewBox="0 0 480 290" role="img" aria-label="Ligação de dois wattímetros numa carga trifásica a três fios">
+<path d="M36 50 L380 50" class="wire pa-s"/><path d="M36 120 L380 120" class="wire pc-s"/><path d="M36 190 L380 190" class="wire pb-s"/>
+<rect x="380" y="30" width="84" height="180" class="zbox"/>
+<text x="422" y="108" class="ts" text-anchor="middle">carga</text><text x="422" y="128" class="ts" text-anchor="middle">trifásica</text><text x="422" y="150" class="tm" text-anchor="middle">3 fios</text>
+<text x="20" y="56" class="tl fa" text-anchor="middle">A</text><text x="20" y="126" class="tl fc" text-anchor="middle">C</text><text x="20" y="196" class="tl fb" text-anchor="middle">B</text>
+<rect x="104" y="34" width="66" height="32" rx="4" class="zbox"/><text x="137" y="57" class="tl" text-anchor="middle">W<tspan class="sub" dy="4">1</tspan></text>
+<path d="M160 66 L160 120" class="wire"/><circle cx="160" cy="120" r="4" class="f-ink"/>
+<rect x="234" y="174" width="66" height="32" rx="4" class="zbox"/><text x="267" y="197" class="tl" text-anchor="middle">W<tspan class="sub" dy="4">2</tspan></text>
+<path d="M290 174 L290 120" class="wire"/><circle cx="290" cy="120" r="4" class="f-ink"/>
+<text x="137" y="22" class="tm" text-anchor="middle">bobina de corrente</text>
+<text x="168" y="98" class="tm">bobina de tensão</text>
+<text x="240" y="244" class="tl" text-anchor="middle">P = W<tspan class="sub" dy="4">1</tspan><tspan dy="-4"> + W</tspan><tspan class="sub" dy="4">2</tspan></text>
+<text x="240" y="272" class="tm" text-anchor="middle">a linha C não tem wattímetro: é o comum das bobinas de tensão</text>
+</svg><figcaption>Figura 11. Método dos dois wattímetros numa carga a três fios. As bobinas de corrente ficam nas linhas A e B, e as de tensão, entre cada uma dessas linhas e a linha C (desenhada no meio só para não cruzar fios). A potência total é a soma algébrica W<sub>1</sub> + W<sub>2</sub>.</figcaption></figure>
+
+<h3>Quando uma leitura fica negativa</h3>
+<ul>
+  <li><b>FP = 1</b> (φ = 0°): W<sub>1</sub> = W<sub>2</sub> = V<sub>L</sub>I<sub>L</sub>·cos 30°, cada um com metade da potência total.</li>
+  <li><b>FP = 0,5</b> (φ = 60°): W<sub>2</sub> = V<sub>L</sub>I<sub>L</sub>·cos 90° = <b>0</b>, e W<sub>1</sub> sozinho mede a potência total.</li>
+  <li><b>FP &lt; 0,5</b> (φ &gt; 60°): cos(φ + 30°) fica negativo, e W<sub>2</sub> <b>lê negativo</b>. O ponteiro de um wattímetro analógico tenta ir para trás; o técnico inverte a ligação da bobina de tensão (ou da de corrente), lê o valor e o registra com sinal negativo: P = W<sub>1</sub> − |W<sub>2</sub>|.</li>
+  <li><b>FP = 0</b> (φ = 90°): as leituras ficam iguais e opostas, e a soma dá zero.</li>
+  <li>Com carga <b>capacitiva</b> (φ &lt; 0), os papéis se trocam: W<sub>1</sub> é que diminui e pode ficar negativo.</li>
+</ul>
+
+<div class="lab" id="lab3">
+  <h4>Laboratório: os dois wattímetros</h4>
+  <p class="hint">Mova o ângulo φ da carga e veja as duas leituras. Além de 60° (FP 0,5), uma delas fica negativa, e a soma continua sendo a potência total.</p>
+  <input id="wVL" type="number" value="380"><input id="wIL" type="number" value="10"><input id="wF" type="range" min="-90" max="90" step="1" value="37">
+</div>
+
+<div class="box ex">
+  <p class="box-title">Exemplo resolvido 4</p>
+  <p>A potência de um motor trifásico (carga equilibrada) que funciona em 380 V, com corrente de linha de 10 A e FP = 0,8 indutivo, é medida pelo método dos dois wattímetros. Quanto indica cada wattímetro? Num segundo ensaio, com outra carga equilibrada, as leituras são W<sub>1</sub> = 5,0 kW e W<sub>2</sub> = −1,0 kW: quais são P, Q e o FP?</p>
+  <ol class="steps">
+    <li>FP = 0,8 → φ = 36,87°; V<sub>L</sub>·I<sub>L</sub> = 380 × 10 = 3.800 VA.</li>
+    <li>W<sub>1</sub> = 3.800 × cos(36,87° − 30°) = 3.800 × cos 6,87° ≈ <b>3.773 W</b>.</li>
+    <li>W<sub>2</sub> = 3.800 × cos(36,87° + 30°) = 3.800 × cos 66,87° ≈ <b>1.493 W</b>.</li>
+    <li>Conferência: W<sub>1</sub> + W<sub>2</sub> ≈ 5.266 W, e √3 × 380 × 10 × 0,8 ≈ 5.265 W ✓ (diferença de arredondamento); Q = √3 × (3.773 − 1.493) ≈ 3.949 var, igual a √3 × 3.800 × 0,6 ✓.</li>
+    <li>Segundo ensaio: P = 5,0 + (−1,0) = <b>4,0 kW</b>. Somar os módulos daria 6,0 kW, errado.</li>
+    <li>Q = √3 × [5,0 − (−1,0)] = √3 × 6,0 ≈ <b>10,4 kvar</b>; tg φ = 10,4/4,0 ≈ 2,6 → φ ≈ 69° e <b>FP ≈ 0,36</b>, abaixo de 0,5, como a leitura negativa já avisava.</li>
+  </ol>
+</div>
+<div class="box trap">
+  <p class="box-title">Pegadinhas de energia e dos dois wattímetros</p>
+  <ul>
+    <li>A potência total é a <b>soma algébrica</b> das leituras. Produto, divisão, maior leitura ou menor leitura são distratores; com uma leitura negativa, a soma vira, na prática, uma subtração.</li>
+    <li>Q = √3·(W<sub>1</sub> − W<sub>2</sub>) e a fórmula da tg φ só valem com carga equilibrada e tensões simétricas. Já P = W<sub>1</sub> + W<sub>2</sub> vale sempre a três fios.</li>
+    <li>Com carga equilibrada, leitura zero não é defeito: é FP = 0,5. Leituras iguais indicam FP = 1; iguais e opostas, FP = 0.</li>
+    <li>No medidor de energia, converta os minutos em horas antes de multiplicar, e some a energia carga a carga.</li>
+  </ul>
+</div>
+
+<div class="quiz" data-set="b7"></div>

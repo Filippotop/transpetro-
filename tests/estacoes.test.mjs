@@ -94,6 +94,21 @@ for (const f of ST_FILES) {
     check(at >= 0, `${where}: conta em "${c.onde}", que não existe na teoria`);
     check(at >= 0 && T.indexOf(c.valor, at) >= 0, `${where}: o valor "${c.valor}" não aparece na teoria depois de "${c.onde}"`);
   }
+  /* Exercícios comentados: 5 alternativas, gabarito entre elas e comentário. */
+  [...m.html.matchAll(/<li class="exq" data-a="(\d+)">([\s\S]*?)<\/details><\/li>/g)].forEach(([, a, q], k) => {
+    const nOpts = (q.match(/<li><span class="exq-l">/g) || []).length;
+    check(nOpts === 5, `${where}: exercício ${k + 1} com ${nOpts} alternativas (esperado 5)`);
+    check(+a >= 0 && +a <= 4, `${where}: exercício ${k + 1} com gabarito ${a} fora de A–E`);
+    check(/<summary>[\s\S]*<b>Resposta: \([A-E]\)<\/b> \S/.test(q), `${where}: exercício ${k + 1} sem gabarito comentado`);
+  });
+  /* Numeração própria da estação: figuras e exemplos resolvidos em ordem, a partir de 1 (a E3 começa no bloco 5 da
+     apostila), e toda referência "figura N" aponta para uma figura que existe na estação. */
+  const figs = [...m.html.matchAll(/<figcaption>Figura (\d+)\./g)].map(x => +x[1]);
+  check(figs.every((n, i) => n === i + 1), `${where}: figuras fora de ordem (${figs.join(', ')})`);
+  for (const [, n] of T.matchAll(/\b[Ff]igura (\d+)\b/g)) check(+n >= 1 && +n <= figs.length, `${where}: "figura ${n}" no texto, mas a estação tem ${figs.length} figuras`);
+  const exs = [...T.matchAll(/Exemplo resolvido (\d+)/g)].map(x => +x[1]);
+  check(exs.every((n, i) => n === i + 1), `${where}: exemplos resolvidos fora de ordem (${exs.join(', ')})`);
+  check(!/\bBloco \d/.test(T), `${where}: o texto ainda fala em "Bloco N" da apostila (no app são seções)`);
   /* Calculadoras: todo data-calc tem widget, e o data-cfg é JSON. */
   const calcs = [...m.html.matchAll(/data-calc="([^"]+)"/g)].map(x => x[1]);
   for (const c of calcs) check(WIDGETS.includes(c), `${where}: data-calc="${c}" sem widget registrado em js/calc.js (há: ${WIDGETS.join(', ') || 'nenhum'})`);

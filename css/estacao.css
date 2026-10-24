@@ -38,6 +38,7 @@
 
 /* Figuras: o desenho segue o tema (traço = texto do app, fundo = superfície). */
 .estacao figure{margin:22px 0;max-width:720px}
+.estacao figure.narrow{max-width:480px}
 .estacao figure .fig-box{overflow-x:auto;border-radius:10px}
 .estacao figure svg{display:block;width:100%;height:auto;background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:8px}
 .estacao figure.zoom svg{width:auto;min-width:640px;max-width:none}
@@ -83,6 +84,10 @@
 .estacao .lab-out span{display:block;color:var(--muted);font-size:12px}
 .estacao .lab-out b{font-family:var(--mono);font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
 .estacao .lab-txt{margin:10px 0 0;font-size:14px}
+/* Duas figuras lado a lado (ondas e triângulo de potências); no celular, uma embaixo da outra. */
+.estacao .lab-figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;align-items:center}
+.estacao .lab-figs svg{margin-top:8px}
+.estacao .lab-in select{padding:8px 10px;font-family:var(--display);font-size:15px}
 @media (max-width:460px){.estacao .lab-ctrl{grid-template-columns:minmax(0,1fr) 56px}.estacao .lab-ctrl label{grid-column:1/-1}}
 
 /* Exercícios comentados (data-calc="exercicios"). */
