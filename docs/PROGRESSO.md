@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-10-24, durante a onda 1, Task 3c (estação I1) em andamento.
+Última atualização: 2026-10-24. T3c implementada (6bf7cc0), em revisão independente.
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -10,7 +10,7 @@
 | T2: pipeline de estações + estação E1 (Circuitos CC) | ✅ concluída e revisada | ..0b4a99d |
 | T3a: estações E2 (CA, fasores, impedância) e E3 (potência, FP, trifásicos, medidor de energia, dois wattímetros) | ✅ concluída e revisada | ..5262d92 |
 | T3b: estações M1 (simbologia e diagramas) e M2 (eletromagnetismo e transformadores) | ✅ concluída e revisada | ..b658359 |
-| T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ⏳ em andamento | — |
+| T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ⏳ implementada, em revisão | ..6bf7cc0 |
 | T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ⬜ a fazer | — |
 | T5: prova Transpetro 2023 recortada por questão (`fontes/prova-2023-…pdf`) + gabarito **oficial** (procurar; se não achar, sem correção) | ⬜ a fazer | — |
 | T6: Biblioteca (formulário geral, números-âncora, NR-10 de 2019 × 2026), Arena, Plano até 29/11, Painel, Missão de hoje; entrega e parada para o estudante avaliar | ⬜ a fazer | — |
