@@ -47,6 +47,9 @@ h2,h3{font-family:var(--sans)}
 .top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px 16px;flex-wrap:wrap;padding:24px 0 4px}
 .brand h1{font-family:var(--sans);font-weight:700;font-size:clamp(1.7rem,4.6vw,3rem);line-height:1.02;margin:0 0 6px}
 .brand h1 a{color:inherit;text-decoration:none}
+/* Volta ao app principal (Elétrica de Ouro), que fica um nível acima. */
+.voltar-edo{display:inline-flex;align-items:center;min-height:32px;margin-bottom:4px;font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--pc);text-decoration:none}
+.voltar-edo:hover{text-decoration:underline}
 .brand p{margin:0;color:var(--mut);font-family:var(--sans)}
 .pills{display:flex;gap:8px;flex-wrap:wrap}
 .pill{font-family:var(--sans);font-size:.9rem;padding:5px 11px;border:1.5px solid var(--ink);background:var(--card)}

@@ -457,19 +457,5 @@ window.addEventListener('beforeunload', e => { if (runAtivo() && RUN.meas) e.pre
 { const r = apply(location.hash); history.replaceState({ v: r }, '', '#' + r); }
 persist(); render();
 
-/* App instalável e offline. */
-if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('sw.js').then(reg => {
-    reg.addEventListener('updatefound', () => {
-      const nw = reg.installing; if (!nw) return;
-      nw.addEventListener('statechange', () => {
-        if (nw.state === 'installed' && navigator.serviceWorker.controller) {
-          const b = $('#update'); b.hidden = false;
-          b.querySelector('button').onclick = () => { nw.postMessage('skip'); };
-        }
-      });
-    });
-    let reloaded = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => { if (!reloaded && !runAtivo()) { reloaded = true; location.reload(); } });
-  }).catch(() => { /* sem service worker: o app funciona, só não fica offline */ });
-}
+/* Offline: quem cuida é o service worker da raiz do Elétrica de Ouro (../sw.js), que precacheia a Bancada.
+   A Bancada não registra service worker próprio, para não haver dois disputando o mesmo escopo. */

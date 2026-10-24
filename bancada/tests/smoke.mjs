@@ -1,5 +1,6 @@
 /* Bancada: teste de fumaça num Chromium de verdade. Estuda um módulo da apostila e joga uma OS inteira pela interface; falha se aparecer
-   erro de JavaScript, rolagem lateral, falha séria de acessibilidade (WCAG AA) ou se o app não abrir offline.
+   erro de JavaScript, rolagem lateral, falha séria de acessibilidade (WCAG AA) ou se faltar o link de volta ao Elétrica de Ouro.
+   O offline da Bancada é testado no smoke da raiz (o service worker é o da raiz).
    Rodar (na raiz do repositório): npm install && npm test */
 import http from 'node:http';
 import fs from 'node:fs';
@@ -181,6 +182,7 @@ try {
     page.on('console', m => { if (m.type() === 'error' && !/fonts\.(googleapis|gstatic)/.test(m.text()) && !/ERR_(NAME|INTERNET|CONNECTION)/.test(m.text())) errs.push(m.text()); });
     page.on('dialog', d => d.accept());
     await page.goto(URL_);
+    if (vw === '375') check(await page.getAttribute('a.voltar-edo', 'href') === '../' && await page.isVisible('a.voltar-edo'), `${where}: falta o link visível "← Elétrica de Ouro" para ../`);
     await apostila(page, where, vw);
     check((await page.$$('.mcard')).length === 4, `${where}: painel sem as 4 OS`);
     await noHScroll(page, `${where} · painel`);
@@ -212,27 +214,10 @@ try {
     await ctx.close();
   }
 
-  // offline: depois da primeira visita, o app abre sem rede
-  const ctx = await browser.newContext();
-  const page = await ctx.newPage();
-  await page.goto(URL_); await page.waitForSelector('.item-edital');
-  await page.evaluate(() => navigator.serviceWorker.ready);
-  await page.reload(); await page.waitForSelector('.item-edital');
-  await ctx.setOffline(true);
-  await page.reload();
-  const ok = await page.waitForSelector('.item-edital', { timeout: 5000 }).then(() => true, () => false);
-  check(ok, 'offline: o app não abriu sem internet depois da primeira visita');
-  if (ok) {
-    await page.evaluate(() => { location.hash = '#mod/potencia-trifasicos'; });
-    check(await page.waitForSelector('.leitor [data-fim]', { timeout: 5000 }).then(() => true, () => false), 'offline: o módulo da apostila não abriu sem internet');
-    await page.goto(URL_ + '#mod/potencia-trifasicos/checagem');
-    check(await page.waitForSelector('.checagem .q', { timeout: 5000 }).then(() => true, () => false), 'offline: a checagem não abriu sem internet (recarregando)');
-    await tab(page, 'bancada'); await page.waitForSelector('.mcard');
-    await page.click('[data-nav="start:dr"]'); check(await page.isVisible('#scheme svg'), 'offline: a OS 4 não abriu sem internet');
-  }
-  await ctx.close();
+  // offline: a Bancada não tem mais service worker próprio. Quem a deixa offline é o service worker da raiz
+  // (Elétrica de Ouro, ../sw.js), e isso é testado em tests/smoke.mjs da raiz (visita / e abre /bancada/ sem rede).
 } finally {
   await browser.close(); server.close();
 }
 if (fails.length) { console.error('bancada: FALHOU\n- ' + fails.join('\n- ')); process.exit(1); }
-console.log('bancada OK: apostila (mapa, leitor, essencial, checagem) e OS de ponta a ponta em 3 tamanhos × 2 temas, acessibilidade, revisão, modo prova e offline.');
+console.log('bancada OK: apostila (mapa, leitor, essencial, checagem) e OS de ponta a ponta em 3 tamanhos × 2 temas, acessibilidade, revisão, modo prova e link de volta.');
