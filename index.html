@@ -1047,7 +1047,7 @@ function vSim(){
     if(cfg.foco==='novas') p=p.filter(q=>!S.ans[q.id]);
     if(cfg.foco==='fracos'){ const weak=new Set(DATA.modules.filter(m=>{const s=modStats(m.id); return s.done===0? m.faixa==='A' : s.ok/s.done<0.67;}).map(m=>m.id)); p=p.filter(q=>weak.has(q.mod) || (q.kind!=='fixacao' && (!S.ans[q.id]||!S.ans[q.id].ok))); }
     return p; };
-  const upd=()=>{ $('#avail').textContent=`${pool().length} questões disponíveis nesse foco`; };
+  const upd=()=>{ $('#avail').textContent=`${plural(pool().length,'questão disponível','questões disponíveis')} nesse foco`; };
   $('#cn').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.n=+b.dataset.n; S.simcfg=cfg; vSim();};
   $('#cf').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.foco=b.dataset.f; S.simcfg=cfg; vSim();};
   upd();
@@ -1220,10 +1220,13 @@ function vBib(){
     ${subtabs([['formulas','Formulário'],['glos','Glossário'],['metodo','Método']],s,k=>{param={s:k}; vBib();})}<div id="host"></div>`;
   ({formulas:bForm,glos:bGlos,metodo:vMetodo}[s]||bForm)();
 }
-/* Formulário geral: cada estação traz as suas fórmulas (m.formulas); DATA.formulas guarda o que é de mais de uma estação. */
+/* Formulário geral: primeiro as fórmulas gerais (DATA.formulas, as que servem a mais de uma estação), depois as de cada
+   estação (m.formulas). Cada item pode ser HTML pronto ou {titulo|nome, html}. */
+function fItem(f,k){ return typeof f==='string'?f:`<p><b>${f.titulo||f.nome||k||''}</b></p>${f.html||''}`; }
 function bForm(){
   const mods=DATA.modules.filter(m=>!m.emBreve&&Array.isArray(m.formulas)&&m.formulas.length);
-  host().innerHTML=mods.length?`<div style="display:grid;gap:14px">${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose" style="max-width:none">${m.formulas.map(f=>typeof f==='string'?f:`<p><b>${f.nome||''}</b> ${f.html||''}</p>`).join('')}</div></div>`).join('')}</div>`
+  const gerais=Object.entries(DATA.formulas||{});
+  host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
     :'<p class="empty">O formulário geral chega junto com as estações: cada fórmula com o nome e a unidade de cada símbolo.</p>';
   bindStations(host());
 }

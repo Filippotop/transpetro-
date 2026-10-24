@@ -9,11 +9,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
 const handlers = {}, matched = [];
 const self = { addEventListener: (t, f) => { handlers[t] = f; }, location: { origin: 'https://filippotop.github.io' }, clients: { claim() {}, matchAll: async () => [] }, skipWaiting() {} };
-const ctx = vm.createContext({ self, location: self.location, URL, caches: { match: async k => { matched.push(k); return 'cache:' + k; }, open: async () => ({ put() {}, match: async () => null, keys: async () => [], addAll: async () => {} }), keys: async () => [] }, fetch: async () => { throw new Error('offline'); }, Promise });
+const ctx = vm.createContext({ self, location: self.location, URL, caches: { match: async () => 'cache:de-outro-app', open: async name => ({ put() {}, match: async k => { matched.push([name, k]); return name.startsWith('edo-shell-') ? 'cache:' + k : null; }, keys: async () => [], addAll: async () => {} }), keys: async () => [] }, fetch: async () => { throw new Error('offline'); }, Promise });
 vm.runInContext(SRC, ctx, { filename: 'sw.js' });
 
 const fails = [];
-const fire = (url, mode = 'cors') => { let p = null; handlers.fetch({ request: { method: 'GET', url, mode }, respondWith(x) { p = x; }, waitUntil() {} }); return p; };
+const fire = (url, mode = 'cors') => { let p = null; handlers.fetch({ request: { method: 'GET', url, mode }, respondWith(x) { p = x; Promise.resolve(x).catch(() => {}); /* sem rede no teste: a busca pode falhar */ }, waitUntil() {} }); return p; };
 for (const url of ['https://api.github.com/gists?per_page=100', 'https://api.github.com/gists/abc123'])
   if (fire(url)) fails.push(`o service worker interceptou ${url}: a sincronização leria dados velhos do cache`);
 if (!fire('https://filippotop.github.io/transpetro-/bancada/js/app.js')) fails.push('o service worker da raiz não cuida da Bancada (ela não tem mais service worker próprio)');
@@ -23,6 +23,8 @@ for (const [url, want] of [['https://filippotop.github.io/transpetro-/bancada/',
   const got = await fire(url, 'navigate');
   if (got !== 'cache:' + want) fails.push(`offline: ${url} devolveu "${got}" (esperado ${want})`);
 }
+/* Só os caches deste app: caches.match() acharia também os da Bancada antiga e os do Humanas de Ouro (mesma origem). */
+if (/caches\.match\(/.test(SRC.replace(/\/\*[\s\S]*?\*\//g, ''))) fails.push('sw.js usa caches.match(), que procura em todos os caches da origem');
 /* Arquivos citados existem; caches com prefixo edo- (o Humanas de Ouro, na mesma origem, usa hdo-). */
 const list = name => [...SRC.match(new RegExp(`const ${name}=\\[([\\s\\S]*?)\\];`))[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
 for (const f of [...list('SHELL_FILES'), ...list('BANCADA_FILES')]) if (!f.endsWith('/') && !fs.existsSync(path.join(ROOT, f))) fails.push(`sw.js cita ${f}, que não existe`);

@@ -168,6 +168,32 @@ async function testOfflineShell(browser) {
   await ctx.close();
 }
 
+/* Cache antigo da Bancada (quando ela morava na raiz, o SW dela guardava index.html, manifest e ícones da raiz em
+   bancada-shell-*): o app não pode abrir a Bancada velha offline nem servir o manifest velho, e esse cache some. */
+async function testStaleCache(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'] });
+  const page = await ctx.newPage();
+  await page.goto(URL_ + 'icons/icon.svg'); /* página da mesma origem que não registra o SW: dá para semear o cache antes */
+  await page.evaluate(async base => {
+    const c = await caches.open('bancada-shell-x');
+    const html = new Response('<!doctype html><title>Bancada antiga</title><body>Bancada antiga</body>', { headers: { 'content-type': 'text/html' } });
+    await c.put(base + 'index.html', html.clone()); await c.put(base, html);
+    await c.put(base + 'manifest.webmanifest', new Response(JSON.stringify({ name: 'Bancada Virtual de Manutenção' }), { headers: { 'content-type': 'application/manifest+json' } }));
+    /* Cache só com URLs de uma bancada/ (como a cópia do Humanas, em /humanas-de-ouro/bancada/): não é deste app, fica. */
+    await (await caches.open('bancada-shell-y')).put(base + 'bancada/index.html', new Response('outra Bancada'));
+  }, URL_);
+  await page.goto(URL_);
+  await page.evaluate(() => navigator.serviceWorker.ready); await page.waitForTimeout(1500);
+  await page.reload(); await page.waitForTimeout(500);
+  await ctx.setOffline(true); await page.reload(); await page.waitForTimeout(800);
+  const r = await page.evaluate(async () => ({ title: document.title, app: typeof go === 'function', man: await fetch('manifest.webmanifest').then(x => x.json()).then(j => j.name, () => null), keys: await caches.keys() }));
+  check(r.title === 'Elétrica de Ouro' && r.app, `cache antigo: offline a raiz abriu "${r.title}" em vez do Elétrica de Ouro`);
+  check(r.man === 'Elétrica de Ouro', `cache antigo: o manifest servido é o velho ("${r.man}")`);
+  check(!r.keys.includes('bancada-shell-x'), `cache antigo: bancada-shell-x (da raiz) não foi apagado (${r.keys.join(', ')})`);
+  check(r.keys.includes('bancada-shell-y'), 'cache antigo: apagou um cache bancada-shell-* que só tinha URLs de bancada/ (a cópia do Humanas de Ouro usaria esse)');
+  await ctx.close();
+}
+
 /* Cada aba, em cada tamanho e tema: sem erro de JS, sem rolagem lateral, sem falha séria de acessibilidade. */
 async function testTabs(browser) {
   for (const [vpName, viewport] of Object.entries(VIEWPORTS)) for (const colorScheme of ['light', 'dark']) {
@@ -312,6 +338,21 @@ async function testDeepLinks(browser) {
   const all = seen.join('\n');
   for (const w of ['ENEM', 'Enem', 'Humanas', 'Inep', 'Redação', 'redação', 'TRI', 'Linguagens', 'Filosofia', '2025', 'dia 2', 'Dia 1']) { const re = new RegExp('(^|[^A-Za-zÀ-ÿ])' + w + '([^A-Za-zÀ-ÿ]|$)'); check(!re.test(all), `textos: a tela ainda fala em "${w}" (${(all.match(new RegExp('.{0,40}' + w + '.{0,40}')) || [''])[0].replace(/\n/g, ' ')})`); }
   check(await page.title() === 'Elétrica de Ouro', `textos: título da página "${await page.title()}"`);
+  await ctx.close();
+}
+
+/* Detalhes: plural no simulado; o Formulário mostra as fórmulas gerais (DATA.formulas), além das de cada estação. */
+async function testFormSim(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage();
+  await withExtra(page, "window.DATA.formulas={ohm:{titulo:'Lei de Ohm (geral)',html:'<p>V = R · I</p>'}};");
+  await page.goto(URL_); await page.waitForTimeout(300);
+  await page.evaluate(() => go('treino', { s: 'sim' })); await page.waitForTimeout(150);
+  const av = await page.textContent('#avail');
+  check(av === '1 questão disponível nesse foco', `simulado: "${av}" (esperado "1 questão disponível nesse foco")`);
+  await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(150);
+  const t = await page.evaluate(() => document.querySelector('#host').innerText);
+  check(t.includes('Lei de Ohm (geral)') && t.includes('V = R · I'), `formulário: DATA.formulas não aparece na Biblioteca ("${t.slice(0, 80)}")`);
   await ctx.close();
 }
 
@@ -526,6 +567,7 @@ try {
   await run('storage', testStorage);
   await run('deep', testDeep);
   await run('offline', testOfflineShell);
+  await run('stale', testStaleCache);
   await run('gist', testGistSync);
   await run('deletes', testDeletesSync);
   await run('design', testDesign);
@@ -535,6 +577,7 @@ try {
   await run('bancada', testBancadaTab);
   await run('links', testDeepLinks);
   await run('empty', testEmpty);
+  await run('formsim', testFormSim);
   await run('nav', testNav);
   await run('tabs', testTabs);
   await run('answered', testAnswered);

@@ -1,7 +1,7 @@
 /* Elétrica de Ouro: service worker da raiz. Cobre o app e a Bancada (bancada/), que não tem service worker próprio.
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova.
    Caches com prefixo edo-: o Humanas de Ouro (mesma origem github.io) usa hdo- e apaga só os dele. */
-const VER='2026-10-24.1';
+const VER='2026-10-24.2';
 const SHELL='edo-shell-'+VER, IMGS='edo-provas-v1', RUNTIME='edo-runtime-v1';
 const SHELL_FILES=['./','index.html','data/base.js','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
 /* A Bancada inteira, para abrir sem internet depois da primeira visita ao app. */
@@ -36,7 +36,21 @@ const BANCADA_FILES=[
 const IMAGES=[];
 
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(SHELL).then(c=>c.addAll(SHELL_FILES.concat(BANCADA_FILES))).then(()=>self.skipWaiting())); });
-self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('edo-shell-')&&k!==SHELL).map(k=>caches.delete(k)))).then(()=>self.clients.claim())); });
+/* Caches da Bancada de quando ela morava na raiz (bancada-shell-*, bancada-runtime-v1): guardam index.html, manifest e
+   ícones da raiz e não podem sobreviver. Só apaga os que têm URL neste escopo fora de bancada/; a cópia da Bancada no
+   Humanas de Ouro (mesma origem, URLs em /humanas-de-ouro/bancada/) fica intocada. */
+async function oldRootBancada(k){
+  if(!(k.startsWith('bancada-shell-')||k==='bancada-runtime-v1')) return false;
+  const scope=self.registration.scope, sub=scope+'bancada/';
+  const reqs=await (await caches.open(k)).keys();
+  return reqs.some(r=>r.url.startsWith(scope)&&!r.url.startsWith(sub));
+}
+self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(ks=>Promise.all(ks.map(async k=>{
+    if((k.startsWith('edo-shell-')&&k!==SHELL)||await oldRootBancada(k)) await caches.delete(k);
+  }))).then(()=>self.clients.claim())); });
+
+/* Procura só nos caches deste app: caches.match() olharia todos os caches da origem, inclusive os de outros apps. */
+const fromShell=(req,opt)=>caches.open(SHELL).then(c=>c.match(req,opt));
 
 /* Página guardada para cada navegação: a Bancada tem a sua (bancada/index.html), o resto é o app (index.html). */
 function pageKey(url){ return /\/bancada(\/|$)/.test(url.pathname)?'bancada/index.html':'index.html'; }
@@ -47,7 +61,7 @@ self.addEventListener('fetch',e=>{
   if(url.hostname==='api.github.com') return; /* sincronização: sempre da rede, nunca do cache */
   if(req.mode==='navigate'){
     const key=pageKey(url);
-    e.respondWith(fetch(req).then(r=>{ if(r.ok){ const cp=r.clone(); caches.open(SHELL).then(c=>c.put(key,cp)); } return r; }).catch(()=>caches.match(key,{ignoreSearch:true})));
+    e.respondWith(fetch(req).then(r=>{ if(r.ok){ const cp=r.clone(); caches.open(SHELL).then(c=>c.put(key,cp)); } return r; }).catch(()=>fromShell(key,{ignoreSearch:true})));
     return;
   }
   if(url.origin===location.origin&&url.pathname.includes('/provas/')){
@@ -56,7 +70,7 @@ self.addEventListener('fetch',e=>{
   }
   /* Mesma origem: ignora ?v= etc. (a Bancada importa módulos sem parâmetros, mas por garantia). */
   const same=url.origin===location.origin;
-  e.respondWith(caches.match(req,{ignoreSearch:same}).then(hit=>{
+  e.respondWith((same?fromShell(req,{ignoreSearch:true}):caches.open(RUNTIME).then(c=>c.match(req))).then(hit=>{
     const net=fetch(req).then(r=>{ if(r&&(r.ok||r.type==='opaque')){ const cp=r.clone(); caches.open(same?SHELL:RUNTIME).then(c=>c.put(req,cp)); } return r; });
     if(hit){ e.waitUntil(net.catch(()=>{})); return hit; }
     return net;
