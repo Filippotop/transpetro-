@@ -12,7 +12,8 @@ import * as S from './store.js';
 import { answer, dueIds, boxes } from './review.js';
 import { mmss, shuffle, pick, esc } from './util.js';
 import { moduloById } from './apostila/index.js';
-import { mapaV, leitorV, checagemV, observeSecoes, atualizaLeitura, marcaRolaveis, questaoHTML, feedbackHTML, questoesApostila, resumoChecagem, antesHTML, FONTES } from './ui/apostila.js';
+import { registraLeitura } from './mastery.js';
+import { mapaV, leitorV, checagemV, observeSecoes, atualizaLeitura, marcaRolaveis, questaoHTML, feedbackHTML, questoesApostila, resumoChecagem, antesHTML, FONTES, rotuloFonte } from './ui/apostila.js';
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -99,10 +100,7 @@ function drawLeitor(retomar) {
   return view.querySelector(`#s-${CSS.escape(s.id)}`);
 }
 function secaoVista(mod, id) {
-  const L = P.leitura[mod.id] || (P.leitura[mod.id] = { vistas: [], ultima: null, em: 0 });
-  const nova = !L.vistas.includes(id);
-  if (nova) L.vistas.push(id);
-  L.ultima = id; L.em = Date.now(); persist();
+  const nova = registraLeitura(P, mod, id); persist();
   if (nova) atualizaLeitura(view, mod, P);
 }
 /** Muda o leitor sem perder o lugar: a seção que estava no topo continua no topo. */
@@ -121,7 +119,7 @@ function toggleEssencial(btn) {
 }
 function trocaFonte(btn) {
   const f = (getFonte() + 1) % FONTES.length; setFonte(f);
-  semPerderOLugar(art => { art.dataset.fonte = f; btn.querySelector('.fz').textContent = FONTES[f] + '%'; btn.setAttribute('aria-label', `Tamanho da letra: ${FONTES[f]}%. Toque para mudar.`); });
+  semPerderOLugar(art => { art.dataset.fonte = f; btn.querySelector('.fz').textContent = FONTES[f] + '%'; btn.setAttribute('aria-label', rotuloFonte(f)); });
 }
 function irParaSecao(a) {
   const el = view.querySelector(a.getAttribute('href').replace(/^#s-(.*)$/, (_, id) => `#s-${CSS.escape(id)}`));
@@ -439,6 +437,7 @@ document.addEventListener('click', e => {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const a = e.target.closest('a[href^="#"]'); if (!a) return;
   const h = a.getAttribute('href');
+  if (h === '#view') { e.preventDefault(); view.focus(); return; } // "Pular para o conteúdo" não é rota
   if (h.startsWith('#s-')) { e.preventDefault(); return irParaSecao(a); }
   if (/^#(estudar|bancada|revisar|mod\/)/.test(h)) { e.preventDefault(); navigate(h.slice(1)); }
 });

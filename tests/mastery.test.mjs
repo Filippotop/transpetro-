@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { moduleStatus, itemStatus, nextStep } from '../js/mastery.js';
+import { moduleStatus, itemStatus, nextStep, registraLeitura } from '../js/mastery.js';
 
 const secs = n => Array.from({ length: n }, (_, i) => ({ id: 's' + i, titulo: 'S' + i, html: '' }));
 const mkMod = (id, o = {}) => ({ id, titulo: 'Módulo ' + id, itens: ['1.1'], faixa: 'A', secoes: secs(10), checagem: [0, 1, 2, 3].map(i => ({ s: 'q' + i, o: [], a: 0, porque: '' })), missoes: [], ...o });
@@ -61,7 +61,8 @@ test('nextStep: revisão vencida, módulo A de menor domínio, missão do últim
   const a = mkMod('a'), b = mkMod('b'), c = mkMod('c', { faixa: 'B' });
   const now = 5000;
   const due = nextStep(P({ srs: { x: { box: 1, due: now, seen: 1, wrong: 0 }, y: { box: 1, due: now - 1, seen: 1, wrong: 0 } } }), [a, b], [], now);
-  assert.equal(due.kind, 'revisar'); assert.equal(due.id, 'revisar'); assert.equal(due.label, 'Revisar 2 questão(ões) vencida(s)');
+  assert.equal(due.kind, 'revisar'); assert.equal(due.id, 'revisar'); assert.equal(due.label, 'Revisar 2 questões vencidas');
+  assert.equal(nextStep(P({ srs: { x: { box: 1, due: now, seen: 1, wrong: 0 } } }), [a], [], now).label, 'Revisar 1 questão vencida');
   const p = P({ leitura: { a: vistas(10) } });
   const n = nextStep(p, [a, b, c], [], now);
   assert.deepEqual(n, { kind: 'modulo', id: 'b', label: 'Estudar: Módulo b' });
@@ -76,4 +77,19 @@ test('nextStep: revisão vencida, módulo A de menor domínio, missão do últim
   assert.deepEqual(os, { kind: 'os', id: 'dr', label: 'Praticar na bancada' });
   const none = nextStep(P({ srs: { ...cards('a', full) } }), [mkMod('a')], [], now);
   assert.deepEqual(none, { kind: 'modulo', id: 'a', label: 'Estudar: Módulo a' });
+});
+
+test('registraLeitura: marca a seção vista; "ultima" só avança', () => {
+  const m = mkMod('m'), p = P();
+  assert.equal(registraLeitura(p, m, 's3', 10), true);
+  assert.deepEqual(p.leitura.m, { vistas: ['s3'], ultima: 's3', em: 10 });
+  assert.equal(registraLeitura(p, m, 's3', 11), false, 'seção já vista não é nova');
+  assert.equal(registraLeitura(p, m, 's1', 12), true);
+  assert.equal(p.leitura.m.ultima, 's3', 'rolar para cima não faz "ultima" voltar');
+  assert.equal(p.leitura.m.em, 12);
+  registraLeitura(p, m, 's5', 13); assert.equal(p.leitura.m.ultima, 's5');
+  assert.equal(registraLeitura(p, m, 'nao-existe', 14), false); assert.equal(p.leitura.m.ultima, 's5');
+  const q = P({ leitura: { m: { vistas: ['s2'], ultima: 'sumiu', em: 1 } } });
+  registraLeitura(q, m, 's0', 2); assert.equal(q.leitura.m.ultima, 's0', '"ultima" desconhecida é substituída');
+  assert.deepEqual(q.leitura.m.vistas, ['s2', 's0']);
 });

@@ -117,9 +117,26 @@ test('revisão espaçada (Leitner)', () => {
   answer(srs, 'a', true, now); assert.equal(srs.a.box, 2); assert.equal(srs.a.due, now + INTERVAL_DAYS[2] * DAY);
   assert.deepEqual(dueIds(srs, now), []);
   answer(srs, 'b', true, now); assert.equal(srs.b.box, 2);
-  for (let i = 0; i < 10; i++) answer(srs, 'b', true, now); assert.equal(srs.b.box, 5);
-  answer(srs, 'b', false, now); assert.equal(srs.b.box, 1);
+  let t = now; for (let i = 0; i < 10; i++) { answer(srs, 'b', true, t, Infinity); t = srs.b.due; } assert.equal(srs.b.box, 5, 'acertando no dia certo, sobe até a caixa 5');
+  answer(srs, 'b', false, t); assert.equal(srs.b.box, 1);
   assert.deepEqual(boxes(srs), [1, 1, 0, 0, 0]);
+});
+
+test('revisão: acerto antes do vencimento não promove (domínio exige outro dia)', () => {
+  const DAY = 86400000, now = 1_000_000_000_000, exam = Infinity;
+  const srs = { a: { box: 3, due: now + 3 * DAY, seen: 2, wrong: 0, last: true } };
+  const c = answer(srs, 'a', true, now + DAY, exam);
+  assert.equal(c.box, 3, 'caixa mantida'); assert.equal(c.due, now + 3 * DAY, 'vencimento mantido');
+  assert.equal(c.seen, 3); assert.equal(c.last, true);
+  const w = answer(srs, 'a', false, now + DAY, exam);
+  assert.equal(w.box, 1, 'erro antes do vencimento volta para a caixa 1'); assert.equal(w.wrong, 1); assert.equal(w.last, false); assert.equal(w.due, now + DAY);
+  const s2 = { b: { box: 2, due: now + DAY, seen: 1, wrong: 0, last: true } };
+  const p = answer(s2, 'b', true, now + DAY, exam);
+  assert.equal(p.box, 3, 'no vencimento, o acerto promove'); assert.equal(p.due, now + DAY + 3 * DAY);
+  // checagem refeita um minuto depois: o cartão continua na caixa 2 (não chega a "dominado" no mesmo dia)
+  const s3 = {};
+  answer(s3, 'c', true, now, exam); assert.equal(s3.c.box, 2);
+  answer(s3, 'c', true, now + 60000, exam); assert.equal(s3.c.box, 2); assert.equal(s3.c.due, now + DAY);
 });
 
 test('migração v2 → v3: cartões preservados, leitura validada', () => {
@@ -136,7 +153,8 @@ test('migração v2 → v3: cartões preservados, leitura validada', () => {
 test('revisão limitada pela data da prova', () => {
   const DAY = 86400000, now = 1_800_000_000_000, srs = {};
   const at = d => new Date(now + d * DAY).toISOString();
-  for (let i = 0; i < 5; i++) answer(srs, 'x', true, now, at(10));
+  srs.x = { box: 4, due: 0, seen: 3, wrong: 0 };
+  answer(srs, 'x', true, now, at(10));
   assert.equal(srs.x.box, 5); assert.equal(srs.x.due, now + 2 * DAY, '20% de 10 dias');
   assert.equal(srs.x.last, true);
   const s2 = { x: { box: 4, due: 0, seen: 0, wrong: 0 } };

@@ -11,6 +11,8 @@ const L = 'ABCDE';
 export const GLIFO = { 'nao-lido': '○', lido: '◐', checado: '●', dominado: '★' };
 export const NOME = { 'nao-lido': 'não lido', lido: 'lido', checado: 'checagem feita', dominado: 'dominado', 'em-breve': 'em breve' };
 export const FONTES = [100, 115, 130];
+/** O nome acessível começa pelo texto visível do botão (WCAG 2.5.3). */
+export const rotuloFonte = f => `Aa ${FONTES[f]}%: tamanho da letra, toque para mudar`;
 /* Ícones desenhados (as fontes de celular nem sempre têm ◐); o caractere fica no texto, para leitores e testes. */
 const ICONE = {
   'nao-lido': '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.2"/>',
@@ -105,7 +107,7 @@ export function leitorV(mod, P, { essencial = false, fonte = 0 } = {}) {
   <div class="ltools">
    <div class="lbtns">
     <button type="button" class="btn sm" data-nav="essencial" aria-pressed="${essencial}">Só o essencial</button>
-    <button type="button" class="btn sm" data-nav="fonte" aria-label="Tamanho da letra: ${FONTES[fonte]}%. Toque para mudar.">Aa <span class="fz">${FONTES[fonte]}%</span></button>
+    <button type="button" class="btn sm" data-nav="fonte" aria-label="${rotuloFonte(fonte)}">Aa <span class="fz">${FONTES[fonte]}%</span></button>
     <a class="btn sm primary" href="${ck}">Checagem</a>
    </div>
    <div class="lprog"><span class="lprog-t">${pr.txt}</span><span class="lbar" aria-hidden="true"><span style="width:${pct(pr.n / pr.t)}%"></span></span></div>

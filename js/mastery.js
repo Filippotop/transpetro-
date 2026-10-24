@@ -34,7 +34,7 @@ export function itemStatus(item, mods, P) {
 /** Próximo passo sugerido: revisão vencida > módulo de faixa A menos dominado > prática na bancada. */
 export function nextStep(P, mods, missions, now = Date.now()) {
   const venc = Object.values(P.srs || {}).filter(c => c.due <= now).length;
-  if (venc) return { kind: 'revisar', id: 'revisar', label: `Revisar ${venc} questão(ões) vencida(s)` };
+  if (venc) return { kind: 'revisar', id: 'revisar', label: `Revisar ${venc} ${venc === 1 ? 'questão vencida' : 'questões vencidas'}` };
   const estudar = m => ({ kind: 'modulo', id: m.id, label: `Estudar: ${m.titulo || m.id}` });
   let best = null;
   for (const m of mods) {
@@ -52,4 +52,18 @@ export function nextStep(P, mods, missions, now = Date.now()) {
   }
   if (ult) return { kind: 'os', id: ult.m.missoes[0], label: 'Praticar na bancada' };
   return estudar(mods[0]);
+}
+
+/** Registra que o fim da seção `secId` do módulo passou pela tela. `ultima` só avança (rolar para cima não a faz voltar),
+    para o leitor reabrir depois da seção mais adiantada lida. Devolve true se a seção ainda não tinha sido vista. */
+export function registraLeitura(P, mod, secId, now = Date.now()) {
+  const idx = id => (mod.secoes || []).findIndex(s => s.id === id);
+  const i = idx(secId);
+  if (i < 0) return false;
+  const L = (P.leitura || (P.leitura = {}))[mod.id] || (P.leitura[mod.id] = { vistas: [], ultima: null, em: 0 });
+  const nova = !L.vistas.includes(secId);
+  if (nova) L.vistas.push(secId);
+  if (idx(L.ultima) < i) L.ultima = secId;
+  L.em = now;
+  return nova;
 }

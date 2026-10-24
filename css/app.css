@@ -385,7 +385,7 @@ h2[tabindex="-1"]:focus,.secao h3:focus{outline:none}
 /* ---------- bancada: antes de atender ---------- */
 .antes{margin:6px 0 2px;padding:6px 10px 2px;border-left:3px solid var(--pc);background:var(--pc-bg);font-family:var(--sans);font-size:.9rem;line-height:1.35}
 .antes-k{display:block;color:var(--ink);font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-.antes a{display:flex;align-items:center;min-height:40px;font-weight:600}
+.antes a{display:flex;align-items:center;min-height:44px;font-weight:600}
 
 @media (max-width:900px){
   .top{padding:14px 0 0;align-items:center}

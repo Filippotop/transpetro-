@@ -12,7 +12,7 @@ HTML + CSS + módulos ES nativos, sem etapa de build e sem dependências em temp
 | `js/draw.js` | Primitivas SVG e alvos clicáveis `TPt` (ponto de teste), `HIT` (componente), `RING` (anel do alicate) |
 | `js/missions/*.js` | Uma missão por arquivo (dados + modelo elétrico + desenho); `index.js` é o catálogo |
 | `js/store.js` | Persistência em `localStorage` com migração, exportação e importação |
-| `js/review.js` | Revisão espaçada (Leitner, caixas 1–5: 0, 1, 3, 7 e 16 dias) |
+| `js/review.js` | Revisão espaçada (Leitner, caixas 1–5: 0, 1, 3, 7 e 16 dias); acerto antes do vencimento não sobe de caixa |
 | `js/mastery.js` | Domínio por módulo e por item do edital (leitura + checagem) e o “próximo passo”; funções puras |
 | `js/apostila/*.js` | Catálogo do Anexo IV (`edital.js`), um módulo por arquivo; `index.js` é o catálogo |
 | `js/ui/apostila.js` | Telas da apostila: mapa do edital, leitor (sumário, “Só o essencial”, letra), checagem; observador de leitura |

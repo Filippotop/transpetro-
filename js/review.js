@@ -5,10 +5,14 @@ import { EXAM_DATE } from './instruments.js';
 export const INTERVAL_DAYS = [0, 0, 1, 3, 7, 16]; // índice = caixa
 const DAY = 86400000;
 
-/** Atualiza o cartão `id` depois de uma resposta; `examDate` limita o intervalo. */
+/** Atualiza o cartão `id` depois de uma resposta; `examDate` limita o intervalo.
+    Acerto antes do vencimento (checagem refeita, revisão extra) não sobe de caixa nem adia o cartão:
+    subir exige acertar de novo em outro dia. Erro vale sempre. */
 export function answer(srs, id, correct, now = Date.now(), examDate = EXAM_DATE) {
+  const early = id in srs && now < srs[id].due;
   const c = srs[id] || { box: 1, due: now, seen: 0, wrong: 0 };
   c.seen++;
+  if (correct && early) { c.last = true; return c; }
   if (correct) c.box = Math.min(5, c.box + 1); else { c.box = 1; c.wrong++; }
   c.last = !!correct;
   const left = (new Date(examDate) - now) / DAY, cap = Number.isFinite(left) ? Math.max(1, Math.floor(0.2 * left)) : Infinity;

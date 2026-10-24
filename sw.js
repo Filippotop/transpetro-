@@ -1,6 +1,6 @@
 /* Bancada Virtual de Manutenção: service worker (app offline).
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova. */
-const VER = '2026-10-24.1';
+const VER = '2026-10-24.2';
 const SHELL = 'bancada-shell-' + VER, RUNTIME = 'bancada-runtime-v1';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'css/app.css',
   'js/app.js', 'js/engine.js', 'js/store.js', 'js/review.js', 'js/util.js', 'js/instruments.js', 'js/draw.js',

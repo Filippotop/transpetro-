@@ -82,6 +82,12 @@ async function apostila(page, where, vw) {
   check(await hidden(page, '.leitor .texto > p:not(.tw), .leitor .texto > ul'), `${where}: "Só o essencial" não escondeu o texto corrido`);
   for (const c of ['.cai', '.pega', '.exres', '.essencial', '.tw']) check(await visible(page, `.leitor ${c}`), `${where}: "Só o essencial" escondeu ${c}`);
   check(await page.getAttribute('[data-nav="essencial"]', 'aria-pressed') === 'true', `${where}: botão "Só o essencial" sem aria-pressed`);
+  const fz = await page.$eval('[data-nav="fonte"]', b => [b.textContent.trim().replace(/\s+/g, ' '), b.getAttribute('aria-label')]);
+  check(fz[1].startsWith(fz[0]), `${where}: o nome do botão de letra não começa pelo texto visível (“${fz[0]}” × “${fz[1]}”)`);
+  // "Pular para o conteúdo" leva o foco ao conteúdo sem trocar de tela
+  await page.focus('.skip'); await page.keyboard.press('Enter'); await page.waitForTimeout(100);
+  const sk = await page.evaluate(() => [location.hash, document.activeElement && document.activeElement.id]);
+  check(sk[0] === '#mod/potencia-trifasicos' && sk[1] === 'view', `${where}: "Pular para o conteúdo" mudou de tela ou não levou o foco (${sk.join(', ')})`);
   // impressão: sem abas, texto completo mesmo no modo essencial
   await page.emulateMedia({ media: 'print' });
   check(!(await page.isVisible('.tabs')), `${where}: as abas aparecem na impressão`);
@@ -109,6 +115,9 @@ async function apostila(page, where, vw) {
   check(/4 de 4/.test(await page.textContent('.chk-res')), `${where}: resultado da checagem não mostra 4 de 4`);
   await noHScroll(page, `${where} · checagem`);
   if (ax) await axe(page, `${where} · checagem`);
+  // refazer a checagem no mesmo dia não pode dar ★ (domínio exige acertar de novo em outro dia)
+  await page.click('[data-nav="refazer"]'); await page.waitForSelector('.checagem .q .opts button:not([disabled])');
+  for (const [i, q] of MOD.checagem.entries()) await page.click(`.q[data-q="ap/potencia-trifasicos/${i}"] [data-opt="${q.a}"]`);
   await tab(page, 'estudar'); await page.waitForSelector('.item-edital');
   check(await glyph(page, 3) === '●' && await glyph(page, 4) === '●', `${where}: itens 3 e 4 não viraram ● depois da checagem (“${await glyph(page, 3)}”, “${await glyph(page, 4)}”)`);
 
