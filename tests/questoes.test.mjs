@@ -151,9 +151,24 @@ for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `d
 }
 
 /* ---------- geradores (js/gerador.js) ---------- */
-/* Exceções documentadas (task-4-report.md): nenhuma para a letra; distância mínima menor que 3% só onde os erros
-   reais caem perto da resposta: rendimento (todos perto de 100%) e fem da bateria (leituras a menos de 1 V da fem). */
-const EXCECAO_LETRA = {};
+/* Exceções documentadas (task-4-report.md, rodada 3 de correções): deslizes reais valem mais que o equilíbrio das
+   letras. Quando um gerador não tem 4 deslizes reais de um lado da resposta, a letra fica restrita às posições viáveis
+   (q.letras em js/gerador.js), e o teste exige cada letra viável em ≥ 8% dos sorteios e nenhuma fora delas.
+   - eta (ABC): abaixo da resposta só há P_Cu linear, P_Cu nominal, kVA no lugar de kW e 1 − perdas/saída, e os dois
+     últimos somem quando FP = 1 ou quando ficam a menos de 0,1% da correta; D e E ficariam em ~3% e 0%.
+   - force (ABCD): acima de B·I·L·sen θ há quatro deslizes, abaixo em geral só três (sen 30° trocado, cm/1000, sem I);
+     E ficaria em ~4%.
+   - tc (BCDE): acima da corrente primária só há I_nominal, leitura × primário (ou × (primário + 5)) e 5·primário/leitura;
+     A ficaria em ~6%.
+   - ilum (ABCD): abaixo da carga certa só há 100 VA, 60 VA × blocos e 60 VA × área sem os 6 m²; E fica em 0%.
+   - neutro (BCDE): acima da tensão na carga menor só há 220 V, 254 V e 380 V; A fica em 0%.
+   - disj (BCD): só valores entre I_B/2 e 2·I_z; nenhum I_z tabelado tem 4 correntes nominais em (I_z, 2·I_z], e só
+     I_B em (25, 26] ou (63, 64] tem 4 abaixo; A fica em 0% e E em ~7%.
+   - pe (CDE): nenhuma opção maior que a fase; entre a seção mínima e a fase cabem no máximo 2 seções padronizadas.
+   Os três com menos de 4 letras (eta, disj, pe) ficam abaixo da regra de 4 letras viáveis: inventar distrator
+   para cumpri-la seria enchimento. */
+const EXCECAO_LETRA = { eta: 'ABC', force: 'ABCD', tc: 'BCDE', ilum: 'ABCD', neutro: 'BCDE', disj: 'BCD', pe: 'CDE' };
+const MENOS_DE_4_LETRAS = ['eta', 'disj', 'pe'];
 const SEP = { eta: 0.001, bat: 0.003 };
 /* Ids antigos (G:, antes da revisão da T4) não reconstroem questão. */
 /* Respostas refeitas sem olhar o código dos geradores: fórmulas da teoria aplicadas às entradas (q.vars). Número para
@@ -221,9 +236,17 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         const nsol = numeros(q.ex[q.ans]);
         for (const n of numeros(q.alts[LET.indexOf(q.ans)])) check(nsol.some(x => perto(x, n)), `${where}: a resolução não chega a ${n} (alternativa correta: ${text(q.alts[LET.indexOf(q.ans)])})`);
         vistos.add(q.cmd + q.alts.join()); letras.add(q.ans);
-        /* Alternativas numéricas: nenhuma errada a menos de 3% da correta (eta e a fem da bateria têm limite próprio). */
+        /* Alternativas numéricas: os 5 valores exibidos a pelo menos 3% uns dos outros, dois a dois. Exceções: eta e a fem
+           da bateria, em que os deslizes reais caem a décimos de ponto percentual uns dos outros; nelas só se exige a
+           distância própria (SEP) em relação à correta. */
         const vc = numeros(q.alts[LET.indexOf(q.ans)])[0], lim = SEP[g.id] == null ? 0.03 : SEP[g.id];
-        if (q.alts.every(soNumero)) LET.split('').filter(k => k !== q.ans).forEach(k => { const v = numeros(q.alts[LET.indexOf(k)])[0]; check(Math.abs(v - vc) >= lim * vc * 0.99, `${where}: a alternativa ${k} (${text(q.alts[LET.indexOf(k)])}) fica a menos de ${lim * 100}% da correta (${text(q.alts[LET.indexOf(q.ans)])})`); });
+        if (q.alts.every(soNumero)) {
+          if (SEP[g.id] != null) LET.split('').filter(k => k !== q.ans).forEach(k => { const v = numeros(q.alts[LET.indexOf(k)])[0]; check(Math.abs(v - vc) >= lim * vc * 0.99, `${where}: a alternativa ${k} (${text(q.alts[LET.indexOf(k)])}) fica a menos de ${lim * 100}% da correta (${text(q.alts[LET.indexOf(q.ans)])})`); });
+          else for (let i = 0; i < 5; i++) for (let j = i + 1; j < 5; j++) {
+            const a = numeros(q.alts[i])[0], b = numeros(q.alts[j])[0];
+            check(Math.abs(a - b) >= 0.03 * Math.max(Math.abs(a), Math.abs(b)) * 0.99, `${where}: ${LET[i]} (${text(q.alts[i])}) e ${LET[j]} (${text(q.alts[j])}) ficam a menos de 3% um do outro`);
+          }
+        }
         /* Conferência independente: a resposta refeita aqui, a partir das entradas da questão (q.vars). */
         const certa = text(q.alts[LET.indexOf(q.ans)]), esp = RESPOSTA[g.id] && RESPOSTA[g.id](q.vars || {});
         if (typeof esp === 'number') check(numeros(certa).some(n => Math.abs(n - esp) <= Math.max(0.01 * Math.abs(esp), 0.051)), `${where}: alternativa correta "${certa}", mas a conta independente dá ${+esp.toPrecision(5)}`);
@@ -233,10 +256,15 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
       check(vistos.size >= 3, `gerador ${g.id}: só ${vistos.size} questões diferentes em 100 sorteios`);
       /* Letra da correta: cada uma de A a E em pelo menos 8% de 500 sorteios (as alternativas ficam em ordem crescente,
          mas a posição da correta é sorteada). */
-      if (!EXCECAO_LETRA[g.id]) {
-        const cont = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      {
+        const viaveis = EXCECAO_LETRA[g.id] || LET, cont = { A: 0, B: 0, C: 0, D: 0, E: 0 };
         for (let s = 1; s <= 500; s++) cont[G.gerar(g.id, s * 104729 + 7).ans]++;
-        for (const k of LET) check(cont[k] >= 40, `gerador ${g.id}: a correta cai na letra ${k} em só ${cont[k]} de 500 sorteios (${LET.split('').map(x => x + ' ' + cont[x]).join(', ')})`);
+        const dist = LET.split('').map(x => x + ' ' + cont[x]).join(', ');
+        for (const k of LET) {
+          if (viaveis.includes(k)) check(cont[k] >= 40, `gerador ${g.id}: a correta cai na letra ${k} em só ${cont[k]} de 500 sorteios (${dist})`);
+          else check(cont[k] === 0, `gerador ${g.id}: a letra ${k} está fora das viáveis (${viaveis}), mas aparece ${cont[k]} vezes (${dist})`);
+        }
+        check(viaveis.length >= 4 || MENOS_DE_4_LETRAS.includes(g.id), `gerador ${g.id}: só ${viaveis.length} letras viáveis (${viaveis}) sem exceção documentada`);
       }
     }
   }

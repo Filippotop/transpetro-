@@ -22,6 +22,7 @@ export default {
   linhaFase: { n: 'Tensão de linha × de fase', d: 'Confundiu tensão de linha com tensão de fase.', t: 'formula' },
   faseLinhaI: { n: 'Corrente de linha × de fase', d: 'Confundiu corrente de fase com corrente de linha.', t: 'formula' },
   raiz3Mono: { n: '√3 em circuito monofásico', d: 'Aplicou √3 num circuito monofásico.', t: 'formula' },
+  raiz3Total: { n: '√3 numa potência já total', d: 'Aplicou √3 (ou 3) a uma potência trifásica que já é a total das três fases.', t: 'formula' },
   sem2pi: { n: 'Esqueceu o 2π', d: 'Esqueceu o 2π.', t: 'formula' },
   unidade: { n: 'Unidade ou prefixo', d: 'Errou uma conversão de unidade ou de prefixo (m/mm, cm²/m², ms/s, mH/H, µF/F, kW/W...).', t: 'unidade' },
   relInv: { n: 'Relação de transformação invertida', d: 'Inverteu a relação de transformação.', t: 'oposto' },
