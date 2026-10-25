@@ -1,5 +1,5 @@
 /* Tipos de erro das questões (banco do estudante e geradores). Cada alternativa errada pode levar um destes tipos:
-   n = nome curto (Painel e caderno de erros), d = o que o estudante fez (vem do ERR do banco, com ajustes), t = a armadilha
+   n = nome curto, texto puro (Painel e caderno de erros), d = o que o estudante fez (vem do ERR do banco, com ajustes), t = a armadilha
    do app (TRAPS do index.html: oposto, unidade, formula, detalhe, exagero), que agrupa os tipos no Painel e na Arena.
    As chaves vindas do banco (fontes/banco-de-questoes.html, const ERR) mantêm o nome; as novas estão no fim. */
 export default {
@@ -45,7 +45,7 @@ export default {
   rintSoma: { n: 'Dois ensaios mal combinados', d: 'Montou errado a relação entre os dois ensaios.', t: 'formula' },
   semRth: { n: 'Esqueceu a R de Thévenin', d: 'Esqueceu a resistência de Thévenin.', t: 'formula' },
   fonteAberta: { n: 'Fonte zerada do jeito errado', d: 'Zerou a fonte do jeito errado (a de tensão vira curto; a de corrente vira aberto).', t: 'oposto' },
-  usouE: { n: 'Fonte original no lugar de V_th', d: 'Usou a fonte original no lugar de V<sub>th</sub>.', t: 'formula' },
+  usouE: { n: 'Fonte original no lugar da de Thévenin', d: 'Usou a fonte original no lugar de V<sub>th</sub>.', t: 'formula' },
   sem4: { n: 'Esqueceu o 4 da máxima transferência', d: 'Esqueceu o fator 4 da máxima transferência.', t: 'formula' },
   semQuad: { n: 'Esqueceu o quadrado', d: 'Esqueceu de elevar ao quadrado.', t: 'formula' },
   ignorouFonte: { n: 'Ignorou uma fonte', d: 'Ignorou uma das fontes do circuito (inclusive fonte dependente).', t: 'formula' },
@@ -59,8 +59,8 @@ export default {
   idaVolta: { n: 'Dobrou o comprimento à toa', d: 'Dobrou o comprimento, mas a queda unitária em V/(A·km) já considera ida e volta.', t: 'formula' },
   percVolt: { n: 'Percentual tratado como volts', d: 'Usou o percentual como se fosse volts.', t: 'unidade' },
   outraTensao: { n: 'Tensão errada do sistema', d: 'Usou a tensão errada do sistema.', t: 'detalhe' },
-  abaixoIB: { n: 'Disjuntor abaixo de I_B', d: 'Disjuntor abaixo da corrente de projeto: desarmaria em serviço normal.', t: 'oposto' },
-  acimaIz: { n: 'Disjuntor acima de I_z', d: 'Disjuntor acima da capacidade do condutor: não protege o cabo.', t: 'exagero' },
+  abaixoIB: { n: 'Disjuntor abaixo da corrente de projeto', d: 'Disjuntor abaixo da corrente de projeto: desarmaria em serviço normal.', t: 'oposto' },
+  acimaIz: { n: 'Disjuntor acima da capacidade do cabo', d: 'Disjuntor acima da capacidade do condutor: não protege o cabo.', t: 'exagero' },
   neutroNada: { n: 'Neutro rompido sem efeito', d: 'Supôs que o rompimento do neutro não altera a tensão.', t: 'oposto' },
   divIgual: { n: 'Tensão dividida igualmente', d: 'Dividiu a tensão igualmente entre as cargas.', t: 'formula' },
   cargaErrada: { n: 'Tensão da outra carga', d: 'Calculou a tensão na outra carga (a de maior potência recebe menos tensão).', t: 'detalhe' },
@@ -88,5 +88,6 @@ export default {
   freq: { n: 'Frequência errada', d: 'Usou a frequência de outra rede (50 Hz no lugar de 60 Hz, ou o contrário).', t: 'detalhe' },
   retPolar: { n: 'Conversão retangular-polar', d: 'Errou a conversão entre as formas retangular e polar: o módulo é √(a² + b²) e o ângulo, arctg(b/a).', t: 'formula' },
   unidSI: { n: 'Unidade do SI trocada', d: 'Trocou as unidades do SI entre grandezas (weber, tesla, ampère por metro, henry).', t: 'unidade' },
+  formula: { n: 'Fórmula errada', d: 'Montou uma fórmula que não é a do problema.', t: 'formula' },
   simbolo: { n: 'Símbolo ou código lido errado', d: 'Leu errado um símbolo, uma letra ou um número de diagrama ou de planta.', t: 'detalhe' }
 };

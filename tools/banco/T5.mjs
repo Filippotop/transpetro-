@@ -1,6 +1,8 @@
 /* Revisão do banco, tema T5 (instalações e NBR 5410) → I1.
    Formato: ver o comentário do topo de tools/banco.mjs. Cada alternativa errada diz qual erro leva a ela. */
 const ESQ = ['TN-S', 'TN-C', 'TN-C-S', 'TT', 'IT'];
+/* Rótulos da figura que diriam a resposta (a questão pede para reconhecer o esquema pelo desenho dos condutores). */
+const ESQ_TIRA = ['N e PE no mesmo condutor', 'separados daqui em diante', 'eletrodo próprio', 'isolada ou por Z'];
 export default {
   /* ---------- seção 1: princípios e conceitos ---------- */
   'a:T5:b1:0': { d: 'f', h: '10.1', w: {
@@ -185,7 +187,7 @@ export default {
     C: '[detalhe] O circuito de iluminação não serve para equipamento de mais de 10 A.',
     D: '[exagero] Não basta qualquer circuito com disjuntor de 32 A: o circuito tem de ser independente e dimensionado para ele.',
     E: '[detalhe] Extensão não é solução de projeto.' } },
-  'h:t5:tncs': { mod: 'I1', h: '8.3', d: 'f', conv: {
+  'h:t5:tncs': { mod: 'I1', h: '8.3', d: 'f', figTira: ESQ_TIRA, conv: {
     s: 'A figura mostra os esquemas de aterramento da NBR 5410. O esquema em que o neutro e a proteção chegam da fonte combinados num único condutor (PEN) e são separados em N e PE num ponto da instalação é o',
     o: ESQ, a: 2,
     c: 'TN-C-S: o trecho inicial é TN-C (PEN) e, a partir da separação, TN-S. Depois dela, N e PE nunca mais se religam.' }, w: {
@@ -193,7 +195,7 @@ export default {
     B: '[esquemaTerra] No TN-C, o PEN segue combinado em toda a instalação, sem separação.',
     D: '[esquemaTerra] No TT as massas vão a um eletrodo próprio; não há PEN.',
     E: '[esquemaTerra] No IT a alimentação é isolada da terra (ou aterrada por alta impedância); não há PEN.' } },
-  'h:t5:tt': { mod: 'I1', h: '8.3', d: 'm', conv: {
+  'h:t5:tt': { mod: 'I1', h: '8.3', d: 'm', figTira: ESQ_TIRA, conv: {
     s: 'Na figura dos esquemas de aterramento da NBR 5410, o esquema em que a corrente de uma falta fase-massa retorna à fonte pela terra, passando por dois eletrodos, o que costuma torná-la baixa demais para o disjuntor e exige DR, é o',
     o: ESQ, a: 3,
     c: 'No TT, as massas têm eletrodo próprio, independente do aterramento da fonte; a corrente de falta passa pelas duas resistências de terra, que a limitam. Por isso o DR é praticamente indispensável.' }, w: {

@@ -210,7 +210,7 @@ export default {
     C: '[atrAdi] O módulo está certo, mas na sequência ABC a corrente de linha fica atrasada 30°. O adiantamento de 30° é da tensão de linha na estrela.',
     D: '[tres] O fator é √3, não 3; e o ângulo é 30°, não 120°.',
     E: '[raiz3inv] A corrente de linha é √3 vezes maior que a de fase, não menor.' } },
-  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', conv: {
+  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', figTira: ['VAB = VAN − VBN = √3·VAN ∠+30°'], conv: {
     s: 'A figura mostra o diagrama fasorial de um sistema trifásico em estrela, de sequência ABC, com as tensões de fase V<sub>AN</sub>, V<sub>BN</sub> e V<sub>CN</sub>. A tensão de linha V<sub>AB</sub> é obtida por',
     o: ['V<sub>AN</sub> + V<sub>BN</sub>, com módulo igual ao de V<sub>AN</sub>',
       'V<sub>AN</sub> − V<sub>BN</sub>, com módulo √3·V<sub>AN</sub> e adiantada 30° em relação a V<sub>AN</sub>',
@@ -223,7 +223,7 @@ export default {
     C: '[somaArit] 2·V<sub>AN</sub> seria a soma dos módulos, como se os fasores estivessem alinhados. Com 120° entre eles, a diferença vale √3·V<sub>AN</sub>, a 30°.',
     D: '[sinal] V<sub>BN</sub> − V<sub>AN</sub> é −V<sub>AB</sub> (a tensão V<sub>BA</sub>): a ordem da subtração define o sentido do fasor.',
     E: '[sinal] V<sub>AN</sub> + V<sub>CN</sub> = −V<sub>BN</sub>, o fasor auxiliar da construção, de módulo V<sub>AN</sub>; não é a tensão de linha.' } },
-  'h:t1:pot': { mod: 'E3', h: '3.3', d: 'f', conv: {
+  'h:t1:pot': { mod: 'E3', h: '3.3', d: 'f', figTroca: [['P (W) — não muda', 'P (W)']], conv: {
     s: 'A figura mostra o triângulo de potências de uma instalação antes (S<sub>1</sub>, Q<sub>1</sub>) e depois (S<sub>2</sub>, Q<sub>2</sub>) da instalação de um banco de capacitores de potência Q<sub>C</sub>. A grandeza que NÃO se altera com essa correção do fator de potência é',
     o: ['a potência ativa P', 'a potência reativa absorvida da rede', 'a potência aparente', 'o ângulo φ entre tensão e corrente', 'a corrente fornecida pela fonte'],
     a: 0,

@@ -19,7 +19,8 @@ const DATA_FILES = [...INDEX.matchAll(/<script src="(data\/[^"]+\.js)"><\/script
 check(DATA_FILES.includes('data/questoes.js'), 'index.html não carrega data/questoes.js');
 check(DATA_FILES.indexOf('data/questoes.js') > DATA_FILES.indexOf('data/embreve.js'), 'data/questoes.js precisa vir depois de data/embreve.js (as questões entram nas estações já registradas)');
 const COM_GERADOR = fs.existsSync(path.join(ROOT, 'js/gerador.js'));
-if (COM_GERADOR) check(/<script src="js\/gerador\.js"><\/script>/.test(INDEX), 'index.html não carrega js/gerador.js');
+check(COM_GERADOR, 'falta js/gerador.js');
+check(/<script src="js\/gerador\.js"><\/script>/.test(INDEX), 'index.html não carrega js/gerador.js');
 const SW = read('sw.js');
 for (const f of ['data/questoes.js', ...(COM_GERADOR ? ['js/gerador.js'] : [])]) check(SW.includes(`'${f}'`), `offline: ${f} fora da lista de arquivos do sw.js`);
 
@@ -121,7 +122,7 @@ for (const t of ['T1', 'T2', 'T3', 'T4', 'T5']) {
 }
 check(/^## Banco de questões/m.test(ERRATA), 'fontes/ERRATA.md sem a seção "Banco de questões"');
 /* Tipos de erro: nome curto, descrição e armadilha do app. */
-for (const [k, e] of Object.entries(DATA.erros || {})) check(e.n && e.d && TRAPS.includes(e.t), `tipo de erro ${k}: precisa de n, d e t (armadilha conhecida)`);
+for (const [k, e] of Object.entries(DATA.erros || {})) { check(e.n && e.d && TRAPS.includes(e.t), `tipo de erro ${k}: precisa de n, d e t (armadilha conhecida)`); check(!/[<_]/.test(e.n), `tipo de erro ${k}: o nome "${e.n}" aparece como texto puro (sem HTML nem _)`); }
 /* Distribuição: toda estação construída tem questões. */
 for (const m of DATA.modules.filter(m => !m.emBreve)) check(m.qs.length > 0, `estação ${m.id} sem questões na aba Questões`);
 /* O id do arquivo não pode ter conteúdo do Humanas. */
@@ -161,6 +162,9 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         check(JSON.stringify(G.porId(q.id)) === JSON.stringify(q), `${where}: porId não reconstrói a mesma questão`);
         /* Toda alternativa errada tem tipo de erro ou explicação própria (nunca o texto genérico de preenchimento). */
         for (const k of LET) if (k !== q.ans) check(!/sem relação com|valor aleatório|chute/i.test(q.ex[k]), `${where}: alternativa ${k} sem erro identificado`);
+        /* A resolução (explicação da correta) chega ao mesmo número que a alternativa correta mostra. */
+        const nsol = numeros(q.ex[q.ans]);
+        for (const n of numeros(q.alts[LET.indexOf(q.ans)])) check(nsol.some(x => perto(x, n)), `${where}: a resolução não chega a ${n} (alternativa correta: ${text(q.alts[LET.indexOf(q.ans)])})`);
         vistos.add(q.cmd + q.alts.join());
       }
       check(vistos.size >= 3, `gerador ${g.id}: só ${vistos.size} questões diferentes em 100 sorteios`);

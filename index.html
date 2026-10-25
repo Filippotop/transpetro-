@@ -610,6 +610,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/embreve.js"></script>
 <script src="data/questoes.js"></script>
 <script src="js/calc.js"></script>
+<script src="js/gerador.js"></script>
 <script src="merge.js"></script>
 <script>
 const DATA = window.DATA;
@@ -649,6 +650,17 @@ let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, note
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
 function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
 fix();
+/* Questões com números novos (js/gerador.js): o id G:<gerador>:<semente> reconstrói a questão, que entra em Q para o
+   caderno de erros, o Refazer e o Revisar depois funcionarem como com as do banco. */
+const isGen = id => String(id).startsWith('G:');
+function regGen(){ if(!window.GERADOR) return; [S.ans,S.marks,S.chute].forEach(o=>Object.keys(o||{}).forEach(id=>{ if(isGen(id)&&!Q[id]){ const q=GERADOR.porId(id); if(q) Q[id]=q; } })); }
+regGen();
+/* Tipo de erro de uma resposta errada: o da alternativa marcada (DATA.erros, vindo do banco do estudante), senão a
+   armadilha (TRAPS), senão "conteúdo". Nome e dica para o Painel, o caderno de erros e o simulado. */
+function erroKey(id,a){ const q=Q[id]; const e=(q&&q.erros&&q.erros[a.first])||a.erro; if(e&&DATA.erros&&DATA.erros[e]) return 'e:'+e; return a.trap||'conteudo'; }
+function erroNome(k){ if(k==='conteudo') return 'Conteúdo ou leitura'; if(k==='chute') return 'Chute certo'; if(k.startsWith('e:')){ const e=DATA.erros[k.slice(2)]; return e?e.n:k; } return TRAPS[k]?TRAPS[k].name:k; }
+function erroDica(k){ if(k.startsWith('e:')){ const e=DATA.erros[k.slice(2)]; return e?(e.d.replace(/\.$/,'')===e.n?'':e.d)+(TRAPS[e.t]?` Armadilha: ${TRAPS[e.t].name.toLowerCase()}.`:''):''; } return TRAPS[k]?TRAPS[k].tip:''; }
+const ansRec=(q,k,src)=>({first:k,ok:k===q.ans,t:Date.now(),src,trap:k!==q.ans?(q.traps[k]||'conteudo'):null,erro:k!==q.ans?((q.erros||{})[k]||null):null});
 let dbRef=null, saveTimer=null, saving=false, dirty=false;
 /* Exclusões que a sincronização precisa respeitar (ver merge.js): t>0 apagado em t, t<0 recriado em -t. */
 function markDel(path,gone){ S.del=S.del||{}; S.del[JSON.stringify(path.map(String))]=gone?Date.now():-Date.now(); }
@@ -730,6 +742,7 @@ function go(v,p){ view=v; param=p||null; if(v==='mod'&&param){ lsSet('edo-last',
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) go(b.dataset.v);});
 $('#brand').addEventListener('click',()=>go('linhas'));
 function render(){
+  regGen();
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current', String(b.dataset.v===view || (view==='mod'&&b.dataset.v==='linhas') || (view==='game'&&b.dataset.v==='arena') || ((view==='prova'||view==='provares'||view==='papel')&&b.dataset.v==='provas'))));
   if(view!=='prova' && typeof pvTimer!=='undefined') clearInterval(pvTimer);
   document.body.dataset.view=view;
@@ -756,7 +769,8 @@ function vLinhas(){
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
   tasks.push({ic:'⚒',t:'Bancada: atenda uma ordem de serviço',s:'Meça, desenergize pela NR-10 e diagnostique o defeito. É a teoria aplicada na prática.',act:()=>go('bancada')});
-  const tot=DATA.questions.length, done=Object.keys(S.ans).length, ok=Object.values(S.ans).filter(a=>a.ok).length;
+  const bankAns=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a);
+  const tot=DATA.questions.length, done=bankAns.length, ok=bankAns.filter(a=>a.ok).length;
   const mastered=Object.values(S.cards).filter(c=>c.box>=3).length;
   const el=volStats('EL'), mt=volStats('MT');
   const open=DATA.modules.filter(m=>STUDY_LINES.includes(m.line)&&!m.emBreve);
@@ -861,6 +875,8 @@ function vMod(){
     const showNext=()=>{ const s2=modStats(m.id); if(s2.done<s2.n){ ns.innerHTML=''; return; } const nx=nextModules(1)[0];
       ns.innerHTML=`<div class="nextstep"><b>Estação concluída: ${s2.ok} de ${s2.n} certas de primeira.</b><span style="font-family:var(--read)">${s2.ok/s2.n<0.6?'Abaixo de 60%: releia a teoria antes de seguir, e escreva no caderno de erros a regra de cada erro.':'Bom. Agora siga para a próxima estação da prioridade.'}</span><div class="row">${s2.ok/s2.n<0.6?'<button class="btn" id="nsT">Reler a teoria</button>':''}${nx&&nx.id!==m.id?`<button class="btn primary" id="nsN">Próxima: ${nx.id} · ${esc(nx.title)} →</button>`:''}<button class="btn" id="nsE">Caderno de erros</button></div></div>`;
       const a=$('#nsT'); if(a) a.onclick=()=>{param.tab='teoria'; vMod(); window.scrollTo({top:0});}; const b=$('#nsN'); if(b) b.onclick=()=>go('mod',{id:nx.id,tab:'teoria'}); $('#nsE').onclick=()=>go('treino',{s:'erros'}); };
+    const nGen=window.GERADOR?GERADOR.daEstacao(m.id).length:0;
+    if(nGen){ const b=document.createElement('div'); b.className='callout'; b.style.margin='0 0 16px'; b.innerHTML=`<strong>Quer treinar as contas com outros números?</strong> Esta estação tem ${plural(nGen,'tipo de conta','tipos de conta')} com números sorteados na hora. <button class="btn" id="toGen" style="margin-top:8px">Questões com números novos →</button>`; body.appendChild(b); b.querySelector('#toGen').onclick=()=>go('treino',{s:'novos',gm:m.id}); }
     m.qs.forEach(id=>{ const d=document.createElement('div'); body.appendChild(d); questionCard(d,Q[id],{onDone:()=>setTimeout(showNext,0)}); });
     body.appendChild(ns); showNext();
   } else if(tab==='tutor'){
@@ -908,7 +924,7 @@ function questionCard(el,q,opts={}){
     if(reveal){
       const first=st.tries[0]; const okFirst=first===q.ans;
       fbz.innerHTML=`<div class="fb ${okFirst?'ok':'no'}"><strong>${okFirst?'Certa de primeira.':(st.tries.includes(q.ans)?'Certa na segunda tentativa. Conta como erro na sua estatística.':'Gabarito: '+q.ans+'.')}</strong> ${okFirst?'':'Leia o porquê de cada alternativa.'}</div>
-        <div class="ex">${L.split('').map(k=>`<div class="${k===q.ans?'c':''}"><span class="L">${k}</span><span>${q.ex[k]||''}${q.traps[k]?`<span class="tg">${TRAPS[q.traps[k]].name}</span>`:''}</span></div>`).join('')}</div>
+        <div class="ex">${L.split('').map(k=>`<div class="${k===q.ans?'c':''}"><span class="L">${k}</span><span>${q.ex[k]||''}${q.erros&&q.erros[k]&&DATA.erros&&DATA.erros[q.erros[k]]?`<span class="tg">${esc(DATA.erros[q.erros[k]].n)}</span>`:q.traps[k]?`<span class="tg">${TRAPS[q.traps[k]].name}</span>`:''}</span></div>`).join('')}</div>
         <div class="meta">Item ${esc(q.hab)} do edital · dificuldade ${esc(q.dif)}${prev&&opts.showPrev!==false?` · primeira resposta registrada: ${prev.first} (${prev.ok?'certa':'errada'})`:''}</div>
         <div class="qtools"><button class="chipbtn mk" aria-pressed="${!!S.marks[q.id]}">${S.marks[q.id]?'★ marcada para revisar':'☆ revisar depois'}</button>${S.ans[q.id]&&S.ans[q.id].ok?`<button class="chipbtn ch" aria-pressed="${!!S.chute[q.id]}">${S.chute[q.id]?'chute: vai para o caderno de erros':'acertei no chute'}</button>`:''}</div>
         <div class="row" style="margin-top:10px">${prev?'<button class="btn redo">Tentar de novo (não muda a estatística)</button>':''}<button class="btn tex tutor-only">Explique de outro jeito</button></div><div class="tx"></div>`;
@@ -918,10 +934,11 @@ function questionCard(el,q,opts={}){
       const tb=fbz.querySelector('.tex'); if(tb) tb.onclick=()=>askTutor(fbz.querySelector('.tx'),`Você é um tutor para a prova da Transpetro (Cesgranrio, Manutenção – Elétrica) falando com o estudante, em português do Brasil, texto simples sem markdown, até 150 palavras. Explique de um jeito diferente e mais concreto por que a alternativa ${q.ans} é a correta${first!==q.ans?` e por que a ${first}, que ele marcou, está errada`:''}. Confira as contas. Não invente fatos além do material.\n\nTexto-base: ${strip(q.base.join(' '))}\nFonte: ${strip(q.src)}\nComando: ${strip(q.cmd)}\nAlternativas: ${q.alts.map((a,i)=>L[i]+') '+strip(a)).join(' | ')}\nGabarito comentado: ${L.split('').map(k=>k+': '+strip(q.ex[k]||'')).join(' | ')}`);
     }
     el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>pick(b.dataset.k));
+    if(q.fig&&window.montarCalculadoras) montarCalculadoras(el); /* figura larga: botão "Ampliar a figura" no celular */
   }
   function pick(k){
     st.tries.push(k);
-    if(st.tries.length===1 && !S.ans[q.id]){ S.ans[q.id]={first:k,ok:k===q.ans,t:Date.now(),src:opts.src||'estudo',trap:k!==q.ans?(q.traps[k]||'conteudo'):null}; bump(); save(); }
+    if(st.tries.length===1 && !S.ans[q.id]){ S.ans[q.id]=ansRec(q,k,opts.src||'estudo'); if(isGen(q.id)) Q[q.id]=q; bump(); save(); }
     if(k===q.ans || st.tries.length>=2){ st.locked=true; opts.onDone&&opts.onDone(st.tries[0]===q.ans); }
     paint();
   }
@@ -1057,12 +1074,13 @@ function vSim(){
   const cfg=Object.assign({n:15,foco:'tudo'},S.simcfg||{});
   host().innerHTML=`<div class="sec-title"><h2>Simulado relâmpago</h2><span class="eyebrow">4 minutos por questão, como no dia (60 questões em 4 h)</span></div>
   <div class="panel" style="max-width:760px">
-    <p style="font-family:var(--read);margin-top:0">Sem correção durante a prova. No fim, você vê o acerto por linha e por bloco (o corte é 50% em cada um), as questões fáceis que errou e as armadilhas que te pegaram.</p>
+    <p style="font-family:var(--read);margin-top:0">Sem correção durante a prova. As questões vêm das estações na proporção em que cada item do edital caiu na prova de 2023. No fim, você vê o acerto por linha e por bloco (o corte é 50% em cada um), as questões fáceis que errou e os tipos de erro que te pegaram.</p>
     <div class="eyebrow" style="margin:14px 0 8px">Quantas questões</div>
     <div class="choice" id="cn">${[10,15,20,30,60].map(n=>`<button data-n="${n}" aria-pressed="${cfg.n===n}">${n} · ${n*4} min</button>`).join('')}</div>
     <div class="eyebrow" style="margin:16px 0 8px">Foco</div>
     <div class="choice" id="cf">${[['tudo','Todas as linhas (proporção da prova)'],['EL','Específicas'],['MT','Matemática'],['fracos','Meus pontos fracos'],['novas','Só questões que nunca fiz']].map(([k,l])=>`<button data-f="${k}" aria-pressed="${cfg.foco===k}">${l}</button>`).join('')}</div>
     <div class="row" style="margin-top:18px"><button class="btn gold" id="start">Começar</button><span class="muted" id="avail"></span></div>
+    <p class="muted" id="dist" style="font-size:12.5px;margin:8px 0 0"></p>
   </div>
   ${S.sims.length?`<div class="sec-title"><h2>Simulados anteriores</h2></div><div class="bars">${S.sims.slice(-6).reverse().map(s=>`<div class="brow"><span class="mono" style="font-size:12px">${new Date(s.t).toLocaleDateString('pt-BR')} · ${s.n}q</span><span class="track2"><i style="width:${pct(s.ok,s.n)}%"></i></span><span class="mono">${pct(s.ok,s.n)}%</span></div>`).join('')}</div>`:''}`;
   const pool=()=>{ let p=DATA.questions.slice();
@@ -1070,15 +1088,38 @@ function vSim(){
     if(cfg.foco==='novas') p=p.filter(q=>!S.ans[q.id]);
     if(cfg.foco==='fracos'){ const weak=new Set(DATA.modules.filter(m=>{const s=modStats(m.id); return s.done===0? m.faixa==='A' : s.ok/s.done<0.67;}).map(m=>m.id)); p=p.filter(q=>weak.has(q.mod) || (q.kind!=='fixacao' && (!S.ans[q.id]||!S.ans[q.id].ok))); }
     return p; };
-  const upd=()=>{ $('#avail').textContent=`${plural(pool().length,'questão disponível','questões disponíveis')} nesse foco`; };
+  const upd=()=>{ $('#avail').textContent=`${plural(pool().length,'questão disponível','questões disponíveis')} nesse foco`;
+    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'){ const d=simCotas(pool(),cfg.n,cfg.foco); $('#dist').textContent=d.length?'Por estação: '+d.map(([m,n])=>`${m} ${n}`).join(' · ')+'.':''; } else $('#dist').textContent=''; };
   $('#cn').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.n=+b.dataset.n; S.simcfg=cfg; vSim();};
   $('#cf').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.foco=b.dataset.f; S.simcfg=cfg; vSim();};
   upd();
   $('#start').onclick=()=>{ const p=pool(); if(!p.length){toast('Nenhuma questão nesse foco. Escolha outro.');return;}
     /* Proporção da prova de 2023: 40 específicas para 10 de Matemática (Português fica fora do app). */
-    let picked=shuffle(p); if(cfg.foco==='tudo'){ const el=picked.filter(q=>q.vol==='EL'), mt=picked.filter(q=>q.vol==='MT'); const nm=Math.min(mt.length,Math.round(cfg.n*0.2)); picked=shuffle(mt.slice(0,nm).concat(el.slice(0,cfg.n-nm))); }
+    let picked=shuffle(p);
+    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'){ const by={}; picked.forEach(q=>(by[q.mod]=by[q.mod]||[]).push(q)); const esc1=simCotas(p,cfg.n,cfg.foco).flatMap(([m,n])=>by[m].slice(0,n)); const ja=new Set(esc1); picked=shuffle(esc1.concat(picked.filter(q=>!ja.has(q)).slice(0,Math.max(0,cfg.n-esc1.length)))); }
     picked=picked.slice(0,cfg.n);
     SIM={qs:picked.map(q=>q.id),ans:{},cur:0,start:Date.now(),limit:picked.length*240000,running:true}; simSave(); simRun(); };
+}
+/* Proporção da prova de 2023: as n questões se dividem entre as estações com questões pelo peso2023 de cada uma
+   (maiores restos). Estações que dividem o peso de um item (as notas delas dizem "dividido com…") contam a metade:
+   E1 e E2 (item 2), M2 e M3 (item 5), I1 e I2 (item 8), A1 e A2 (item 9). Na proporção da prova, 40 específicas para
+   10 de Matemática (Português fica fora do app). Estação com peso 0 em 2023 (M1) fica de fora do simulado completo. */
+const PESO_DIVIDIDO={E1:2,E2:2,M2:2,M3:2,I1:2,I2:2,A1:2,A2:2};
+function simCotas(pool,n,foco){
+  const disp={}; pool.forEach(q=>{ if(q.mod&&M[q.mod]) disp[q.mod]=(disp[q.mod]||0)+1; });
+  const peso=id=>(M[id].peso2023||0)/(PESO_DIVIDIDO[id]||1);
+  const reparte=(ids,k)=>{ ids=ids.filter(id=>peso(id)>0&&disp[id]); const out={}; ids.forEach(id=>out[id]=0); let falta=k;
+    while(falta>0){ const vivos=ids.filter(id=>out[id]<disp[id]); if(!vivos.length) break; const tot=vivos.reduce((a,id)=>a+peso(id),0);
+      const alvo=vivos.map(id=>[id,falta*peso(id)/tot]); let dado=0;
+      alvo.forEach(([id,x])=>{ const v=Math.min(Math.floor(x),disp[id]-out[id]); out[id]+=v; dado+=v; });
+      alvo.map(([id,x])=>[id,x-Math.floor(x)]).sort((a,b)=>b[1]-a[1]||peso(b[0])-peso(a[0])).forEach(([id])=>{ if(dado<falta&&out[id]<disp[id]){ out[id]++; dado++; } });
+      if(!dado) break; falta-=dado; }
+    return out; };
+  const ids=Object.keys(disp), el=ids.filter(id=>M[id].vol==='EL'), mt=ids.filter(id=>M[id].vol==='MT');
+  let cotas={};
+  if(foco==='MT') cotas=reparte(mt,n); else if(foco==='EL') cotas=reparte(el,n);
+  else { const nm=mt.length?Math.round(n*0.2):0; const cm=reparte(mt,nm); const usados=Object.values(cm).reduce((a,b)=>a+b,0); cotas=Object.assign(reparte(el,n-usados),cm); }
+  return DATA.modules.filter(m=>cotas[m.id]).map(m=>[m.id,cotas[m.id]]);
 }
 function simRun(){
   clearInterval(gameTimer); simSave();
@@ -1091,6 +1132,7 @@ function simRun(){
     <div class="row" style="justify-content:space-between"><button class="btn" id="pv" ${s.cur?'':'disabled'}>← anterior</button><button class="btn" id="fin">Entregar simulado</button><button class="btn primary" id="nx" ${s.cur<s.qs.length-1?'':'disabled'}>próxima →</button></div></div>`;
   app.querySelectorAll('.alt').forEach(b=>b.onclick=()=>{ s.ans[q.id]=b.dataset.k; if(s.cur<s.qs.length-1){ s.cur++; } simSave(); simRun(); window.scrollTo({top:0}); });
   app.querySelectorAll('.simnav button').forEach(b=>b.onclick=()=>{s.cur=+b.dataset.i; simRun();});
+  if(q.fig&&window.montarCalculadoras) montarCalculadoras(host());
   $('#pv').onclick=()=>{s.cur--; simRun();}; $('#nx').onclick=()=>{s.cur++; simRun();};
   $('#fin').onclick=()=>{ const left=s.qs.length-Object.keys(s.ans).length; if(left && !s.confirm){ s.confirm=true; toast(`Faltam ${left} questões. Toque de novo em Entregar para encerrar.`); return; } simFinish(); };
   const tick=()=>{ const el=Date.now()-s.start, rem=Math.max(0,s.limit-el); const c=$('#clock'); if(!c) return clearInterval(gameTimer); if(!s.running) return clearInterval(gameTimer); c.textContent=`${Math.floor(rem/60000)}:${String(Math.floor(rem/1000)%60).padStart(2,'0')} restantes`; $('#ti').style.width=(rem/s.limit*100)+'%'; if(rem<=0){ simFinish(); } };
@@ -1098,7 +1140,7 @@ function simRun(){
 }
 function simFinish(){
   clearInterval(gameTimer); const s=SIM; s.running=false; s.finished=true; s.time=Math.min(Date.now()-s.start,s.limit); lsDel('edo-sim');
-  let ok=0; s.qs.forEach(id=>{ const q=Q[id], k=s.ans[id]; if(k===q.ans) ok++; if(k && !S.ans[id]) S.ans[id]={first:k,ok:k===q.ans,t:Date.now(),src:'simulado',trap:k!==q.ans?(q.traps[k]||'conteudo'):null}; });
+  let ok=0; s.qs.forEach(id=>{ const q=Q[id], k=s.ans[id]; if(k===q.ans) ok++; if(k && !S.ans[id]) S.ans[id]=ansRec(q,k,'simulado'); });
   S.sims.push({t:Date.now(),n:s.qs.length,ok,time:s.time}); bump(Object.keys(s.ans).length); save(); simResult();
 }
 function simResult(){
@@ -1107,13 +1149,13 @@ function simResult(){
   const byL={}; rows.forEach(r=>{ const L=r.q.mod&&M[r.q.mod]?M[r.q.mod].line:(r.q.vol==='MT'?'X':'E'); byL[L]=byL[L]||{n:0,ok:0}; byL[L].n++; if(r.k===r.q.ans) byL[L].ok++; });
   const easyMiss=rows.filter(r=>r.k!==r.q.ans && /fácil/.test(r.q.dif));
   const hardOk=rows.filter(r=>r.k===r.q.ans && /difícil|média/.test(r.q.dif));
-  const traps={}; rows.forEach(r=>{ if(r.k && r.k!==r.q.ans){ const t=r.q.traps[r.k]||'conteudo'; traps[t]=(traps[t]||0)+1; } });
+  const traps={}; rows.forEach(r=>{ if(r.k && r.k!==r.q.ans){ const t=erroKey(r.q.id,{first:r.k,trap:r.q.traps[r.k]||'conteudo'}); traps[t]=(traps[t]||0)+1; } });
   host().innerHTML=`<div class="sec-title"><h2>Resultado do simulado</h2><span class="eyebrow">${Math.round(s.time/60000)} min de ${s.qs.length*4}</span></div>
   <div class="grid2"><div class="panel"><div class="eyebrow">acertos</div><div class="big">${ok}/${s.qs.length}</div><div class="bars" style="margin-top:12px">${Object.entries(byL).map(([L,v])=>`<div class="brow lc-${L}"><span>${LINES[L].name}</span><span class="track2"><i style="width:${pct(v.ok,v.n)}%"></i></span><span class="mono">${v.ok}/${v.n}</span></div>`).join('')}</div></div>
   <div class="panel"><div class="eyebrow">onde estão os pontos</div>
     <p style="font-family:var(--read)">${easyMiss.length?`Você errou <strong>${easyMiss.length} questão(ões) marcada(s) como fácil</strong>. Na Cesgranrio toda questão vale o mesmo: as fáceis são os pontos mais baratos, e são as primeiras a revisar.`:'Nenhuma questão fácil errada. Os pontos baratos estão garantidos.'}</p>
     <div class="eyebrow" style="margin-top:12px">o que te pegou</div>
-    ${Object.keys(traps).length?`<div class="bars" style="margin-top:8px">${Object.entries(traps).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<div class="brow"><span>${t==='conteudo'?'Conteúdo ou leitura':TRAPS[t].name}</span><span class="track2"><i style="width:${pct(n,s.qs.length-ok)}%"></i></span><span class="mono">${n}</span></div>`).join('')}</div>`:'<p class="muted">Nada. Zero erros.</p>'}
+    ${Object.keys(traps).length?`<div class="bars" style="margin-top:8px">${Object.entries(traps).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<div class="brow"><span>${esc(erroNome(t))}</span><span class="track2"><i style="width:${pct(n,s.qs.length-ok)}%"></i></span><span class="mono">${n}</span></div>`).join('')}</div>`:'<p class="muted">Nada. Zero erros.</p>'}
     <p class="muted" style="font-size:12.5px;margin-bottom:0">Na prova, é eliminado quem fizer menos de 50% em cada bloco (específicas e gerais) ou zerar Português ou Matemática.</p></div></div>
   <div class="sec-title"><h2>Correção</h2><div class="row"><button class="btn" id="newsim">Novo simulado</button></div></div><div id="rv"></div>`;
   const rv=$('#rv');
@@ -1138,7 +1180,10 @@ function vMetodo(){
 /* ---------- PAINEL ---------- */
 function vPainel(){
   const answered=Object.entries(S.ans); const wrong=answered.filter(([,a])=>!a.ok);
-  const traps={}; wrong.forEach(([,a])=>{const t=a.trap||'conteudo'; traps[t]=(traps[t]||0)+1;});
+  /* O que te derruba: o tipo de erro de cada resposta errada (pico × eficaz, √3 esquecido, NA × NF…), e, abaixo, as
+     cinco armadilhas que agrupam esses tipos. */
+  const traps={}, cats={}; wrong.forEach(([id,a])=>{const t=erroKey(id,a); traps[t]=(traps[t]||0)+1; const q=Q[id]; const c=t.startsWith('e:')?(DATA.erros[t.slice(2)].t):(a.trap||'conteudo'); cats[c]=(cats[c]||0)+1;});
+  const topT=Object.entries(traps).sort((a,b)=>b[1]-a[1]);
   const boxes=[0,1,2,3,4,5].map(b=>Object.values(S.cards).filter(c=>c.box===b).length); const unseen=DATA.cards.length-Object.keys(S.cards).length;
   const worst=DATA.modules.map(m=>({m,s:modStats(m.id)})).filter(x=>x.s.done).sort((a,b)=>a.s.ok/a.s.done-b.s.ok/b.s.done).slice(0,4);
   app.innerHTML=`<div class="sec-title"><h2>Painel</h2><span class="eyebrow">${plural(answered.length,'resposta registrada','respostas registradas')} · ${daysLeft()} dias para a prova</span></div>
@@ -1148,8 +1193,10 @@ function vPainel(){
       <div class="eyebrow" style="margin-top:18px">por linha</div>
       <div class="bars" style="margin-top:8px">${STUDY_LINES.map(L=>{const s=lineStats(L); return `<div class="brow lc-${L}"><span>${LINES[L].name}</span><span class="track2"><i style="width:${s.done?pct(s.ok,s.done):0}%"></i></span><span class="mono">${s.done?pct(s.ok,s.done)+'%':'—'}</span></div>`}).join('')}</div></div>
     <div class="panel"><div class="eyebrow">o que te derruba</div>
-      ${wrong.length?`<div class="bars" style="margin-top:10px">${Object.entries(traps).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<div class="brow"><span>${t==='conteudo'?'Conteúdo ou leitura':TRAPS[t].name}</span><span class="track2"><i style="width:${pct(n,wrong.length)}%"></i></span><span class="mono">${n}</span></div>`).join('')}</div>
-      <p style="font-family:var(--read);font-size:15px">${(()=>{const top=Object.entries(traps).sort((a,b)=>b[1]-a[1])[0]; return top[0]==='conteudo'?'A maior parte dos seus erros não caiu em armadilha conhecida: é conceito que ainda falta. Volte à teoria das estações em vermelho.':`Sua armadilha mais frequente é <strong>${TRAPS[top[0]].name}</strong>. ${TRAPS[top[0]].tip}`})()}</p>`
+      ${wrong.length?`<div class="bars" style="margin-top:10px">${topT.slice(0,8).map(([t,n])=>`<div class="brow"><span>${esc(erroNome(t))}</span><span class="track2"><i style="width:${pct(n,wrong.length)}%"></i></span><span class="mono">${n}</span></div>`).join('')}</div>
+      ${topT.length>8?`<p class="muted" style="font-size:12.5px;margin:6px 0 0">e mais ${plural(topT.length-8,'tipo','tipos')} com menos erros (veja o caderno de erros).</p>`:''}
+      <p style="font-family:var(--read);font-size:15px">${(()=>{const top=topT[0]; return top[0]==='conteudo'?'A maior parte dos seus erros não tem um tipo conhecido: é conceito que ainda falta. Volte à teoria das estações em vermelho.':`Seu erro mais frequente: <strong>${esc(erroNome(top[0]))}</strong>. ${erroDica(top[0])}`})()}</p>
+      <div class="row" style="gap:6px;margin-top:4px">${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<span class="chip">${c==='conteudo'?'Conteúdo ou leitura':TRAPS[c].name}: ${n}</span>`).join('')}</div>`
       :'<p class="empty">Quando você errar a primeira tentativa de uma questão, o tipo de erro aparece aqui.</p>'}
       <div class="eyebrow" style="margin-top:14px">cartões de véspera</div>
       <div class="row" style="margin-top:8px;gap:6px">${boxes.map((n,b)=>`<span class="chip">caixa ${b}: ${n}</span>`).join('')}<span class="chip">não vistos: ${unseen}</span></div></div>
@@ -1211,24 +1258,44 @@ function vTreino(){
   param=param||{};
   const s=(param&&param.s)||'sim';
   const nErr=errList().length;
-  app.innerHTML=`<div class="sec-title"><h2>Treino</h2><span class="eyebrow">simulado, recalibração e caderno de erros</span></div>
-    ${subtabs([['sim','Simulado'],['recal','Recalibração'],['erros',`Caderno de erros (${nErr})`],['refazer','Refazer erros'],['marcadas',`Revisar depois (${Object.keys(S.marks).length})`]],s,k=>{param=Object.assign(param||{},{s:k}); vTreino();})}<div id="host"></div>`;
-  ({sim:vSim,recal:vRecal,erros:vErros,refazer:vRefazer,marcadas:vMarcadas}[s]||vSim)();
+  app.innerHTML=`<div class="sec-title"><h2>Treino</h2><span class="eyebrow">simulado, números novos, recalibração e caderno de erros</span></div>
+    ${subtabs([['sim','Simulado'],['novos','Números novos'],['recal','Recalibração'],['erros',`Caderno de erros (${nErr})`],['refazer','Refazer erros'],['marcadas',`Revisar depois (${Object.keys(S.marks).length})`]],s,k=>{param=Object.assign(param||{},{s:k}); vTreino();})}<div id="host"></div>`;
+  ({sim:vSim,novos:vNovos,recal:vRecal,erros:vErros,refazer:vRefazer,marcadas:vMarcadas}[s]||vSim)();
+}
+/* ---- Números novos: as questões dos geradores (js/gerador.js), com números sorteados a cada vez ---- */
+function vNovos(){
+  const G=window.GERADOR;
+  if(!G){ host().innerHTML='<p class="empty">Os geradores de questões não carregaram. Recarregue a página.</p>'; return; }
+  const lista=G.lista(); const mods=DATA.modules.filter(m=>!m.emBreve&&lista.some(g=>g.mod===m.id));
+  let gm=(param&&param.gm)||'tudo'; if(gm!=='tudo'&&!mods.some(m=>m.id===gm)) gm='tudo';
+  const pool=lista.filter(g=>gm==='tudo'||g.mod===gm);
+  const feitas=Object.entries(S.ans).filter(([id])=>isGen(id)&&(gm==='tudo'||(Q[id]&&Q[id].mod===gm))).map(([,a])=>a);
+  host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Questões de conta com <strong>números sorteados na hora</strong>: o mesmo raciocínio das estações, com valores que você nunca viu. Cada alternativa errada sai de um erro típico e vem explicada. As que você errar vão para o caderno de erros.</p>
+    <div class="eyebrow" style="margin:6px 0 8px">Estação</div>
+    <div class="choice" id="gm">${[['tudo',`Todas (${lista.length} tipos de conta)`],...mods.map(m=>[m.id,`${m.id} · ${m.title.split(/[:(,]/)[0].trim()} (${G.daEstacao(m.id).length})`])].map(([k,l])=>`<button data-g="${k}" aria-pressed="${k===gm}">${esc(l)}</button>`).join('')}</div>
+    <div class="score" style="margin-top:14px"><span>${plural(feitas.length,'feita','feitas')}${gm==='tudo'?'':' nesta estação'}</span><span>${feitas.length?pct(feitas.filter(a=>a.ok).length,feitas.length)+'% certas de primeira':'—'}</span></div>
+    <div id="gq" style="margin-top:10px"></div>
+    <div class="row" style="margin-top:12px"><button class="btn primary" id="gnx">Outra questão →</button></div>`;
+  $('#gm').onclick=e=>{const b=e.target.closest('button'); if(!b) return; param=Object.assign(param||{},{gm:b.dataset.g}); vNovos();};
+  const nova=()=>{ const g=pool[Math.floor(Math.random()*pool.length)]; const q=G.gerar(g.id); questionCard($('#gq'),q,{src:'gerador',resume:false,showPrev:false}); };
+  $('#gnx').onclick=()=>{ nova(); $('#gq').scrollIntoView({block:'start',behavior:'smooth'}); };
+  nova();
 }
 function vErros(){
   const f=(param&&param.f)||'todos';
   const wrong=errList();
-  const counts={}; wrong.forEach(([,a])=>{const k=a.trap||'conteudo'; counts[k]=(counts[k]||0)+1;});
-  const list=wrong.filter(([,a])=>f==='todos'||(a.trap||'conteudo')===f);
-  const names=Object.assign({conteudo:'Conteúdo ou leitura',chute:'Chute certo'},Object.fromEntries(Object.entries(TRAPS).map(([k,v])=>[k,v.name])));
+  const kOf=([id,a])=>a.trap==='chute'?'chute':erroKey(id,a);
+  const counts={}; wrong.forEach(x=>{const k=kOf(x); counts[k]=(counts[k]||0)+1;});
+  const list=wrong.filter(x=>f==='todos'||kOf(x)===f);
+  const names=new Proxy({},{get:(_,k)=>erroNome(String(k))});
   host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Todo erro de primeira tentativa entra aqui, junto com os acertos que você marcou como chute. Para cada um, escreva a <strong>regra</strong> que teria evitado o erro, em uma frase. Na véspera, você relê só as regras.</p>
-    ${wrong.length?`<div class="filters"><button class="chipbtn" data-f="todos" ${f==='todos'?'style="background:var(--ink);color:var(--surface)"':''}>todos (${wrong.length})</button>${Object.entries(counts).map(([k,n])=>`<button class="chipbtn" data-f="${k}" ${f===k?'style="background:var(--ink);color:var(--surface)"':''}>${names[k]} (${n})</button>`).join('')}</div>
+    ${wrong.length?`<div class="filters"><button class="chipbtn" data-f="todos" ${f==='todos'?'style="background:var(--ink);color:var(--surface)"':''}>todos (${wrong.length})</button>${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<button class="chipbtn" data-f="${k}" ${f===k?'style="background:var(--ink);color:var(--surface)"':''}>${esc(names[k])} (${n})</button>`).join('')}</div>
     <div id="el"></div>`:'<p class="empty">Nenhum erro registrado ainda. Faça as questões das estações ou um simulado.</p>'}
     ${Object.keys(S.notes).filter(k=>S.notes[k]).length?`<div class="sec-title"><h2>Suas regras</h2><span class="eyebrow">para reler na véspera</span></div><div class="panel"><ol style="font-family:var(--read);font-size:16px;margin:0;padding-left:22px">${Object.entries(S.notes).filter(([,v])=>v).map(([k,v])=>`<li style="margin-bottom:6px">${esc(v)} <span class="mono muted" style="font-size:11px">(${esc(Q[k]?Q[k].n:k)})</span></li>`).join('')}</ol></div>`:''}`;
   host().querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{param.f=b.dataset.f; vErros();});
   const el=$('#el'); if(!el) return;
   list.forEach(([id,a])=>{ const q=Q[id]; const d=document.createElement('details'); d.className='err';
-    d.innerHTML=`<summary><span class="chip" style="background:var(--bad-soft);color:var(--bad)">${names[a.trap||'conteudo']}</span>${q.mod&&M[q.mod]?stationBtn(q.mod):''}<b>${esc(q.n)}</b><span style="font-family:var(--read)">${strip(q.cmd).slice(0,90)}…</span><span class="mono muted" style="font-size:12px">sua: ${a.first} · gab: ${q.ans}</span>${S.notes[id]?'<span class="done-mark">● regra escrita</span>':''}${S.redo[id]?`<span class="mono" style="font-size:11px;color:${S.redo[id].ok?'var(--ok)':'var(--bad)'}">refeita: ${S.redo[id].ok?'acertou':'errou de novo'}</span>`:''}</summary><div class="inner"><div class="qq"></div><label class="eyebrow" for="n-${id}">a regra que teria evitado este erro</label><textarea id="n-${id}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[id]||'')}</textarea></div>`;
+    d.innerHTML=`<summary><span class="chip" style="background:var(--bad-soft);color:var(--bad)">${esc(names[kOf([id,a])])}</span>${q.mod&&M[q.mod]?stationBtn(q.mod):''}<b>${esc(q.n)}</b><span style="font-family:var(--read)">${strip(q.cmd).slice(0,90)}…</span><span class="mono muted" style="font-size:12px">sua: ${a.first} · gab: ${q.ans}</span>${S.notes[id]?'<span class="done-mark">● regra escrita</span>':''}${S.redo[id]?`<span class="mono" style="font-size:11px;color:${S.redo[id].ok?'var(--ok)':'var(--bad)'}">refeita: ${S.redo[id].ok?'acertou':'errou de novo'}</span>`:''}</summary><div class="inner"><div class="qq"></div><label class="eyebrow" for="n-${id}">a regra que teria evitado este erro</label><textarea id="n-${id}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[id]||'')}</textarea></div>`;
     el.appendChild(d); bindStations(d);
     d.addEventListener('toggle',()=>{ if(d.open && !d.dataset.ok){ d.dataset.ok=1; questionCard(d.querySelector('.qq'),q,{}); } });
     const ta=d.querySelector('textarea'); let tm; ta.addEventListener('input',()=>{ clearTimeout(tm); tm=setTimeout(()=>{ S.notes[id]=ta.value.trim(); save(); },700); });
@@ -1517,12 +1584,13 @@ function vMarcadas(){
 function buildReport(){
   const L=[]; const d=new Date();
   L.push(`RELATÓRIO ELÉTRICA DE OURO · ${d.toLocaleDateString('pt-BR')} · faltam ${daysLeft()} dias`);
-  const all=Object.values(S.ans); L.push(`Questões feitas: ${all.length}/${DATA.questions.length} · acerto de primeira: ${all.length?pct(all.filter(a=>a.ok).length,all.length):0}% · chutes certos marcados: ${Object.keys(S.chute).length}`);
+  const all=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a), gen=Object.entries(S.ans).filter(([id])=>isGen(id)).map(([,a])=>a);
+  L.push(`Questões feitas: ${all.length}/${DATA.questions.length}${gen.length?` (mais ${gen.length} com números novos, ${gen.filter(a=>a.ok).length} certas)`:''} · acerto de primeira: ${all.length?pct(all.filter(a=>a.ok).length,all.length):0}% · chutes certos marcados: ${Object.keys(S.chute).length}`);
   L.push(Object.entries(BLOCKS).map(([v,b])=>{ const st=volStats(v); return `${b.name}: ${st.ok}/${st.done} (corte: 50%)`; }).join(' · '));
   L.push(''); L.push('POR ESTAÇÃO (certas de primeira / feitas / total):');
   STUDY_LINES.forEach(Ln=>{ L.push(`${LINES[Ln].name}: `+DATA.modules.filter(m=>m.line===Ln&&!m.emBreve).map(m=>{const s=modStats(m.id); return `${m.id} ${s.ok}/${s.done}/${s.n}`}).join(' · ')); });
-  const tr={}; errList().forEach(([,a])=>{const k=a.trap||'conteudo'; tr[k]=(tr[k]||0)+1;});
-  L.push(''); L.push('TIPOS DE ERRO: '+(Object.entries(tr).map(([k,n])=>`${k==='conteudo'?'conteúdo/leitura':k==='chute'?'chute certo':TRAPS[k].name}: ${n}`).join(' · ')||'nenhum'));
+  const tr={}; errList().forEach(([id,a])=>{const k=a.trap==='chute'?'chute':erroKey(id,a); tr[k]=(tr[k]||0)+1;});
+  L.push(''); L.push('TIPOS DE ERRO: '+(Object.entries(tr).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`${erroNome(k)}: ${n}`).join(' · ')||'nenhum'));
   const vfAll=Object.values(S.vf); L.push(`V ou F: ${vfAll.filter(v=>v.ok).length}/${vfAll.length} certas`);
   L.push(`Cartões: ${Object.values(S.cards).filter(c=>c.box>=3).length} dominados de ${DATA.cards.length}`);
   L.push(`Recalibração refeita: ${Object.keys(S.recal).length}/${DATA.recal.length} · acertos ao refazer: ${Object.values(S.recal).filter(r=>r.ok).length}`);
@@ -1531,7 +1599,7 @@ function buildReport(){
   L.push(''); L.push('PROVAS:'); Object.keys(EX).forEach(ex=>{ allRuns(ex).filter(r=>r.done).forEach(r=>{ const sc=scoreRun(ex,r); L.push(`${EX[ex].title} · ${runLabel(r)} · `+Object.entries(sc.areas).map(([a,v])=>`${AREAS[a].name}: ${v.ok}/${v.n}`).join(' · ')+` · erradas: ${sc.wrong.join(', ')||'nenhuma'}`); const nt=pvState(ex).notes; const ks=Object.keys(nt); if(ks.length) L.push('  regras: '+ks.map(k=>`${k}: ${nt[k]}`).join(' | ')); }); });
   const outs=[]; DATA.plan.forEach(p=>p.tasks.forEach((t,i)=>{ if(t.k==='out') outs.push(`${S.plan[p.d+'|'+i]?'[x]':'[ ]'} ${p.l}: ${t.t}`); }));
   L.push(''); L.push('TAREFAS FORA DO APP:'); outs.forEach(o=>L.push(o));
-  const errs=errList().slice(0,25); if(errs.length){ L.push(''); L.push('ERROS RECENTES (questão · estação · marcou → gabarito · tipo):'); errs.forEach(([id,a])=>{ const q=Q[id]; L.push(`${q.n} · ${q.mod||'-'} · ${a.first}→${q.ans} · ${a.trap||'conteudo'}${S.notes[id]?` · regra: ${S.notes[id]}`:''}`); }); }
+  const errs=errList().slice(0,25); if(errs.length){ L.push(''); L.push('ERROS RECENTES (questão · estação · marcou → gabarito · tipo):'); errs.forEach(([id,a])=>{ const q=Q[id]; L.push(`${q.n} · ${q.mod||'-'} · ${a.first}→${q.ans} · ${erroNome(a.trap==='chute'?'chute':erroKey(id,a))}${S.notes[id]?` · regra: ${S.notes[id]}`:''}`); }); }
   return L.join('\n');
 }
 

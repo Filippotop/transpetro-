@@ -243,8 +243,8 @@ export default {
     C: '[oposto] As correntes não se cancelam: cada uma está no seu condutor e cria um campo que age sobre a outra.',
     D: '[oposto] Em sentidos opostos a força é de repulsão, em CC ou em CA.',
     E: '[formula] A força é inversamente proporcional à distância (F/L = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/(2πd)), e não ao quadrado dela.' } },
-  'h:t2:hc': { mod: 'M2', h: '5.1', d: 'f', conv: {
-    s: 'A figura mostra o laço de histerese B × H de um material ferromagnético. A coercitividade (H<sub>c</sub>) corresponde',
+  'h:t2:hc': { mod: 'M2', h: '5.1', d: 'f', figTroca: [[' remanência', ''], [' coercitividade', '']], conv: {
+    s: 'A figura mostra o laço de histerese B × H de um material ferromagnético. A coercitividade do material corresponde',
     o: ['ao valor de B que permanece quando H volta a zero, no ponto em que o laço corta o eixo B',
       'ao campo H, em sentido contrário, necessário para anular B, no ponto em que o laço corta o eixo H',
       'ao trecho em que B quase não cresce mais, mesmo com H aumentando muito',
@@ -256,7 +256,7 @@ export default {
     C: '[detalhe] Esse trecho é a saturação: o material não aceita mais fluxo.',
     D: '[detalhe] A área do laço é a energia perdida por ciclo (perda por histerese), não a coercitividade.',
     E: '[detalhe] A relação B/H é a permeabilidade do material.' } },
-  'h:t2:req': { mod: 'M2', d: 'm', conv: {
+  'h:t2:req': { mod: 'M2', d: 'm', figTira: ['perdas no ferro (ensaio a vazio)', 'perdas no cobre (ensaio de curto)'], conv: {
     s: 'A figura mostra o circuito equivalente aproximado de um transformador. No ensaio de curto-circuito, a potência indicada pelo wattímetro corresponde, essencialmente, às perdas no elemento',
     o: ['R<sub>c</sub>, que representa as perdas no ferro', 'X<sub>m</sub>, que representa a magnetização do núcleo', 'R<sub>eq</sub>, que representa as perdas no cobre dos enrolamentos', 'X<sub>eq</sub>, que representa a dispersão de fluxo', 'R<sub>c</sub> e X<sub>m</sub> juntos, o ramo de magnetização'],
     a: 2,

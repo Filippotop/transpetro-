@@ -16,6 +16,7 @@
        conta expressão (ou lista) que o teste recalcula: o número tem de aparecer na alternativa correta (1%).
        fix   correção do enunciado, das alternativas, do gabarito ou do comentário: {s, o, a, c, errata} (errata = id da
              entrada de fontes/ERRATA.md) ou, para ajuste só de redação, {…, ed: 'motivo'}
+       figTira/figTroca  rótulos da figura que entregariam a resposta: tirados (texto exato do <text>) ou trocados
        conv  questão de clique no diagrama (hot) ou de ordenação (ord) refeita como múltipla escolha: {s, o, a, c, errata?}
              (o app não tem questão de clicar na figura nem de ordenar; a figura continua junto da questão)
    - As figuras vêm das estações (as mesmas, já revisadas, com classes s-*); as do comando de partida direta e de
@@ -88,6 +89,18 @@ function figura(key, qid) {
   return svg.replace(/\n/g, '');
 }
 
+/* Rótulos da figura que entregariam a resposta da questão: figTira tira os <text> com esse texto (sem tags);
+   figTroca troca um trecho. Cada um tem de achar o que procura. */
+function ajustaFigura(svg, r, qid) {
+  for (const t of r.figTira || []) {
+    let n = 0;
+    svg = svg.replace(/<text\b[^>]*>([\s\S]*?)<\/text>/g, (m, inner) => inner.replace(/<[^>]+>/g, '').trim() === t ? (n++, '') : m);
+    if (!n) throw new Error(`${qid}: figTira não achou o rótulo "${t}"`);
+  }
+  for (const [de, para] of r.figTroca || []) { if (!svg.includes(de)) throw new Error(`${qid}: figTroca não achou "${de}"`); svg = svg.split(de).join(para); }
+  return svg;
+}
+
 /* ---- revisão ---- */
 const REV = {};
 for (const t of ['T1', 'T2', 'T3', 'T4', 'T5']) {
@@ -154,7 +167,7 @@ for (const q0 of todas) {
   if (!['f', 'm', 'd'].includes(r.d)) throw new Error(`${q0.id}: dificuldade "${r.d}"`);
   out.push({
     id: 'BQ-' + q0.id.replace(/:/g, '-'), vol: 'EL', mod, kind: 'banco', tag, base: [], cmd: q.s,
-    ...(q.fig ? { fig: figura(q.fig, q0.id) } : {}),
+    ...(q.fig ? { fig: ajustaFigura(figura(q.fig, q0.id), r, q0.id) } : {}),
     alts: q.o, ans, ex, traps, erros, hab, dif: { f: 'fácil', m: 'média', d: 'difícil' }[r.d],
     ...(r.conta ? { conta: [].concat(r.conta) } : {}), src: '', origem: q0.id,
   });
@@ -165,10 +178,8 @@ if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.jo
 /* Numeração por estação, na ordem do banco: E1.1, E1.2… */
 const cont = {};
 for (const q of out) q.n = `${q.mod}.${(cont[q.mod] = (cont[q.mod] || 0) + 1)}`;
-/* Só os tipos de erro usados vão para o app (mais os que os geradores de js/gerador.js usam, que ficam lá). */
-const tipos = {};
-for (const q of out) for (const e of Object.values(q.erros)) tipos[e] = ERROS[e];
-for (const [k, v] of Object.entries(ERROS)) if (ERR[k] || k in tipos) tipos[k] = v;
+/* Todos os tipos de erro vão para o app (DATA.erros): os das questões do banco e os dos geradores de js/gerador.js. */
+const tipos = { ...ERROS };
 
 const js = `/* Banco de questões do estudante (fontes/banco-de-questoes.html), revisado e convertido para o formato do app.
    Gerado por tools/banco.mjs a partir do banco, das apostilas com as trocas das estações e de tools/banco/*.mjs.

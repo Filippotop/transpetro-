@@ -746,6 +746,57 @@ async function testCalc(browser) {
   }
 }
 
+/* Banco de questões (T4): figura dentro da questão, explicação com o tipo de erro, Números novos (geradores), Painel
+   com os tipos de erro e simulado na proporção de 2023. */
+async function testBanco(browser) {
+  const D = loadData();
+  for (const colorScheme of ['light', 'dark']) {
+    const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], colorScheme, serviceWorkers: 'block' });
+    const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+    await page.goto(URL_); await page.waitForTimeout(300);
+    const where = `banco/${colorScheme}`;
+    await page.evaluate(() => go('mod', { id: 'M1', tab: 'q' })); await page.waitForTimeout(250);
+    const n = await page.locator('#modbody .q').count();
+    check(n === D.modules.find(m => m.id === 'M1').qs.length, `${where}: a aba Questões da M1 mostra ${n} questões`);
+    const card = page.locator('[data-qid="BQ-h-t3-selo"]');
+    check(await card.locator('figure svg').count() === 1, `${where}: a questão com figura não mostra a figura`);
+    await card.locator('.alt[data-k="A"]').click(); await page.waitForTimeout(100);
+    await card.locator('.alt[data-k="C"]').click(); await page.waitForTimeout(150);
+    check(await card.locator('.ex > div').count() === 5, `${where}: depois de responder, faltam explicações por alternativa`);
+    check(/Função de dispositivo trocada/.test(await card.locator('.ex').textContent()), `${where}: a explicação da alternativa errada não mostra o tipo de erro`);
+    /* Texto do SVG da figura legível (contraste com o fundo da figura). */
+    const ratio = await card.evaluate(c => { const lum = x => { const [r, g, b] = x.match(/[\d.]+/g).slice(0, 3).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+      const t = c.querySelector('figure svg text'), bg = getComputedStyle(c.querySelector('figure svg')).backgroundColor; const a = lum(getComputedStyle(t).fill), b = lum(bg); return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); });
+    check(ratio >= 4.5, `${where}: texto da figura da questão com contraste ${ratio.toFixed(2)}`);
+    /* Números novos: uma questão gerada, errada de propósito, vai para o Painel com o tipo de erro. */
+    await page.evaluate(() => go('treino', { s: 'novos', gm: 'E1' })); await page.waitForTimeout(250);
+    const gid = await page.locator('#gq').getAttribute('data-qid');
+    check(/^G:\w+:\d+$/.test(gid || ''), `${where}: Números novos não mostrou uma questão gerada (${gid})`);
+    const errada = await page.evaluate(id => { const q = Q[id] || GERADOR.porId(id); return 'ABCDE'.split('').find(k => k !== q.ans); }, gid);
+    await page.locator(`#gq .alt[data-k="${errada}"]`).click(); await page.waitForTimeout(150);
+    const rec = await page.evaluate(id => S.ans[id], gid);
+    check(rec && rec.first === errada && rec.erro, `${where}: a resposta da questão gerada não foi registrada com o tipo de erro`);
+    await page.addScriptTag({ content: AXE });
+    const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations.filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => x.id));
+    for (const x of v) check(false, `${where}: Números novos: acessibilidade: ${x}`);
+    check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}: Números novos com rolagem horizontal`);
+    await page.evaluate(() => go('painel')); await page.waitForTimeout(200);
+    const painel = await page.evaluate(() => document.body.innerText);
+    const nome = await page.evaluate(e => DATA.erros[e].n, rec && rec.erro);
+    check(painel.includes(nome), `${where}: o Painel não mostra o tipo de erro "${nome}"`);
+    await page.evaluate(() => go('treino', { s: 'erros' })); await page.waitForTimeout(200);
+    check((await page.evaluate(() => document.body.innerText)).includes(nome), `${where}: o caderno de erros não mostra o tipo de erro "${nome}"`);
+    /* Simulado completo: proporção de 2023 entre as estações com questões (a M1, com peso 0, fica de fora). */
+    await page.evaluate(() => { SIM = null; S.simcfg = { n: 15, foco: 'tudo' }; go('treino', { s: 'sim' }); }); await page.waitForTimeout(200);
+    await page.click('#start'); await page.waitForTimeout(200);
+    const sim = await page.evaluate(() => { const by = {}; SIM.qs.forEach(id => { by[Q[id].mod] = (by[Q[id].mod] || 0) + 1; }); return { n: SIM.qs.length, by, limit: SIM.limit }; });
+    check(sim.n === 15 && sim.limit === 15 * 240000, `${where}: simulado com ${sim.n} questões e ${sim.limit / 60000} min`);
+    check(!sim.by.M1 && sim.by.E3 >= sim.by.E1 && sim.by.E3 >= sim.by.M2, `${where}: simulado fora da proporção de 2023 (${JSON.stringify(sim.by)})`);
+    for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
+    await ctx.close();
+  }
+}
+
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const run = async (name, fn) => { if (!ONLY || ONLY.has(name)) await fn(browser); };
 try {
@@ -768,8 +819,9 @@ try {
   await run('nav', testNav);
   await run('tabs', testTabs);
   await run('answered', testAnswered);
+  await run('banco', testBanco);
   await run('consent', testOfflineConsent);
 } finally { await browser.close(); server.close(); }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
-console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, estações (calculadoras, fórmulas, figuras e rótulos nos dois temas), progresso isolado, offline com a Bancada, Gist, navegação, 8 abas × 3 tamanhos × 2 temas.`);
+console.log(`OK${ONLY ? ' (' + [...ONLY].join(', ') + ')' : ''}: dados, estações (calculadoras, fórmulas, figuras e rótulos nos dois temas), progresso isolado, offline com a Bancada, Gist, navegação, banco de questões (figuras, tipos de erro, números novos, simulado), 8 abas × 3 tamanhos × 2 temas.`);
