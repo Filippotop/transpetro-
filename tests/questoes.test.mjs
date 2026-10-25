@@ -154,8 +154,13 @@ for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `d
 /* Exceções documentadas (task-4-report.md, rodada 3 de correções): deslizes reais valem mais que o equilíbrio das
    letras. Quando um gerador não tem 4 deslizes reais de um lado da resposta, a letra fica restrita às posições viáveis
    (q.letras em js/gerador.js), e o teste exige cada letra viável em ≥ 8% dos sorteios e nenhuma fora delas.
-   - eta (ABC): abaixo da resposta só há P_Cu linear, P_Cu nominal, kVA no lugar de kW e 1 − perdas/saída, e os dois
-     últimos somem quando FP = 1 ou quando ficam a menos de 0,1% da correta; D e E ficariam em ~3% e 0%.
+   - eta (ABC): abaixo da resposta só há P_Cu linear e P_Cu nominal; kVA no lugar de kW, sem uma das perdas, P_Fe
+     reduzida com a carga e 100% ficam acima. D e E ficam em 0%.
+   - trV (BCDE): sem valores acima de 100 kV, sobram acima de V_2 só a relação invertida (quando ≤ 100 kV), a relação
+     ao quadrado (quando > V_2), V_1 e V_1 − V_2; A ficaria em ~4%.
+   - trZ (BCDE): sem V_1²/Z (uma potência, até 1.210.000), sobram acima de a²·Z só a⁴·Z, (a·Z)² e √3·a²·Z; A fica em 0%.
+   - queda (ABCD): sem L/1000 (resultado em km), abaixo do comprimento certo só há L/2, a fração do % como volts e o %
+     sobre a outra tensão; E fica em 0%.
    - force (ABCD): acima de B·I·L·sen θ há quatro deslizes, abaixo em geral só três (sen 30° trocado, cm/1000, sem I);
      E ficaria em ~4%.
    - tc (BCDE): acima da corrente primária só há I_nominal, leitura × primário (ou × (primário + 5)) e 5·primário/leitura;
@@ -164,11 +169,10 @@ for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `d
    - neutro (BCDE): acima da tensão na carga menor só há 220 V, 254 V e 380 V; A fica em 0%.
    - disj (BCD): só valores entre I_B/2 e 2·I_z; nenhum I_z tabelado tem 4 correntes nominais em (I_z, 2·I_z], e só
      I_B em (25, 26] ou (63, 64] tem 4 abaixo; A fica em 0% e E em ~7%.
-   - pe (CDE): nenhuma opção maior que a fase; entre a seção mínima e a fase cabem no máximo 2 seções padronizadas.
-   Os três com menos de 4 letras (eta, disj, pe) ficam abaixo da regra de 4 letras viáveis: inventar distrator
-   para cumpri-la seria enchimento. */
-const EXCECAO_LETRA = { eta: 'ABC', force: 'ABCD', tc: 'BCDE', ilum: 'ABCD', neutro: 'BCDE', disj: 'BCD', pe: 'CDE' };
-const MENOS_DE_4_LETRAS = ['eta', 'disj', 'pe'];
+   eta e disj, com 3 letras, ficam abaixo da regra de 4 letras viáveis: inventar distrator para cumpri-la seria
+   enchimento. (pe deixou de ser exceção: virou questão de pares fase/PE, com a letra sorteada de A a E.) */
+const EXCECAO_LETRA = { eta: 'ABC', trV: 'BCDE', trZ: 'BCDE', queda: 'ABCD', force: 'ABCD', tc: 'BCDE', ilum: 'ABCD', neutro: 'BCDE', disj: 'BCD' };
+const MENOS_DE_4_LETRAS = ['eta', 'disj'];
 const SEP = { eta: 0.001, bat: 0.003 };
 /* Ids antigos (G:, antes da revisão da T4) não reconstroem questão. */
 /* Respostas refeitas sem olhar o código dos geradores: fórmulas da teoria aplicadas às entradas (q.vars). Número para
@@ -204,7 +208,8 @@ const RESPOSTA = {
   queda: v => { const I = v.S / v.V; return v.lim / 100 * v.V / (v.du * I) * 1000; },
   disj: v => ({ faixa: [v.IB, v.Iz] }),
   neutro: v => { const R1 = 127 ** 2 / v.p1, R2 = 127 ** 2 / v.p2; return 220 * R1 / (R1 + R2); },
-  pe: v => `${br(v.S <= 16 ? v.S : v.S <= 35 ? 16 : v.S / 2, 1)} mm²`,
+  /* pares fase/PE: certa é a alternativa cujo PE é o mínimo da tabela 58 para a sua fase, conferida em cada alternativa */
+  pe: () => ({ cada: t => { const [S, P] = (t.match(/fase de ([\d,]+) mm² e PE de ([\d,]+) mm²/) || []).slice(1).map(x => Number(x.replace(',', '.'))); return P === (S <= 16 ? S : S <= 35 ? 16 : S / 2); }, regra: 'PE = mínimo da tabela 58' }),
 };
 let nGer = 0;
 if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
@@ -250,6 +255,7 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         /* Conferência independente: a resposta refeita aqui, a partir das entradas da questão (q.vars). */
         const certa = text(q.alts[LET.indexOf(q.ans)]), esp = RESPOSTA[g.id] && RESPOSTA[g.id](q.vars || {});
         if (typeof esp === 'number') check(numeros(certa).some(n => Math.abs(n - esp) <= Math.max(0.01 * Math.abs(esp), 0.051)), `${where}: alternativa correta "${certa}", mas a conta independente dá ${+esp.toPrecision(5)}`);
+        else if (esp && esp.cada) q.alts.forEach((a, i) => { const ok = esp.cada(text(a)); check(ok === (LET[i] === q.ans), `${where}: ${text(a)} ${ok ? 'atende' : 'não atende'} a ${esp.regra}, mas está marcada como ${LET[i] === q.ans ? 'certa' : 'errada'}`); });
         else if (esp && esp.faixa) q.alts.forEach((a, i) => { const x = numeros(a)[0], dentro = x >= esp.faixa[0] && x <= esp.faixa[1]; check(dentro === (LET[i] === q.ans), `${where}: ${text(a)} ${dentro ? 'atende' : 'não atende'} a I_B ≤ I_n ≤ I_z, mas está marcada como ${LET[i] === q.ans ? 'certa' : 'errada'}`); });
         else if (typeof esp === 'string') check(certa === esp, `${where}: alternativa correta "${certa}", mas a conferência independente dá "${esp}"`);
       }

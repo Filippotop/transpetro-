@@ -68,6 +68,8 @@
   }
   /* Alternativas de texto: a correta e um conjunto [texto, tipo de erro, explicação]. */
   function txtOpts(r, q) {
+    if (q.ordem) /* ordem dada pelo gerador (pares em ordem crescente, correta na posição já sorteada) */
+      return q.ordem.map(function (p) { return p ? { t: p[0], ok: false, erro: p[1], ex: p[2] } : { t: q.corr, ok: true, ex: q.sol }; });
     if (q.sortNum) { /* alternativas numéricas em texto (seções, correntes nominais): mesma regra da letra de numOpts */
       var val = function (t) { return parseFloat(t.replace(',', '.')); }, c = val(q.corr), ab = [], ac = [], usado = {};
       usado[q.corr] = 1;
@@ -222,17 +224,16 @@
   /* ================= M2 · eletromagnetismo e transformadores ================= */
   G('trV', 'M2', '5.3', 'Transformador ideal', 'fácil', function (r) {
     var N1 = pick(r, [400, 500, 600, 800, 1000, 1200]), N2 = pick(r, [20, 40, 50, 60, 100, 200]), V1 = pick(r, [220, 440, 2200, 4400]), ans = V1 * N2 / N1;
-    return { v: { N1: N1, N2: N2, V1: V1 }, s: 'Um transformador ideal tem ' + fmt(N1, 0) + ' espiras no primário e ' + N2 + ' no secundário. Com ' + fmt(V1, 0) + ' V aplicados ao primário, a tensão no secundário é de', unit: 'V', dec: 1, ans: ans,
+    return { letras: 'BCDE', v: { N1: N1, N2: N2, V1: V1 }, s: 'Um transformador ideal tem ' + fmt(N1, 0) + ' espiras no primário e ' + N2 + ' no secundário. Com ' + fmt(V1, 0) + ' V aplicados ao primário, a tensão no secundário é de', unit: 'V', dec: 1, ans: ans,
       sol: 'V<sub>2</sub> = V<sub>1</sub>·N<sub>2</sub>/N<sub>1</sub> = ' + fmt(V1, 0) + ' × ' + N2 + '/' + fmt(N1, 0) + ' = ' + fmt(ans, 1) + ' V.',
       d: [[V1 * N1 / N2, 'relInv', fmt(V1 * N1 / N2, 1) + ' V = V<sub>1</sub>·N<sub>1</sub>/N<sub>2</sub>: inverteu a relação, como se fosse um elevador.'],
         [V1 * Math.pow(N2 / N1, 2), 'relQuad', fmt(V1 * Math.pow(N2 / N1, 2), 1) + ' V usa a relação ao quadrado, que vale para impedância, não para tensão.'],
         [V1 / N1, 'etapa', fmt(V1 / N1, 1) + ' V é a tensão por espira do primário (V<sub>1</sub>/N<sub>1</sub>); falta multiplicar por N<sub>2</sub>.'],
         [V1, 'formula', fmt(V1, 0) + ' V supõe que a tensão não muda; ela muda na relação N<sub>2</sub>/N<sub>1</sub>.'],
-        [V1 * N2, 'semFator', fmt(V1 * N2, 1) + ' V = V<sub>1</sub>·N<sub>2</sub>: esqueceu de dividir por N<sub>1</sub>.'],
         [V1 - ans, 'formula', fmt(V1 - ans, 1) + ' V = V<sub>1</sub> − V<sub>2</sub>: subtraiu a tensão do secundário da do primário, conta que não aparece no transformador ideal.'],
         [N1 / N2, 'etapa', fmt(N1 / N2, 1) + ' é a relação de espiras N<sub>1</sub>/N<sub>2</sub>, um número sem unidade; falta dividir V<sub>1</sub> por ela.'],
-        [V1 * N2 / (N1 + N2), 'formula', fmt(V1 * N2 / (N1 + N2), 1) + ' V = V<sub>1</sub>·N<sub>2</sub>/(N<sub>1</sub> + N<sub>2</sub>): somou as espiras no denominador.'],
-        [V1 * Math.pow(N1 / N2, 2), 'relQuad', fmt(V1 * Math.pow(N1 / N2, 2), 1) + ' V inverte a relação e ainda a eleva ao quadrado.']] };
+        [V1 * N2 / (N1 + N2), 'formula', fmt(V1 * N2 / (N1 + N2), 1) + ' V = V<sub>1</sub>·N<sub>2</sub>/(N<sub>1</sub> + N<sub>2</sub>): somou as espiras no denominador.']]
+        .filter(function (d) { return d[0] <= 1e5; }) }; /* nada acima de 100 kV: valor que se descarta à primeira vista */
   });
   G('trI', 'M2', '5.3', 'Correntes no transformador', 'fácil', function (r) {
     var S = pick(r, [5, 10, 15, 25]), p = pick(r, [[2200, 220], [440, 220], [440, 110], [13800, 220]]), A = p[0], B = p[1], sec = r() < 0.6, Vt = sec ? B : A, O = sec ? A : B, ans = S * 1000 / Vt;
@@ -249,16 +250,16 @@
   });
   G('trZ', 'M2', '5.3', 'Impedância refletida', 'média', function (r) {
     var p = pick(r, [[440, 2], [880, 4], [1100, 5], [2200, 10], [4400, 20]]), V1 = p[0], a = p[1], Z = pick(r, [2, 4, 5, 8, 10, 11]), ans = a * a * Z;
-    return { v: { V1: V1, V2: 220, Z: Z }, s: 'Uma carga resistiva de ' + Z + ' Ω é ligada ao secundário de um transformador ideal de ' + fmt(V1, 0) + '/220 V. A resistência vista pela fonte, no primário, é de', unit: 'Ω', ans: ans,
+    return { letras: 'BCDE', v: { V1: V1, V2: 220, Z: Z }, s: 'Uma carga resistiva de ' + Z + ' Ω é ligada ao secundário de um transformador ideal de ' + fmt(V1, 0) + '/220 V. A resistência vista pela fonte, no primário, é de', unit: 'Ω', ans: ans,
       sol: 'a = ' + fmt(V1, 0) + '/220 = ' + a + '; Z′ = a²·Z<sub>2</sub> = ' + a * a + ' × ' + Z + ' = ' + sig(ans) + ' Ω.',
       d: [[a * Z, 'relSimples', sig(a * Z) + ' Ω = a·Z: impedância reflete com a², não com a.'],
         [Z / (a * a), 'relInv', sig(Z / (a * a)) + ' Ω = Z/a²: refletiu do primário para o secundário, ao contrário.'],
         [Z / a, 'relInv', sig(Z / a) + ' Ω = Z/a: inverteu a reflexão e ainda esqueceu o quadrado.'],
         [Math.pow(a * Z, 2), 'formula', sig(Math.pow(a * Z, 2)) + ' Ω = (a·Z)²: elevou ao quadrado também a carga; só a relação entra ao quadrado.'],
         [Math.pow(a, 4) * Z, 'relQuad', sig(Math.pow(a, 4) * Z) + ' Ω aplica a² duas vezes (a<sup>4</sup>·Z).'],
-        [V1 * V1 / Z, 'outra', sig(V1 * V1 / Z) + ' = V<sub>1</sub>²/Z: é uma potência (em W, se a carga estivesse sob ' + fmt(V1, 0) + ' V), não uma resistência.'],
         [a * a * Z * R3, 'raiz3Mono', sig(a * a * Z * R3) + ' Ω multiplica ainda por √3, que não entra num transformador monofásico.'],
-        [Z, 'relSimples', Z + ' Ω é a própria carga: esqueceu de refletir para o primário (multiplicar por a²).']] };
+        [Z, 'relSimples', Z + ' Ω é a própria carga: esqueceu de refletir para o primário (multiplicar por a²).']]
+        .filter(function (d) { return d[0] <= 1e5; }) }; /* nada acima de 100 kΩ (a⁴·Z com a = 20 daria 1,76 MΩ) */
   });
   G('I3f', 'M2', '5.3', 'Corrente nominal trifásica', 'fácil', function (r) {
     var S = pick(r, [75, 112.5, 150, 225, 300, 500]), VL = pick(r, [220, 380]), ans = S * 1000 / (R3 * VL);
@@ -285,11 +286,10 @@
         [100 * (x * S * 1000) / (x * S * 1000 + Pfe + pc), 'usouS', fmt(100 * (x * S * 1000) / (x * S * 1000 + Pfe + pc), 2) + '% usa a potência aparente (kVA) no lugar da ativa: faltou o fator de potência.'],
         [100 * P / (P + x * Pfe + pc), 'formula', fmt(100 * P / (P + x * Pfe + pc), 2) + '% reduz também as perdas no ferro com a carga; elas dependem da tensão e ficam constantes (' + Pfe + ' W).'],
         [100 * P / (P + Pfe + Pc), 'semFator', fmt(100 * P / (P + Pfe + Pc), 2) + '% usa as perdas no cobre nominais (' + fmt(Pc, 0) + ' W); com ' + fmt(x * 100, 0) + '% da carga, elas são x²·P<sub>Cu</sub> = ' + fmt(pc, 0) + ' W.'],
-        [100 * (1 - (Pfe + pc) / P), 'formula', fmt(100 * (1 - (Pfe + pc) / P), 2) + '% = 1 − perdas/P<sub>saída</sub>: dividiu as perdas pela saída; no rendimento, o denominador é a entrada (saída + perdas).'],
         [100, 'semPerda', '100% supõe um transformador ideal, sem perdas.']] };
   });
   G('etamax', 'M2', '5.3', 'Rendimento máximo', 'média', function (r) {
-    var p = pick(r, [[90, 1000], [160, 1000], [144, 900], [250, 1000], [300, 1200], [200, 800], [400, 1600], [360, 1000]]), Pfe = p[0], Pc = p[1], x = Math.sqrt(Pfe / Pc), ans = 100 * x;
+    var p = pick(r, [[250, 1000], [300, 1200], [200, 800], [400, 1600], [363, 1200], [242, 800], [360, 1000], [288, 800]]), Pfe = p[0], Pc = p[1], x = Math.sqrt(Pfe / Pc), ans = 100 * x;
     return { v: { Pfe: Pfe, Pc: Pc }, s: 'Um transformador tem perdas no ferro de ' + Pfe + ' W e perdas no cobre de ' + fmt(Pc, 0) + ' W em carga nominal. O rendimento máximo ocorre com carga de, aproximadamente,', unit: '% da nominal', dec: 0, ans: ans,
       sol: 'O rendimento é máximo quando P<sub>Cu</sub> = P<sub>Fe</sub>: x²·' + fmt(Pc, 0) + ' = ' + Pfe + ' → x = √(' + Pfe + '/' + fmt(Pc, 0) + ') = ' + fmt(x, 2) + ', ou seja, ' + fmt(ans, 0) + '% da carga nominal.',
       d: [[100 * Pfe / Pc, 'semRaiz', fmt(100 * Pfe / Pc, 0) + '% = P<sub>Fe</sub>/P<sub>Cu</sub>: esqueceu a raiz quadrada.'],
@@ -532,13 +532,12 @@
   });
   G('queda', 'I1', '8.1', 'Queda de tensão', 'média', function (r) {
     var Vn = pick(r, [127, 220]), I = pick(r, [10, 16, 20, 25]), S = Vn * I, du = pick(r, [8, 10, 12, 15, 20]), lim = pick(r, [2, 3, 4]), dv = lim * Vn / 100, L = dv / (du * I) * 1000, Vo = Vn === 127 ? 220 : 127;
-    return { v: { S: S, V: Vn, du: du, lim: lim }, s: 'Um equipamento de ' + fmt(S, 0) + ' VA em ' + Vn + ' V é alimentado por um circuito com queda de tensão unitária de ' + du + ' V/(A·km). Para que a queda não passe de ' + lim + '%, o comprimento máximo do circuito é de, aproximadamente,', unit: 'm', dec: 1, ans: L,
+    return { letras: 'ABCD', v: { S: S, V: Vn, du: du, lim: lim }, s: 'Um equipamento de ' + fmt(S, 0) + ' VA em ' + Vn + ' V é alimentado por um circuito com queda de tensão unitária de ' + du + ' V/(A·km). Para que a queda não passe de ' + lim + '%, o comprimento máximo do circuito é de, aproximadamente,', unit: 'm', dec: 1, ans: L,
       sol: 'I = ' + fmt(S, 0) + '/' + Vn + ' = ' + I + ' A; ΔV<sub>máx</sub> = ' + lim + '% × ' + Vn + ' = ' + fmt(dv, 2) + ' V; L = ' + fmt(dv, 2) + '/(' + du + ' × ' + I + ') km = ' + fmt(L, 1) + ' m.',
       d: [[L / 2, 'idaVolta', fmt(L / 2, 1) + ' m divide ainda por 2 para ida e volta; a queda unitária em V/(A·km) já considera os dois condutores.'],
         [lim / (du * I) * 1000, 'percVolt', fmt(lim / (du * I) * 1000, 1) + ' m usa ' + lim + ' V como queda máxima: tratou o percentual como volts.'],
         [(lim * Vo / 100) / (du * I) * 1000, 'outraTensao', fmt((lim * Vo / 100) / (du * I) * 1000, 1) + ' m calcula o percentual sobre ' + Vo + ' V; o equipamento é de ' + Vn + ' V.'],
         [dv / du * 1000, 'semFator', fmt(dv / du * 1000, 1) + ' m esqueceu de multiplicar a queda unitária pela corrente de ' + I + ' A.'],
-        [L / 1000, 'unidade', fmt(L / 1000, 1) + ' é o resultado em quilômetros; em metros, multiplica-se por 1.000.'],
         [dv * du * I, 'invertida', fmt(dv * du * I, 1) + ' = ΔV × ΔV<sub>u</sub> × I: multiplicou em vez de dividir.'],
         [Vn / (du * I) * 1000, 'percVolt', fmt(Vn / (du * I) * 1000, 1) + ' m usa a tensão inteira (' + Vn + ' V) como queda admissível, sem aplicar os ' + lim + '%.']] };
   });
@@ -567,21 +566,30 @@
         [380, 'outraTensao', '380 V é a tensão de linha de uma rede 380/220 V; a rede aqui é 220/127 V.']] };
   });
   G('pe', 'I1', '8.3', 'Condutor de proteção', 'média', function (r) {
-    var STD = [1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150];
-    var S = pick(r, [10, 16, 25, 35, 50, 70]), ans = S <= 16 ? S : (S <= 35 ? 16 : S / 2), mm = function (v) { return num(v) + ' mm²'; };
-    var pool = [], usados = {}; usados[ans] = 1;
-    var add = function (v, e, t) { if (!usados[v] && pool.length < 10) { usados[v] = 1; pool.push([mm(v), e, t]); } };
-    add(S, 'peTab', mm(S) + ' (igual à fase) só vale para fases de até 16 mm².');
-    add(16, 'peTab', '16 mm² é a regra da faixa de 16 mm² a 35 mm²; a fase aqui é de ' + mm(S) + '.');
-    if (STD.indexOf(S / 2) >= 0) add(S / 2, 'peTab', mm(S / 2) + ' (metade da fase) só vale para fases acima de 35 mm².');
-    var i = STD.indexOf(ans);
-    /* Nenhuma opção maior que a própria fase: um PE mais grosso que a fase não é engano plausível. */
-    shuffle(r, [STD[i - 1], STD[i + 1], STD[i + 2], STD[i - 2], STD[i + 3], STD[i - 3], STD[i + 4], STD[i - 4]]).forEach(function (v) {
-      if (v == null || v > S) return;
-      add(v, 'peTab', v < ans ? mm(v) + ' fica abaixo do mínimo da tabela para fase de ' + mm(S) + '.' : mm(v) + ' atende, mas não é a seção mínima pedida: pela tabela, para fase de ' + mm(S) + ', basta ' + mm(ans) + '.');
+    /* Pares fase/PE: cinco seções de fase diferentes, em ordem crescente; a letra da correta é sorteada de A a E (a
+       fase que recebe o PE certo), e cada par errado sai de uma regra da tabela 58 mal aplicada. */
+    var min = function (S) { return S <= 16 ? S : (S <= 35 ? 16 : S / 2); }, mm = function (v) { return num(v) + ' mm²'; };
+    var par = function (S, P) { return 'fase de ' + mm(S) + ' e PE de ' + mm(P); };
+    var REGRA = 'até 16 mm², PE = fase; de 16 mm² a 35 mm², PE = 16 mm²; acima de 35 mm², PE = metade da fase';
+    var ERRADOS = {
+      10: [[6, 'Aplicou a metade da fase (5 mm², arredondada para 6 mm²), regra que só vale acima de 35 mm²; até 16 mm², o PE tem a seção da fase: 10 mm².']],
+      16: [[10, 'Aplicou a metade da fase (8 mm², arredondada para 10 mm²), regra que só vale acima de 35 mm²; até 16 mm², o PE tem a seção da fase: 16 mm².']],
+      25: [[25, 'PE igual à fase só vale até 16 mm²; de 16 mm² a 35 mm², o mínimo é 16 mm².'],
+        [10, 'Aplicou a metade da fase (12,5 mm²) e arredondou para baixo (10 mm²): fica abaixo do mínimo, que de 16 mm² a 35 mm² é 16 mm².']],
+      35: [[35, 'PE igual à fase só vale até 16 mm²; de 16 mm² a 35 mm², o mínimo é 16 mm².']],
+      50: [[50, 'PE igual à fase só vale até 16 mm²; acima de 35 mm², o mínimo é a metade da fase: 25 mm².'],
+        [16, '16 mm² é a regra da faixa de 16 mm² a 35 mm²; acima de 35 mm², o mínimo é a metade da fase: 25 mm².']],
+      70: [[70, 'PE igual à fase só vale até 16 mm²; acima de 35 mm², o mínimo é a metade da fase: 35 mm².'],
+        [16, '16 mm² é a regra da faixa de 16 mm² a 35 mm²; acima de 35 mm², o mínimo é a metade da fase: 35 mm².']]
+    };
+    var fases = shuffle(r, [10, 16, 25, 35, 50, 70]).slice(0, 5).sort(function (a, b) { return a - b; }), k = Math.floor(r() * 5), S = fases[k];
+    var ordem = fases.map(function (F, i) {
+      if (i === k) return null;
+      var e = pick(r, ERRADOS[F]);
+      return [par(F, e[0]), 'peTab', 'Fase de ' + mm(F) + ': ' + e[1].charAt(0).toLowerCase() + e[1].slice(1)];
     });
-    return { letras: 'CDE', v: { S: S }, s: 'Os condutores de fase de um circuito têm seção de ' + mm(S) + '. A seção mínima do condutor de proteção, do mesmo material, é de', text: true, corr: mm(ans), pool: pool, sortNum: true,
-      sol: 'Até 16 mm²: igual à fase; de 16 mm² a 35 mm²: 16 mm²; acima de 35 mm²: metade da fase. Para ' + mm(S) + ' → ' + mm(ans) + '.' };
+    return { v: { fases: fases, S: S }, s: 'Os condutores de fase e de proteção (PE) são do mesmo material. Em qual das combinações abaixo o PE tem <b>exatamente</b> a seção mínima exigida pela NBR 5410 (tabela 58)?', text: true, corr: par(S, min(S)), ordem: ordem,
+      sol: 'Tabela 58: ' + REGRA + '. Para fase de ' + mm(S) + ' → PE de ' + mm(min(S)) + '.' };
   });
 
   /* ---------- montagem ---------- */
