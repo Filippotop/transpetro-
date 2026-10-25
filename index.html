@@ -608,6 +608,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/estacoes/M2.js"></script>
 <script src="data/estacoes/I1.js"></script>
 <script src="data/embreve.js"></script>
+<script src="data/questoes.js"></script>
 <script src="js/calc.js"></script>
 <script src="merge.js"></script>
 <script>
@@ -881,6 +882,8 @@ async function askTutor(out,prompt){
 }
 
 /* ---------- question card ---------- */
+/* Figura da questão (SVG só com classes s-*, as mesmas da teoria): o invólucro .estacao aplica os estilos dos dois temas. */
+function qFig(q){ return `<div class="estacao qfig"><figure>${q.fig}</figure></div>`; }
 function questionCard(el,q,opts={}){
   const prev=S.ans[q.id];
   const st={tries:[],locked:false};
@@ -892,6 +895,7 @@ function questionCard(el,q,opts={}){
       <div class="qh"><span><b>Questão ${q.n}</b> <span class="muted">· ${volLabel(q)}</span></span><span class="chip">${esc(q.tag)}</span></div>
       ${q.base.length?`<blockquote>${q.base.map(p=>`<p>${p}</p>`).join('')}</blockquote>`:''}
       ${q.src?`<div class="qsrc">(${q.src})</div>`:''}
+      ${q.fig?qFig(q):''}
       <p class="cmd">${q.cmd}</p>
       <div class="alts">${q.alts.map((a,i)=>{const k=L[i]; let c=''; if(reveal){ c = k===q.ans?'right':(st.tries.includes(k)?'wrong':'dim'); } else if(st.tries.includes(k)) c='wrong';
         return `<button class="alt ${c}" data-k="${k}" ${reveal||st.tries.includes(k)?'disabled':''}><span class="L">${k}</span><span>${a}</span></button>`}).join('')}</div>
@@ -1082,7 +1086,7 @@ function simRun(){
   host().innerHTML=`<div class="stage" style="max-width:820px"><div class="score"><span>questão ${s.cur+1}/${s.qs.length}</span><span id="clock"></span><span>${Object.keys(s.ans).length} respondidas</span></div><div class="timer"><i id="ti"></i></div>
     <div class="simnav">${s.qs.map((id,i)=>`<button class="${s.ans[id]?'a':''} ${i===s.cur?'cur':''}" data-i="${i}">${i+1}</button>`).join('')}</div>
     <div class="q"><div class="qh"><b>Questão ${s.cur+1}</b><span class="chip">${esc(q.mod&&M[q.mod]?LINES[M[q.mod].line].name:volLabel(q))}</span></div>
-      ${q.base.length?`<blockquote>${q.base.map(p=>`<p>${p}</p>`).join('')}</blockquote>`:''}${q.src?`<div class="qsrc">(${q.src})</div>`:''}<p class="cmd">${q.cmd}</p>
+      ${q.base.length?`<blockquote>${q.base.map(p=>`<p>${p}</p>`).join('')}</blockquote>`:''}${q.src?`<div class="qsrc">(${q.src})</div>`:''}${q.fig?qFig(q):''}<p class="cmd">${q.cmd}</p>
       <div class="alts">${q.alts.map((a,i)=>{const k='ABCDE'[i]; return `<button class="alt ${s.ans[q.id]===k?'picked':''}" data-k="${k}"><span class="L">${k}</span><span>${a}</span></button>`}).join('')}</div></div>
     <div class="row" style="justify-content:space-between"><button class="btn" id="pv" ${s.cur?'':'disabled'}>← anterior</button><button class="btn" id="fin">Entregar simulado</button><button class="btn primary" id="nx" ${s.cur<s.qs.length-1?'':'disabled'}>próxima →</button></div></div>`;
   app.querySelectorAll('.alt').forEach(b=>b.onclick=()=>{ s.ans[q.id]=b.dataset.k; if(s.cur<s.qs.length-1){ s.cur++; } simSave(); simRun(); window.scrollTo({top:0}); });

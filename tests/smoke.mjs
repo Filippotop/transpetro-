@@ -132,7 +132,7 @@ async function testStorage(browser) {
   await page.goto(URL_); await page.waitForTimeout(400);
   /* Mexe em tudo que grava: questão, leitura, V ou F, anotação, preferências, foco, meta. */
   await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(150);
-  await page.locator('.alt[data-k="C"]').first().click(); await page.waitForTimeout(100);
+  await page.locator('[data-qid="E1-T1"] .alt[data-k="C"]').click(); await page.waitForTimeout(100);
   await page.evaluate(() => go('mod', { id: 'E1', tab: 'resumo' })); await page.waitForTimeout(100);
   await page.evaluate(() => go('mod', { id: 'E1', tab: 'vf' })); await page.waitForTimeout(100);
   await page.locator('.vfi button[data-a="0"]').first().click(); await page.waitForTimeout(100);
@@ -264,7 +264,7 @@ async function testAnswered(browser) {
     const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], colorScheme, serviceWorkers: 'block' });
     const page = await ctx.newPage(); await withTestQ(page); await page.goto(URL_); await page.waitForTimeout(300);
     await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(200);
-    for (const k of ['A', 'B']) { const alt = page.locator(`.alt[data-k="${k}"]:not([disabled])`).first(); if (await alt.count()) { await alt.click(); await page.waitForTimeout(150); } }
+    for (const k of ['A', 'B']) { const alt = page.locator(`[data-qid="E1-T1"] .alt[data-k="${k}"]:not([disabled])`).first(); if (await alt.count()) { await alt.click(); await page.waitForTimeout(150); } }
     check(await page.locator('.alt.right').count() > 0 && await page.locator('.alt.wrong').count() > 0, `${colorScheme}: a questão não marcou certo e errado`);
     /* O axe pula botões desabilitados, e as alternativas viram desabilitadas depois da resposta: o contraste é medido aqui. */
     await page.evaluate(() => go('linhas')); await page.waitForTimeout(150);
@@ -366,7 +366,8 @@ async function testFormSim(browser) {
   await page.goto(URL_); await page.waitForTimeout(300);
   await page.evaluate(() => go('treino', { s: 'sim' })); await page.waitForTimeout(150);
   const av = await page.textContent('#avail');
-  check(av === '1 questão disponível nesse foco', `simulado: "${av}" (esperado "1 questão disponível nesse foco")`);
+  const nq = loadData().questions.length + 1, want = nq === 1 ? '1 questão disponível nesse foco' : `${nq} questões disponíveis nesse foco`;
+  check(av === want, `simulado: "${av}" (esperado "${want}")`);
   await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(150);
   const t = await page.evaluate(() => document.querySelector('#host').innerText);
   check(t.includes('Lei de Ohm (geral)') && t.includes('V = R · I'), `formulário: DATA.formulas não aparece na Biblioteca ("${t.slice(0, 80)}")`);

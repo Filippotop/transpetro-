@@ -1,9 +1,9 @@
 /* Elétrica de Ouro: service worker da raiz. Cobre o app e a Bancada (bancada/), que não tem service worker próprio.
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova.
    Caches com prefixo edo-: o Humanas de Ouro (mesma origem github.io) usa hdo- e apaga só os dele. */
-const VER='2026-10-25.1';
+const VER='2026-10-25.2';
 const SHELL='edo-shell-'+VER, IMGS='edo-provas-v1', RUNTIME='edo-runtime-v1';
-const SHELL_FILES=['./','index.html','data/base.js','data/estacoes/E1.js','data/estacoes/E2.js','data/estacoes/E3.js','data/estacoes/M1.js','data/estacoes/M2.js','data/estacoes/I1.js','data/embreve.js','js/calc.js','css/estacao.css','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
+const SHELL_FILES=['./','index.html','data/base.js','data/estacoes/E1.js','data/estacoes/E2.js','data/estacoes/E3.js','data/estacoes/M1.js','data/estacoes/M2.js','data/estacoes/I1.js','data/embreve.js','data/questoes.js','js/calc.js','css/estacao.css','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
 /* A Bancada inteira, para abrir sem internet depois da primeira visita ao app. */
 const BANCADA_FILES=[
   'bancada/',

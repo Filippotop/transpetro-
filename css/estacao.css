@@ -136,3 +136,5 @@
 /* Afirmação ainda não confirmada em fonte confiável. */
 .confira{background:var(--warn-soft);color:inherit;border-bottom:2px dotted var(--warn);border-radius:3px;padding:0 2px}
 .confira::after{content:' (confira)';font-family:var(--mono);font-size:.75em;color:var(--warn)}
+/* Figura dentro de uma questão (aba Questões, Treino, simulado). */
+.qfig figure{margin:12px 0 14px;max-width:600px}

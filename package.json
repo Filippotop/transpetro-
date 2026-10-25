@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/merge.test.mjs && node tests/sw.test.mjs && node tests/estacoes.test.mjs && node tests/smoke.mjs && npm run test:bancada",
+    "test": "node tests/merge.test.mjs && node tests/sw.test.mjs && node tests/estacoes.test.mjs && node tests/questoes.test.mjs && node tests/smoke.mjs && npm run test:bancada",
     "test:bancada": "node --test bancada/tests/*.test.mjs && node bancada/tests/smoke.mjs"
   },
   "devDependencies": {

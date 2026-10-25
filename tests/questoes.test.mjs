@@ -1,0 +1,173 @@
+/* Elétrica de Ouro: testes do banco de questões (data/questoes.js, gerado por tools/banco.mjs) e dos geradores de
+   questões com números novos (js/gerador.js), sem navegador.
+   Confere: 5 alternativas distintas, gabarito válido, explicação própria para cada alternativa, estação existente,
+   tipos de erro e armadilhas conhecidos, HTML bem formado, figuras sem cor fixa, contas recalculadas (1%) e presentes
+   só na alternativa correta, erratas citadas, e 100 sorteios válidos por gerador. Rodar: node tests/questoes.test.mjs */
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
+const fails = [];
+const check = (ok, msg) => { if (!ok) fails.push(msg); };
+const LET = 'ABCDE';
+
+const INDEX = read('index.html');
+const DATA_FILES = [...INDEX.matchAll(/<script src="(data\/[^"]+\.js)"><\/script>/g)].map(m => m[1]);
+check(DATA_FILES.includes('data/questoes.js'), 'index.html não carrega data/questoes.js');
+check(DATA_FILES.indexOf('data/questoes.js') > DATA_FILES.indexOf('data/embreve.js'), 'data/questoes.js precisa vir depois de data/embreve.js (as questões entram nas estações já registradas)');
+const COM_GERADOR = fs.existsSync(path.join(ROOT, 'js/gerador.js'));
+if (COM_GERADOR) check(/<script src="js\/gerador\.js"><\/script>/.test(INDEX), 'index.html não carrega js/gerador.js');
+const SW = read('sw.js');
+for (const f of ['data/questoes.js', ...(COM_GERADOR ? ['js/gerador.js'] : [])]) check(SW.includes(`'${f}'`), `offline: ${f} fora da lista de arquivos do sw.js`);
+
+const ctx = vm.createContext({ window: {} });
+for (const f of DATA_FILES) vm.runInContext(read(f), ctx, { filename: f });
+const DATA = ctx.window.DATA;
+const MODS = Object.fromEntries(DATA.modules.map(m => [m.id, m]));
+const TRAPS = Object.keys(vm.runInNewContext('(' + INDEX.match(/const TRAPS = (\{[\s\S]*?\n\});/)[1] + ')'));
+
+/* HTML bem formado (o mesmo critério de tests/estacoes.test.mjs). */
+const VOID = new Set(['br', 'hr', 'img', 'wbr']);
+function wellFormed(html) {
+  const st = [], re = /<(\/?)([a-zA-Z][\w:-]*)((?:\s+[^\s=>\/]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?)*)\s*(\/?)>/g;
+  let m;
+  while ((m = re.exec(html))) {
+    const tag = m[2].toLowerCase();
+    if (m[1]) { const top = st.pop(); if (top !== tag) return `fecha </${tag}> mas o aberto é <${top || 'nada'}>`; }
+    else if (!m[4] && !VOID.has(tag)) st.push(tag);
+  }
+  if (/<(?![a-zA-Z\/!])/.test(html)) return 'tem "<" solto (use &lt;)';
+  return st.length ? `ficou aberto: <${st.join('> <')}>` : null;
+}
+const text = h => String(h).replace(/<svg[\s\S]*?<\/svg>/g, ' ').replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+const FIXED = /(?:fill|stroke)\s*(?:=\s*["']?|:\s*)\s*(?:#000\b|#000000\b|black\b|#fff\b|#ffffff\b|white\b|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\))/i;
+/* Números de uma alternativa: "1.320 var", "2,06 mWb", "4 × 10⁻⁵ T", "10∠53,13°". */
+const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-', '−': '-' };
+function numeros(h) {
+  let t = text(h).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, s => '^' + [...s].map(c => SUP[c]).join(''));
+  t = t.replace(/(\d[\d.]*(?:,\d+)?)\s*×\s*10\^(-?\d+)/g, (_, a, e) => `${a.replace(/\./g, '').replace(',', '.')}e${e}`);
+  return [...t.matchAll(/\d+(?:\.\d+)?e-?\d+|\d{1,3}(?:\.\d{3})+(?:,\d+)?|\d+(?:,\d+)?/g)].map(m => /e/.test(m[0]) ? Number(m[0]) : Number(m[0].replace(/\./g, '').replace(',', '.')));
+}
+const soNumero = h => /^[\d.,]+(\s*×\s*10\S+)?(∠[−-]?[\d,]+°)?\s*[A-Za-zΩµ%°/·²³()]*(\s*da nominal)?$/.test(text(h));
+const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs(b), 1e-12);
+
+/* ---------- banco ---------- */
+const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
+check(BANCO.length === 205, `banco: ${BANCO.length} questões (esperado 205: 158 das apostilas + 47 do banco)`);
+const ids = new Set(), origens = new Set(), markerIds = new Map();
+const ERRATA = read('fontes/ERRATA.md');
+function validaQuestao(q, where, { banco = true } = {}) {
+  check(/^[A-E]$/.test(q.ans), `${where}: gabarito "${q.ans}"`);
+  check(Array.isArray(q.alts) && q.alts.length === 5, `${where}: precisa de 5 alternativas`);
+  const norm = (q.alts || []).map(a => text(a).toLowerCase());
+  check(new Set(norm).size === 5, `${where}: alternativas repetidas (${norm.join(' | ')})`);
+  check(norm.every(Boolean), `${where}: alternativa vazia`);
+  check(Object.keys(q.ex || {}).sort().join('') === LET, `${where}: falta explicação para alguma alternativa`);
+  const exs = LET.split('').map(k => text((q.ex || {})[k] || ''));
+  check(exs.every(e => e.length >= 12), `${where}: explicação vazia ou curta demais`);
+  check(new Set(exs).size === 5, `${where}: duas alternativas com a mesma explicação`);
+  for (const [k, t] of Object.entries(q.traps || {})) { check(TRAPS.includes(t), `${where}: armadilha "${t}" desconhecida`); check(k !== q.ans, `${where}: armadilha na alternativa correta`); }
+  for (const [k, e] of Object.entries(q.erros || {})) { check(!!(DATA.erros || {})[e], `${where}: tipo de erro "${e}" fora de DATA.erros`); check(k !== q.ans, `${where}: tipo de erro na alternativa correta`); }
+  check(['fácil', 'média', 'difícil'].includes(q.dif), `${where}: dificuldade "${q.dif}"`);
+  check(typeof q.hab === 'string' && /^\d+(\.\d+)?$/.test(q.hab), `${where}: item do edital "${q.hab}"`);
+  check(typeof q.tag === 'string' && q.tag.trim(), `${where}: sem assunto (tag)`);
+  check(Array.isArray(q.base) && typeof q.cmd === 'string' && q.cmd.trim(), `${where}: sem enunciado`);
+  for (const [k, h] of [['cmd', q.cmd], ...q.alts.map((a, i) => ['alts.' + LET[i], a]), ...Object.entries(q.ex).map(([k, v]) => ['ex.' + k, v])]) {
+    const e = wellFormed(h); check(!e, `${where}: ${k} mal formado: ${e}`);
+    check(!/<script|<style|\son\w+\s*=/i.test(h), `${where}: ${k} com script ou evento`);
+  }
+  if (banco) check(!/\b[Ff]igura \d|\bBloco \d|Exemplo resolvido \d/.test(q.cmd + JSON.stringify(q.ex) + q.alts.join(' ')), `${where}: cita figura, bloco ou exemplo da apostila, que não existe fora da Teoria`);
+  /* Contas: o número de cada expressão aparece na alternativa correta (1%) e em nenhuma errada. */
+  for (const expr of q.conta || []) {
+    let v; try { v = Function('"use strict"; return (' + expr + ');')(); } catch (e) { check(false, `${where}: conta "${expr}" não roda`); continue; }
+    check(Number.isFinite(v), `${where}: conta "${expr}" = ${v}`);
+    const ok = numeros(q.alts[LET.indexOf(q.ans)]);
+    check(ok.some(n => perto(n, v)), `${where}: conta ${expr} = ${+v.toPrecision(5)}, mas a alternativa correta (${text(q.alts[LET.indexOf(q.ans)])}) não traz esse número`);
+    /* Alternativas só numéricas (número e unidade): nenhuma errada pode ter o mesmo valor (0,3%). */
+    if ((q.conta || []).length === 1 && q.alts.every(soNumero)) LET.split('').filter(k => k !== q.ans).forEach(k => check(!numeros(q.alts[LET.indexOf(k)]).some(n => Math.abs(n - v) <= 0.003 * Math.abs(v)), `${where}: a alternativa errada ${k} (${text(q.alts[LET.indexOf(k)])}) também dá ${+v.toPrecision(5)}`));
+  }
+}
+for (const q of BANCO) {
+  const where = `questão ${q.id} (${q.origem})`;
+  check(!ids.has(q.id), `${where}: id repetido`); ids.add(q.id); origens.add(q.origem);
+  validaQuestao(q, where);
+  check(q.vol === 'EL', `${where}: vol "${q.vol}"`);
+  const m = MODS[q.mod];
+  check(!!m, `${where}: estação ${q.mod} não existe`);
+  if (m) {
+    const naEstacao = !m.emBreve;
+    check(naEstacao ? m.qs.includes(q.id) && DATA.questions.includes(q) : (DATA.questoesEmBreve || []).includes(q), `${where}: não entrou ${naEstacao ? 'na aba Questões da ' + q.mod : 'na lista de questões em breve'}`);
+    check(typeof q.n === 'string' && q.n.startsWith(q.mod + '.'), `${where}: número "${q.n}" fora do padrão ${q.mod}.N`);
+  }
+  if (q.fig) {
+    const b = q.fig.match(FIXED); check(!b, `${where}: figura com cor fixa "${b && b[0]}"`);
+    check(/^<svg[\s\S]*<\/svg>$/.test(q.fig) && /role="img"/.test(q.fig) && /aria-label="[^"]+"/.test(q.fig), `${where}: figura sem <svg role="img" aria-label>`);
+    check(!/class="(?!s-)[^"]*"/.test(q.fig.replace(/class="s-[^"]*"/g, '')), `${where}: figura com classe sem o prefixo s-`);
+    for (const [, id] of q.fig.matchAll(/\sid="([^"]+)"/g)) { check(!markerIds.has(id), `${where}: id "${id}" da figura repetido em ${markerIds.get(id)}`); markerIds.set(id, q.id); }
+    for (const [, id] of q.fig.matchAll(/url\(#([^)]+)\)/g)) check(new RegExp(`id="${id}"`).test(q.fig), `${where}: a figura usa url(#${id}), que não está dentro dela`);
+  }
+}
+check(origens.size === 205, `banco: ${origens.size} questões de origem distintas (esperado 205)`);
+/* Cada questão tem a sua revisão, e cada correção cita uma errata que existe. */
+for (const t of ['T1', 'T2', 'T3', 'T4', 'T5']) {
+  const REV = (await import(pathToFileURL(path.join(ROOT, 'tools/banco', t + '.mjs')))).default;
+  for (const [id, r] of Object.entries(REV)) {
+    for (const e of [r.fix && r.fix.errata, r.conv && r.conv.errata].filter(Boolean)) check(new RegExp(`\\|\\s*${e}\\s*\\|`).test(ERRATA), `revisão ${id}: errata ${e} não está em fontes/ERRATA.md`);
+    if (r.fix) check(r.fix.errata || r.fix.ed, `revisão ${id}: fix sem errata nem motivo (ed)`);
+  }
+}
+check(/^## Banco de questões/m.test(ERRATA), 'fontes/ERRATA.md sem a seção "Banco de questões"');
+/* Tipos de erro: nome curto, descrição e armadilha do app. */
+for (const [k, e] of Object.entries(DATA.erros || {})) check(e.n && e.d && TRAPS.includes(e.t), `tipo de erro ${k}: precisa de n, d e t (armadilha conhecida)`);
+/* Distribuição: toda estação construída tem questões. */
+for (const m of DATA.modules.filter(m => !m.emBreve)) check(m.qs.length > 0, `estação ${m.id} sem questões na aba Questões`);
+/* O id do arquivo não pode ter conteúdo do Humanas. */
+const QTXT = read('data/questoes.js');
+for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `data/questoes.js: "${w}"`);
+/* data/questoes.js está em dia com tools/banco.mjs (o gerador é determinístico). */
+{
+  const tmp = fs.mkdtempSync(path.join((await import('node:os')).tmpdir(), 'banco-'));
+  const { execFileSync } = await import('node:child_process');
+  const before = QTXT;
+  execFileSync(process.execPath, [path.join(ROOT, 'tools/banco.mjs')], { cwd: ROOT, stdio: 'pipe' });
+  check(read('data/questoes.js') === before, 'data/questoes.js desatualizado: rode node tools/banco.mjs e faça commit do resultado');
+  if (read('data/questoes.js') !== before) fs.writeFileSync(path.join(ROOT, 'data/questoes.js'), before);
+  fs.rmSync(tmp, { recursive: true, force: true });
+}
+
+/* ---------- geradores (js/gerador.js) ---------- */
+let nGer = 0;
+if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
+  const gctx = vm.createContext({ window: { DATA }, Math, console });
+  vm.runInContext(read('js/gerador.js'), gctx, { filename: 'js/gerador.js' });
+  const G = gctx.window.GERADOR;
+  check(G && typeof G.lista === 'function' && typeof G.gerar === 'function' && typeof G.porId === 'function', 'js/gerador.js não expõe window.GERADOR {lista, gerar, porId}');
+  if (G) {
+    const lista = G.lista();
+    nGer = lista.length;
+    check(lista.length === 30, `geradores: ${lista.length} (esperado 30)`);
+    for (const g of lista) {
+      check(MODS[g.mod] && !MODS[g.mod].emBreve, `gerador ${g.id}: estação ${g.mod} inexistente ou em breve`);
+      const vistos = new Set();
+      for (let s = 1; s <= 100; s++) {
+        const seed = s * 7919 + g.id.length;
+        const q = G.gerar(g.id, seed);
+        const where = `gerador ${g.id}, sorteio ${seed}`;
+        validaQuestao(q, where, { banco: false });
+        check(q.mod === g.mod && q.kind === 'gerada' && q.id === `G:${g.id}:${seed}`, `${where}: id/mod/kind errados (${q.id}, ${q.mod}, ${q.kind})`);
+        check(JSON.stringify(G.porId(q.id)) === JSON.stringify(q), `${where}: porId não reconstrói a mesma questão`);
+        /* Toda alternativa errada tem tipo de erro ou explicação própria (nunca o texto genérico de preenchimento). */
+        for (const k of LET) if (k !== q.ans) check(!/sem relação com|valor aleatório|chute/i.test(q.ex[k]), `${where}: alternativa ${k} sem erro identificado`);
+        vistos.add(q.cmd + q.alts.join());
+      }
+      check(vistos.size >= 3, `gerador ${g.id}: só ${vistos.size} questões diferentes em 100 sorteios`);
+    }
+  }
+}
+
+if (fails.length) { console.error(`questões FALHOU (${fails.length}):\n- ` + fails.slice(0, 80).join('\n- ') + (fails.length > 80 ? `\n… e mais ${fails.length - 80}` : '')); process.exit(1); }
+const porMod = {}; for (const q of BANCO) porMod[q.mod] = (porMod[q.mod] || 0) + 1;
+console.log(`questões OK: ${BANCO.length} do banco (${Object.entries(porMod).map(([k, v]) => k + ' ' + v).join(', ')}), ${BANCO.filter(q => q.conta).length} com conta recalculada, ${BANCO.filter(q => q.fig).length} com figura; ${nGer} geradores × 100 sorteios válidos`);

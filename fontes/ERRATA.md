@@ -170,7 +170,9 @@ proibição de DR no TN-C: o [Manual Prysmian de Instalações Elétricas](https
 (2010), no quadro dos esquemas de aterramento, diz "TN-C só pode ser usado em instalações fixas com S ≥ 10 mm²" e "no
 TN-C não podem ser utilizados dispositivos DR"; o texto do app ficou mais próximo dessas frases (o seccionamento
 automático no TN-C fica com os dispositivos de sobrecorrente). O valor de 16 mm² em alumínio continua no texto (vem da
-apostila e da IEC 60364-5-54); o manual traz só o 10 mm².
+apostila e da IEC 60364-5-54); o manual traz só o 10 mm². Fonte dos 16 mm² em alumínio (acrescentada na T4): ABNT NBR
+5410:1997, 6.4.6.2.1, "seção maior ou igual a 10 mm² em cobre ou a 16 mm² em alumínio, nas instalações fixas", conferida
+na [cópia do texto de 1997](https://www.brasilpostos.com.br/wp-content/uploads/2013/09/5410-ABNT.pdf) e citada nas Fontes da I1.
 
 Regra das canalizações (questão 59), agora com fonte: ABNT NBR 5410:1997, 6.4.2.2.4, "não devem ser usados como
 eletrodo de aterramento canalizações metálicas de fornecimento de água e outros serviços, o que não exclui a ligação
@@ -201,3 +203,29 @@ caderno; a figura 6 (esquemas de aterramento) foi redesenhada em duas colunas, c
 condutores (a original, com 660 de largura e rótulos de 11 px, ficava ilegível a 390 px); a figura 3 usava a classe
 `hl` sem estilo no app (preenchimento preto no tema escuro): agora é um fundo decorativo; o `<select>` de tensão da
 calculadora de dimensionamento ganhou `value` nas opções.
+
+## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
+
+Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão
+de gabarito: cada conta foi refeita à mão, e as 80 questões de cálculo têm a conta registrada em `tools/banco/T*.mjs`
+(campo `conta`); o teste `tests/questoes.test.mjs` recalcula cada uma (1%), confere que o número está na alternativa
+correta e, nas alternativas só numéricas, que nenhuma errada dá o mesmo valor. **Nenhum gabarito estava errado.**
+
+As 158 questões das apostilas são os exercícios do fim de cada seção. Elas entram com o texto já corrigido nas
+estações (as trocas de `tools/estacoes/<id>.mjs`), então as erratas das estações valem também aqui: M2-1 (teste de
+polaridade), e as reescritas da I1 (exercícios 3 do bloco 1, 5 do bloco 1, 5 e 6 do bloco 3 e 6 do bloco 5), da E1
+(exercício 6 do bloco 5, E1-2) e da M2 (exercício 1 do bloco 3).
+
+Cada alternativa errada ganhou uma explicação própria dizendo qual erro leva a ela (o banco só tinha o comentário da
+correta e, em 47 questões, etiquetas de erro em parte das alternativas). As 15 questões de clicar na figura (`hot`) e
+de ordenar (`ord`) viraram múltipla escolha, porque o app não tem esses tipos: as de figura mantêm a figura (a mesma
+das estações, já revisada) e perguntam pelo elemento; as de ordenar listam as etapas em I a V e pedem a sequência.
+
+| Id | Questão(ões) | O que dizia | O que diz agora | Fonte |
+|---|---|---|---|---|
+| BQ-1 | `a:T1:b5:1`, `a:T2:b6:4`, `a:T4:b2:2`, `a:T5:b3:3`, `f:t2:6` (distratores) | alternativas erradas que não saem de nenhum erro identificável: 880 var; 40% da nominal; 0,5 A; 25,4 m, 31,8 m e 50,8 m; 10 kA e 50 kA | trocadas por valores que saem de um erro típico, explicado na alternativa: 984 var (esqueceu de elevar o FP ao quadrado); 20% (P<sub>Fe</sub>/(P<sub>Fe</sub> + P<sub>Cu</sub>)); 1,5 A (ignorou o ramo de 6 Ω); 10 m (4% tratado como 4 V), 22 m (4% de 220 V) e 254 m (esqueceu a corrente); 1 kA (curto limitado à nominal) e 34,6 kA (√3 a mais). Gabaritos iguais; a letra mudou em `a:T4:b2:2` (B → A) e `a:T5:b3:3` (B → C) | regra 3 do `AGENTS.md` (cada alternativa diz qual erro leva a ela); contas em `tools/banco/T*.mjs` |
+| BQ-2 | `o:t2:pol` (ordenar as etapas do teste de polaridade) | "Interligar os terminais H1 e X1 com um jumper"; "Medir a tensão entre H2 e X2" | "Interligar H1 ao terminal de baixa tensão adjacente a ele"; "Medir a tensão entre H2 e o outro terminal de baixa tensão" (a mesma correção de M2-1: o teste serve para descobrir qual é o X1) | as de M2-1 |
+
+Ajustes de redação (sem erro técnico): no comentário de `a:T1:b6:5`, "(figura 8)" virou "(veja o diagrama fasorial da
+estrela na Teoria)", porque a numeração da apostila não vale na aba Questões; em `a:T2:b7:1`, o distrator
+√3 × 150.000/380 = 683,7 A aparecia como "682 A" e passou a "684 A".
