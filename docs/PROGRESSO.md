@@ -11,7 +11,7 @@
 | T3a: estações E2 (CA, fasores, impedância) e E3 (potência, FP, trifásicos, medidor de energia, dois wattímetros) | ✅ concluída e revisada | ..5262d92 |
 | T3b: estações M1 (simbologia e diagramas) e M2 (eletromagnetismo e transformadores) | ✅ concluída e revisada | ..b658359 |
 | T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ✅ concluída e revisada | ..cec1278 |
-| T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ⏳ implementada; **correções das revisões aplicadas (task-4-fix1, itens 1–23; task-4-fix2, itens 1–7); aguardando re-revisão** | ..(este commit) |
+| T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ⏳ implementada; **correções das revisões aplicadas (task-4-fix1, itens 1–23; task-4-fix2, itens 1–7; task-4-fix3, itens 1–10, com exceções de letra documentadas); aguardando re-revisão** | ..(este commit) |
 | T5: prova Transpetro 2023 recortada por questão (`fontes/prova-2023-…pdf`) + gabarito **oficial** (já obtido: `fontes/gabarito-2023.json`, Q28 e Q30 anuladas) | ⬜ a fazer (gabarito pronto) | — |
 | T6: Biblioteca (formulário geral, números-âncora, NR-10 de 2019 × 2026), Arena, Plano até 29/11, Painel, Missão de hoje; entrega e parada para o estudante avaliar | ⬜ a fazer | — |
 
