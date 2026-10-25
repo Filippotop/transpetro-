@@ -36,6 +36,11 @@ export default {
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   labs: { lab1: 'transformador-ideal', lab2: 'rendimento-trafo' },
   trocas: [
+    /* corrente de energização (revisão do banco na T4: a questão f:t2:2 cobra o assunto) */
+    { de: 'o núcleo satura, a corrente de magnetização dispara e o transformador aquece.</p>',
+      para: `o núcleo satura, a corrente de magnetização dispara e o transformador aquece.</p>
+  <h3>Corrente de energização (inrush)</h3>
+  <p>A mesma equação explica um susto comum na manutenção. Em regime, o fluxo oscila entre −Φ<sub>máx</sub> e +Φ<sub>máx</sub>. Se o transformador é ligado quando a tensão passa por zero, o fluxo precisa partir de onde estava, o magnetismo remanente (que pode chegar a 80–90% do fluxo nominal), e no primeiro meio ciclo sobe até cerca de <b>2Φ<sub>máx</sub> mais a remanência</b>. O núcleo satura, e a corrente de magnetização chega a muitas vezes a nominal por alguns ciclos, caindo bastante em poucos décimos de segundo. <b>Não é defeito</b>: a proteção é ajustada para não atuar com ela, com uma temporização ou, nos relés diferenciais, com a restrição por <b>2º harmônico</b>, abundante nessa corrente.</p>` },
     /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
        aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
     { errata: 'BQ-1', de: 'o:["25% da nominal","40% da nominal","50% da nominal","75% da nominal","100% da nominal"],a:2,',
@@ -94,6 +99,7 @@ export default {
   <ul class="sources">
     <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, conteúdo programático da Ênfase 8 (Manutenção – Elétrica), itens 5.1, 5.3 e 7.2 — conferido no PDF do edital.</li>
     <li>Caderno da prova Cesgranrio 2023, Transpetro, Técnico de Manutenção – Elétrica (questões 26, 27, 28 e 54), conferido no PDF da prova (usado apenas para identificar o estilo de cobrança; os exemplos e exercícios desta estação têm números próprios).</li>
+    <li>Corrente de energização (inrush): B. Kasztenny e outros, <a href="https://store.gegridsolutions.com/faq/Documents/T35/GER-3989A.pdf"><i>An Improved Transformer Inrush Restraint Algorithm</i></a> (GE, GER-3989A: remanência de até 80–90% do fluxo nominal, pior caso ao ligar no zero da tensão, picos altos que decaem em décimos de segundo, conteúdo de 2º harmônico usado como restrição); o fluxo de até 2Φ<sub>máx</sub> mais a remanência no primeiro meio ciclo está em S. J. Chapman, <i>Fundamentos de Máquinas Elétricas</i>, na seção sobre a corrente de energização do transformador.</li>
     <li>Bibliografia de apoio: S. J. Chapman, <i>Fundamentos de Máquinas Elétricas</i> (AMGH); I. L. Kosow, <i>Máquinas Elétricas e Transformadores</i> (Globo); R. L. Boylestad, <i>Introdução à Análise de Circuitos</i> (Pearson).</li>
     <li>Revisão técnica do app (outubro de 2026): as contas dos 7 exemplos resolvidos e dos 39 exercícios recalculadas por teste automático; unidades, leis de Faraday e Lenz, regras de Fleming, equação do transformador, ensaios, rendimento, regulação, índice horário (IEC 60076-1), paralelismo e transformadores de instrumento conferidos em Chapman e Kosow. Dois trechos foram corrigidos: o teste de polaridade (seção 5, no texto e no exercício 6) e o comentário de um distrator (seção 3). A figura e a pegadinha do Dy5 são novas.</li>
   </ul>
