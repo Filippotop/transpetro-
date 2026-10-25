@@ -219,7 +219,7 @@ export default {
       'V<sub>BN</sub> − V<sub>AN</sub>, com módulo √3·V<sub>AN</sub> e atrasada 30° em relação a V<sub>AN</sub>',
       'V<sub>AN</sub> + V<sub>CN</sub>, com módulo √3·V<sub>AN</sub> e em fase com V<sub>AN</sub>'],
     a: 1,
-    c: 'V<sub>AB</sub> = V<sub>AN</sub> − V<sub>BN</sub> = V<sub>AN</sub> + (−V<sub>BN</sub>). Na figura, o fasor −V<sub>BN</sub> é somado a V<sub>AN</sub> pela regra do paralelogramo: o resultado tem módulo √3·V<sub>AN</sub> e fica 30° adiantado em relação a V<sub>AN</sub>.' }, w: {
+    c: 'V<sub>AB</sub> = V<sub>AN</sub> − V<sub>BN</sub> = V<sub>AN</sub> + (−V<sub>BN</sub>). Somando a V<sub>AN</sub> o fasor −V<sub>BN</sub> (V<sub>BN</sub> girado de 180°) pela regra do paralelogramo: o resultado tem módulo √3·V<sub>AN</sub> e fica 30° adiantado em relação a V<sub>AN</sub>.' }, w: {
     A: '[sinal] V<sub>AN</sub> + V<sub>BN</sub> = −V<sub>CN</sub>: somou em vez de subtrair. A tensão de linha é a diferença entre as duas fases.',
     C: '[somaArit] 2·V<sub>AN</sub> seria a soma dos módulos, como se os fasores estivessem alinhados. Com 120° entre eles, a diferença vale √3·V<sub>AN</sub>, a 30°.',
     D: '[sinal] V<sub>BN</sub> − V<sub>AN</sub> é −V<sub>AB</sub> (a tensão V<sub>BA</sub>): a ordem da subtração define o sentido do fasor.',
