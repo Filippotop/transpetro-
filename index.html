@@ -1262,7 +1262,7 @@ function vTreino(){
   const s=(param&&param.s)||'sim';
   const nErr=errList().length;
   app.innerHTML=`<div class="sec-title"><h2>Treino</h2><span class="eyebrow">simulado, números novos, recalibração e caderno de erros</span></div>
-    ${subtabs([['sim','Simulado'],['novos','Números novos'],['recal','Recalibração'],['erros',`Caderno de erros (${nErr})`],['refazer','Refazer erros'],['marcadas',`Revisar depois (${Object.keys(S.marks).length})`]],s,k=>{param=Object.assign(param||{},{s:k}); vTreino();})}<div id="host"></div>`;
+    ${subtabs([['sim','Simulado'],['novos','Números novos'],['recal','Recalibração'],['erros',`Caderno de erros (${nErr})`],['refazer','Refazer erros'],['marcadas',`Revisar depois (${Object.keys(S.marks).filter(id=>Q[id]).length})`]],s,k=>{param=Object.assign(param||{},{s:k}); vTreino();})}<div id="host"></div>`;
   ({sim:vSim,novos:vNovos,recal:vRecal,erros:vErros,refazer:vRefazer,marcadas:vMarcadas}[s]||vSim)();
 }
 /* ---- Números novos: as questões dos geradores (js/gerador.js), com números sorteados a cada vez ---- */
@@ -1272,7 +1272,7 @@ function vNovos(){
   const lista=G.lista(); const mods=DATA.modules.filter(m=>!m.emBreve&&lista.some(g=>g.mod===m.id));
   let gm=(param&&param.gm)||'tudo'; if(gm!=='tudo'&&!mods.some(m=>m.id===gm)) gm='tudo';
   const pool=lista.filter(g=>gm==='tudo'||g.mod===gm);
-  const feitas=Object.entries(S.ans).filter(([id])=>isGen(id)&&(gm==='tudo'||(Q[id]&&Q[id].mod===gm))).map(([,a])=>a);
+  const feitas=Object.entries(S.ans).filter(([id])=>isGen(id)&&Q[id]&&(gm==='tudo'||Q[id].mod===gm)).map(([,a])=>a); /* Q[id] só existe para G2: (os G: antigos não reconstroem) */
   host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Questões de conta com <strong>números sorteados na hora</strong>: o mesmo raciocínio das estações, com valores que você nunca viu. Cada alternativa errada sai de um erro típico e vem explicada. As que você errar vão para o caderno de erros.</p>
     <div class="eyebrow" style="margin:6px 0 8px">Estação</div>
     <div class="choice" id="gm">${[['tudo',`Todas (${lista.length} tipos de conta)`],...mods.map(m=>[m.id,`${m.id} · ${m.title.split(/[:(,]/)[0].trim()} (${G.daEstacao(m.id).length})`])].map(([k,l])=>`<button data-g="${k}" aria-pressed="${k===gm}">${esc(l)}</button>`).join('')}</div>
