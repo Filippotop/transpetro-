@@ -1,7 +1,7 @@
 /* Converte o banco de questões do estudante (fontes/banco-de-questoes.html) em data/questoes.js, no formato de questões
    do app: {id, vol, n, mod, kind:'banco', tag, base, cmd, fig?, alts[5], ans:'A'–'E', ex:{A..E}, traps, erros, hab, dif,
    conta?, origem}.
-   Uso: node tools/banco.mjs   (determinístico; não edite data/questoes.js à mão)
+   Uso: node tools/banco.mjs [--saida arquivo]   (determinístico; não edite data/questoes.js à mão)
 
    - As 158 questões "das apostilas" (APOST) são os exercícios do fim de cada seção das apostilas. Elas são lidas da
      apostila com as trocas da estação aplicadas (tools/estacoes/<id>.mjs), para que as correções já feitas nas estações
@@ -200,6 +200,8 @@ const js = `/* Banco de questões do estudante (fontes/banco-de-questoes.html), 
   });
 })(window.DATA);
 `;
-fs.writeFileSync(path.join(ROOT, 'data/questoes.js'), js);
+/* --saida <arquivo>: grava em outro lugar (o teste compara sem tocar no arquivo do repositório). */
+const si = process.argv.indexOf('--saida');
+fs.writeFileSync(si > 0 ? path.resolve(process.argv[si + 1]) : path.join(ROOT, 'data/questoes.js'), js);
 const porMod = {}; for (const q of out) porMod[q.mod] = (porMod[q.mod] || 0) + 1;
 console.log(`data/questoes.js: ${out.length} questões (${Object.entries(porMod).map(([k, v]) => k + ' ' + v).join(', ')}), ${out.filter(q => q.conta).length} com conta, ${out.filter(q => q.fig).length} com figura`);

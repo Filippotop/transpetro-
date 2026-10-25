@@ -128,18 +128,54 @@ for (const m of DATA.modules.filter(m => !m.emBreve)) check(m.qs.length > 0, `es
 /* O id do arquivo não pode ter conteúdo do Humanas. */
 const QTXT = read('data/questoes.js');
 for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `data/questoes.js: "${w}"`);
-/* data/questoes.js está em dia com tools/banco.mjs (o gerador é determinístico). */
+/* data/questoes.js está em dia com tools/banco.mjs (o gerador é determinístico): gera numa pasta temporária e compara,
+   sem tocar no arquivo do repositório. */
 {
-  const tmp = fs.mkdtempSync(path.join((await import('node:os')).tmpdir(), 'banco-'));
-  const { execFileSync } = await import('node:child_process');
-  const before = QTXT;
-  execFileSync(process.execPath, [path.join(ROOT, 'tools/banco.mjs')], { cwd: ROOT, stdio: 'pipe' });
-  check(read('data/questoes.js') === before, 'data/questoes.js desatualizado: rode node tools/banco.mjs e faça commit do resultado');
-  if (read('data/questoes.js') !== before) fs.writeFileSync(path.join(ROOT, 'data/questoes.js'), before);
-  fs.rmSync(tmp, { recursive: true, force: true });
+  const os = await import('node:os'), { execFileSync } = await import('node:child_process');
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'banco-'));
+  try {
+    execFileSync(process.execPath, [path.join(ROOT, 'tools/banco.mjs'), '--saida', path.join(tmp, 'questoes.js')], { cwd: ROOT, stdio: 'pipe' });
+    check(fs.readFileSync(path.join(tmp, 'questoes.js'), 'utf8') === QTXT, 'data/questoes.js desatualizado: rode node tools/banco.mjs e faça commit do resultado');
+  } catch (e) { check(false, 'tools/banco.mjs falhou: ' + String(e.stderr || e.message).slice(0, 300)); }
+  finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 }
 
 /* ---------- geradores (js/gerador.js) ---------- */
+/* Respostas refeitas sem olhar o código dos geradores: fórmulas da teoria aplicadas às entradas (q.vars). Número para
+   as questões de conta (1%), texto exato para as de alternativas de texto. */
+const S3 = Math.sqrt(3), br = (x, d = 0) => x.toLocaleString('pt-BR', { maximumFractionDigits: d });
+const RESPOSTA = {
+  rms: v => v.Vpp / 2 / Math.SQRT2,
+  rl: v => { const Z = Math.hypot(v.R, v.X), I = v.V / Z; return v.pede === 'I' ? I : I * v.R; },
+  res: v => 1 / (2 * Math.PI * Math.sqrt(v.L / 1000 * v.C / 1e6)),
+  pot: v => v.V * v.I * (v.pede === 'P' ? v.fp : Math.sin(Math.acos(v.fp))),
+  fpcorr: v => v.P * Math.tan(Math.acos(v.fp)),
+  triI: v => v.lig === 'Y' ? v.VL / S3 / v.R : S3 * v.VL / v.R,
+  triP: v => S3 * v.VL * v.IL * v.fp / 1000,
+  trV: v => v.V1 * v.N2 / v.N1,
+  trI: v => v.S * 1000 / v.V,
+  trZ: v => (v.V1 / v.V2) ** 2 * v.Z,
+  I3f: v => v.S * 1000 / (S3 * v.VL),
+  eta: v => { const Ps = v.x * v.S * v.fp * 1000; return 100 * Ps / (Ps + v.Pfe + v.x * v.x * v.Pc); },
+  etamax: v => 100 * Math.sqrt(v.Pfe / v.Pc),
+  force: v => v.B * v.I * v.L * Math.sin(v.th * Math.PI / 180),
+  faraday: v => v.N * (v.F1 - v.F2) / 1000 / (v.dt / 1000),
+  tc: v => v.rd * v.p / 5,
+  idx: v => { const a = (30 * v.h) % 360; return a === 0 ? 'em fase' : a === 180 ? 'em oposição de fase (180°)' : a < 180 ? `atrasada ${a}°` : `adiantada ${360 - a}°`; },
+  mista: v => { const Rp = v.A * v.B / (v.A + v.B), It = v.E / (v.R1 + Rp); return It * Rp / v.A; },
+  bat: v => { const r = (v.V1 - v.V2) / (v.I2 - v.I1); return v.pede === 'r' ? r : v.V1 + r * v.I1; },
+  thev: v => { const Vth = v.E * v.B / (v.A + v.B), Rth = 1 / (1 / v.A + 1 / v.B) + v.R3; return v.pede === 'Rth' ? Rth : Vth / (Rth + v.RL); },
+  pmax: v => v.V * v.V / (4 * v.R),
+  nodal: v => { const VA = (v.E1 / v.R1 + v.E2 / v.R2) / (1 / v.R1 + 1 / v.R2 + 1 / v.R3); return VA / v.R3; },
+  wheat: v => v.R2 * v.R3 / v.R1,
+  ilum: v => { const A = v.a * v.b; return A <= 6 ? 100 : 100 + 60 * Math.floor((A - 6) / 4 + 1e-9); },
+  tugcoz: v => { const n = Math.ceil(2 * (v.a + v.b) / 3.5 - 1e-9); return 600 * Math.min(n, 3) + 100 * Math.max(0, n - 3); },
+  tugsala: v => { const n = Math.ceil(2 * (v.a + v.b) / 5 - 1e-9); return `${n} pontos e ${br(100 * n)} VA`; },
+  queda: v => { const I = v.S / v.V; return v.lim / 100 * v.V / (v.du * I) * 1000; },
+  disj: v => ({ faixa: [v.IB, v.Iz] }),
+  neutro: v => { const R1 = 127 ** 2 / v.p1, R2 = 127 ** 2 / v.p2; return 220 * R1 / (R1 + R2); },
+  pe: v => `${br(v.S <= 16 ? v.S : v.S <= 35 ? 16 : v.S / 2, 1)} mm²`,
+};
 let nGer = 0;
 if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
   const gctx = vm.createContext({ window: { DATA }, Math, console });
@@ -152,7 +188,8 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
     check(lista.length === 30, `geradores: ${lista.length} (esperado 30)`);
     for (const g of lista) {
       check(MODS[g.mod] && !MODS[g.mod].emBreve, `gerador ${g.id}: estação ${g.mod} inexistente ou em breve`);
-      const vistos = new Set();
+      check(!!RESPOSTA[g.id], `gerador ${g.id}: sem conferência independente da resposta neste teste`);
+      const vistos = new Set(), letras = new Set();
       for (let s = 1; s <= 100; s++) {
         const seed = s * 7919 + g.id.length;
         const q = G.gerar(g.id, seed);
@@ -165,9 +202,15 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         /* A resolução (explicação da correta) chega ao mesmo número que a alternativa correta mostra. */
         const nsol = numeros(q.ex[q.ans]);
         for (const n of numeros(q.alts[LET.indexOf(q.ans)])) check(nsol.some(x => perto(x, n)), `${where}: a resolução não chega a ${n} (alternativa correta: ${text(q.alts[LET.indexOf(q.ans)])})`);
-        vistos.add(q.cmd + q.alts.join());
+        vistos.add(q.cmd + q.alts.join()); letras.add(q.ans);
+        /* Conferência independente: a resposta refeita aqui, a partir das entradas da questão (q.vars). */
+        const certa = text(q.alts[LET.indexOf(q.ans)]), esp = RESPOSTA[g.id] && RESPOSTA[g.id](q.vars || {});
+        if (typeof esp === 'number') check(numeros(certa).some(n => Math.abs(n - esp) <= Math.max(0.01 * Math.abs(esp), 0.051)), `${where}: alternativa correta "${certa}", mas a conta independente dá ${+esp.toPrecision(5)}`);
+        else if (esp && esp.faixa) q.alts.forEach((a, i) => { const x = numeros(a)[0], dentro = x >= esp.faixa[0] && x <= esp.faixa[1]; check(dentro === (LET[i] === q.ans), `${where}: ${text(a)} ${dentro ? 'atende' : 'não atende'} a I_B ≤ I_n ≤ I_z, mas está marcada como ${LET[i] === q.ans ? 'certa' : 'errada'}`); });
+        else if (typeof esp === 'string') check(certa === esp, `${where}: alternativa correta "${certa}", mas a conferência independente dá "${esp}"`);
       }
       check(vistos.size >= 3, `gerador ${g.id}: só ${vistos.size} questões diferentes em 100 sorteios`);
+      check(letras.size >= 3, `gerador ${g.id}: a correta cai em só ${letras.size} letra(s) em 100 sorteios (${[...letras].join('')})`);
     }
   }
 }
