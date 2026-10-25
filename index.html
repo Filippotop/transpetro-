@@ -650,9 +650,9 @@ let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, note
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
 function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
 fix();
-/* Questões com números novos (js/gerador.js): o id G:<gerador>:<semente> reconstrói a questão, que entra em Q para o
+/* Questões com números novos (js/gerador.js): o id G2:<gerador>:<semente> reconstrói a questão, que entra em Q para o
    caderno de erros, o Refazer e o Revisar depois funcionarem como com as do banco. */
-const isGen = id => String(id).startsWith('G:');
+const isGen = id => /^G2?:/.test(String(id)); /* G2: atual; G: de antes da revisão da T4, sem questão para mostrar */
 function regGen(){ if(!window.GERADOR) return; [S.ans,S.marks,S.chute].forEach(o=>Object.keys(o||{}).forEach(id=>{ if(isGen(id)&&!Q[id]){ const q=GERADOR.porId(id); if(q) Q[id]=q; } })); }
 regGen();
 /* Tipo de erro de uma resposta errada: o da alternativa marcada (DATA.erros, vindo do banco do estudante), senão a

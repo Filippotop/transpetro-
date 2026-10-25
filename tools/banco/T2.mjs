@@ -167,10 +167,9 @@ export default {
     B: '[semRaiz] 25% = 300/1.200: esqueceu a raiz quadrada de x = √(P<sub>Fe</sub>/P<sub>Cu</sub>).',
     D: '[formula] 75% = 1 − 300/1.200: subtraiu a relação das perdas de 1, em vez de tirar a raiz.',
     E: '[exagero] Supôs que o rendimento máximo é sempre na carga nominal; ele ocorre quando P<sub>Cu</sub> = P<sub>Fe</sub>.' } },
-  'a:T2:b6:5': { d: 'm', conta: '(230-220)/220*100',
-    fix: { s: 'A tensão no secundário de um transformador é de 230 V a vazio e cai para 220 V em plena carga. A regulação de tensão (em relação à tensão em plena carga) é de, aproximadamente,', ed: 'o enunciado passa a dizer a referência da regulação, que algumas fontes tomam pela tensão a vazio' }, w: {
+  'a:T2:b6:5': { d: 'm', conta: '(230-220)/220*100', w: { /* enunciado e comentário com a referência da regulação: troca na M2 */
     A: '[formula] 1,05% vem de 230/220 = 1,045: dividiu as tensões em vez de dividir a diferença.',
-    B: '[formula] 4,35% divide por V<sub>vazio</sub> (230 V), forma que algumas referências usam; sem indicação no enunciado, vale a definição usual, com V<sub>carga</sub> no denominador.',
+    B: '[formula] 4,35% divide por V<sub>vazio</sub> (230 V); o enunciado pede a regulação em relação à plena carga, então o denominador é 220 V.',
     D: '[percVolt] 10% usa a diferença em volts (230 − 220 = 10 V) como se fosse porcentagem.',
     E: '[unidade] 45,5% erra a vírgula: 10/220 = 0,0455, que é 4,55%.' } },
   /* ---------- seção 7: trifásicos e instrumentos ---------- */

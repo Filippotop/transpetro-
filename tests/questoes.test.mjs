@@ -151,6 +151,11 @@ for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `d
 }
 
 /* ---------- geradores (js/gerador.js) ---------- */
+/* Exceções documentadas (task-4-report.md): nenhuma para a letra; distância mínima menor que 3% só onde os erros
+   reais caem perto da resposta: rendimento (todos perto de 100%) e fem da bateria (leituras a menos de 1 V da fem). */
+const EXCECAO_LETRA = {};
+const SEP = { eta: 0.001, bat: 0.003 };
+/* Ids antigos (G:, antes da revisão da T4) não reconstroem questão. */
 /* Respostas refeitas sem olhar o código dos geradores: fórmulas da teoria aplicadas às entradas (q.vars). Número para
    as questões de conta (1%), texto exato para as de alternativas de texto. */
 const S3 = Math.sqrt(3), br = (x, d = 0) => x.toLocaleString('pt-BR', { maximumFractionDigits: d });
@@ -172,7 +177,7 @@ const RESPOSTA = {
   faraday: v => v.N * (v.F1 - v.F2) / 1000 / (v.dt / 1000),
   tc: v => v.rd * v.p / 5,
   idx: v => { const a = (30 * v.h) % 360; return a === 0 ? 'em fase' : a === 180 ? 'em oposição de fase (180°)' : a < 180 ? `atrasada ${a}°` : `adiantada ${360 - a}°`; },
-  mista: v => { const Rp = v.A * v.B / (v.A + v.B), It = v.E / (v.R1 + Rp); return It * Rp / v.A; },
+  mista: v => { const Rp = v.A * v.B / (v.A + v.B), It = v.E / (v.R1 + Rp); return It * Rp / v.X; },
   bat: v => { const r = (v.V1 - v.V2) / (v.I2 - v.I1); return v.pede === 'r' ? r : v.V1 + r * v.I1; },
   thev: v => { const Vth = v.E * v.B / (v.A + v.B), Rth = 1 / (1 / v.A + 1 / v.B) + v.R3; return v.pede === 'Rth' ? Rth : Vth / (Rth + v.RL); },
   pmax: v => v.V * v.V / (4 * v.R),
@@ -195,6 +200,9 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
   if (G) {
     const lista = G.lista();
     nGer = lista.length;
+    check(G.porId('G:rms:12345') === null && G.porId('G:qualquer') === null, 'GERADOR.porId deveria ignorar ids antigos (G:)');
+    check(G.porId('G2:rms:12345') && G.porId('G2:rms:12345').id === 'G2:rms:12345', 'GERADOR.porId não reconstrói um id G2:');
+    check(G.porId('G2:naoexiste:1') === null, 'GERADOR.porId deveria devolver null para gerador desconhecido');
     check(lista.length === 30, `geradores: ${lista.length} (esperado 30)`);
     for (const g of lista) {
       check(MODS[g.mod] && !MODS[g.mod].emBreve, `gerador ${g.id}: estação ${g.mod} inexistente ou em breve`);
@@ -205,7 +213,7 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         const q = G.gerar(g.id, seed);
         const where = `gerador ${g.id}, sorteio ${seed}`;
         validaQuestao(q, where, { banco: false });
-        check(q.mod === g.mod && q.kind === 'gerada' && q.id === `G:${g.id}:${seed}`, `${where}: id/mod/kind errados (${q.id}, ${q.mod}, ${q.kind})`);
+        check(q.mod === g.mod && q.kind === 'gerada' && q.id === `G2:${g.id}:${seed}`, `${where}: id/mod/kind errados (${q.id}, ${q.mod}, ${q.kind})`);
         check(JSON.stringify(G.porId(q.id)) === JSON.stringify(q), `${where}: porId não reconstrói a mesma questão`);
         /* Toda alternativa errada tem tipo de erro ou explicação própria (nunca o texto genérico de preenchimento). */
         for (const k of LET) if (k !== q.ans) check(!/sem relação com|valor aleatório|chute/i.test(q.ex[k]), `${where}: alternativa ${k} sem erro identificado`);
@@ -213,6 +221,9 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         const nsol = numeros(q.ex[q.ans]);
         for (const n of numeros(q.alts[LET.indexOf(q.ans)])) check(nsol.some(x => perto(x, n)), `${where}: a resolução não chega a ${n} (alternativa correta: ${text(q.alts[LET.indexOf(q.ans)])})`);
         vistos.add(q.cmd + q.alts.join()); letras.add(q.ans);
+        /* Alternativas numéricas: nenhuma errada a menos de 3% da correta (eta e a fem da bateria têm limite próprio). */
+        const vc = numeros(q.alts[LET.indexOf(q.ans)])[0], lim = SEP[g.id] == null ? 0.03 : SEP[g.id];
+        if (q.alts.every(soNumero)) LET.split('').filter(k => k !== q.ans).forEach(k => { const v = numeros(q.alts[LET.indexOf(k)])[0]; check(Math.abs(v - vc) >= lim * vc * 0.99, `${where}: a alternativa ${k} (${text(q.alts[LET.indexOf(k)])}) fica a menos de ${lim * 100}% da correta (${text(q.alts[LET.indexOf(q.ans)])})`); });
         /* Conferência independente: a resposta refeita aqui, a partir das entradas da questão (q.vars). */
         const certa = text(q.alts[LET.indexOf(q.ans)]), esp = RESPOSTA[g.id] && RESPOSTA[g.id](q.vars || {});
         if (typeof esp === 'number') check(numeros(certa).some(n => Math.abs(n - esp) <= Math.max(0.01 * Math.abs(esp), 0.051)), `${where}: alternativa correta "${certa}", mas a conta independente dá ${+esp.toPrecision(5)}`);
@@ -220,7 +231,13 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
         else if (typeof esp === 'string') check(certa === esp, `${where}: alternativa correta "${certa}", mas a conferência independente dá "${esp}"`);
       }
       check(vistos.size >= 3, `gerador ${g.id}: só ${vistos.size} questões diferentes em 100 sorteios`);
-      check(letras.size >= 3, `gerador ${g.id}: a correta cai em só ${letras.size} letra(s) em 100 sorteios (${[...letras].join('')})`);
+      /* Letra da correta: cada uma de A a E em pelo menos 8% de 500 sorteios (as alternativas ficam em ordem crescente,
+         mas a posição da correta é sorteada). */
+      if (!EXCECAO_LETRA[g.id]) {
+        const cont = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+        for (let s = 1; s <= 500; s++) cont[G.gerar(g.id, s * 104729 + 7).ans]++;
+        for (const k of LET) check(cont[k] >= 40, `gerador ${g.id}: a correta cai na letra ${k} em só ${cont[k]} de 500 sorteios (${LET.split('').map(x => x + ' ' + cont[x]).join(', ')})`);
+      }
     }
   }
 }

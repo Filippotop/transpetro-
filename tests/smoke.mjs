@@ -771,7 +771,7 @@ async function testBanco(browser) {
     /* Números novos: uma questão gerada, errada de propósito, vai para o Painel com o tipo de erro. */
     await page.evaluate(() => go('treino', { s: 'novos', gm: 'E1' })); await page.waitForTimeout(250);
     const gid = await page.locator('#gq').getAttribute('data-qid');
-    check(/^G:\w+:\d+$/.test(gid || ''), `${where}: Números novos não mostrou uma questão gerada (${gid})`);
+    check(/^G2:\w+:\d+$/.test(gid || ''), `${where}: Números novos não mostrou uma questão gerada (${gid})`);
     const errada = await page.evaluate(id => { const q = Q[id] || GERADOR.porId(id); return 'ABCDE'.split('').find(k => k !== q.ans); }, gid);
     await page.locator(`#gq .alt[data-k="${errada}"]`).click(); await page.waitForTimeout(150);
     const rec = await page.evaluate(id => S.ans[id], gid);

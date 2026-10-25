@@ -209,7 +209,9 @@ export default {
     C: '[atrAdi] O módulo está certo, mas na sequência ABC a corrente de linha fica atrasada 30°. O adiantamento de 30° é da tensão de linha na estrela.',
     D: '[tres] O fator é √3, não 3; e o ângulo é 30°, não 120°.',
     E: '[raiz3inv] A corrente de linha é √3 vezes maior que a de fase, não menor.' } },
-  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', figTira: ['VAB = VAN − VBN = √3·VAN ∠+30°', '30°'], conv: {
+  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', figTira: ['VAB = VAN − VBN = √3·VAN ∠+30°', '30°', '−VBN'],
+    /* sem a construção (−V_BN, o paralelogramo e o arco de 30°), que mostraria a resposta */
+    figTroca: [['<line x1="180" y1="200" x2="240" y2="96.1" class="s-dash s-pb"/>', ''], ['<line x1="300" y1="200" x2="360" y2="96.1" class="s-guide"/>', ''], ['<line x1="240" y1="96.1" x2="360" y2="96.1" class="s-guide"/>', ''], ['<path d="M 240 200 A 60 60 0 0 0 232 170" class="s-arc"/>', '']], conv: {
     s: 'A figura mostra o diagrama fasorial de um sistema trifásico em estrela, de sequência ABC, com as tensões de fase V<sub>AN</sub>, V<sub>BN</sub> e V<sub>CN</sub>. A tensão de linha V<sub>AB</sub> é obtida por',
     o: ['V<sub>AN</sub> + V<sub>BN</sub>, com módulo igual ao de V<sub>AN</sub>',
       'V<sub>AN</sub> − V<sub>BN</sub>, com módulo √3·V<sub>AN</sub> e adiantada 30° em relação a V<sub>AN</sub>',

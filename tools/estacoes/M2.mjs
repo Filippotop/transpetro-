@@ -36,6 +36,11 @@ export default {
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   labs: { lab1: 'transformador-ideal', lab2: 'rendimento-trafo' },
   trocas: [
+    /* regulação: o enunciado diz a referência (revisão do banco na T4, questão a:T2:b6:5) */
+    { de: 's:"A tensão no secundário de um transformador é de 230 V a vazio e cai para 220 V em plena carga. A regulação de tensão é de, aproximadamente,"',
+      para: 's:"A tensão no secundário de um transformador é de 230 V a vazio e cai para 220 V em plena carga. A regulação de tensão, em relação à tensão em plena carga, é de, aproximadamente,"' },
+    { de: 'c:"Reg = (230 − 220)/220 × 100 ≈ 4,55%. Dividir por 230 dá 4,35%, a forma alternativa menos usada; na dúvida, use a tensão em carga no denominador."',
+      para: 'c:"Reg = (230 − 220)/220 × 100 ≈ 4,55%. O enunciado pede a regulação em relação à tensão em plena carga, que vai no denominador; dividir por 230 V (a tensão a vazio) daria 4,35%."' },
     /* corrente de energização (revisão do banco na T4: a questão f:t2:2 cobra o assunto) */
     { de: 'o núcleo satura, a corrente de magnetização dispara e o transformador aquece.</p>',
       para: `o núcleo satura, a corrente de magnetização dispara e o transformador aquece.</p>
