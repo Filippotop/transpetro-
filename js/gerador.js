@@ -586,7 +586,7 @@
     var ordem = fases.map(function (F, i) {
       if (i === k) return null;
       var e = pick(r, ERRADOS[F]);
-      return [par(F, e[0]), 'peTab', 'Fase de ' + mm(F) + ': ' + e[1].charAt(0).toLowerCase() + e[1].slice(1)];
+      return [par(F, e[0]), 'peTab', 'Fase de ' + mm(F) + ': ' + (e[1].slice(0, 2) === 'PE' ? e[1] : e[1].charAt(0).toLowerCase() + e[1].slice(1))];
     });
     return { v: { fases: fases, S: S }, s: 'Os condutores de fase e de proteção (PE) são do mesmo material. Em qual das combinações abaixo o PE tem <b>exatamente</b> a seção mínima exigida pela NBR 5410 (tabela 58)?', text: true, corr: par(S, min(S)), ordem: ordem,
       sol: 'Tabela 58: ' + REGRA + '. Para fase de ' + mm(S) + ' → PE de ' + mm(min(S)) + '.' };
