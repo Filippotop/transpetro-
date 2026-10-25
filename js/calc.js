@@ -398,7 +398,7 @@
     el.innerHTML = cabeca(cfg) +
       '<div class="lab-in">' + campo(p + 'P', 'Potência (W)', val('dP', 5500), ' min="1"') + escolha(p + 'V', 'Tensão (V)', [[127, '127'], [220, '220']], val('dV', 220)) +
       campo(p + 'L', 'Comprimento (m)', val('dL', 20), ' min="1"') + escolha(p + 'G', 'Circuitos no eletroduto', [[1, '1 (fator 1,00)'], [0.8, '2 (fator 0,80)'], [0.7, '3 (fator 0,70)'], [0.65, '4 (fator 0,65)'], [0.6, '5 (fator 0,60)']], val('dG', 1)) +
-      escolha(p + 'Tp', 'Tipo de circuito', [[1.5, 'Iluminação'], [2.5, 'Força (tomadas)']], val('dTp', 2.5)) + campo(p + 'DV', 'Queda máxima (%)', val('dDV', 4), ' min="0.5" step="0.5"') + '</div>' +
+      escolha(p + 'Tp', 'Tipo de circuito', [[1.5, 'Iluminação'], [2.5, 'Força']], val('dTp', 2.5)) + campo(p + 'DV', 'Queda máxima (%)', val('dDV', 4), ' min="0.5" step="0.5"') + '</div>' +
       '<div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>';
     var q = function (k) { return el.querySelector('#' + p + k); }, out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt');
     var TAB = [[1.5, 17.5], [2.5, 24], [4, 32], [6, 41]], DJ = [6, 10, 13, 16, 20, 25, 32, 40, 50];
