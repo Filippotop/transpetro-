@@ -88,6 +88,7 @@ export default {
   freq: { n: 'Frequência errada', d: 'Usou a frequência de outra rede (50 Hz no lugar de 60 Hz, ou o contrário).', t: 'detalhe' },
   retPolar: { n: 'Conversão retangular-polar', d: 'Errou a conversão entre as formas retangular e polar: o módulo é √(a² + b²) e o ângulo, arctg(b/a).', t: 'formula' },
   unidSI: { n: 'Unidade do SI trocada', d: 'Trocou as unidades do SI entre grandezas (weber, tesla, ampère por metro, henry).', t: 'unidade' },
+  pontosTug: { n: 'Pontos de tomada contados errado', d: 'Errou a contagem dos pontos de tomada pelo perímetro (1 a cada 5 m nas salas e dormitórios, 1 a cada 3,5 m nas cozinhas e áreas de serviço; a fração conta como mais um ponto).', t: 'formula' },
   formula: { n: 'Fórmula errada', d: 'Montou uma fórmula que não é a do problema.', t: 'formula' },
   simbolo: { n: 'Símbolo ou código lido errado', d: 'Leu errado um símbolo, uma letra ou um número de diagrama ou de planta.', t: 'detalhe' }
 };

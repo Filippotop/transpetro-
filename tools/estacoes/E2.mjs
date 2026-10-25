@@ -25,6 +25,10 @@ export default {
   },
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   trocas: [
+    /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
+       aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
+    { errata: 'BQ-1', de: 'o:["30°","45°","60°","90°","120°"],a:2,',
+      para: 'o:["30°","50°","60°","90°","120°"],a:2,' },
     /* ---- figuras: rótulos que a fonte do app (mais larga que a da apostila) punha em cima da curva ---- */
     { de: '<text x="265" y="62" class="tl fb">V<tspan class="sub" dy="4">ef</tspan>', para: '<text x="330" y="62" class="tl fb">V<tspan class="sub" dy="4">ef</tspan>' },
     { de: '<text x="236" y="84" class="tl fc">i(t)</text>', para: '<text x="222" y="60" class="tl fc">i(t)</text>' },

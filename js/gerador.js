@@ -406,7 +406,7 @@
         [potTug(ns), 'comoSala', fmt(potTug(ns), 0) + ' VA conta os pontos pelo critério de sala (1 a cada 5 m: ' + ns + ' pontos); na cozinha é 1 a cada 3,5 m.'],
         [potTug(nf), 'arredBaixo', fmt(potTug(nf), 0) + ' VA arredonda o número de pontos para baixo (' + nf + '); a fração de 3,5 m conta como mais um ponto.'],
         [1800, 'semFator', '1.800 VA conta só os três pontos de 600 VA e esquece os ' + Math.max(n - 3, 0) + ' excedentes de 100 VA.'],
-        [potTug(n + 1), 'arredCima', fmt(potTug(n + 1), 0) + ' VA conta ' + (n + 1) + ' pontos: arredondou ' + fmt(P / 3.5, 2) + ' para cima e ainda somou um.'],
+        [potTug(n + 1), 'pontosTug', fmt(potTug(n + 1), 0) + ' VA conta ' + (n + 1) + ' pontos: arredondou ' + fmt(P / 3.5, 2) + ' para cima e ainda somou um.'],
         [600 + 100 * (n - 1), 'semFator', fmt(600 + 100 * (n - 1), 0) + ' VA dá 600 VA só ao primeiro ponto; na cozinha são até três pontos de 600 VA.']] };
   });
   G('tugsala', 'I1', '8.1', 'Quantidade de tomadas', 'média', function (r) {
@@ -417,7 +417,7 @@
       [par(nc, potTug(nc)), 'comoSala', 'Usou as regras de cozinha (1 ponto a cada 3,5 m e 600 VA nos três primeiros), que não valem para salas.'],
       [par(nc, 100 * nc), 'comoSala', 'Contou os pontos pelo critério de cozinha (1 a cada 3,5 m: ' + nc + ' pontos); na sala é 1 a cada 5 m.'],
       [par(na, 100 * na), 'areaPerim', 'Dividiu a área (' + fmt(a * b, 2) + ' m²) por 5; o critério é o perímetro (' + fmt(P, 1) + ' m).'],
-      [par(n + 1, 100 * (n + 1)), 'arredCima', 'Arredondou ' + fmt(P / 5, 2) + ' para cima e ainda somou um ponto.']];
+      [par(n + 1, 100 * (n + 1)), 'pontosTug', 'Arredondou ' + fmt(P / 5, 2) + ' para cima e ainda somou um ponto.']];
     return { v: { a: a, b: b }, s: 'Uma sala de estar mede ' + fmt(a, 1) + ' m × ' + fmt(b, 1) + ' m. Segundo a NBR 5410, o número mínimo de pontos de tomada de uso geral e a potência mínima atribuída a eles são, respectivamente,', text: true, corr: par(n, 100 * n), pool: pool,
       sol: 'Perímetro = ' + fmt(P, 1) + ' m; em salas e dormitórios, 1 ponto a cada 5 m ou fração: ' + fmt(P, 1) + '/5 = ' + fmt(P / 5, 2) + ' → ' + n + ' pontos, com 100 VA cada: ' + fmt(100 * n, 0) + ' VA.' };
   });

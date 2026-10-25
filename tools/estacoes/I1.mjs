@@ -95,6 +95,14 @@ export default {
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   labs: { labp: 'previsao-carga', labd: 'dimensiona-circuito', labq: 'queda-unitaria' },
   trocas: [
+    /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
+       aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
+    { errata: 'BQ-1', de: 'o:["6,4 m","12,7 m","25,4 m","31,8 m","50,8 m"],a:1,',
+      para: 'o:["6,4 m","10 m","12,7 m","22 m","254 m"],a:2,' },
+    { errata: 'BQ-4', de: 'Dormitórios e salas não estão na lista obrigatória da versão vigente (a revisão em andamento discute ampliá-la).',
+      para: 'Dormitórios e salas não estão na lista obrigatória da versão vigente (<span class=\\"confira\\">a revisão em andamento da norma discute ampliá-la</span>).' },
+    { errata: 'BQ-1', de: 'o:["400 VA","1.300 VA","1.900 VA","2.000 VA","2.400 VA"],a:2,',
+      para: 'o:["400 VA","1.400 VA","1.900 VA","2.000 VA","2.400 VA"],a:2,' },
     /* ---- correções técnicas e precisões (fontes/ERRATA.md) ---- */
     { errata: 'I1-1', de: linha('A NBR 5410 limita a queda total, contada da origem'),
       para: '<p>Condutores longos ou finos derrubam a tensão que chega à carga. A NBR 5410 (6.2.7) limita a queda de tensão em qualquer ponto de utilização, em porcentagem da tensão nominal:</p>' },

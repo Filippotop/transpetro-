@@ -36,6 +36,14 @@ export default {
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   labs: { lab1: 'transformador-ideal', lab2: 'rendimento-trafo' },
   trocas: [
+    /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
+       aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
+    { errata: 'BQ-1', de: 'o:["25% da nominal","40% da nominal","50% da nominal","75% da nominal","100% da nominal"],a:2,',
+      para: 'o:["20% da nominal","25% da nominal","50% da nominal","75% da nominal","100% da nominal"],a:2,' },
+    { errata: 'BQ-1', de: 'o:["95,0%","97,6%","98,0%","98,3%","99,3%"],a:1,',
+      para: 'o:["95,2%","97,6%","98,0%","98,3%","99,3%"],a:1,' },
+    { errata: 'BQ-1', de: 'o:["22,8 A","131,6 A","228 A","394,7 A","682 A"],a:2,',
+      para: 'o:["22,8 A","131,6 A","228 A","394,7 A","684 A"],a:2,' },
     /* ---- correções técnicas (fontes/ERRATA.md) ---- */
     { errata: 'M2-1', de: 'Teste clássico: ligam-se H1 e X1 com um jumper, aplica-se tensão reduzida no lado de alta e mede-se entre H2 e X2. Se a leitura for a <b>diferença</b> das tensões dos dois lados, a polaridade é <b>subtrativa</b>; se for a <b>soma</b>, é <b>aditiva</b>.',
       para: 'Teste clássico (método do voltímetro): liga-se H1 ao terminal de baixa tensão que fica do mesmo lado dele no transformador, aplica-se uma tensão reduzida entre H1 e H2 e mede-se entre H2 e o outro terminal de baixa. Se a leitura for a <b>diferença</b> das tensões dos dois lados, a polaridade é <b>subtrativa</b> (o X1 fica do lado do H1); se for a <b>soma</b>, é <b>aditiva</b> (o X1 fica do lado oposto). O teste serve justamente para descobrir qual terminal de baixa é o X1: com os terminais já marcados, ligar H1 a X1 daria sempre a diferença.' },

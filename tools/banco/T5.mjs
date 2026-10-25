@@ -35,16 +35,16 @@ export default {
     A: '[regra6] 160 VA = 100 + 60: contou só um bloco de 4 m².',
     B: '[regra6] 220 VA = 100 + 2 × 60: contou dois blocos de 4 m², mas os 12 m² restantes têm três.',
     D: '[regra6] 300 VA = 100 VA a cada 6 m² (18/6 × 100): aplicou os 100 VA à área inteira.',
-    E: '[arredCima] 340 VA = 100 + 4 × 60: contou um bloco a mais; 12 m² têm exatamente três blocos de 4 m².' } },
+    E: '[regra6] 340 VA = 100 + 4 × 60: contou um bloco a mais; 12 m² têm exatamente três blocos de 4 m².' } },
   'a:T5:b2:1': { d: 'f', conta: 'Math.ceil(18/5)', w: {
     A: '[semFator] 2 pontos: somou só dois lados (5 + 4 = 9 m), e não o perímetro inteiro (18 m).',
     B: '[arredBaixo] 3 pontos: arredondou 3,6 para baixo; a fração conta como mais um ponto.',
     D: '[comoSala] 5 pontos: usou o critério de cozinha (1 a cada 3,5 m) e ainda arredondou para baixo.',
     E: '[comoSala] 6 pontos: usou o critério de cozinha (1 a cada 3,5 m), que não vale para salas.' } },
-  'a:T5:b2:2': { d: 'm', conta: '3*600+100', w: {
+  'a:T5:b2:2': { d: 'm', conta: '3*600+100', w: { /* distrator 1.300 → 1.400 VA trocado na estação (BQ-1) */
     A: '[comoSala] 400 VA = 4 × 100: usou os 100 VA por ponto das salas; na cozinha os três primeiros pontos têm 600 VA.',
-    B: '[regra6] 1.300 VA = 2 × 600 + 100: deu 600 VA a só dois pontos; são até três.',
-    D: '[arredCima] 2.000 VA = 3 × 600 + 2 × 100: contou cinco pontos; 13/3,5 = 3,7 dá quatro.',
+    B: '[semFator] 1.400 VA = 2 × 600 + 2 × 100: deu 600 VA a só dois pontos; na cozinha são até três pontos de 600 VA.',
+    D: '[pontosTug] 2.000 VA = 3 × 600 + 2 × 100: contou cinco pontos; 13/3,5 = 3,7 dá quatro.',
     E: '[seiscentos] 2.400 VA = 4 × 600: deu 600 VA aos quatro pontos; só os três primeiros têm 600 VA.' } },
   'a:T5:b2:3': { d: 'f', w: {
     A: '[valorNorma] Equipamento com corrente nominal acima de 10 A (aqui, 11,4 A) exige circuito independente.',
@@ -72,8 +72,7 @@ export default {
     C: '[formula] 21 A = 24 − 3: descontou 1 A por circuito, em vez de aplicar o fator de 0,70.',
     D: '[semFator] 24 A é a capacidade sem agrupamento: esqueceu o fator de 0,70.',
     E: '[invertida] 34,3 A = 24/0,70: dividiu pelo fator, o que aumentaria a capacidade.' } },
-  'a:T5:b3:3': { d: 'm', conta: '0.04*127/(20*20)*1000',
-    fix: { o: ['6,4 m', '10 m', '12,7 m', '22 m', '254 m'], a: 2, errata: 'BQ-1' }, w: {
+  'a:T5:b3:3': { d: 'm', conta: '0.04*127/(20*20)*1000', w: { /* distratores e gabarito (B → C) trocados na estação (BQ-1) */
     A: '[idaVolta] 6,4 m divide ainda por 2 para ida e volta, mas a queda unitária em V/(A·km) já considera os dois condutores.',
     B: '[percVolt] 10 m usa 4 V como queda máxima: tratou os 4% como volts (4% de 127 V são 5,08 V).',
     D: '[outraTensao] 22 m usa 4% de 220 V; o equipamento é de 127 V.',
@@ -96,7 +95,7 @@ export default {
     E: '[detalhe] Desligar o neutro não cria diferença entre ida e volta; o DR não atua por isso.' } },
   'a:T5:b4:1': { d: 'm', h: '5.6', w: {
     A: '[valorNorma] A iluminação de dormitório não está entre os circuitos com DR obrigatório na NBR 5410:2004.',
-    B: '[valorNorma] As tomadas de dormitório não estão na lista obrigatória da versão vigente (a revisão em andamento discute ampliá-la).',
+    B: '[valorNorma] As tomadas de dormitório não estão na lista obrigatória da versão vigente (<span class="confira">a revisão em andamento da norma discute ampliá-la</span>).',
     D: '[valorNorma] A iluminação da sala não está entre os circuitos com DR obrigatório.',
     E: '[valorNorma] A campainha, circuito de sinalização, não está entre os locais com DR obrigatório.' } },
   'a:T5:b4:2': { d: 'm', h: '5.6', w: {

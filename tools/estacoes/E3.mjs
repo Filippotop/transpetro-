@@ -29,6 +29,10 @@ export default {
   labs: { lab1: 'potencia-ca', lab2: 'trifasica-equilibrada', lab3: 'dois-wattimetros' },
   secoes: { b7: NOVA },
   trocas: [
+    /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
+       aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
+    { errata: 'BQ-1', de: 'o:["440 var","880 var","1.320 var","1.760 var","2.200 var"],a:2,',
+      para: 'o:["440 var","984 var","1.320 var","1.760 var","2.200 var"],a:2,' },
     /* ---- correções técnicas (fontes/ERRATA.md) ---- */
     { errata: 'E3-1', de: 'Por isso a regulação da ANEEL estabelece um fator de potência de referência de 0,92, abaixo do qual o consumidor atendido nessas condições paga pelo excedente de reativos.',
       para: 'Por isso a regulação da ANEEL (Resolução Normativa nº 1.000/2021) fixa o fator de potência de referência em 0,92, indutivo ou capacitivo: as unidades consumidoras do <b>grupo A</b> (atendidas em média ou alta tensão, como indústrias) que ficam abaixo dele pagam pelo excedente de reativos. Consumidores do grupo B (baixa tensão, como residências) não têm essa cobrança.' },

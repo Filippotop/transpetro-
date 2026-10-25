@@ -109,11 +109,11 @@ export default {
     A: '[oposto] Laço largo e alta coercitividade são o material “duro” dos ímãs permanentes; num núcleo, dariam muita perda por ciclo.',
     C: '[oposto] Laço largo aumenta a perda por histerese; não reduz a corrente de magnetização.',
     D: '[detalhe] A histerese aparece justamente com o fluxo alternado: a perda se repete a cada ciclo (60 vezes por segundo).',
-    E: '[oposto] Alta remanência é desejável em ímãs, não em núcleos; laço estreito vem com baixa remanência e baixa coercitividade.' } },
+    E: '[oposto] Alta remanência é desejável em ímãs, não em núcleos: no transformador o que importa é laço estreito (baixa coercitividade, pouca perda por ciclo); reter fluxo ao desligar não tem utilidade.' } },
   /* ---------- seção 5: transformador ideal ---------- */
   'a:T2:b5:0': { d: 'f', conta: '2200*50/1000', w: {
-    A: '[relInv] 22 V = 2.200/100: usou uma relação de 100 : 1, cinco vezes maior que a real (1.000/50 = 20).',
-    B: '[relInv] 55 V = 2.200/40: dobrou a relação de espiras (40 em vez de 20).',
+    A: '[formula] 22 V = 2.200/100: usou uma relação de 100 : 1, cinco vezes maior que a real (1.000/50 = 20).',
+    B: '[formula] 55 V = 2.200/40: dobrou a relação de espiras (40 em vez de 20).',
     D: '[outra] 220 V = 2.200/10: usou de cabeça a relação 10 : 1 dos transformadores 2.200/220 V, sem fazer a conta com as espiras dadas.',
     E: '[relInv] 44.000 V = 2.200 × 1.000/50: inverteu a relação, como se fosse um elevador.' } },
   'a:T2:b5:1': { d: 'f', conta: '10000/220', w: {
@@ -162,13 +162,13 @@ export default {
     C: '[cuLinear] 350 W reduz pela metade, como se a perda fosse proporcional à carga.',
     D: '[outra] 700 W são as perdas em plena carga; elas mudam com a carga.',
     E: '[oposto] 1.400 W dobra as perdas, como se elas subissem com a carga menor.' } },
-  'a:T2:b6:4': { d: 'm', conta: 'Math.sqrt(300/1200)*100',
-    fix: { o: ['20% da nominal', '25% da nominal', '50% da nominal', '75% da nominal', '100% da nominal'], errata: 'BQ-1' }, w: {
+  'a:T2:b6:4': { d: 'm', conta: 'Math.sqrt(300/1200)*100', w: { /* distrator A trocado na estação (BQ-1) */
     A: '[formula] 20% = 300/(300 + 1.200): dividiu a perda no ferro pela soma das perdas, fórmula que não existe.',
     B: '[semRaiz] 25% = 300/1.200: esqueceu a raiz quadrada de x = √(P<sub>Fe</sub>/P<sub>Cu</sub>).',
     D: '[formula] 75% = 1 − 300/1.200: subtraiu a relação das perdas de 1, em vez de tirar a raiz.',
     E: '[exagero] Supôs que o rendimento máximo é sempre na carga nominal; ele ocorre quando P<sub>Cu</sub> = P<sub>Fe</sub>.' } },
-  'a:T2:b6:5': { d: 'm', conta: '(230-220)/220*100', w: {
+  'a:T2:b6:5': { d: 'm', conta: '(230-220)/220*100',
+    fix: { s: 'A tensão no secundário de um transformador é de 230 V a vazio e cai para 220 V em plena carga. A regulação de tensão (em relação à tensão em plena carga) é de, aproximadamente,', ed: 'o enunciado passa a dizer a referência da regulação, que algumas fontes tomam pela tensão a vazio' }, w: {
     A: '[formula] 1,05% vem de 230/220 = 1,045: dividiu as tensões em vez de dividir a diferença.',
     B: '[formula] 4,35% divide por V<sub>vazio</sub> (230 V), forma que algumas referências usam; sem indicação no enunciado, vale a definição usual, com V<sub>carga</sub> no denominador.',
     D: '[percVolt] 10% usa a diferença em volts (230 − 220 = 10 V) como se fosse porcentagem.',
@@ -179,8 +179,7 @@ export default {
     C: '[linhaFase] 380 V é a tensão de linha, entre duas fases; a carga está entre fase e neutro.',
     D: '[raiz3inv] 658 V = 380 × √3: multiplicou por √3 em vez de dividir.',
     E: '[ladoTroc] 7.967 V = 13,8 kV/√3 é do lado de alta, que, além disso, está em triângulo e não tem neutro.' } },
-  'a:T2:b7:1': { d: 'f', conta: '150000/(Math.sqrt(3)*380)',
-    fix: { o: ['22,8 A', '131,6 A', '228 A', '394,7 A', '684 A'], ed: 'o distrator (E), √3 × 150.000/380 = 683,7 A, estava arredondado como 682 A' }, w: {
+  'a:T2:b7:1': { d: 'f', conta: '150000/(Math.sqrt(3)*380)', w: { /* distrator E (682 → 684 A) corrigido na estação (BQ-1) */
     A: '[unidade] 22,8 A: errou a potência de 10 (150 kVA = 150.000 VA).',
     B: '[tres] 131,6 A = 150.000/(3 × 380): usou 3 no lugar de √3.',
     D: '[semRaiz3] 394,7 A = 150.000/380: esqueceu o √3.',
@@ -243,16 +242,19 @@ export default {
     C: '[oposto] As correntes não se cancelam: cada uma está no seu condutor e cria um campo que age sobre a outra.',
     D: '[oposto] Em sentidos opostos a força é de repulsão, em CC ou em CA.',
     E: '[formula] A força é inversamente proporcional à distância (F/L = μ<sub>0</sub>I<sub>1</sub>I<sub>2</sub>/(2πd)), e não ao quadrado dela.' } },
-  'h:t2:hc': { mod: 'M2', h: '5.1', d: 'f', figTroca: [[' remanência', ''], [' coercitividade', '']], conv: {
+  'h:t2:hc': { mod: 'M2', h: '5.1', d: 'f',
+    /* Na cópia da questão, os rótulos B_r e −H_c viram P e Q, e saem a saturação e a legenda da área (dariam a resposta). */
+    figTroca: [['B<tspan class="s-sub" dy="3">r</tspan><tspan dy="-3"> remanência</tspan>', 'P'], ['−H<tspan class="s-sub" dy="3">c</tspan><tspan dy="-3"> coercitividade</tspan>', 'Q']],
+    figTira: ['saturação', 'a área interna do laço é proporcional à perda por histerese em cada ciclo'], conv: {
     s: 'A figura mostra o laço de histerese B × H de um material ferromagnético. A coercitividade do material corresponde',
-    o: ['ao valor de B que permanece quando H volta a zero, no ponto em que o laço corta o eixo B',
-      'ao campo H, em sentido contrário, necessário para anular B, no ponto em que o laço corta o eixo H',
+    o: ['ao ponto P: o valor de B que permanece quando H volta a zero',
+      'ao ponto Q: o campo H, em sentido contrário, necessário para anular B',
       'ao trecho em que B quase não cresce mais, mesmo com H aumentando muito',
       'à área interna do laço',
-      'à inclinação da curva na origem, B/H'],
+      'à inclinação da curva inicial na origem, B/H'],
     a: 1,
-    c: 'Coercitividade (H<sub>c</sub>) é o campo em sentido contrário necessário para zerar B: o ponto em que o laço corta o eixo H. O ponto em que o laço corta o eixo B é a remanência (B<sub>r</sub>). Núcleos de transformador usam materiais de baixa coercitividade (laço estreito); ímãs permanentes, de alta.' }, w: {
-    A: '[detalhe] Esse é o ponto da remanência (B<sub>r</sub>), o magnetismo que sobra com H = 0.',
+    c: 'Coercitividade (H<sub>c</sub>) é o campo em sentido contrário necessário para zerar B: o ponto Q, em que o laço corta o eixo H. O ponto P, em que o laço corta o eixo B, é a remanência (B<sub>r</sub>). Núcleos de transformador usam materiais de baixa coercitividade (laço estreito); ímãs permanentes, de alta.' }, w: {
+    A: '[detalhe] O ponto P é a remanência (B<sub>r</sub>), o magnetismo que sobra com H = 0.',
     C: '[detalhe] Esse trecho é a saturação: o material não aceita mais fluxo.',
     D: '[detalhe] A área do laço é a energia perdida por ciclo (perda por histerese), não a coercitividade.',
     E: '[detalhe] A relação B/H é a permeabilidade do material.' } },

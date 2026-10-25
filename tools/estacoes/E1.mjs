@@ -18,6 +18,14 @@ export default {
   /* Títulos das seções que não têm número na apostila. */
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   trocas: [
+    /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
+       aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
+    { errata: 'BQ-1', de: 'o:["0,5 A","1 A","2 A","3 A","6 A"],a:1,',
+      para: 'o:["1 A","1,5 A","2 A","3 A","6 A"],a:0,' },
+    { errata: 'BQ-1', de: 'o:["0,6 A","24 A","240 A","600 A","2.400 A"],a:2,',
+      para: 'o:["0,6 A","24 A","240 A","2.400 A","2.880 A"],a:2,' },
+    { errata: 'BQ-1', de: 'o:["2,5 V","5 V","6,67 V","8 V","10 V"],a:1,',
+      para: 'o:["2,5 V","5 V","6,67 V","7,5 V","10 V"],a:1,' },
     /* ---- correções técnicas (fontes/ERRATA.md) ---- */
     { errata: 'E1-1', de: '<dd>também pode ser obtida dividindo a tensão em aberto pela corrente de curto; esse caminho é obrigatório quando há <b>fontes dependentes</b>, que <b>não</b> podem ser zeradas</dd>',
       para: '<dd>também pode ser obtida dividindo a tensão em aberto pela corrente de curto. Com <b>fontes dependentes</b>, que <b>não</b> podem ser zeradas, use esse caminho ou aplique uma fonte de teste entre a e b, com as independentes zeradas e as dependentes mantidas: R<sub>th</sub> = V<sub>teste</sub>/I<sub>teste</sub></dd>' },

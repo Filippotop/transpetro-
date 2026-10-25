@@ -39,13 +39,13 @@ export default {
     D: '[formula] 3,67 Ω = 11/3 é a média aritmética dos três, não o equivalente em paralelo.',
     E: '[seriePar] 11 Ω = 6 + 3 + 2 é a associação em série.' } },
   'a:T4:b2:2': { d: 'm', conta: '24/(4+12*6/18)*6/18',
-    fix: { o: ['1 A', '1,5 A', '2 A', '3 A', '6 A'], a: 0, errata: 'BQ-1' }, w: {
+    w: { /* distrator 0,5 A → 1,5 A e gabarito B → A trocados na estação (BQ-1) */
     B: '[ignorouFonte] 1,5 A = 24/(4 + 12): ignorou o ramo de 6 Ω, como se ele estivesse aberto.',
     C: '[divisorTroca] 2 A é a corrente no resistor de 6 Ω: trocou os resistores no divisor de corrente.',
     D: '[total] 3 A é a corrente total, que se divide entre os dois ramos.',
     E: '[tensaoTotal] 6 A = 24/4: aplicou a tensão da fonte inteira ao resistor de 4 Ω.' } },
   'a:T4:b2:3': { d: 'f', conta: '30*5/15', w: {
-    A: '[formula] 6 A = 30/5: dividiu a corrente pelo valor de um resistor, conta sem sentido.',
+    A: '[unidade] 6 A = 30/5: tratou os 30 A como se fossem 30 V sobre o resistor de 5 Ω (lei de Ohm com a grandeza trocada).',
     C: '[divIgual] 15 A divide a corrente igualmente, o que só vale para resistores iguais.',
     D: '[divisorTroca] 20 A é a corrente no resistor de 5 Ω: no divisor de corrente, o numerador é o outro resistor.',
     E: '[total] 30 A é a corrente total.' } },
@@ -60,11 +60,11 @@ export default {
     B: '[formula] 24 V é a média das duas leituras; a fem é a tensão com corrente zero.',
     C: '[fem] 24,5 V é a tensão nos terminais com 1 A; ainda há queda interna de 0,5 V.',
     E: '[rintSoma] 26 V = 24,5 + 0,5 × 3: somou à leitura de 1 A a queda calculada com a corrente do outro ensaio.' } },
-  'a:T4:b3:1': { d: 'f', conta: '12/0.05', w: {
+  'a:T4:b3:1': { d: 'f', conta: '12/0.05', w: { /* distrator 600 A → 2.880 A trocado na estação (BQ-1) */
     A: '[invertida] 0,6 = 12 × 0,05: multiplicou em vez de dividir.',
     B: '[unidade] 24 A seria com r = 0,5 Ω: errou a vírgula.',
-    D: '[unidade] 600 A seria com r = 0,02 Ω.',
-    E: '[unidade] 2.400 A seria com r = 0,005 Ω: errou a vírgula.' } },
+    D: '[unidade] 2.400 A seria com r = 0,005 Ω: errou a vírgula da resistência interna.',
+    E: '[outra] 2.880 = E²/r = 144/0,05: calculou a potência dissipada no curto, em watts, e não a corrente.' } },
   'a:T4:b3:2': { d: 'f', conta: '24-2*24/12', w: {
     A: '[etapa] 4 V é a queda na resistência interna (2 × 2 A), não a tensão nos terminais.',
     B: '[divIgual] 12 V divide a fem ao meio, como se r e a carga fossem iguais.',
@@ -96,14 +96,14 @@ export default {
     C: '[divIgual] 8 V repete a tensão de um dos resistores, como se fossem iguais.',
     D: '[etapa] 18 V = 8 + 10 é a soma das duas quedas; falta subtrair da fonte.',
     E: '[sinal] 42 V = 24 + 18: somou a fonte às quedas, com o sinal trocado.' } },
-  'a:T4:b4:3': { d: 'd', h: '2.5', conta: '10/(1+1)', w: {
+  'a:T4:b4:3': { d: 'd', h: '2.5', conta: '10/(1+1)', w: { /* distrator 8 V → 7,5 V trocado na estação (BQ-1) */
     A: '[unidade] 2,5 = 10/4: dividiu a tensão da fonte pelo resistor de 4 Ω, misturando corrente e tensão.',
     C: '[ignorouFonte] 6,67 V é o divisor 10 × 4/6, com a fonte dependente ignorada.',
-    D: '[etapa] 8 V = 10 − 2 × 1: supôs i<sub>1</sub> = 1 A sem resolver as duas equações.',
+    D: '[sinal] 7,5 V sai de tratar a fonte dependente como se injetasse 0,5·i<sub>1</sub> no nó (i<sub>1</sub> + 0,5·i<sub>1</sub> = V/4): trocou o sentido da fonte.',
     E: '[tensaoTotal] 10 V supõe que não há queda no resistor de 2 Ω.' } },
   'a:T4:b4:5': { d: 'm', conta: ['4-1', '6-4+1'], w: {
     A: '[formula] Usou o número de nós e de ramos direto; as equações independentes são n − 1 e r − n + 1.',
-    C: '[formula] 4 nós dão 3 equações de nó (n − 1); e as de malha são r − n + 1 = 3, não 2.',
+    C: '[formula] 4 e 2 usa n e r − n: esqueceu o −1 das equações de nó (n − 1 = 3) e o +1 das de malha (r − n + 1 = 3).',
     D: '[formula] O número de malhas independentes é r − n + 1 = 3, não o número de ramos.',
     E: '[formula] Trocou as contas: 6 e 4 são o número de ramos e de nós, não de equações.' } },
   /* ---------- seção 5: Thévenin, Norton e máxima transferência ---------- */

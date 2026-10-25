@@ -111,6 +111,16 @@ for (const q of BANCO) {
     for (const [, id] of q.fig.matchAll(/url\(#([^)]+)\)/g)) check(new RegExp(`id="${id}"`).test(q.fig), `${where}: a figura usa url(#${id}), que não está dentro dela`);
   }
 }
+/* As questões das apostilas são também os exercícios da Teoria: alternativas e gabarito iguais nos dois lugares. */
+let semExercicio = 0;
+for (const q of BANCO.filter(q => q.origem.startsWith('a:'))) {
+  const m = MODS[q.mod]; if (!m || !m.html) continue;
+  const ex = [...m.html.matchAll(/<li class="exq" data-a="(\d)"><p class="exq-s">([\s\S]*?)<\/p>\n<ol class="exq-o">([\s\S]*?)<\/ol>/g)].find(x => text(x[2]) === text(q.cmd));
+  if (!ex) { semExercicio++; continue; } /* enunciado ajustado só na aba Questões (fix.s) */
+  const alts = [...ex[3].matchAll(/<span class="exq-l">\([A-E]\)<\/span> <span>([\s\S]*?)<\/span><\/li>/g)].map(x => text(x[1]));
+  check(JSON.stringify(alts) === JSON.stringify(q.alts.map(text)) && LET[+ex[1]] === q.ans, `questão ${q.id} (${q.origem}): alternativas ou gabarito diferentes do exercício da Teoria da ${q.mod}`);
+}
+check(semExercicio <= 3, `${semExercicio} questões das apostilas sem o exercício correspondente na Teoria`);
 check(origens.size === 205, `banco: ${origens.size} questões de origem distintas (esperado 205)`);
 /* Cada questão tem a sua revisão, e cada correção cita uma errata que existe. */
 for (const t of ['T1', 'T2', 'T3', 'T4', 'T5']) {

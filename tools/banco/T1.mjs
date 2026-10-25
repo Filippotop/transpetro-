@@ -19,7 +19,7 @@ export default {
     E: '[sinal] Usou só os 40° da tensão e ainda inverteu quem está adiantado.' } },
   'a:T1:b1:3': { d: 'm', conta: '360*60*0.00278', w: {
     A: '[formula] 30° sai de usar 180° no lugar de 360° na proporção (como se meio ciclo fosse o ciclo inteiro).',
-    B: '[detalhe] 45° seria 1/8 do ciclo (2,08 ms). É um ângulo “redondo” escolhido sem fazer a proporção φ = 360°·f·Δt.',
+    B: '[freq] 50° = 360° × 50 × 0,00278: usou a frequência de 50 Hz, de outras redes, no lugar dos 60 Hz das senoides.',
     D: '[detalhe] 90° (quadratura) seria 1/4 do ciclo, 4,17 ms. Supor quadratura só porque as ondas estão deslocadas é o erro.',
     E: '[detalhe] 120° é a defasagem entre as fases do trifásico, 1/3 do ciclo (5,56 ms); não é o que esta medida dá.' } },
   'a:T1:b1:4': { d: 'f', conta: '170*Math.sin(Math.PI/6)', w: {
@@ -116,8 +116,7 @@ export default {
     C: '[oposto] O FP é 0,8, mas 0,8 está abaixo de 0,92, não acima.',
     D: '[senCos] 60 é a potência reativa (kvar). A ativa é √(100² − 60²) = 80 kW.',
     E: '[oposto] FP unitário exigiria Q = 0; há 60 kvar de reativa.' } },
-  'a:T1:b5:1': { d: 'f', conta: '220*10*0.6',
-    fix: { o: ['440 var', '984 var', '1.320 var', '1.760 var', '2.200 var'], errata: 'BQ-1' }, w: {
+  'a:T1:b5:1': { d: 'f', conta: '220*10*0.6', w: { /* distrator B trocado na estação (BQ-1) */
     A: '[senCos] 440 var = 2.200 × 0,2: usou 1 − 0,8 como se fosse o seno de φ.',
     B: '[semQuad] 984 var = 2.200 × √(1 − 0,8): esqueceu de elevar o FP ao quadrado; senφ = √(1 − 0,8²) = 0,6.',
     D: '[senCos] 1.760 W = 2.200 × 0,8 é a potência ativa (cosseno), não a reativa (seno).',
@@ -139,10 +138,10 @@ export default {
     E: '[tensaoTotal] 1.667 = 100²/6: aplicou a tensão total à reatância. Além disso, reatância não consome potência ativa.' } },
   /* ---------- E3 · trifásicos (bloco 6) ---------- */
   'a:T1:b6:0': { d: 'f', conta: '220/Math.sqrt(3)/12.7', w: {
-    A: '[raiz3inv] 5,77 A = 10/√3: dividiu por √3 como se a ligação fosse triângulo.',
+    A: '[raiz3inv] 5,77 A = 10/√3: aplicou √3 entre corrente de fase e de linha, mas na estrela I<sub>L</sub> = I<sub>F</sub>.',
     C: '[unidade] 12,7 é a impedância, em ohms, e não uma corrente.',
     D: '[linhaFase] 17,3 A = 220/12,7: aplicou a tensão de linha sobre a impedância; em estrela, cada uma recebe 127 V.',
-    E: '[tres] 30 A = 3 × 10: multiplicou pelo número de fases. A corrente de linha da estrela é a própria corrente de fase.' } },
+    E: '[linhaFase] 30 A = √3 × 220/12,7: tratou a carga como triângulo (cada impedância com 220 V e I<sub>L</sub> = √3·I<sub>F</sub>); em estrela, cada uma recebe 127 V e I<sub>L</sub> = I<sub>F</sub>.' } },
   'a:T1:b6:2': { d: 'f', conta: 'Math.sqrt(3)*380*20*0.85/1000', w: {
     A: '[raiz3inv] 3,7 kW = 6,5/√3: dividiu por √3 em vez de multiplicar.',
     B: '[semRaiz3] 6,5 kW = 380 × 20 × 0,85: esqueceu o √3.',
@@ -210,7 +209,7 @@ export default {
     C: '[atrAdi] O módulo está certo, mas na sequência ABC a corrente de linha fica atrasada 30°. O adiantamento de 30° é da tensão de linha na estrela.',
     D: '[tres] O fator é √3, não 3; e o ângulo é 30°, não 120°.',
     E: '[raiz3inv] A corrente de linha é √3 vezes maior que a de fase, não menor.' } },
-  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', figTira: ['VAB = VAN − VBN = √3·VAN ∠+30°'], conv: {
+  'h:t1:vab': { mod: 'E3', h: '4.2', d: 'm', figTira: ['VAB = VAN − VBN = √3·VAN ∠+30°', '30°'], conv: {
     s: 'A figura mostra o diagrama fasorial de um sistema trifásico em estrela, de sequência ABC, com as tensões de fase V<sub>AN</sub>, V<sub>BN</sub> e V<sub>CN</sub>. A tensão de linha V<sub>AB</sub> é obtida por',
     o: ['V<sub>AN</sub> + V<sub>BN</sub>, com módulo igual ao de V<sub>AN</sub>',
       'V<sub>AN</sub> − V<sub>BN</sub>, com módulo √3·V<sub>AN</sub> e adiantada 30° em relação a V<sub>AN</sub>',

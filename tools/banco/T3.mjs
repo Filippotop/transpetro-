@@ -159,7 +159,8 @@ export default {
     E: '[detalhe] Um selo em paralelo com S0 impediria o desligamento; não acende o sinaleiro de sobrecarga.' } },
 
   /* ---------- banco (BANK) ---------- */
-  'f:t3:1': { mod: 'M1', d: 'm', w: {
+  'f:t3:1': { mod: 'M1', d: 'm',
+    fix: { c: 'Retardo na energização: a mudança de estado acontece depois do tempo ajustado, contado da energização; a volta ao repouso é instantânea.', ed: 'a última frase do comentário (“O último comportamento descrito é o de retardo na desenergização”) não se ligava a nada' }, w: {
     A: '[detalhe] Fechar já na energização e abrir depois do tempo é o temporizador de impulso (intervalo), não o de retardo na energização.',
     C: '[oposto] O contato muda de estado com a bobina energizada, depois do tempo; não na desenergização.',
     D: '[naNf] O contato é NA: depois do tempo ele fecha, não abre.',
@@ -221,7 +222,7 @@ export default {
     B: '[ansi] 50/51 é a proteção de sobrecorrente (instantânea e temporizada).',
     C: '[ansi] 52 é o disjuntor: interrompe a corrente, mas não detecta nada.',
     E: '[ansi] 89 é a chave seccionadora.' } },
-  'h:t3:52': { mod: 'M1', h: '1.1', d: 'm', conv: {
+  'h:t3:52': { mod: 'M1', h: '1.1', d: 'm', figTira: ['comando de abertura'], conv: {
     s: 'No diagrama unifilar da subestação mostrado na figura, quando o relé 50/51 atua, o equipamento que efetivamente interrompe a corrente de falta no lado de média tensão é o',
     o: ['seccionador 89', 'transformador de corrente (TC)', 'disjuntor 52 do lado de média tensão', 'disjuntor 52 do lado de baixa tensão', 'relé 63'], a: 2,
     c: 'O relé só decide; quem interrompe a corrente é o disjuntor 52 do lado de média tensão, que recebe dele o comando de abertura. A seccionadora 89 não é feita para abrir correntes de falta.' }, w: {
@@ -235,7 +236,7 @@ export default {
     c: 'S1 fecha rede e estrela (III); o motor acelera em estrela (V) enquanto o temporizador conta (I); vencido o tempo, abre o contator de estrela (IV) e só então fecha o de triângulo (II). Estrela e triângulo fechados juntos seriam um curto-circuito, por isso são intertravados.' }, w: {
     A: '[ordem] Conta o tempo antes de o motor acelerar e fecha o triângulo antes de abrir a estrela: os dois juntos dão curto-circuito.',
     B: '[ordem] Fecha o triângulo antes de abrir a estrela: os dois juntos dão curto-circuito.',
-    D: '[ordem] Liga o triângulo logo na partida: o motor partiria com tensão plena por bobina, sem o ganho da estrela.',
+    D: '[ordem] Fecha o triângulo logo depois da partida, com o contator de estrela ainda fechado: estrela e triângulo juntos dão curto-circuito.',
     E: '[ordem] Põe o motor acelerando antes de S1 ligar os contatores.' } },
   'o:t3:selo': { mod: 'M1', d: 'f', conv: {
     s: 'Considere as etapas do funcionamento de uma partida direta com selo:<br>I. O contato 13-14 de K1 fecha.<br>II. Pressiona-se S0: a bobina desenergiza e o selo abre.<br>III. Em repouso, há tensão até S1 e até o contato 13-14 de K1, ambos abertos.<br>IV. Solta-se S1, e a corrente passa a circular pelo selo.<br>V. Pressiona-se S1, e a bobina de K1 é energizada.<br>A ordem correta é',
