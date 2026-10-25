@@ -1074,7 +1074,7 @@ function vSim(){
   const cfg=Object.assign({n:15,foco:'tudo'},S.simcfg||{});
   host().innerHTML=`<div class="sec-title"><h2>Simulado relâmpago</h2><span class="eyebrow">4 minutos por questão, como no dia (60 questões em 4 h)</span></div>
   <div class="panel" style="max-width:760px">
-    <p style="font-family:var(--read);margin-top:0">Sem correção durante a prova. As questões vêm das estações na proporção em que cada item do edital caiu na prova de 2023. No fim, você vê o acerto por linha e por bloco (o corte é 50% em cada um), as questões fáceis que errou e os tipos de erro que te pegaram.</p>
+    <p style="font-family:var(--read);margin-top:0">Sem correção durante a prova. As questões vêm das estações na proporção em que cada item do edital caiu na prova de 2023, com pelo menos 1 de cada estação a partir de 15 questões. No fim, você vê o acerto por linha e por bloco (o corte é 50% em cada um), as questões fáceis que errou e os tipos de erro que te pegaram.</p>
     <div class="eyebrow" style="margin:14px 0 8px">Quantas questões</div>
     <div class="choice" id="cn">${[10,15,20,30,60].map(n=>`<button data-n="${n}" aria-pressed="${cfg.n===n}">${n} · ${n*4} min</button>`).join('')}</div>
     <div class="eyebrow" style="margin:16px 0 8px">Foco</div>
@@ -1103,7 +1103,7 @@ function vSim(){
 /* Proporção da prova de 2023: as n questões se dividem entre as estações com questões pelo peso2023 de cada uma
    (maiores restos). Estações que dividem o peso de um item (as notas delas dizem "dividido com…") contam a metade:
    E1 e E2 (item 2), M2 e M3 (item 5), I1 e I2 (item 8), A1 e A2 (item 9). Na proporção da prova, 40 específicas para
-   10 de Matemática (Português fica fora do app). Estação com peso 0 em 2023 (M1) fica de fora do simulado completo. */
+   10 de Matemática (Português fica fora do app). Estação com peso 0 em 2023 (M1) só entra pela regra do mínimo de 1. */
 const PESO_DIVIDIDO={E1:2,E2:2,M2:2,M3:2,I1:2,I2:2,A1:2,A2:2};
 function simCotas(pool,n,foco){
   const disp={}; pool.forEach(q=>{ if(q.mod&&M[q.mod]) disp[q.mod]=(disp[q.mod]||0)+1; });
@@ -1119,6 +1119,9 @@ function simCotas(pool,n,foco){
   let cotas={};
   if(foco==='MT') cotas=reparte(mt,n); else if(foco==='EL') cotas=reparte(el,n);
   else { const nm=mt.length?Math.round(n*0.2):0; const cm=reparte(mt,nm); const usados=Object.values(cm).reduce((a,b)=>a+b,0); cotas=Object.assign(reparte(el,n-usados),cm); }
+  /* Com 15 questões ou mais, toda estação com questões entra com pelo menos 1 (o edital de 2026 cobra todos os itens,
+     mesmo os que não caíram em 2023, como o item 1 da M1): a vaga sai da estação com a maior cota. */
+  if(n>=15){ const alvo=foco==='MT'?mt:foco==='EL'?el:ids; alvo.filter(id=>!cotas[id]).forEach(id=>{ const maior=Object.keys(cotas).sort((a,b)=>cotas[b]-cotas[a])[0]; if(maior&&cotas[maior]>1){ cotas[maior]--; cotas[id]=1; } }); }
   return DATA.modules.filter(m=>cotas[m.id]).map(m=>[m.id,cotas[m.id]]);
 }
 function simRun(){

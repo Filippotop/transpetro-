@@ -66,7 +66,9 @@ const svgClasses = svg => svg.replace(/\sclass="([^"]*)"/g, (_, c) => ` class="$
 function exercicios(set, n) {
   const qs = QUIZ[set] || [];
   if (!qs.length) return '';
-  return `<div class="exs" data-calc="exercicios">\n<p class="exs-t">Exercícios de fixação da seção ${n}</p>\n<p class="exs-h">No estilo da banca, com gabarito comentado. Toque numa alternativa para conferir.</p>\n<ol class="exs-l">\n` +
+  /* Os exercícios das apostilas também estão no banco (data/questoes.js), na aba Questões. */
+  const noBanco = !(M.quiz || {})[set] ? ' Responda também na aba Questões: lá a resposta conta na sua estatística e volta na revisão.' : '';
+  return `<div class="exs" data-calc="exercicios">\n<p class="exs-t">Exercícios de fixação da seção ${n}</p>\n<p class="exs-h">No estilo da banca, com gabarito comentado. Toque numa alternativa para conferir.${noBanco}</p>\n<ol class="exs-l">\n` +
     qs.map(q => `<li class="exq" data-a="${q.a}"><p class="exq-s">${q.s}</p>\n<ol class="exq-o">${q.o.map((o, k) => `<li><span class="exq-l">(${LET[k]})</span> <span>${o}</span></li>`).join('')}</ol>\n<details class="exq-g"><summary>Ver o gabarito comentado</summary><p><b>Resposta: (${LET[q.a]})</b> ${q.c}</p></details></li>`).join('\n') +
     `\n</ol>\n</div>`;
 }

@@ -786,12 +786,12 @@ async function testBanco(browser) {
     check(painel.includes(nome), `${where}: o Painel não mostra o tipo de erro "${nome}"`);
     await page.evaluate(() => go('treino', { s: 'erros' })); await page.waitForTimeout(200);
     check((await page.evaluate(() => document.body.innerText)).includes(nome), `${where}: o caderno de erros não mostra o tipo de erro "${nome}"`);
-    /* Simulado completo: proporção de 2023 entre as estações com questões (a M1, com peso 0, fica de fora). */
+    /* Simulado completo: proporção de 2023 entre as estações com questões; com 15 ou mais, pelo menos 1 de cada (a M1, peso 0, entra com 1). */
     await page.evaluate(() => { SIM = null; S.simcfg = { n: 15, foco: 'tudo' }; go('treino', { s: 'sim' }); }); await page.waitForTimeout(200);
     await page.click('#start'); await page.waitForTimeout(200);
     const sim = await page.evaluate(() => { const by = {}; SIM.qs.forEach(id => { by[Q[id].mod] = (by[Q[id].mod] || 0) + 1; }); return { n: SIM.qs.length, by, limit: SIM.limit }; });
     check(sim.n === 15 && sim.limit === 15 * 240000, `${where}: simulado com ${sim.n} questões e ${sim.limit / 60000} min`);
-    check(!sim.by.M1 && sim.by.E3 >= sim.by.E1 && sim.by.E3 >= sim.by.M2, `${where}: simulado fora da proporção de 2023 (${JSON.stringify(sim.by)})`);
+    check(sim.by.M1 === 1 && sim.by.E3 >= sim.by.E1 && sim.by.E3 >= sim.by.M2, `${where}: simulado fora da proporção de 2023 com 1 de cada estação (${JSON.stringify(sim.by)})`);
     for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
     await ctx.close();
   }
