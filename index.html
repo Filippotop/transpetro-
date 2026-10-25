@@ -1587,7 +1587,7 @@ function vMarcadas(){
 function buildReport(){
   const L=[]; const d=new Date();
   L.push(`RELATÓRIO ELÉTRICA DE OURO · ${d.toLocaleDateString('pt-BR')} · faltam ${daysLeft()} dias`);
-  const all=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a), gen=Object.entries(S.ans).filter(([id])=>isGen(id)).map(([,a])=>a);
+  const all=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a), gen=Object.entries(S.ans).filter(([id])=>isGen(id)&&Q[id]).map(([,a])=>a);
   L.push(`Questões feitas: ${all.length}/${DATA.questions.length}${gen.length?` (mais ${gen.length} com números novos, ${gen.filter(a=>a.ok).length} certas)`:''} · acerto de primeira: ${all.length?pct(all.filter(a=>a.ok).length,all.length):0}% · chutes certos marcados: ${Object.keys(S.chute).length}`);
   L.push(Object.entries(BLOCKS).map(([v,b])=>{ const st=volStats(v); return `${b.name}: ${st.ok}/${st.done} (corte: 50%)`; }).join(' · '));
   L.push(''); L.push('POR ESTAÇÃO (certas de primeira / feitas / total):');
