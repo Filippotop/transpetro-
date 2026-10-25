@@ -12,7 +12,7 @@
 | T3b: estações M1 (simbologia e diagramas) e M2 (eletromagnetismo e transformadores) | ✅ concluída e revisada | ..b658359 |
 | T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ✅ concluída e revisada | ..cec1278 |
 | T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ⏳ implementada (banco nas abas Questões, 30 geradores no Treino, simulado na proporção de 2023, tipos de erro no Painel); **em revisão independente** (código + conteúdo das 205 questões). Falta corrigir o que a revisão achar | ..670a8d6 |
-| T5: prova Transpetro 2023 recortada por questão (`fontes/prova-2023-…pdf`) + gabarito **oficial** (procurar; se não achar, sem correção) | ⬜ a fazer | — |
+| T5: prova Transpetro 2023 recortada por questão (`fontes/prova-2023-…pdf`) + gabarito **oficial** (já obtido: `fontes/gabarito-2023.json`, Q28 e Q30 anuladas) | ⬜ a fazer (gabarito pronto) | — |
 | T6: Biblioteca (formulário geral, números-âncora, NR-10 de 2019 × 2026), Arena, Plano até 29/11, Painel, Missão de hoje; entrega e parada para o estudante avaliar | ⬜ a fazer | — |
 
 Ondas seguintes (spec, seção 3):
@@ -24,7 +24,8 @@ Ondas seguintes (spec, seção 3):
 
 - **Data da prova:** 29/11/2026, a do edital original, com aviso para conferir a retificação.
 - **Numeração da prova de 2023:** Português 1–10, Matemática 11–20, Específicas 21–60 (confirmada pela capa).
-- **Q28 de 2023 (Dy5):** nenhuma alternativa impressa traz os 150° corretos. O app ensina a regra (a BT fica atrasada 150° em relação à AT) e **não** dá gabarito.
+- **Gabarito oficial de 2023: encontrado.** Está em `fontes/gabarito-2023.json`, junto com os dois PDFs da Cesgranrio (o preliminar e as "Respostas aos Recursos"), que batem letra a letra. As questões **28 e 30 foram anuladas**; nenhum outro gabarito da Prova 6 mudou.
+- **Q28 de 2023 (Dy5):** foi anulada (o preliminar dava 120°; o certo é 150°). O app ensina a regra (a BT fica atrasada 150° em relação à AT) e mostra a questão como anulada.
 - **Bancada:** sem service worker próprio; o SW da raiz precacheia `bancada/`. O SW da raiz só lê os próprios caches (`edo-*`) e apaga os caches `bancada-shell-*` antigos que tenham URLs da raiz.
 - **Questões `hot` e `ord` do banco (15):** viram múltipla escolha se o Humanas não tiver um tipo equivalente.
 - **Plano antigo** (`docs/superpowers/plans/2026-10-23-apostila.md`, apostila sobre a Bancada): substituído. O código dele fica em `bancada/` sem uso novo.
