@@ -204,6 +204,29 @@ condutores (a original, com 660 de largura e rótulos de 11 px, ficava ilegível
 `hl` sem estilo no app (preenchimento preto no tema escuro): agora é um fundo decorativo; o `<select>` de tensão da
 calculadora de dimensionamento ganhou `value` nas opções.
 
+## M3 · Máquinas rotativas, proteção e partidas (`fontes/maquinas-rotativas-protecao-partidas.html`, escrita para o app)
+
+Onda 2 (2026-11-07). Estação nova, sem apostila do estudante: o aprofundamento foi escrito para o app no formato dos
+outros, e **nenhuma fonte foi corrigida** (não há troca em `tools/estacoes/M3.mjs`). As 96 contas dos 9 exemplos
+resolvidos, das figuras e dos 30 exercícios estão em `contas`; as 34 questões da aba Questões (30 exercícios + 4 extras,
+revisão em `tools/banco/M3.mjs`) e os geradores `escorr`, `imotor` e `ydelta` (`js/gerador.js`) são conferidos por
+`tests/questoes.test.mjs`. Fontes: guia de especificação de motores da WEG (velocidade síncrona e escorregamento,
+rendimento, conjugado com 9.555, classes térmicas, fator de serviço, categorias N/H/D, estrela-triângulo com 25% a 33% e
+comutação a 90%, taps de 50/65/80%, soft-starter, V/f e IGBT/PWM), notas de aula da UDESC (corrente na linha da
+compensadora = k²·I<sub>p</sub>; K1/K2/relé = 0,58·I<sub>n</sub>, K3 = 0,33·I<sub>n</sub>; I<sub>F</sub> ≥ 1,2·I<sub>n</sub>;
+coordenação tipos 1 e 2) e Chapman (máquinas síncronas e CC).
+
+Decisões registradas (não são erros de fonte):
+- Conjugado: o app ensina C ≈ 9.550·P(kW)/n, que é 60.000/(2π) = 9.549; o guia da WEG escreve 9.555. A diferença é de
+  0,06% e o texto cita as duas.
+- Estrela-triângulo: o app usa I<sub>n</sub>/√3 (≈ 0,58·I<sub>n</sub>) para K1, K2 e o relé e I<sub>n</sub>/3 (≈ 0,33·I<sub>n</sub>)
+  para K3, sem a margem de 1,15 que as notas da UDESC aplicam na escolha do contator (citada no texto como prática de
+  aula).
+
+Marcado com `confira`: a faixa típica da corrente de partida dos motores de gaiola, "da ordem de 5 a 8 vezes a nominal"
+(o guia da WEG mostra cerca de 6 vezes na figura 3.9 e remete à placa, I<sub>p</sub>/I<sub>n</sub>, e às tabelas da NBR 17094;
+não achei a faixa escrita numa fonte confiável).
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão
