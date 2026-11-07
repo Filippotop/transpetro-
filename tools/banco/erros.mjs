@@ -91,5 +91,16 @@ export default {
   unidSI: { n: 'Unidade do SI trocada', d: 'Trocou as unidades do SI entre grandezas (weber, tesla, ampère por metro, henry).', t: 'unidade' },
   pontosTug: { n: 'Pontos de tomada contados errado', d: 'Errou a contagem dos pontos de tomada pelo perímetro (1 a cada 5 m nas salas e dormitórios, 1 a cada 3,5 m nas cozinhas e áreas de serviço; a fração conta como mais um ponto).', t: 'formula' },
   formula: { n: 'Fórmula errada', d: 'Montou uma fórmula que não é a do problema.', t: 'formula' },
-  simbolo: { n: 'Símbolo ou código lido errado', d: 'Leu errado um símbolo, uma letra ou um número de diagrama ou de planta.', t: 'detalhe' }
+  simbolo: { n: 'Símbolo ou código lido errado', d: 'Leu errado um símbolo, uma letra ou um número de diagrama ou de planta.', t: 'detalhe' },
+  /* ---- tipos novos (estação M3: máquinas, proteção e partidas) ---- */
+  polos: { n: 'Polos × pares de polos', d: 'Confundiu número de polos com número de pares de polos em n = 120·f/p.', t: 'formula' },
+  semRend: { n: 'Esqueceu o rendimento', d: 'Tratou a potência de placa (no eixo) como potência absorvida da rede, sem dividir pelo rendimento.', t: 'formula' },
+  rpmRad: { n: 'rpm sem converter', d: 'Usou a rotação em rpm onde a fórmula pede rad/s (ω = 2πn/60).', t: 'unidade' },
+  cvKw: { n: 'cv × kW', d: 'Confundiu cv com kW (1 cv = 0,736 kW).', t: 'unidade' },
+  sincInd: { n: 'Síncrona × indução', d: 'Confundiu a velocidade síncrona com a do rotor do motor de indução, ou aplicou escorregamento a uma máquina síncrona.', t: 'detalhe' },
+  campoShunt: { n: 'Corrente de campo esquecida', d: 'No motor CC shunt, não separou a corrente de campo da de armadura (ou esqueceu as perdas no cobre).', t: 'formula' },
+  perdaRot: { n: 'Perdas rotacionais esquecidas', d: 'Não descontou as perdas rotacionais (atrito, ventilação e ferro) da potência desenvolvida E·I<sub>a</sub>.', t: 'formula' },
+  umTerco: { n: '1/3 × 1/√3 na estrela-triângulo', d: 'Na estrela-triângulo, trocou o fator 1/3 (corrente de linha e conjugado) por 1/√3 (tensão e corrente na bobina), ou aplicou-o à corrente errada.', t: 'formula' },
+  tapQuad: { n: 'Tap sem o quadrado', d: 'Na chave compensadora, aplicou o tap k à corrente de linha, que cai com k² (k é a corrente no motor).', t: 'formula' },
+  partidaMetodo: { n: 'Método de partida trocado', d: 'Atribuiu a um método de partida o funcionamento ou a redução de outro (direta, estrela-triângulo, compensadora, soft-starter, inversor).', t: 'detalhe' }
 };

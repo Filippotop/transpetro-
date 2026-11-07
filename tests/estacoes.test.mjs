@@ -33,6 +33,20 @@ if (fs.existsSync(path.join(ROOT, 'js/calc.js'))) {
   vm.runInContext(read('js/calc.js'), wctx, { filename: 'js/calc.js' });
   check(typeof wctx.window.montarCalculadoras === 'function', 'widgets: js/calc.js não expõe montarCalculadoras(raiz)');
   WIDGETS = Object.keys(wctx.window.CALC_WIDGETS || {});
+  /* Widgets da M3: a conta pura (.conta) refeita aqui com as fórmulas da teoria, sem navegador. */
+  const CW = wctx.window.CALC_WIDGETS || {}, perto = (a, b) => Math.abs(a - b) <= 0.005 * Math.max(Math.abs(b), 1e-9);
+  const M3W = [
+    ['motor-placa', { mP: 30, mV: 380, mEta: 0.93, mFP: 0.86, mN: 1770 }, { Pa: 30 / 0.93, I: 30000 / (Math.sqrt(3) * 380 * 0.93 * 0.86), C: 30000 / (2 * Math.PI * 1770 / 60), cv: 30 / 0.736 }],
+    ['escorregamento', { eF: 60, eP: 4, eN: 1746 }, { ns: 1800, s: 0.03, fr: 1.8 }],
+    ['motor-cc', { cV: 220, cIL: 42, cRf: 110, cRa: 0.25, cPr: 400 }, { If: 2, Ia: 40, E: 210, Pd: 8400, Pu: 8000, eta: 8000 / 9240 * 100 }],
+    ['partida-motor', { pIn: 52, pK: 7, pC: 2.2, pTap: 0.65 }, { Ip: 364, IY: 364 / 3, Ik: 0.4225 * 364, K12: 52 / Math.sqrt(3), K3: 52 / 3, CY: 2.2 / 3 }],
+  ];
+  for (const [w, ent, esp] of M3W) {
+    const f = CW[w] && CW[w].conta;
+    check(typeof f === 'function', `widget ${w}: sem a conta pura (.conta)`);
+    if (f) { const r = f(ent); for (const [k, v] of Object.entries(esp)) check(perto(r[k], v), `widget ${w}: ${k} = ${r[k]}, esperado ${v}`); }
+  }
+  if (CW.escorregamento) check(!!CW.escorregamento.conta({ eF: 60, eP: 4, eN: 1850 }).aviso, 'widget escorregamento: rotor acima da síncrona deveria dar aviso');
 } else check(false, 'widgets: falta js/calc.js');
 
 /* HTML bem formado: pilha de tags (elementos vazios e SVG com "/>" são aceitos). */

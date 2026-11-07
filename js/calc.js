@@ -451,6 +451,86 @@
     calc();
   };
 
+  /* ---- M3: dados de placa do motor, escorregamento, motor CC shunt e métodos de partida. Cada widget expõe a conta
+     pura em .conta(valores), conferida sem navegador por tests/estacoes.test.mjs. ---- */
+  var R3 = Math.sqrt(3);
+  function m3(nome, campos, conta, saida) {
+    W[nome] = function (el, cfg) {
+      var v = cfg.valores || {}, p = nome.slice(0, 3) + (++seq) + '-';
+      el.innerHTML = cabeca(cfg) + '<div class="lab-in">' + campos.map(function (c) {
+        var atual = v[c[0]] != null ? v[c[0]] : c[2];
+        return c[3] ? escolha(p + c[0], c[1], c[3], atual) : campo(p + c[0], c[1], atual, c[4] || '');
+      }).join('') + '</div><div class="lab-out" aria-live="polite"></div><p class="lab-txt"></p>' + (saida.svg ? '<svg viewBox="0 0 600 ' + saida.svg + '" role="img" aria-label="' + saida.rotulo + '"></svg>' : '');
+      var out = el.querySelector('.lab-out'), txt = el.querySelector('.lab-txt'), svg = el.querySelector('svg');
+      function calc() {
+        var x = {}; campos.forEach(function (c) { x[c[0]] = +el.querySelector('#' + p + c[0]).value; });
+        var r = conta(x);
+        if (r.aviso) { out.innerHTML = cell('Aviso', r.aviso); txt.innerHTML = ''; if (svg) svg.innerHTML = ''; return; }
+        saida.mostra(r, out, txt, svg, x);
+      }
+      campos.forEach(function (c) { var e = el.querySelector('#' + p + c[0]); e.addEventListener('input', calc); e.addEventListener('change', calc); });
+      calc();
+    };
+    W[nome].conta = conta;
+  }
+
+  m3('motor-placa', [['mP', 'Potência útil P<sub>u</sub> (kW)', 30, null, ' min="0"'], ['mV', 'Tensão de linha V<sub>L</sub> (V)', 380, null, ' min="1"'], ['mEta', 'Rendimento η', 0.93, null, ' min="0.1" max="1" step="0.01"'], ['mFP', 'Fator de potência', 0.86, null, ' min="0.1" max="1" step="0.01"'], ['mN', 'Rotação n (rpm)', 1770, null, ' min="1"']],
+    function (x) {
+      if (!(x.mP > 0 && x.mV > 0 && x.mEta > 0 && x.mEta <= 1 && x.mFP > 0 && x.mFP <= 1 && x.mN > 0)) return { aviso: 'Use potência, tensão e rotação positivas, e η e FP entre 0 e 1.' };
+      var Pa = x.mP / x.mEta;
+      return { Pa: Pa, perdas: Pa - x.mP, I: x.mP * 1000 / (R3 * x.mV * x.mEta * x.mFP), C: 60000 / (2 * Math.PI) * x.mP / x.mN, cv: x.mP / 0.736 };
+    },
+    { mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('Potência absorvida', fmt(r.Pa) + ' kW') + cell('Perdas', fmt(r.perdas) + ' kW') + cell('Corrente de linha', fmt(r.I) + ' A') + cell('Conjugado', fmt(r.C, 1) + ' N·m') + cell('Potência em cv', fmt(r.cv, 1) + ' cv');
+      txt.innerHTML = 'I<sub>L</sub> = ' + fmt(x.mP * 1000, 0) + ' ÷ (√3 × ' + fmt(x.mV, 0) + ' × ' + fmt(x.mEta) + ' × ' + fmt(x.mFP) + ') = ' + fmt(r.I) + ' A. Sem o rendimento, daria ' + fmt(r.I * x.mEta) + ' A: a placa informa a potência no eixo, e a rede fornece também as perdas.';
+    } });
+
+  m3('escorregamento', [['eF', 'Frequência f (Hz)', 60, null, ' min="1"'], ['eP', 'Número de polos p', 4, [[2, '2'], [4, '4'], [6, '6'], [8, '8'], [10, '10'], [12, '12']]], ['eN', 'Rotação do rotor n (rpm)', 1746, null, ' min="0"']],
+    function (x) {
+      if (!(x.eF > 0 && x.eP >= 2 && x.eN >= 0)) return { aviso: 'Use frequência positiva e rotação maior ou igual a zero.' };
+      var ns = 120 * x.eF / x.eP, s = (ns - x.eN) / ns;
+      if (s < 0) return { aviso: 'Com o rotor acima da velocidade síncrona (' + fmt(ns, 0) + ' rpm), a máquina de indução funciona como gerador: o escorregamento fica negativo.' };
+      return { ns: ns, s: s, dif: ns - x.eN, fr: s * x.eF };
+    },
+    { svg: 96, rotulo: 'Rotação do rotor comparada com a velocidade síncrona', mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('Velocidade síncrona', fmt(r.ns, 0) + ' rpm') + cell('Escorregamento', fmt(100 * r.s) + '%') + cell('Diferença', fmt(r.dif, 0) + ' rpm') + cell('Frequência no rotor', fmt(r.fr) + ' Hz');
+      txt.innerHTML = r.s > 0.15 ? 'Escorregamento alto: com essa rotação, o motor está acelerando ou com o rotor sobrecarregado (em carga nominal, os motores comuns ficam em poucos por cento). Confira o número de polos: a síncrona é a da tabela logo acima da rotação de placa.' : r.s === 0 ? 'Rotação igual à síncrona: num motor de indução isso não acontece, porque sem movimento relativo não há corrente no rotor nem conjugado.' : 'Em carga, o rotor gira ' + fmt(100 * r.s) + '% abaixo do campo girante, e as correntes do rotor têm ' + fmt(r.fr) + ' Hz.';
+      var X0 = 20, X1 = 580, px = function (n) { return X0 + (X1 - X0) * Math.min(n, r.ns) / r.ns; };
+      svg.innerHTML = '<rect x="' + X0 + '" y="34" width="' + (X1 - X0) + '" height="18" class="s-comp"/><rect x="' + X0 + '" y="34" width="' + (px(x.eN) - X0).toFixed(1) + '" height="18" class="s-f-pc"/>' +
+        '<text x="' + X0 + '" y="22" class="s-tm">0 rpm</text><text x="' + X1 + '" y="22" class="s-tm" text-anchor="end">n<tspan class="s-sub" dy="4">s</tspan><tspan dy="-4"> = ' + fmt(r.ns, 0) + ' rpm</tspan></text>' +
+        '<text x="' + Math.max(px(x.eN), X0 + 120).toFixed(1) + '" y="80" class="s-ts s-fc" text-anchor="end">n = ' + fmt(x.eN, 0) + ' rpm</text>';
+    } });
+
+  m3('motor-cc', [['cV', 'Tensão V (V)', 220, null, ' min="1"'], ['cIL', 'Corrente da rede I<sub>L</sub> (A)', 42, null, ' min="0"'], ['cRf', 'Campo R<sub>f</sub> (Ω)', 110, null, ' min="0.1"'], ['cRa', 'Armadura R<sub>a</sub> (Ω)', 0.25, null, ' min="0"'], ['cPr', 'Perdas rotacionais (W)', 400, null, ' min="0"']],
+    function (x) {
+      if (!(x.cV > 0 && x.cIL >= 0 && x.cRf > 0 && x.cRa >= 0 && x.cPr >= 0)) return { aviso: 'Use tensão e R<sub>f</sub> positivas e os outros valores maiores ou iguais a zero.' };
+      var If = x.cV / x.cRf, Ia = x.cIL - If;
+      if (!(Ia > 0)) return { aviso: 'A corrente da rede (' + fmt(x.cIL) + ' A) precisa ser maior que a do campo (' + fmt(If) + ' A).' };
+      var E = x.cV - x.cRa * Ia, Pd = E * Ia, Pu = Pd - x.cPr, Pa = x.cV * x.cIL;
+      return { If: If, Ia: Ia, E: E, Pd: Pd, Pu: Pu, Pa: Pa, eta: 100 * Pu / Pa, Ipart: x.cRa > 0 ? x.cV / x.cRa : Infinity };
+    },
+    { mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('I<sub>f</sub> = V/R<sub>f</sub>', fmt(r.If) + ' A') + cell('I<sub>a</sub> = I<sub>L</sub> − I<sub>f</sub>', fmt(r.Ia) + ' A') + cell('Fcem E', fmt(r.E, 1) + ' V') + cell('P desenvolvida E·I<sub>a</sub>', fmt(r.Pd, 0) + ' W') + cell('P útil', fmt(r.Pu, 0) + ' W') + cell('Rendimento', fmt(r.eta, 1) + '%');
+      txt.innerHTML = 'Entrada V·I<sub>L</sub> = ' + fmt(r.Pa, 0) + ' W. Perdas: armadura R<sub>a</sub>·I<sub>a</sub>² = ' + fmt(x.cRa * r.Ia * r.Ia, 0) + ' W, campo V·I<sub>f</sub> = ' + fmt(x.cV * r.If, 0) + ' W e rotacionais ' + fmt(x.cPr, 0) + ' W. ' + (isFinite(r.Ipart) ? 'Na partida, sem fcem e sem reostato, a armadura puxaria ' + fmt(r.Ipart, 0) + ' A.' : '');
+    } });
+
+  m3('partida-motor', [['pIn', 'Corrente nominal I<sub>n</sub> (A)', 52, null, ' min="0.1"'], ['pK', 'I<sub>p</sub>/I<sub>n</sub>', 7, null, ' min="1" step="0.1"'], ['pC', 'C<sub>p</sub>/C<sub>n</sub>', 2.2, null, ' min="0.1" step="0.1"'], ['pTap', 'Tap da compensadora', 0.65, [[0.5, '50%'], [0.65, '65%'], [0.8, '80%']]]],
+    function (x) {
+      if (!(x.pIn > 0 && x.pK >= 1 && x.pC > 0 && x.pTap > 0 && x.pTap <= 1)) return { aviso: 'Use I<sub>n</sub> positiva, I<sub>p</sub>/I<sub>n</sub> ≥ 1 e C<sub>p</sub>/C<sub>n</sub> positivo.' };
+      var Ip = x.pK * x.pIn, k2 = x.pTap * x.pTap;
+      return { Ip: Ip, IY: Ip / 3, Ik: k2 * Ip, Imot: x.pTap * Ip, CY: x.pC / 3, Ck: k2 * x.pC, K12: x.pIn / R3, K3: x.pIn / 3, rele: x.pIn / R3 };
+    },
+    { svg: 150, rotulo: 'Corrente de partida na linha em cada método, comparada com a partida direta', mostra: function (r, out, txt, svg, x) {
+      var t = fmt(100 * x.pTap, 0) + '%';
+      out.innerHTML = cell('Direta', fmt(r.Ip, 1) + ' A') + cell('Estrela-triângulo', fmt(r.IY, 1) + ' A') + cell('Compensadora ' + t + ' (linha)', fmt(r.Ik, 1) + ' A') + cell('K1 e K2 da Y-Δ', fmt(r.K12, 1) + ' A') + cell('K3 da Y-Δ', fmt(r.K3, 1) + ' A') + cell('Ajuste do relé (Y-Δ)', fmt(r.rele, 1) + ' A');
+      txt.innerHTML = 'Conjugado de partida: direta ' + fmt(x.pC) + '·C<sub>n</sub>; estrela-triângulo ' + fmt(r.CY) + '·C<sub>n</sub>; compensadora a ' + t + ' ' + fmt(r.Ck) + '·C<sub>n</sub> (no motor, ' + fmt(r.Imot, 1) + ' A). ' + (r.CY < 1 ? 'Em estrela, o motor parte com menos que o conjugado nominal: só em vazio ou com carga leve.' : '');
+      var lin = [['direta', r.Ip], ['estrela-triângulo', r.IY], ['compensadora ' + t, r.Ik]], X0 = 220, X1 = 530, s = '';
+      lin.forEach(function (l, i) { var y = 14 + 44 * i, w = (X1 - X0) * l[1] / r.Ip;
+        s += '<text x="' + (X0 - 10) + '" y="' + (y + 19) + '" class="s-ts" text-anchor="end">' + l[0] + '</text><rect x="' + X0 + '" y="' + y + '" width="' + w.toFixed(1) + '" height="26" class="' + (i ? 's-f-pc' : 's-f-pa') + '"/>' +
+          '<text x="' + (X0 + w + 8).toFixed(1) + '" y="' + (y + 19) + '" class="s-tm">' + fmt(100 * l[1] / r.Ip, 0) + '%</text>'; });
+      svg.innerHTML = s;
+    } });
+
   /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar. */
   W['exercicios'] = function (el) {
     var qs = el.querySelectorAll('.exq'), n = qs.length;

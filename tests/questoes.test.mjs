@@ -57,7 +57,11 @@ const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs
 
 /* ---------- banco ---------- */
 const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
-check(BANCO.length === 205, `banco: ${BANCO.length} questões (esperado 205: 158 das apostilas + 47 do banco)`);
+/* 205 do banco do estudante (158 das apostilas + 47 do banco) + as das estações escritas para o app (origem e:): M3,
+   com os 30 exercícios da Teoria e 4 extras. */
+const NOVAS_QS = { M3: 34 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
+check(BANCO.length === 205 + N_NOVAS, `banco: ${BANCO.length} questões (esperado ${205 + N_NOVAS}: 158 das apostilas + 47 do banco + ${N_NOVAS} das estações novas)`);
+for (const [m, n] of Object.entries(NOVAS_QS)) { const k = BANCO.filter(q => q.origem.startsWith('e:' + m + ':')).length; check(k === n, `banco: ${k} questões da estação ${m} (esperado ${n})`); }
 const ids = new Set(), origens = new Set(), markerIds = new Map();
 const ERRATA = read('fontes/ERRATA.md');
 function validaQuestao(q, where, { banco = true } = {}) {
@@ -113,7 +117,7 @@ for (const q of BANCO) {
 }
 /* As questões das apostilas são também os exercícios da Teoria: alternativas e gabarito iguais nos dois lugares. */
 let semExercicio = 0;
-for (const q of BANCO.filter(q => q.origem.startsWith('a:'))) {
+for (const q of BANCO.filter(q => /^(a|e):/.test(q.origem) && !/^e:\w+:x\d+$/.test(q.origem))) {
   const m = MODS[q.mod]; if (!m || !m.html) continue;
   const ex = [...m.html.matchAll(/<li class="exq" data-a="(\d)"><p class="exq-s">([\s\S]*?)<\/p>\n<ol class="exq-o">([\s\S]*?)<\/ol>/g)].find(x => text(x[2]) === text(q.cmd));
   if (!ex) { semExercicio++; continue; } /* enunciado ajustado só na aba Questões (fix.s) */
@@ -121,7 +125,7 @@ for (const q of BANCO.filter(q => q.origem.startsWith('a:'))) {
   check(JSON.stringify(alts) === JSON.stringify(q.alts.map(text)) && LET[+ex[1]] === q.ans, `questão ${q.id} (${q.origem}): alternativas ou gabarito diferentes do exercício da Teoria da ${q.mod}`);
 }
 check(semExercicio <= 3, `${semExercicio} questões das apostilas sem o exercício correspondente na Teoria`);
-check(origens.size === 205, `banco: ${origens.size} questões de origem distintas (esperado 205)`);
+check(origens.size === 205 + N_NOVAS, `banco: ${origens.size} questões de origem distintas (esperado ${205 + N_NOVAS})`);
 /* Cada questão tem a sua revisão, e cada correção cita uma errata que existe. */
 for (const t of ['T1', 'T2', 'T3', 'T4', 'T5']) {
   const REV = (await import(pathToFileURL(path.join(ROOT, 'tools/banco', t + '.mjs')))).default;

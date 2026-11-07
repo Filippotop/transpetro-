@@ -45,7 +45,10 @@ for (const k of Object.keys(ERR)) if (!ERROS[k]) throw new Error('erros.mjs: fal
 /* ---- as estações: módulos gerados (figuras, títulos) e as apostilas com as trocas aplicadas (exercícios) ---- */
 const SCTX = vm.createContext({ window: { DATA: { modules: [], cards: [], vf: [] } } });
 const ESTACOES = ['E1', 'E2', 'E3', 'M1', 'M2', 'I1'];
-for (const id of ESTACOES) vm.runInContext(read(`data/estacoes/${id}.js`), SCTX);
+/* Estações escritas para o app (sem apostila do estudante): os exercícios do fim de cada seção e as questões extras
+   entram na aba Questões com a revisão de tools/banco/<id>.mjs (q: por "bN:i"; extra: só da aba Questões). */
+const NOVAS = ['M3'];
+for (const id of [...ESTACOES, ...NOVAS]) vm.runInContext(read(`data/estacoes/${id}.js`), SCTX);
 vm.runInContext(read('data/embreve.js'), SCTX);
 const MODS = Object.fromEntries(SCTX.window.DATA.modules.map(m => [m.id, m]));
 /* Tema do banco + bloco da apostila → estação, seção da estação e item do edital. */
@@ -61,7 +64,7 @@ const HAB = { E1: '2.1', E2: '2.2', E3: '3.2', M1: '1.2', M2: '5.3', I1: '8.1', 
 const secTitulo = (mod, n) => { const h = [...MODS[mod].html.matchAll(/<h4>(\d+)\. ([^<]*)<\/h4>/g)].find(x => +x[1] === n); if (!h) throw new Error(`${mod}: sem seção ${n}`); return h[2]; };
 
 const QUIZ = {};
-for (const id of ESTACOES) {
+for (const id of [...ESTACOES, ...NOVAS]) {
   const M = (await import(pathToFileURL(path.join(ROOT, 'tools/estacoes', id + '.mjs')))).default;
   let src = read(M.fonte);
   for (const t of M.trocas || []) { if (src.split(t.de).length !== 2) throw new Error(`${id}: troca que não bate uma vez`); src = src.replace(t.de, () => t.para); }
@@ -173,6 +176,35 @@ for (const q0 of todas) {
   });
 }
 for (const id of Object.keys(REV)) if (!usados.has(id)) throw new Error('revisão para questão que não existe: ' + id);
+
+/* ---- estações novas: exercícios da Teoria (origem e:<id>:bN:i) e questões extras (origem e:<id>:<x>) ---- */
+for (const est of NOVAS) {
+  const RV = (await import(pathToFileURL(path.join(ROOT, 'tools/banco', est + '.mjs')))).default;
+  const lista = [];
+  for (const [b, qs] of Object.entries(QUIZ[est])) qs.forEach((q, i) => {
+    const r = RV.q[`${b}:${i}`];
+    if (!r) throw new Error(`${est}: exercício ${b}:${i} sem revisão em tools/banco/${est}.mjs`);
+    lista.push({ ...q, ...r, chave: `${b}:${i}`, h: r.h || RV.secoes[b], tag: r.tag || secTitulo(est, +b.slice(1)) });
+  });
+  for (const k of Object.keys(RV.q)) { const [b, i] = k.split(':'); if (!(QUIZ[est][b] || [])[+i]) throw new Error(`${est}: revisão ${k} sem exercício na Teoria`); }
+  for (const x of RV.extra || []) lista.push({ ...x, chave: x.id });
+  for (const q of lista) {
+    const onde = `${est}:${q.chave}`, ans = LET[q.a], ex = {}, traps = {}, erros = {};
+    if (!q.o || q.o.length !== 5) throw new Error(`${onde}: precisa de 5 alternativas`);
+    ex[ans] = q.c;
+    for (let k = 0; k < 5; k++) {
+      if (k === q.a) { if (q.w && q.w[LET[k]]) throw new Error(`${onde}: explicação de errada na alternativa correta ${LET[k]}`); continue; }
+      const a = alternativaErrada(q.w && q.w[LET[k]], null, `${onde} (${LET[k]})`);
+      ex[LET[k]] = a.txt; if (a.trap) traps[LET[k]] = a.trap; if (a.erro) erros[LET[k]] = a.erro;
+    }
+    if (!['f', 'm', 'd'].includes(q.d)) throw new Error(`${onde}: dificuldade "${q.d}"`);
+    out.push({
+      id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: 'EL', mod: est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
+      alts: q.o, ans, ex, traps, erros, hab: q.h, dif: { f: 'fácil', m: 'média', d: 'difícil' }[q.d],
+      ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
+    });
+  }
+}
 if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.join(' ')}`); if (!process.argv.includes('--parcial')) process.exit(1); }
 
 /* Numeração por estação, na ordem do banco: E1.1, E1.2… */
