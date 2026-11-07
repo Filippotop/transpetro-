@@ -596,6 +596,50 @@ async function testHome(browser) {
   }
 }
 
+/* Prova de 2023 (Task 5): abre pela aba Provas, modo estudo, a questão 28 mostra a nota de anulada depois da resposta,
+   e a correção mostra os pontos por bloco contra o corte de 50% (anuladas como certas). Axe a 390 px escuro e 1280 claro. */
+async function testProva(browser) {
+  for (const [vp, colorScheme] of [[{ width: 390, height: 844 }, 'dark'], [VIEWPORTS['1280'], 'light']]) {
+    const where = `prova/${vp.width}px/${colorScheme}`;
+    const ctx = await browser.newContext({ viewport: vp, colorScheme, serviceWorkers: 'block' });
+    const page = await ctx.newPage(); const errs = [];
+    page.on('pageerror', e => errs.push(e.message)); page.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+    const axe = async tag => { await page.addScriptTag({ content: AXE });
+      const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations.filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => `${x.id} em ${x.nodes.slice(0, 2).map(n => n.target.join(' ')).join(', ')}`));
+      for (const x of v) check(false, `${where}/${tag}: acessibilidade: ${x}`);
+      check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}/${tag}: rolagem horizontal`); };
+    await page.goto(URL_); await page.waitForTimeout(300);
+    await page.click('#tabs button[data-v="provas"]'); await page.waitForTimeout(200);
+    const txt = await page.textContent('#app');
+    check(/Transpetro 2023/.test(txt) && /Gabarito oficial da Cesgranrio, após recursos; questões 28 e 30 anuladas/.test(txt), `${where}: a aba Provas não mostra a prova de 2023 com a fonte do gabarito`);
+    check(!/\b(ENEM|Inep|TRI)\b|Caderno Azul/i.test(txt), `${where}: texto do Humanas (ENEM/Inep/TRI) na aba Provas`);
+    await axe('lista');
+    await page.click('[data-start="t23|PME|estudo"]'); await page.waitForTimeout(200);
+    check(await page.evaluate(() => view) === 'prova', `${where}: o modo estudo não abriu a prova`);
+    await page.evaluate(() => { const r = pvState('t23').runs.at(-1); r.cur = 27; save(); vProva(); }); await page.waitForTimeout(150);
+    check(/anulada pela banca: ponto para todos/i.test(await page.textContent('#app')), `${where}: a questão 28 não aparece como anulada`);
+    await page.click('.bL[data-L="C"]'); await page.waitForTimeout(150);
+    const fb = await page.textContent('.fb');
+    check(/Anulada: ponto para todos/.test(fb) && /150° atrasada \(5 × 30°\)/.test(fb) && /M2/.test(fb), `${where}: depois de responder a 28, falta a nota de anulada (${fb})`);
+    check(await page.locator('.bL.wrong').count() === 0, `${where}: a 28 (anulada) marcou a resposta como errada`);
+    await axe('q28');
+    /* Responde o resto pelo gabarito, menos Português (eliminado por zero) e metade das específicas erradas. */
+    await page.evaluate(() => { const e = EX.t23, r = pvState('t23').runs.at(-1);
+      for (let n = 11; n <= 60; n++) if (e.key[n]) r.ans[n] = n >= 41 ? (e.key[n] === 'A' ? 'B' : 'A') : e.key[n];
+      save(); finishRun('t23', pvState('t23').runs.length - 1); });
+    await page.waitForTimeout(200);
+    check(await page.evaluate(() => view) === 'provares', `${where}: a entrega não abriu a correção`);
+    const blocks = await page.evaluate(() => [...document.querySelectorAll('[data-bloco]')].map(b => [b.dataset.bloco, b.querySelector('.big3').textContent, !!b.querySelector('.bar2 .cut'), b.querySelector('.bar2').className]));
+    /* Gerais: Português 0 + Matemática 10 = 10/20 (no corte). Específicas: 21–40 certas (18 + 2 anuladas) = 20/40. */
+    check(JSON.stringify(blocks) === JSON.stringify([['G', '10/20 pontos', true, 'bar2 ok'], ['E', '20/40 pontos', true, 'bar2 ok']]), `${where}: pontos por bloco errados ${JSON.stringify(blocks)}`);
+    const ver = await page.textContent('#verdict');
+    check(/Eliminado/.test(ver) && /zero em Português/.test(ver) && /ponto para todos/.test(ver), `${where}: o veredito não aponta o zero em Português (${ver})`);
+    await axe('correção');
+    for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
+    await ctx.close();
+  }
+}
+
 /* Offline: as imagens da prova de 2023 só baixam depois do sim (como no Humanas); depois disso, sem internet, uma
    questão da prova abre com a imagem. */
 async function testOfflineConsent(browser) {
@@ -865,6 +909,7 @@ try {
   await run('answered', testAnswered);
   await run('banco', testBanco);
   await run('consent', testOfflineConsent);
+  await run('prova', testProva);
 } finally { await browser.close(); server.close(); }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }

@@ -509,11 +509,20 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 .cell2.a{background:var(--ink);border-color:var(--ink)} .cell2.a span,.cell2.a b{color:var(--surface)}
 .cell2.r{background:var(--ok-soft);border-color:var(--ok)} .cell2.r b{color:var(--ok)}
 .cell2.w{background:var(--bad-soft);border-color:var(--bad)} .cell2.w b{color:var(--bad)}
-.cell2.x{opacity:.45}
+.cell2.x{background:var(--sunk);border-style:dashed}
 .cell2.f{box-shadow:inset 0 -3px 0 var(--warn)}
 .cell2.cur{outline:2px solid var(--gold);outline-offset:1px}
 .resgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .kpi{display:grid;gap:8px}
+/* barra de pontos do bloco com a linha de corte (50%, edital 7.1.4.3) */
+.kpi .bar2{position:relative;height:8px;border-radius:4px;background:var(--sunk);overflow:visible}
+.kpi .bar2 i{display:block;height:100%;border-radius:4px;background:var(--gold)}
+.kpi .bar2.ok i{background:var(--ok)} .kpi .bar2.no i{background:var(--bad)}
+.kpi .bar2 .cut{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.verdict{border-left:4px solid var(--ok);background:var(--ok-soft)} .verdict.no{border-left-color:var(--bad);background:var(--bad-soft)}
+.pvnote{font-family:var(--read);font-size:14.5px;margin-top:10px}
+[data-st]{white-space:normal;text-align:left;max-width:100%;height:auto}
+.pvmain{min-width:0}
 /* barra lateral no computador */
 @media (min-width:1100px){
   body{padding-left:var(--side)}
@@ -701,7 +710,7 @@ function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clea
 /* Questão de prova citada na teoria: abre a imagem ali mesmo; Esc ou o botão fecham. */
 function openQView(ex,n){ const e=EX[ex]; if(!e||!e.img[n]) return; closeQView();
   const d=document.createElement('div'); d.className='qview'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label',`Questão ${n} da ${e.title}`);
-  d.innerHTML=`<div class="qv-in"><div class="row" style="justify-content:space-between;align-items:center"><b>${e.title} · questão ${n}</b><button class="btn" id="qvClose">Fechar</button></div><img src="${imgUrl(ex,n)}" alt="Questão ${n} da ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}"><details><summary class="muted" style="cursor:pointer">Resolva primeiro; depois toque para ver o gabarito</summary><p class="qv-key" style="margin:6px 0 0;font-family:var(--mono)">Gabarito oficial: <b>${e.key[n]||'anulada'}</b></p></details></div>`;
+  d.innerHTML=`<div class="qv-in"><div class="row" style="justify-content:space-between;align-items:center"><b>${e.title} · questão ${n}</b><button class="btn" id="qvClose">Fechar</button></div><img src="${imgUrl(ex,n)}" alt="Questão ${n} da ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}"><details><summary class="muted" style="cursor:pointer">Resolva primeiro; depois toque para ver o gabarito</summary><p class="qv-key" style="margin:6px 0 0;font-family:var(--mono)">Gabarito oficial: <b>${e.key[n]||'anulada (ponto para todos)'}</b></p>${e.notas&&e.notas[n]?`<p class="muted" style="margin:6px 0 0">${e.notas[n]}</p>`:''}</details></div>`;
   d.onclick=ev=>{ if(ev.target===d) closeQView(); }; document.body.appendChild(d); $('#qvClose').onclick=closeQView; $('#qvClose').focus(); }
 function closeQView(){ const d=document.querySelector('.qview'); if(d) d.remove(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQView(); });
@@ -1670,7 +1679,8 @@ function vBancada(){
 
 /* ================= v4: provas oficiais ================= */
 const EX = DATA.exams;
-/* Blocos da prova Transpetro (60 questões). A numeração exata da prova de 2023 é conferida quando ela entrar no app (Task 5). */
+/* Blocos da prova Transpetro (60 questões), conferidos na capa do caderno de 2023: Português 1–10 e Matemática 11–20
+   (Conhecimentos Básicos, 1,0 ponto cada) e Conhecimentos Específicos 21–60 (1,0 ponto cada). */
 const AREAS = {P:{name:'Português',a:1,b:10},M:{name:'Matemática',a:11,b:20},E:{name:'Conhecimentos Específicos',a:21,b:60}};
 const FULL_AREAS = 'PME';
 const imgUrl = (ex,n) => `provas/${ex}/${EX[ex].img[n].f}`;
@@ -1682,19 +1692,37 @@ function runLimit(areas){ return areaNums(areas).length*4; }
 function synthRun(ex){ const e=EX[ex]; if(!e.his) return null; return {id:'papel',areas:FULL_AREAS,mode:'prova',ans:Object.assign({},e.his),flag:{},cut:{},start:Date.parse('2026-09-20T12:00:00-03:00'),done:true,end:Date.parse('2026-09-21T12:00:00-03:00'),time:null,papel:true}; }
 function runReal(r){ if(!r||!r.done) return false; if(r.papel) return true; const n=areaNums(r.areas).length; return Object.keys(r.ans||{}).length>=Math.ceil(n*0.6); }
 function allRuns(ex){ const st=pvState(ex); const r=st.runs.slice(); const s=synthRun(ex); if(s) r.unshift(s); return r; }
+/* Correção como a da Cesgranrio: questão anulada vale ponto para todos (edital, 9.1.4), então entra como certa. */
 function scoreRun(ex,run){
   const e=EX[ex], res={total:0,ok:0,blank:0,anul:0,areas:{},wrong:[],flagWrong:0,flagOk:0,thirds:[[0,0],[0,0],[0,0]]};
   const nums=areaNums(run.areas);
-  run.areas.split('').forEach(a=>res.areas[a]={n:0,ok:0,blank:0});
+  run.areas.split('').forEach(a=>res.areas[a]={n:0,ok:0,blank:0,anul:0});
   nums.forEach((n,i)=>{ const k=e.key[n]; const a=Object.keys(AREAS).find(x=>n>=AREAS[x].a&&n<=AREAS[x].b); const r=res.areas[a];
-    if(k==null){ res.anul++; return; }
-    r.n++; res.total++; const g=run.ans[n]; const th=Math.min(2,Math.floor(((n-AREAS[a].a)/45)*3)); res.thirds[th][1]++;
+    r.n++; res.total++;
+    if(k==null){ res.anul++; r.anul++; r.ok++; res.ok++; return; }
+    const g=run.ans[n]; const th=Math.min(2,Math.floor(((n-AREAS[a].a)/(AREAS[a].b-AREAS[a].a+1))*3)); res.thirds[th][1]++;
     if(!g){ r.blank++; res.blank++; res.wrong.push(n); return; }
     if(g===k){ r.ok++; res.ok++; res.thirds[th][0]++; if(run.flag&&run.flag[n]) res.flagOk++; }
     else { res.wrong.push(n); if(run.flag&&run.flag[n]) res.flagWrong++; }
   });
   return res;
 }
+/* Corte do edital (7.1.4.3): menos de 50% dos pontos nas Específicas, menos de 50% nas Gerais (Português + Matemática)
+   ou zero em Português ou em Matemática elimina. Só avalia os blocos que a tentativa cobriu. */
+function cutRun(sc){
+  const A=sc.areas, blocks=[], why=[];
+  if(A.P&&A.M){ const ok=A.P.ok+A.M.ok, n=A.P.n+A.M.n; blocks.push({k:'G',name:'Conhecimentos Gerais (Português + Matemática)',ok,n,pass:ok>=n/2}); if(ok<n/2) why.push(`menos de 50% nas Gerais (${ok} de ${n})`); }
+  if(A.E) { blocks.push({k:'E',name:'Conhecimentos Específicos',ok:A.E.ok,n:A.E.n,pass:A.E.ok>=A.E.n/2}); if(A.E.ok<A.E.n/2) why.push(`menos de 50% nas Específicas (${A.E.ok} de ${A.E.n})`); }
+  ['P','M'].forEach(a=>{ if(A[a]&&A[a].ok===0) why.push(`zero em ${AREAS[a].name}`); });
+  return {blocks,why,elim:why.length>0,full:!!(A.P&&A.M&&A.E)};
+}
+function pts(v){ return String(v).replace('.',',')+(v===1?' ponto':' pontos'); }
+/* Estação de cada questão (mapa2023): a estação em breve abre o mapa das linhas, onde ela aparece como "em breve". */
+function stationBtn(n){ const id=(DATA.mapa2023||{})[n], m=id&&M[id]; if(!m) return '';
+  return `<button class="chipbtn" data-st="${id}">Estação ${id} · ${esc(m.title)}${m.emBreve?' (em breve)':''} →</button>`; }
+function bindStationBtns(el){ el.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{ const id=b.dataset.st, m=M[id];
+  if(!m.emBreve){ go('mod',{id,tab:'teoria'}); return; }
+  go('linhas'); setTimeout(()=>{ const t=document.querySelector(`.st[data-m="${id}"]`); if(t){ t.scrollIntoView({block:'center'}); t.focus(); } toast(`${id} · ${m.title}: estação em breve.`); },60); }); }
 function runLabel(run){ if(run.id==='papel') return 'Diagnóstico no papel (set/2026)'; return `${new Date(run.start).toLocaleDateString('pt-BR')} · ${run.areas.split('').map(a=>AREAS[a].name.split(' ').pop()).join(' + ')} · ${run.papel?'lançada do papel':run.mode==='estudo'?'modo estudo':'modo prova'}${runReal(run)?'':' · incompleta'}`; }
 
 /* ---------- lista ---------- */
@@ -1714,7 +1742,7 @@ function vProvas(){
   const ids=Object.keys(EX);
   app.innerHTML=`<div class="pagehead"><div><div class="eyebrow">provas anteriores da Cesgranrio</div><h1>Provas</h1><p class="lede">A prova de verdade, questão por questão, com cartão-resposta, cronômetro (4 h para 60 questões) e correção pelo gabarito oficial. As imagens são recortes do caderno original.</p></div></div>
   ${ids.length?`<div class="exgrid">${ids.map(card).join('')}</div>`:'<p class="empty">A prova Transpetro 2023 (Manutenção – Elétrica) entra aqui em breve, recortada por questão e com o gabarito oficial.</p>'}
-  <div class="panel" style="margin-top:18px"><b>Sobre o resultado.</b> <span class="muted">Na Cesgranrio cada questão vale o mesmo. É eliminado quem fizer menos de 50% nas específicas ou nas gerais, ou zerar Português ou Matemática. A correção mostra o acerto por bloco, como você vai no fim da prova (cansaço) e quantas certezas estavam erradas.</span></div>`;
+  <div class="panel" style="margin-top:18px"><b>Sobre o resultado.</b> <span class="muted">Cada questão vale 1,0 ponto (capa do caderno): 20 nas Gerais (Português + Matemática) e 40 nas Específicas. Pelo edital de 2026 (7.1.4.3), é eliminado quem fizer menos de 50% dos pontos nas Específicas ou nas Gerais, ou zerar Português ou Matemática. Questão anulada vale ponto para todos (9.1.4). A correção mostra os pontos de cada bloco contra o corte, o ritmo até o fim da prova e quantas certezas estavam erradas.</span></div>`;
   app.querySelectorAll('[data-start]').forEach(b=>b.onclick=()=>{ const [id,areas,mode]=b.dataset.start.split('|');
     if(EX[id].status==='guardada' && mode==='estudo' && !b.dataset.ok){ b.dataset.ok=1; b.textContent='Tem certeza? Toque de novo'; toast('No modo estudo o gabarito aparece na hora: a prova deixa de servir como simulado.'); return; }
     startRun(id,areas,mode); });
@@ -1797,14 +1825,14 @@ function vProva(){
       <div class="pvmain">
         ${sh?`<figure class="qimg shared"><figcaption class="eyebrow">texto para as questões ${sh[0].replace('-',' a ')}</figcaption><img src="provas/${id}/${sh[1].f}" alt="Texto-base compartilhado" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}
         <figure class="qimg ${e.img[n].w>1000?'wide':''}"><img src="${imgUrl(id,n)}" alt="Questão ${n} do ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}" id="qimg"></figure>
-        ${key==null?'<p class="pill warn" style="display:inline-block">Questão anulada pela banca: não conta na correção.</p>':''}
-        <div class="bubbles" role="group" aria-label="Escolha a alternativa">${'ABCDE'.split('').map(L=>{ const cut=(run.cut[n]||[]).includes(L); let cls=picked===L?'on':''; if(study&&picked){ if(L===key) cls+=' right'; else if(L===picked) cls+=' wrong'; }
+        ${key==null?'<p class="pill warn" style="display:inline-block;color:var(--ink)">Questão anulada pela banca: ponto para todos.</p>':''}
+        <div class="bubbles" role="group" aria-label="Escolha a alternativa">${'ABCDE'.split('').map(L=>{ const cut=(run.cut[n]||[]).includes(L); let cls=picked===L?'on':''; if(study&&picked&&key!=null){ if(L===key) cls+=' right'; else if(L===picked) cls+=' wrong'; }
           return `<div class="bub ${cut?'cut':''}"><button class="bL ${cls}" data-L="${L}" ${study&&picked?'disabled':''} aria-pressed="${picked===L}">${L}</button><button class="bx" data-x="${L}" aria-label="Eliminar ${L}" title="Eliminar alternativa">×</button></div>`}).join('')}</div>
         <div class="row" style="justify-content:space-between;margin-top:12px">
           <button class="btn" id="pvprev" ${run.cur?'':'disabled'}>← anterior</button>
           <button class="chipbtn" id="pvflag" aria-pressed="${!!run.flag[n]}" ${run.flag[n]?'style="background:var(--warn-soft);border-color:var(--warn);color:var(--warn)"':''}>${run.flag[n]?'● marcada como dúvida':'marcar como dúvida'}</button>
           <button class="btn primary" id="pvnext" ${run.cur<nums.length-1?'':'disabled'}>próxima →</button></div>
-        ${study&&picked?`<div class="fb ${picked===key?'ok':'no'}" style="margin-top:12px"><strong>${key==null?'Questão anulada.':picked===key?'Certa.':`Gabarito: ${key}.`}</strong></div><div class="tutor-only row" style="margin-top:8px"><button class="btn" id="pvexp">Explicar esta questão com o tutor</button></div><div id="pvexpo"></div>`:''}
+        ${study&&picked?`<div class="fb ${key==null?'trap':picked===key?'ok':'no'}" style="margin-top:12px"><strong>${key==null?'Anulada: ponto para todos.':picked===key?'Certa.':`Gabarito: ${key}.`}</strong>${e.notas&&e.notas[n]?`<p class="pvnote" style="margin-bottom:0">${e.notas[n]}</p>`:''}${stationBtn(n)?`<div style="margin-top:8px">${stationBtn(n)}</div>`:''}</div><div class="tutor-only row" style="margin-top:8px"><button class="btn" id="pvexp">Explicar esta questão com o tutor</button></div><div id="pvexpo"></div>`:''}
         <p class="muted" style="font-size:12.5px;margin-top:14px">Toque no × para eliminar alternativas, como você faria riscando o caderno. Teclado: A a E responde, ← → navega, M marca dúvida.</p>
       </div>
       <aside class="pvside" id="pvside">${cardGrid(id,run,nums)}</aside>
@@ -1819,6 +1847,7 @@ function vProva(){
   $('#pvend').onclick=()=>{ const left=nums.length-answered; const b=$('#pvend'); if(!b.dataset.c){ b.dataset.c=1; b.textContent=left?`Faltam ${left}. Entregar mesmo?`:'Confirmar entrega'; return; } finishRun(id,param.run); };
   app.querySelectorAll('[data-go-q]').forEach(b=>b.onclick=()=>{ run.cur=+b.dataset.goQ; save(); vProva(); window.scrollTo({top:0}); });
   const ex=$('#pvexp'); if(ex) ex.onclick=()=>explainOfficial($('#pvexpo'),id,n,picked);
+  bindStationBtns(app);
   const tick=()=>{ const rem=Math.max(0,run.limit-(Date.now()-run.start)); const c=$('#pvclock'); if(!c) return clearInterval(pvTimer);
     c.textContent=`${Math.floor(rem/3600000)}:${String(Math.floor(rem/60000)%60).padStart(2,'0')}:${String(Math.floor(rem/1000)%60).padStart(2,'0')}`; $('#pvti').style.width=(rem/run.limit*100)+'%';
     c.parentElement.classList.toggle('late',rem<15*60000);
@@ -1838,21 +1867,23 @@ function vProvaRes(){
   const id=param.id, e=EX[id]; if(!e){ go('provas'); return; } const runs=allRuns(id).filter(r=>r.done);
   if(!runs.length){ go('provas'); return; }
   let run; if(param.run==='papel') run=runs.find(r=>r.id==='papel'); else if(param.run!=null && pvState(id).runs[param.run] && pvState(id).runs[param.run].done) run=pvState(id).runs[param.run]; if(!run) run=runs[runs.length-1];
-  const sc=scoreRun(id,run); const filt=param.f||'erradas'; const st=pvState(id);
+  const sc=scoreRun(id,run), cut=cutRun(sc); const filt=param.f||'erradas'; const st=pvState(id);
   const list=areaNums(run.areas).filter(n=>{ const g=run.ans[n], k=e.key[n]; if(filt==='erradas') return k!=null && g!==k; if(filt==='duvida') return run.flag&&run.flag[n]; if(filt==='certas') return k!=null && g===k; return true; });
   const th=sc.thirds.map(([o,t])=>t?Math.round(100*o/t):0);
   app.innerHTML=`<button class="back" id="back">← provas</button>
   <div class="pagehead"><div><div class="eyebrow">correção pelo gabarito oficial · ${runLabel(run)}</div><h1>${e.title}</h1></div>
     ${run.id!=='papel'?`<button class="btn ghost" id="delrun">Apagar esta tentativa</button>`:''}${runs.length>1?`<select id="runsel" aria-label="Escolher tentativa">${runs.map((r,i)=>`<option value="${i}" ${r===run?'selected':''}>${runLabel(r)}</option>`).join('')}</select>`:''}</div>
   <div class="resgrid">
-    ${Object.entries(sc.areas).map(([a,v])=>`<div class="panel kpi"><span class="lbl">${AREAS[a].name}</span><span class="big3">${v.ok}<small>/${v.n}</small></span><div class="bar2"><i style="width:${pct(v.ok,v.n)}%"></i></div><span class="mono muted" style="font-size:12px">${pct(v.ok,v.n)}% · ${v.blank} em branco</span></div>`).join('')}
+    ${cut.blocks.map(b=>`<div class="panel kpi" data-bloco="${b.k}"><span class="lbl">${b.name}</span><span class="big3">${b.ok}<small>/${b.n} pontos</small></span><div class="bar2 ${b.pass?'ok':'no'}" role="img" aria-label="${pct(b.ok,b.n)}% dos pontos; o corte é 50%"><i style="width:${pct(b.ok,b.n)}%"></i><span class="cut"></span></div><span class="mono muted" style="font-size:12px">${pct(b.ok,b.n)}% · corte: ${b.n/2} (50%) · ${b.pass?'acima do corte':'abaixo do corte'}</span></div>`).join('')}
+    ${Object.entries(sc.areas).filter(([a])=>a!=='E'||!cut.blocks.length).map(([a,v])=>`<div class="panel kpi" data-area="${a}"><span class="lbl">${AREAS[a].name}</span><span class="big3">${v.ok}<small>/${v.n}</small></span><span class="mono muted" style="font-size:12px">${pct(v.ok,v.n)}% · ${v.blank} em branco${v.ok===0&&a!=='E'?' · zero elimina':''}</span></div>`).join('')}
     <div class="panel kpi"><span class="lbl">tempo usado</span><span class="big3">${run.time?Math.round(run.time/60000)+'<small> min</small>':'—'}</span><span class="mono muted" style="font-size:12px">${run.time?`${(run.time/60000/Math.max(1,Object.keys(run.ans).length)).toFixed(1)} min por questão respondida`:'feita no papel'}</span></div>
   </div>
+  <div class="panel verdict ${cut.elim?'no':''}" id="verdict" style="margin-top:14px"><b>${cut.elim?'Eliminado pelo corte':'Passou do corte'}${cut.full?'':' nos blocos feitos'}.</b> <span>${cut.elim?cut.why.join('; ')+'.':'50% ou mais em cada bloco e nenhum zero em Português ou Matemática.'} Regra do edital de 2026 (7.1.4.3).${sc.anul?` ${sc.anul===1?'A questão anulada entrou':`As ${sc.anul} questões anuladas entraram`} como certa${sc.anul===1?'':'s'}: ponto para todos (9.1.4).`:''}</span></div>
   <div class="grid2" style="margin-top:14px">
     <div class="panel"><div class="eyebrow">ritmo dentro de cada área</div><p class="muted" style="font-size:13.5px">Acerto no primeiro, no segundo e no último terço das questões. Queda forte no fim indica cansaço ou falta de tempo.</p>
       <div class="bars">${['início','meio','fim'].map((l,i)=>`<div class="brow"><span>${l}</span><span class="track2"><i style="width:${th[i]}%"></i></span><span class="mono">${th[i]}%</span></div>`).join('')}</div></div>
     <div class="panel"><div class="eyebrow">certeza × acerto</div>${Object.keys(run.flag||{}).length?`<p style="font-family:var(--read);margin:8px 0 0">Das questões que você marcou como dúvida, acertou <b>${sc.flagOk}</b> e errou <b>${sc.flagWrong}</b>. Os outros <b>${sc.wrong.length-sc.flagWrong}</b> erros foram em questões que você achou que sabia: são os mais perigosos, porque você não volta nelas.</p>`:`<p class="muted" style="margin:8px 0 0">Na próxima prova, marque as questões de dúvida: a correção vai mostrar se as suas certezas estão certas.</p>`}
-      <p class="muted" style="font-size:12.5px;margin-bottom:0">${sc.anul?`${sc.anul} questão(ões) anulada(s) fora da conta. `:''}Corte: 50% em cada bloco.</p></div>
+      <p class="muted" style="font-size:12.5px;margin-bottom:0">${sc.anul?`${sc.anul===1?'1 questão anulada':`${sc.anul} questões anuladas`} (ponto para todos). `:''}Corte: 50% em cada bloco.</p></div>
   </div>
   <div class="sec-title"><h2>Cartão corrigido</h2><span class="eyebrow">toque para ver a questão</span></div>
   <div class="panel">${cardGrid(id,run,areaNums(run.areas)).replace('cartão-resposta','')}</div>
@@ -1868,15 +1899,16 @@ function vProvaRes(){
   const box=$('#rvlist');
   if(!list.length){ box.innerHTML='<p class="empty">Nada nesta lista.</p>'; return; }
   list.forEach(n=>{ const g=run.ans[n], k=e.key[n]; const d=document.createElement('details'); d.className='err'; d.id='rv-'+n;
-    const status=k==null?'anulada':!g?'em branco':g===k?'certa':'errada';
-    d.innerHTML=`<summary><span class="chip" style="background:${status==='certa'?'var(--ok-soft)':status==='anulada'?'var(--sunk)':'var(--bad-soft)'};color:${status==='certa'?'var(--ok)':status==='anulada'?'var(--muted)':'var(--bad)'}">${status}</span><b>Questão ${n}</b><span class="mono muted" style="font-size:12px">sua: ${g||'—'} · gabarito: ${k||'anulada'}</span>${run.flag&&run.flag[n]?'<span class="mono" style="font-size:11px;color:var(--warn)">dúvida</span>':''}${st.notes[n]?'<span class="done-mark">● regra escrita</span>':''}</summary><div class="inner"></div>`;
+    const status=k==null?'anulada: ponto para todos':!g?'em branco':g===k?'certa':'errada';
+    d.innerHTML=`<summary><span class="chip" style="background:${status==='certa'?'var(--ok-soft)':k==null?'var(--sunk)':'var(--bad-soft)'};color:${status==='certa'?'var(--ok)':k==null?'var(--muted)':'var(--bad)'}">${status}</span><b>Questão ${n}</b><span class="mono muted" style="font-size:12px">sua: ${g||'—'} · gabarito: ${k||'anulada'}</span>${run.flag&&run.flag[n]?'<span class="mono" style="font-size:11px;color:var(--warn)">dúvida</span>':''}${st.notes[n]?'<span class="done-mark">● regra escrita</span>':''}</summary><div class="inner"></div>`;
     box.appendChild(d);
     d.addEventListener('toggle',()=>{ if(!d.open||d.dataset.ok) return; d.dataset.ok=1; const sh=Object.entries(e.shared||{}).find(([kk])=>{ const [a,b]=kk.split('-').map(Number); return n>=a&&n<=b; });
       d.querySelector('.inner').innerHTML=`${sh?`<figure class="qimg shared"><img loading="lazy" src="provas/${id}/${sh[1].f}" alt="Texto-base" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}<figure class="qimg ${e.img[n].w>1000?'wide':''}"><img loading="lazy" src="${imgUrl(id,n)}" alt="Questão ${n}" width="${e.img[n].w}" height="${e.img[n].h}"></figure>
-        <div class="bubbles small">${'ABCDE'.split('').map(L=>`<div class="bub"><span class="bL ${L===k?'right':''} ${L===g&&g!==k?'wrong':''}">${L}</span></div>`).join('')}</div>
+        <div class="bubbles small">${'ABCDE'.split('').map(L=>`<div class="bub"><span class="bL ${k!=null&&L===k?'right':''} ${k!=null&&L===g&&g!==k?'wrong':''} ${k==null&&L===g?'on':''}">${L}</span></div>`).join('')}</div>
+        ${e.notas&&e.notas[n]?`<p class="pvnote">${e.notas[n]}</p>`:''}${stationBtn(n)?`<div style="margin-top:8px">${stationBtn(n)}</div>`:''}
         <div class="row tutor-only" style="margin-top:10px"><button class="btn gold xp">Explicar com o tutor</button></div><div class="xo"></div>
         <label class="eyebrow" for="pn-${id}-${n}" style="display:block;margin-top:12px">a regra que teria evitado este erro</label><textarea id="pn-${id}-${n}" placeholder="Ex.: em proporção, conferir as unidades antes de multiplicar.">${esc(st.notes[n]||'')}</textarea>`;
-      d.querySelector('.xp').onclick=()=>explainOfficial(d.querySelector('.xo'),id,n,g);
+      d.querySelector('.xp').onclick=()=>explainOfficial(d.querySelector('.xo'),id,n,g); bindStationBtns(d);
       const ta=d.querySelector('textarea'); let tm; ta.addEventListener('input',()=>{ clearTimeout(tm); tm=setTimeout(()=>{ const v=ta.value.trim(); if(v) st.notes[n]=v; else delete st.notes[n]; markDel(['pv',id,'notes',n],!v); save(); },700); });
     });
   });
@@ -1891,7 +1923,7 @@ async function imgBlobs(src){
     parts.push(await new Promise(r=>c.toBlob(r,'image/png'))); }
   return parts;
 }
-function officialPrompt(id,n,his,sh){ const e=EX[id], k=e.key[n]; return `Você é um professor de cursinho preparando o estudante para a prova da Transpetro (Cesgranrio, nível médio, Manutenção – Elétrica), em português do Brasil, texto simples sem markdown. As imagens são, em ordem, ${sh?'o texto-base compartilhado e ':''}a questão ${n} da ${e.title}, recortada do caderno oficial, possivelmente em mais de uma parte. Gabarito oficial: ${k==null?'questão anulada pela banca':k}. ${his?`Ele marcou ${his}.`:'Ele deixou em branco.'}
+function officialPrompt(id,n,his,sh){ const e=EX[id], k=e.key[n]; return `Você é um professor de cursinho preparando o estudante para a prova da Transpetro (Cesgranrio, nível médio, Manutenção – Elétrica), em português do Brasil, texto simples sem markdown. As imagens são, em ordem, ${sh?'o texto-base compartilhado e ':''}a questão ${n} da ${e.title}, recortada do caderno oficial, possivelmente em mais de uma parte. Gabarito oficial (Cesgranrio, após recursos): ${k==null?`questão anulada pela banca, ponto para todos. ${(e.notas||{})[n]||''} Explique a questão, mostre a resposta tecnicamente correta e por que ela foi anulada, sem inventar um gabarito oficial`:k}. ${his?`Ele marcou ${his}.`:'Ele deixou em branco.'}
 Faça: 1) Em uma linha, o que a questão pede e qual item do edital ela cobra. 2) A resolução passo a passo até chegar ao gabarito, com as contas conferidas, se houver. 3) ${his&&his!==k?`Por que a ${his} está errada e qual raciocínio provavelmente levou a ela.`:'Qual alternativa é o distrator mais perigoso e por quê.'} 4) Uma regra curta para não errar de novo. Se alguma parte da imagem estiver ilegível, diga isso em vez de inventar. Máximo de 280 palavras.`; }
 async function explainOfficial(out,id,n,his){
   if(!sample){ out.innerHTML='<p class="empty">O tutor não está disponível nesta visualização.</p>'; return; }
