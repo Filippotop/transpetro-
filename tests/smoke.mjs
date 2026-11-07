@@ -51,6 +51,37 @@ function testData() {
     for (const [n, k] of Object.entries(e.key)) check(k === null || /^[A-E]$/.test(k), `${id} q${n}: gabarito inválido "${k}"`);
     for (const [n, { f }] of Object.entries({ ...e.img, ...e.shared })) check(fs.existsSync(path.join(ROOT, "provas", id, f)), `${id} q${n}: imagem ${f} não existe`);
   }
+  /* Prova de 2023 (Task 5): 60 recortes com tamanho de verdade, gabarito oficial idêntico ao de fontes/ e o mapa das
+     questões para as estações. */
+  const t = DATA.exams.t23;
+  check(t, 'prova de 2023: DATA.exams.t23 não carregou (data/provas.js fora do index.html?)');
+  if (!t) return;
+  const webp = f => { const b = fs.readFileSync(f); if (b.toString('latin1', 0, 4) !== 'RIFF' || b.toString('latin1', 8, 12) !== 'WEBP') return null;
+    const k = b.toString('latin1', 12, 16);
+    if (k === 'VP8 ') return [b.readUInt16LE(26) & 0x3fff, b.readUInt16LE(28) & 0x3fff];
+    if (k === 'VP8L') { const v = b.readUInt32LE(21); return [(v & 0x3fff) + 1, ((v >> 14) & 0x3fff) + 1]; }
+    if (k === 'VP8X') return [1 + b.readUIntLE(24, 3), 1 + b.readUIntLE(27, 3)]; return null; };
+  check(Object.keys(t.img).length === 60 && t.first === 1 && t.last === 60, `prova de 2023: ${Object.keys(t.img).length} recortes (esperado 60)`);
+  for (const [n, im] of Object.entries({ ...t.img, ...t.shared })) {
+    const f = path.join(ROOT, 'provas', 't23', im.f); if (!fs.existsSync(f)) continue;
+    const wh = webp(f);
+    check(wh && wh[0] === im.w && wh[1] === im.h, `prova de 2023 q${n}: ${im.f} mede ${wh} e o data/provas.js diz ${im.w}×${im.h}`);
+    check(wh && (wh[0] === 745 || wh[0] === 1531) && wh[1] >= 300 && wh[1] <= 3000 && fs.statSync(f).size > 8000, `prova de 2023 q${n}: ${im.f} com tamanho estranho (${wh}, ${fs.statSync(f).size} bytes)`);
+  }
+  const gab = JSON.parse(fs.readFileSync(path.join(ROOT, 'fontes', 'gabarito-2023.json'), 'utf8'));
+  for (let n = 1; n <= 60; n++) check(t.key[n] === gab.gabarito[n], `prova de 2023 q${n}: gabarito ${t.key[n]} ≠ oficial ${gab.gabarito[n]} (fontes/gabarito-2023.json)`);
+  const nulls = Object.entries(t.key).filter(([, k]) => k === null).map(([n]) => +n);
+  check(nulls.join() === '28,30' && Object.values(t.key).filter(k => /^[A-E]$/.test(k)).length === 58, `prova de 2023: anuladas ${nulls} (esperado 28 e 30, com 58 letras)`);
+  check(/Gabarito oficial da Cesgranrio, após recursos; questões 28 e 30 anuladas/.test(t.fonte), 'prova de 2023: falta a fonte do gabarito embaixo da prova');
+  check(/150° atrasada \(5 × 30°\)/.test((t.notas || {})[28] || ''), 'prova de 2023: falta a nota da questão 28 (Dy5, 150°)');
+  const M = DATA.mapa2023 || {}, ids = new Set(DATA.modules.map(m => m.id));
+  for (let n = 1; n <= 10; n++) check(M[n] === null, `mapa2023: a questão ${n} (Português) deveria ser null, é ${M[n]}`);
+  for (let n = 11; n <= 60; n++) check(ids.has(M[n]), `mapa2023: a questão ${n} aponta para "${M[n]}", que não é estação`);
+  for (let n = 11; n <= 20; n++) check(/^X[123]$/.test(M[n]), `mapa2023: a questão ${n} (Matemática) aponta para ${M[n]}`);
+  /* Pesos de 2023 por item do Anexo IV (spec): a classificação questão a questão precisa reproduzi-los. */
+  const PESO = { 1: 0, 2: 7, 3: 5, 4: 3, 5: 5, 6: 2, 7: 3, 8: 6, 9: 6, 10: 3 }, por = {};
+  for (let n = 21; n <= 60; n++) { const it = String(t.itens[n] || '').split('.')[0]; por[it] = (por[it] || 0) + 1; }
+  for (const [it, w] of Object.entries(PESO)) check((por[it] || 0) === w, `mapa2023: item ${it} com ${por[it] || 0} questões (peso de 2023: ${w})`);
 }
 
 /* Integridade do conteúdo: ids únicos, toda questão completa e todo módulo apontando para questões que existem. */
@@ -379,7 +410,7 @@ async function testEmpty(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
   await page.goto(URL_); await page.waitForTimeout(300);
-  for (const v of ['plano', 'painel', 'provas']) { await page.evaluate(v => go(v), v); await page.waitForTimeout(150);
+  for (const v of ['plano', 'painel']) { await page.evaluate(v => go(v), v); await page.waitForTimeout(150);
     check(await page.locator('#app .empty').count() > 0, `vazio: ${v} sem mensagem de "ainda vazio"`); }
   for (const e of errs) check(false, `vazio: erro de JS: ${e}`);
   await ctx.close();
@@ -565,16 +596,29 @@ async function testHome(browser) {
   }
 }
 
-/* Offline: sem imagens de prova para baixar, o app não pergunta nem baixa nada (a prova de 2023 chega na Task 5). */
+/* Offline: as imagens da prova de 2023 só baixam depois do sim (como no Humanas); depois disso, sem internet, uma
+   questão da prova abre com a imagem. */
 async function testOfflineConsent(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'] });
   const page = await ctx.newPage(); await page.goto(URL_);
   await page.waitForFunction(() => navigator.serviceWorker.controller || navigator.serviceWorker.ready, null, { timeout: 10000 });
   await page.waitForTimeout(2500);
   const count = () => page.evaluate(async () => (await (await caches.open('edo-provas-v1')).keys()).length);
+  const total = await page.evaluate(() => Object.values(DATA.exams).reduce((a, e) => a + Object.keys(e.img).length + Object.keys(e.shared || {}).length, 0));
+  check(total === 61, `offline: a prova de 2023 deveria ter 61 imagens (60 questões + texto-base), tem ${total}`);
   check(await count() === 0, 'offline: baixou imagens de prova sem perguntar');
-  check(!(await page.locator('#pwaWarm').isVisible().catch(() => false)), 'offline: perguntou para baixar provas que ainda não existem');
+  const ask = page.locator('#pwaWarm');
+  check(await ask.isVisible().catch(() => false), 'offline: não apareceu a pergunta para baixar as provas');
+  if (await ask.isVisible().catch(() => false)) {
+    await ask.click();
+    for (let t = 0; t < 40 && await count() < total; t++) await page.waitForTimeout(500);
+    check(await count() === total, `offline: depois do sim baixou ${await count()} de ${total} imagens`);
+  }
   check(await page.evaluate(async () => (await caches.keys()).every(k => k.startsWith('edo-'))), 'offline: cache com nome fora do prefixo edo- (o Humanas usa hdo- na mesma origem)');
+  await ctx.setOffline(true); await page.reload(); await page.waitForTimeout(800);
+  await page.evaluate(() => { go('provas'); startRun('t23', 'PME', 'estudo'); const r = pvState('t23').runs.at(-1); r.cur = 27; save(); vProva(); });
+  const img = await page.waitForFunction(() => { const i = document.querySelector('#qimg'); return i && i.complete && i.naturalWidth > 0 ? i.getAttribute('src') : false; }, null, { timeout: 5000 }).then(h => h.jsonValue(), () => null);
+  check(img === 'provas/t23/q028.webp', `offline: a questão 28 da prova de 2023 não abriu com a imagem sem internet (${img})`);
   await ctx.close();
 }
 

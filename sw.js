@@ -1,9 +1,9 @@
 /* Elétrica de Ouro: service worker da raiz. Cobre o app e a Bancada (bancada/), que não tem service worker próprio.
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova.
    Caches com prefixo edo-: o Humanas de Ouro (mesma origem github.io) usa hdo- e apaga só os dele. */
-const VER='2026-10-25.7';
+const VER='2026-10-25.8';
 const SHELL='edo-shell-'+VER, IMGS='edo-provas-v1', RUNTIME='edo-runtime-v1';
-const SHELL_FILES=['./','index.html','data/base.js','data/estacoes/E1.js','data/estacoes/E2.js','data/estacoes/E3.js','data/estacoes/M1.js','data/estacoes/M2.js','data/estacoes/I1.js','data/embreve.js','data/questoes.js','js/calc.js','js/gerador.js','css/estacao.css','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
+const SHELL_FILES=['./','index.html','data/base.js','data/estacoes/E1.js','data/estacoes/E2.js','data/estacoes/E3.js','data/estacoes/M1.js','data/estacoes/M2.js','data/estacoes/I1.js','data/embreve.js','data/questoes.js','data/provas.js','js/calc.js','js/gerador.js','css/estacao.css','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
 /* A Bancada inteira, para abrir sem internet depois da primeira visita ao app. */
 const BANCADA_FILES=[
   'bancada/',
@@ -32,8 +32,9 @@ const BANCADA_FILES=[
   'bancada/js/missions/qd.js',
   'bancada/js/ui/apostila.js'
 ];
-/* Imagens das provas (provas/<id>/...), baixadas só com consentimento (ver pwa.js). A prova de 2023 entra na Task 5. */
-const IMAGES=[];
+/* Imagens das provas (provas/<id>/...), baixadas só com consentimento (ver pwa.js), como no Humanas: a prova de 2023
+   (60 questões + o texto-base de Português). Questão aberta antes disso entra no mesmo cache na hora (fetch abaixo). */
+const IMAGES=['t23/q001.webp','t23/q002.webp','t23/q003.webp','t23/q004.webp','t23/q005.webp','t23/q006.webp','t23/q007.webp','t23/q008.webp','t23/q009.webp','t23/q010.webp','t23/q011.webp','t23/q012.webp','t23/q013.webp','t23/q014.webp','t23/q015.webp','t23/q016.webp','t23/q017.webp','t23/q018.webp','t23/q019.webp','t23/q020.webp','t23/q021.webp','t23/q022.webp','t23/q023.webp','t23/q024.webp','t23/q025.webp','t23/q026.webp','t23/q027.webp','t23/q028.webp','t23/q029.webp','t23/q030.webp','t23/q031.webp','t23/q032.webp','t23/q033.webp','t23/q034.webp','t23/q035.webp','t23/q036.webp','t23/q037.webp','t23/q038.webp','t23/q039.webp','t23/q040.webp','t23/q041.webp','t23/q042.webp','t23/q043.webp','t23/q044.webp','t23/q045.webp','t23/q046.webp','t23/q047.webp','t23/q048.webp','t23/q049.webp','t23/q050.webp','t23/q051.webp','t23/q052.webp','t23/q053.webp','t23/q054.webp','t23/q055.webp','t23/q056.webp','t23/q057.webp','t23/q058.webp','t23/q059.webp','t23/q060.webp','t23/s001.webp'];
 
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(SHELL).then(c=>c.addAll(SHELL_FILES.concat(BANCADA_FILES))).then(()=>self.skipWaiting())); });
 /* Caches da Bancada de quando ela morava na raiz (bancada-shell-*, bancada-runtime-v1): guardam index.html, manifest e

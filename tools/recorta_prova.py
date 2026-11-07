@@ -46,6 +46,7 @@ SHARED = {'1-7': 's001.webp'}       # as questões 1 a 7 citam os parágrafos do
 # os totais por item reproduzem a tabela de pesos de 2023 da spec (2:7, 3:5, 4:3, 5:5, 6:2, 7:3, 8:6, 9:6, 10:3).
 # Matemática (11 a 20) segue as notas das estações X1–X3 em data/embreve.js.
 MAPA = {
+    **{n: ('Port', None) for n in range(1, 11)},   # Português: fora do escopo do app (spec), sem estação
     11: ('Mat', 'X1'), 12: ('Mat', 'X1'), 13: ('Mat', 'X3'), 14: ('Mat', 'X1'), 15: ('Mat', 'X3'),
     16: ('Mat', 'X2'), 17: ('Mat', 'X1'), 18: ('Mat', 'X2'), 19: ('Mat', 'X2'), 20: ('Mat', 'X2'),
     21: ('3.1', 'E3'),  # medidor de energia: voltas do disco
@@ -91,7 +92,9 @@ MAPA = {
 }
 NOTAS = {
     28: 'Anulada: o gabarito preliminar marcava 120°; o certo para Dy5 é 150° atrasada (5 × 30°). Veja a estação M2.',
-    30: 'Anulada pela banca.',
+    30: ('Anulada pela banca. Provável motivo: duas alternativas certas. Em Δ a tensão de fase é a de linha, e '
+         'I_fase = S/(3·V) = 45√3 kVA / (3 × 200 V) = 75√3 A ≈ 129,9 A; as alternativas (C) 75√3 e (E) 225/√3 são o '
+         'mesmo número (o gabarito preliminar marcava E). Veja a estação E3.'),
 }
 FONTE = ('Gabarito oficial da Cesgranrio, após recursos; questões 28 e 30 anuladas. Caderno: Edital nº 1 – '
          'TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO 2023.1, Prova 6 – Manutenção – Elétrica, aplicada em 10/12/2023 '
@@ -281,7 +284,8 @@ def write_data(img_meta, shared):
     mapa = {str(n): MAPA[n][1] for n in sorted(MAPA)}
     head = ('/* Elétrica de Ouro: prova Transpetro 2023 (Manutenção – Elétrica) recortada por questão.\n'
             '   GERADO por tools/recorta_prova.py: não edite à mão. Gabarito: fontes/gabarito-2023.json (oficial, após recursos).\n'
-            '   mapa2023[questão] = estação, para a Missão de hoje e a Recalibração (questões 11 a 60). */\n')
+            '   mapa2023[questão] = estação, para a Missão de hoje e a Recalibração (1 a 60; Português, 1 a 10, fica null:\n'
+            '   não é estudado neste app). */\n')
     body = ('window.DATA.exams[' + json.dumps(EXAM_ID) + '] = ' + json.dumps(exam, ensure_ascii=False) + ';\n'
             'window.DATA.mapa2023 = ' + json.dumps(mapa, ensure_ascii=False) + ';\n')
     open(os.path.join(ROOT, 'data', 'provas.js'), 'w', encoding='utf-8').write(head + body.replace('</', '<\\/'))
