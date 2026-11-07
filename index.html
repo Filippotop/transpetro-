@@ -197,6 +197,12 @@ td{border-bottom:1px solid var(--rule);padding:8px 10px;vertical-align:top}
 .qview{position:fixed;inset:0;z-index:50;background:rgba(10,12,24,.72);display:grid;place-items:center;padding:var(--sp-4)}
 .qv-in{background:var(--surface);border-radius:var(--r-lg);padding:var(--sp-4);display:grid;gap:var(--sp-3);max-width:760px;width:100%;max-height:90vh;overflow:auto}
 .qv-in img{width:100%;height:auto;border-radius:var(--r-sm);background:#fff}
+.qv-pan{min-width:0}
+.qv-wide{max-width:min(1600px,100%)}
+.qv-wide .qv-pan{overflow-x:auto;border-radius:var(--r-sm)}
+.qv-wide .qv-pan img{width:auto;max-width:none;height:auto}
+.qzoom{display:block;width:100%;border:0;padding:0;background:none;cursor:zoom-in}
+.qzoom-hint{margin:6px 0 0;font-size:12px;color:#5A6079}
 .qv-in .muted{font-family:var(--mono)}
 .tw.scrolls::before{content:'deslize a tabela para o lado →';display:block;position:sticky;left:0;font-family:var(--mono);font-size:var(--fs-1);color:var(--muted);padding-bottom:var(--sp-1)}
 .toc-m summary{cursor:pointer;font-family:var(--display);font-size:var(--fs-2);font-weight:600;color:var(--muted);padding:var(--sp-2) 0}
@@ -708,10 +714,15 @@ let sample=null;
 function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>el.hidden=true,2200); }
 
 /* ---------- derived ---------- */
+/* Imagem de uma questão da prova. Os recortes largos (1531 px, como a 51 e a 56) ficam com texto de ~5 px no celular: tocar
+   na imagem abre a questão no tamanho natural, com rolagem de lado (openQView). key=false: dentro da prova, sem o gabarito. */
+function qimgHTML(id,n,alt,attrs,key){ const im=EX[id].img[n], wide=im.w>1000, img=`<img src="${imgUrl(id,n)}" alt="${alt}" width="${im.w}" height="${im.h}" ${attrs}>`;
+  return `<figure class="qimg ${wide?'wide':''}">${wide?`<button type="button" class="qzoom" data-zoom="${id}:${n}:${key?1:0}" aria-label="Ampliar a questão ${n} no tamanho natural">${img}</button><figcaption class="qzoom-hint">Toque na imagem para ampliar e rolar de lado.</figcaption>`:img}</figure>`; }
+document.addEventListener('click',e=>{ const b=e.target.closest('.qzoom'); if(!b) return; const [ex,n,k]=b.dataset.zoom.split(':'); openQView(ex,n,{key:k==='1'}); });
 /* Questão de prova citada na teoria: abre a imagem ali mesmo; Esc ou o botão fecham. */
-function openQView(ex,n){ const e=EX[ex]; if(!e||!e.img[n]) return; closeQView();
+function openQView(ex,n,o={}){ const e=EX[ex]; if(!e||!e.img[n]) return; closeQView(); const wide=e.img[n].w>1000, showKey=o.key!==false;
   const d=document.createElement('div'); d.className='qview'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label',`Questão ${n} da ${e.title}`);
-  d.innerHTML=`<div class="qv-in"><div class="row" style="justify-content:space-between;align-items:center"><b>${e.title} · questão ${n}</b><button class="btn" id="qvClose">Fechar</button></div><img src="${imgUrl(ex,n)}" alt="Questão ${n} da ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}"><details><summary class="muted" style="cursor:pointer">Resolva primeiro; depois toque para ver o gabarito</summary><p class="qv-key" style="margin:6px 0 0;font-family:var(--mono)">Gabarito oficial: <b>${e.key[n]||'anulada (ponto para todos)'}</b></p>${e.notas&&e.notas[n]?`<p class="muted" style="margin:6px 0 0">${e.notas[n]}</p>`:''}</details></div>`;
+  d.innerHTML=`<div class="qv-in ${wide?'qv-wide':''}"><div class="row" style="justify-content:space-between;align-items:center"><b>${e.title} · questão ${n}</b><button class="btn" id="qvClose">Fechar</button></div>${wide?'<p class="muted" style="margin:0;font-size:12px">Imagem no tamanho natural: arraste para o lado para ler.</p>':''}<div class="qv-pan" ${wide?'tabindex="0" role="region" aria-label="Questão no tamanho natural: rolagem de lado"':''}><img src="${imgUrl(ex,n)}" alt="Questão ${n} da ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}"></div>${showKey?`<details><summary class="muted" style="cursor:pointer">Resolva primeiro; depois toque para ver o gabarito</summary><p class="qv-key" style="margin:6px 0 0;font-family:var(--mono)">Gabarito oficial: <b>${e.key[n]||'anulada (ponto para todos)'}</b></p>${e.notas&&e.notas[n]?`<p class="muted" style="margin:6px 0 0">${e.notas[n]}</p>`:''}</details>`:''}</div>`;
   d.onclick=ev=>{ if(ev.target===d) closeQView(); }; document.body.appendChild(d); $('#qvClose').onclick=closeQView; $('#qvClose').focus(); }
 function closeQView(){ const d=document.querySelector('.qview'); if(d) d.remove(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQView(); });
@@ -1682,7 +1693,7 @@ function vBancada(){
 const EX = DATA.exams;
 /* Blocos da prova Transpetro (60 questões), conferidos na capa do caderno de 2023: Português 1–10 e Matemática 11–20
    (Conhecimentos Básicos, 1,0 ponto cada) e Conhecimentos Específicos 21–60 (1,0 ponto cada). */
-const AREAS = {P:{name:'Português',a:1,b:10},M:{name:'Matemática',a:11,b:20},E:{name:'Conhecimentos Específicos',a:21,b:60}};
+const AREAS = {P:{name:'Português',short:'Português',a:1,b:10},M:{name:'Matemática',short:'Matemática',a:11,b:20},E:{name:'Conhecimentos Específicos',short:'Específicas',a:21,b:60}};
 const FULL_AREAS = 'PME';
 const imgUrl = (ex,n) => `provas/${ex}/${EX[ex].img[n].f}`;
 function pvState(ex){ S.pv=S.pv||{}; S.pv[ex]=S.pv[ex]||{runs:[],notes:{}}; return S.pv[ex]; }
@@ -1724,7 +1735,7 @@ function stationBtn(n){ const id=(DATA.mapa2023||{})[n], m=id&&M[id]; if(!m) ret
 function bindStationBtns(el){ el.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{ const id=b.dataset.st, m=M[id];
   if(!m.emBreve){ go('mod',{id,tab:'teoria'}); return; }
   go('linhas'); setTimeout(()=>{ const t=document.querySelector(`.st[data-m="${id}"]`); if(t){ t.scrollIntoView({block:'center'}); t.focus(); } toast(`${id} · ${m.title}: estação em breve.`); },60); }); }
-function runLabel(run){ if(run.id==='papel') return 'Diagnóstico no papel (set/2026)'; return `${new Date(run.start).toLocaleDateString('pt-BR')} · ${run.areas.split('').map(a=>AREAS[a].name.split(' ').pop()).join(' + ')} · ${run.papel?'lançada do papel':run.mode==='estudo'?'modo estudo':'modo prova'}${runReal(run)?'':' · incompleta'}`; }
+function runLabel(run){ if(run.id==='papel') return 'Diagnóstico no papel (set/2026)'; return `${new Date(run.start).toLocaleDateString('pt-BR')} · ${run.areas.split('').map(a=>AREAS[a].short).join(' + ')} · ${run.papel?'lançada do papel':run.mode==='estudo'?'modo estudo':'modo prova'}${runReal(run)?'':' · incompleta'}`; }
 
 /* ---------- lista ---------- */
 function vProvas(){
@@ -1800,7 +1811,7 @@ function vPapel(){
       if(n<nums.length*0.6 && !warned){ warned=true; $('#pst').textContent=`Só ${n} de ${nums.length} marcadas: a correção vai contar o resto como em branco e a tentativa fica como incompleta (não conta como diagnóstico feito). Toque de novo em Corrigir para seguir.`; return; }
       const min=+D.min||0, now=Date.now(); const st=pvState(id);
       st.runs.push({id:now.toString(36),areas:D.areas,mode:'prova',ans,flag:{},cut:{},start:now-(min*60000),end:now,time:min?min*60000:null,limit:runLimit(D.areas)*60000,done:true,papel:true});
-      lsDel(dk); bump(n); save(); go('provares',{id,run:st.runs.length-1}); };
+      lsDel(dk); bump(1); save(); go('provares',{id,run:st.runs.length-1}); };
   };
   paint();
 }
@@ -1825,7 +1836,7 @@ function vProva(){
     <div class="pvlayout">
       <div class="pvmain">
         ${sh?`<figure class="qimg shared"><figcaption class="eyebrow">texto para as questões ${sh[0].replace('-',' a ')}</figcaption><img src="provas/${id}/${sh[1].f}" alt="Texto-base compartilhado" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}
-        <figure class="qimg ${e.img[n].w>1000?'wide':''}"><img src="${imgUrl(id,n)}" alt="Questão ${n} do ${e.title}" width="${e.img[n].w}" height="${e.img[n].h}" id="qimg"></figure>
+        ${qimgHTML(id,n,`Questão ${n} do ${e.title}`,'id="qimg"',false)}
         ${key==null?'<p class="pill warn" style="display:inline-block;color:var(--ink)">Questão anulada pela banca: ponto para todos.</p>':''}
         <div class="bubbles" role="group" aria-label="Escolha a alternativa">${'ABCDE'.split('').map(L=>{ const cut=(run.cut[n]||[]).includes(L); let cls=picked===L?'on':''; if(study&&picked&&key!=null){ if(L===key) cls+=' right'; else if(L===picked) cls+=' wrong'; }
           return `<div class="bub ${cut?'cut':''}"><button class="bL ${cls}" data-L="${L}" ${study&&picked?'disabled':''} aria-pressed="${picked===L}">${L}</button><button class="bx" data-x="${L}" aria-label="Eliminar ${L}" title="Eliminar alternativa">×</button></div>`}).join('')}</div>
@@ -1861,7 +1872,7 @@ function cardGrid(id,run,nums){
     return `<button class="cell2 ${cls}" data-go-q="${i}" title="Questão ${n}${g?': '+g:''}"><span>${n}</span><b>${g||''}</b></button>`}).join('')}</div></div>`).join('')}
     <div class="legend" style="margin-top:10px"><span><i style="background:var(--ink);border-color:var(--ink)"></i>respondida</span><span><i style="border-color:var(--warn)"></i>dúvida</span></div>`;
 }
-function finishRun(id,ri){ clearInterval(pvTimer); const run=pvState(id).runs[ri]; run.done=true; run.end=Date.now(); run.time=Math.min(run.end-run.start,run.limit); bump(Object.keys(run.ans).length); save(); go('provares',{id,run:ri}); }
+function finishRun(id,ri){ clearInterval(pvTimer); const run=pvState(id).runs[ri]; run.done=true; run.end=Date.now(); run.time=Math.min(run.end-run.start,run.limit); bump(1); /* conta o dia na sequência, mas as respostas da prova não inflam a meta diária */ save(); go('provares',{id,run:ri}); }
 
 /* ---------- correção ---------- */
 function vProvaRes(){
@@ -1875,9 +1886,9 @@ function vProvaRes(){
   <div class="pagehead"><div><div class="eyebrow">correção pelo gabarito oficial · ${runLabel(run)}</div><h1>${e.title}</h1></div>
     ${run.id!=='papel'?`<button class="btn ghost" id="delrun">Apagar esta tentativa</button>`:''}${runs.length>1?`<select id="runsel" aria-label="Escolher tentativa">${runs.map((r,i)=>`<option value="${i}" ${r===run?'selected':''}>${runLabel(r)}</option>`).join('')}</select>`:''}</div>
   <div class="resgrid">
-    ${cut.blocks.map(b=>`<div class="panel kpi" data-bloco="${b.k}"><span class="lbl">${b.name}</span><span class="big3">${b.ok}<small>/${b.n} pontos</small></span><div class="bar2 ${b.pass?'ok':'no'}" role="img" aria-label="${pct(b.ok,b.n)}% dos pontos; o corte é 50%"><i style="width:${pct(b.ok,b.n)}%"></i><span class="cut"></span></div><span class="mono muted" style="font-size:12px">${pct(b.ok,b.n)}% · corte: ${b.n/2} (50%) · ${b.pass?'acima do corte':'abaixo do corte'}</span></div>`).join('')}
+    ${cut.blocks.map(b=>`<div class="panel kpi" data-bloco="${b.k}"><span class="lbl">${b.name}</span><span class="big3">${b.ok}<small>/${b.n} pontos</small></span><div class="bar2 ${b.pass?'ok':'no'}" role="img" aria-label="${pct(b.ok,b.n)}% dos pontos; o corte é 50%"><i style="width:${pct(b.ok,b.n)}%"></i><span class="cut"></span></div><span class="mono muted" style="font-size:12px">${pct(b.ok,b.n)}% · corte: ${b.n/2} (50%) · ${b.pass?(b.ok*2===b.n?'no corte (50% passa)':'acima do corte'):'abaixo do corte'}</span></div>`).join('')}
     ${Object.entries(sc.areas).filter(([a])=>a!=='E'||!cut.blocks.length).map(([a,v])=>`<div class="panel kpi" data-area="${a}"><span class="lbl">${AREAS[a].name}</span><span class="big3">${v.ok}<small>/${v.n}</small></span><span class="mono muted" style="font-size:12px">${pct(v.ok,v.n)}% · ${v.blank} em branco${v.ok===0&&a!=='E'?' · zero elimina':''}</span></div>`).join('')}
-    <div class="panel kpi"><span class="lbl">tempo usado</span><span class="big3">${run.time?Math.round(run.time/60000)+'<small> min</small>':'—'}</span><span class="mono muted" style="font-size:12px">${run.time?`${(run.time/60000/Math.max(1,Object.keys(run.ans).length)).toFixed(1)} min por questão respondida`:'feita no papel'}</span></div>
+    <div class="panel kpi"><span class="lbl">tempo usado</span><span class="big3">${run.time?Math.round(run.time/60000)+'<small> min</small>':'—'}</span><span class="mono muted" style="font-size:12px">${run.time?`${(run.time/60000/Math.max(1,Object.keys(run.ans).length)).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})} min por questão respondida`:'feita no papel'}</span></div>
   </div>
   <div class="panel verdict ${cut.elim?'no':''}" id="verdict" style="margin-top:14px"><b>${cut.elim?'Eliminado pelo corte':'Passou do corte'}${cut.full?'':' nos blocos feitos'}.</b> <span>${cut.elim?cut.why.join('; ')+'.':'50% ou mais em cada bloco e nenhum zero em Português ou Matemática.'} Regra do edital de 2026 (7.1.4.3).${sc.anul?` ${sc.anul===1?'A questão anulada entrou':`As ${sc.anul} questões anuladas entraram`} como certa${sc.anul===1?'':'s'}: ponto para todos (9.1.4).`:''}</span></div>
   <div class="grid2" style="margin-top:14px">
@@ -1904,7 +1915,7 @@ function vProvaRes(){
     d.innerHTML=`<summary><span class="chip" style="background:${status==='certa'?'var(--ok-soft)':k==null?'var(--sunk)':'var(--bad-soft)'};color:${status==='certa'?'var(--ok)':k==null?'var(--muted)':'var(--bad)'}">${status}</span><b>Questão ${n}</b><span class="mono muted" style="font-size:12px">sua: ${g||'—'} · gabarito: ${k||'anulada'}</span>${run.flag&&run.flag[n]?'<span class="mono" style="font-size:11px;color:var(--warn)">dúvida</span>':''}${st.notes[n]?'<span class="done-mark">● regra escrita</span>':''}</summary><div class="inner"></div>`;
     box.appendChild(d);
     d.addEventListener('toggle',()=>{ if(!d.open||d.dataset.ok) return; d.dataset.ok=1; const sh=Object.entries(e.shared||{}).find(([kk])=>{ const [a,b]=kk.split('-').map(Number); return n>=a&&n<=b; });
-      d.querySelector('.inner').innerHTML=`${sh?`<figure class="qimg shared"><img loading="lazy" src="provas/${id}/${sh[1].f}" alt="Texto-base" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}<figure class="qimg ${e.img[n].w>1000?'wide':''}"><img loading="lazy" src="${imgUrl(id,n)}" alt="Questão ${n}" width="${e.img[n].w}" height="${e.img[n].h}"></figure>
+      d.querySelector('.inner').innerHTML=`${sh?`<figure class="qimg shared"><img loading="lazy" src="provas/${id}/${sh[1].f}" alt="Texto-base" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}${qimgHTML(id,n,`Questão ${n}`,'loading="lazy"',true)}
         <div class="bubbles small">${'ABCDE'.split('').map(L=>`<div class="bub"><span class="bL ${k!=null&&L===k?'right':''} ${k!=null&&L===g&&g!==k?'wrong':''} ${k==null&&L===g?'on':''}">${L}</span></div>`).join('')}</div>
         ${e.notas&&e.notas[n]?`<p class="pvnote">${e.notas[n]}</p>`:''}${stationBtn(n)?`<div style="margin-top:8px">${stationBtn(n)}</div>`:''}
         <div class="row tutor-only" style="margin-top:10px"><button class="btn gold xp">Explicar com o tutor</button></div><div class="xo"></div>

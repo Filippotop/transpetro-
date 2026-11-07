@@ -623,6 +623,22 @@ async function testProva(browser) {
     check(/Anulada: ponto para todos/.test(fb) && /150° atrasada \(5 × 30°\)/.test(fb) && /M2/.test(fb), `${where}: depois de responder a 28, falta a nota de anulada (${fb})`);
     check(await page.locator('.bL.wrong').count() === 0, `${where}: a 28 (anulada) marcou a resposta como errada`);
     await axe('q28');
+    /* Recortes largos (51 e 56, 1531 px): no celular o texto fica com ~5 px; tocar na imagem abre no tamanho natural, com
+       rolagem de lado, sem rolagem lateral na página e sem o gabarito (é uma tentativa em andamento). */
+    for (const q of [51, 56]) {
+      await page.evaluate(q => { const r = pvState('t23').runs.at(-1); r.cur = q - 1; save(); vProva(); }, q); await page.waitForTimeout(150);
+      check(await page.locator('.qimg.wide .qzoom').count() === 1, `${where}: a questão ${q} (recorte largo) não tem o toque para ampliar`);
+      await page.locator('.qzoom').click(); await page.waitForTimeout(200);
+      const z = await page.evaluate(() => { const im = document.querySelector('.qview .qv-pan img'), pan = document.querySelector('.qview .qv-pan'); return { w: im && im.getBoundingClientRect().width, pan: pan && pan.scrollWidth > pan.clientWidth ? 'rola' : (pan && pan.scrollWidth <= pan.clientWidth ? 'cabe' : null), page: document.documentElement.scrollWidth <= innerWidth, key: !!document.querySelector('.qview details') }; });
+      check(z.w >= 1500 || z.pan === 'cabe', `${where}: a questão ${q} ampliada mede ${z.w} px (esperado o tamanho natural, 1531 px)`);
+      check(z.w < 1500 || z.pan === 'rola', `${where}: a questão ${q} ampliada não rola de lado`);
+      check(z.page, `${where}: a questão ${q} ampliada cria rolagem horizontal na página`);
+      check(!z.key, `${where}: a questão ${q} ampliada durante a prova mostra o gabarito`);
+      if (q === 51) await axe('q51 ampliada');
+      await page.keyboard.press('Escape'); await page.waitForTimeout(80);
+    }
+    await page.evaluate(() => { const r = pvState('t23').runs.at(-1); r.cur = 27; save(); vProva(); }); await page.waitForTimeout(100);
+    const act0 = await page.evaluate(() => S.act[isoToday()] || 0);
     /* Responde o resto pelo gabarito, menos Português (eliminado por zero) e metade das específicas erradas. */
     await page.evaluate(() => { const e = EX.t23, r = pvState('t23').runs.at(-1);
       for (let n = 11; n <= 60; n++) if (e.key[n]) r.ans[n] = n >= 41 ? (e.key[n] === 'A' ? 'B' : 'A') : e.key[n];
@@ -635,6 +651,11 @@ async function testProva(browser) {
     const ver = await page.textContent('#verdict');
     check(/Eliminado/.test(ver) && /zero em Português/.test(ver) && /ponto para todos/.test(ver), `${where}: o veredito não aponta o zero em Português (${ver})`);
     await axe('correção');
+    const lab = await page.evaluate(() => runLabel(pvState('t23').runs.at(-1)));
+    check(/Português \+ Matemática \+ Específicas/.test(lab) && !/Específicos/.test(lab), `${where}: o rótulo da tentativa é "${lab}"`);
+    check(/no corte/.test(await page.locator('[data-bloco="G"]').textContent()) && !/acima do corte/.test(await page.locator('[data-bloco="G"]').textContent()), `${where}: com exatamente 50% o bloco deve dizer "no corte"`);
+    check(/\d,\d min por questão/.test(await page.locator('.kpi').last().textContent()) || !/\d\.\d min por questão/.test(await page.locator('.kpi').last().textContent()), `${where}: tempo por questão sem vírgula decimal`);
+    check(await page.evaluate(() => (S.act[isoToday()] || 0)) - act0 <= 1, `${where}: as respostas da prova inflaram a meta diária (${act0} → ${await page.evaluate(() => S.act[isoToday()] || 0)})`);
     for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
     await ctx.close();
   }

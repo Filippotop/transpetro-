@@ -91,13 +91,13 @@ MAPA = {
     60: ('7.2', 'M2'),  # SI: 1 kWh em joules
 }
 NOTAS = {
-    28: 'Anulada: o gabarito preliminar marcava 120°; o certo para Dy5 é 150° atrasada (5 × 30°). Veja a estação M2.',
+    28: 'Anulada: o gabarito preliminar marcava 120°; o certo para Dy5 é 150° atrasada (5 × 30°), e nenhuma alternativa traz 150°. Veja a estação M2.',
     30: ('Anulada pela banca. Provável motivo: duas alternativas certas. Em Δ a tensão de fase é a de linha, e '
          'I_fase = S/(3·V) = 45√3 kVA / (3 × 200 V) = 75√3 A ≈ 129,9 A; as alternativas (C) 75√3 e (E) 225/√3 são o '
          'mesmo número (o gabarito preliminar marcava E). Veja a estação E3.'),
 }
 FONTE = ('Gabarito oficial da Cesgranrio, após recursos; questões 28 e 30 anuladas. Caderno: Edital nº 1 – '
-         'TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO 2023.1, Prova 6 – Manutenção – Elétrica, aplicada em 10/12/2023 '
+         'TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO 2023.1, Prova 6 – Manutenção – Elétrica, gabarito preliminar de 10/12/2023 '
          '(cópia do PCI Concursos). Gabarito: fontes/gabarito-2023.json, conferido entre o preliminar e as '
          'Respostas aos Recursos.')
 # ---------------------------------------------------------------------------------------------------------------
