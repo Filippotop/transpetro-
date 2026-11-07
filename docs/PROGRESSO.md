@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-10-25. Estações E1, E2, E3, M1, M2 e I1 concluídas e revisadas. T4: correções aplicadas, aguardando checagem final; depois vêm T5 e T6.
+Última atualização: 2026-11-07. T1–T4 concluídas e revisadas. T5 implementada, aguardando revisão; depois vem T6.
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -12,7 +12,7 @@
 | T3b: estações M1 (simbologia e diagramas) e M2 (eletromagnetismo e transformadores) | ✅ concluída e revisada | ..b658359 |
 | T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ✅ concluída e revisada | ..cec1278 |
 | T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ✅ concluída e revisada (4 rodadas de correção; exceções de letra dos geradores documentadas em `tests/questoes.test.mjs`) | ..0d9c227 |
-| T5: prova Transpetro 2023 recortada por questão (`fontes/prova-2023-…pdf`) + gabarito **oficial** (já obtido: `fontes/gabarito-2023.json`, Q28 e Q30 anuladas) | ⬜ a fazer (gabarito pronto) | — |
+| T5: prova Transpetro 2023 recortada por questão (`provas/t23`, `data/provas.js`) + gabarito **oficial** (`fontes/gabarito-2023.json`, Q28 e Q30 anuladas = ponto para todos), corte de 50% por bloco, `mapa2023` | ⏳ implementada, aguardando revisão | f4d0b9a..(este) |
 | T6: Biblioteca (formulário geral, números-âncora, NR-10 de 2019 × 2026), Arena, Plano até 29/11, Painel, Missão de hoje; entrega e parada para o estudante avaliar | ⬜ a fazer | — |
 
 Ondas seguintes (spec, seção 3):
