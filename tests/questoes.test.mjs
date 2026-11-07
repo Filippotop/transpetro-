@@ -173,9 +173,11 @@ for (const w of ['ENEM', 'Enem', 'Inep', 'Humanas']) check(!QTXT.includes(w), `d
    - neutro (BCDE): acima da tensão na carga menor só há 220 V, 254 V e 380 V; A fica em 0%.
    - disj (BCD): só valores entre I_B/2 e 2·I_z; nenhum I_z tabelado tem 4 correntes nominais em (I_z, 2·I_z], e só
      I_B em (25, 26] ou (63, 64] tem 4 abaixo; A fica em 0% e E em ~7%.
+   - escorr (BCDE): acima da rotação certa só há n_s, n_s·(1 + s) e a rotação dobrada (pares de polos tomados por polos);
+     A fica em 0%.
    eta e disj, com 3 letras, ficam abaixo da regra de 4 letras viáveis: inventar distrator para cumpri-la seria
    enchimento. (pe deixou de ser exceção: virou questão de pares fase/PE, com a letra sorteada de A a E.) */
-const EXCECAO_LETRA = { eta: 'ABC', trV: 'BCDE', trZ: 'BCDE', queda: 'ABCD', force: 'ABCD', tc: 'BCDE', ilum: 'ABCD', neutro: 'BCDE', disj: 'BCD' };
+const EXCECAO_LETRA = { escorr: 'BCDE', eta: 'ABC', trV: 'BCDE', trZ: 'BCDE', queda: 'ABCD', force: 'ABCD', tc: 'BCDE', ilum: 'ABCD', neutro: 'BCDE', disj: 'BCD' };
 const MENOS_DE_4_LETRAS = ['eta', 'disj'];
 const SEP = { eta: 0.001, bat: 0.003 };
 /* Ids antigos (G:, antes da revisão da T4) não reconstroem questão. */
@@ -213,6 +215,9 @@ const RESPOSTA = {
   disj: v => ({ faixa: [v.IB, v.Iz] }),
   neutro: v => { const R1 = 127 ** 2 / v.p1, R2 = 127 ** 2 / v.p2; return 220 * R1 / (R1 + R2); },
   /* pares fase/PE: certa é a alternativa cujo PE é o mínimo da tabela 58 para a sua fase, conferida em cada alternativa */
+  escorr: v => 120 * v.f / v.p * (1 - v.s / 100),
+  imotor: v => v.P * 1000 / (S3 * v.V * v.eta * v.fp),
+  ydelta: v => v.k * v.S * 1000 / (S3 * v.V) / 3,
   pe: () => ({ cada: t => { const [S, P] = (t.match(/fase de ([\d,]+) mm² e PE de ([\d,]+) mm²/) || []).slice(1).map(x => Number(x.replace(',', '.'))); return P === (S <= 16 ? S : S <= 35 ? 16 : S / 2); }, regra: 'PE = mínimo da tabela 58' }),
 };
 let nGer = 0;
@@ -227,7 +232,7 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
     check(G.porId('G:rms:12345') === null && G.porId('G:qualquer') === null, 'GERADOR.porId deveria ignorar ids antigos (G:)');
     check(G.porId('G2:rms:12345') && G.porId('G2:rms:12345').id === 'G2:rms:12345', 'GERADOR.porId não reconstrói um id G2:');
     check(G.porId('G2:naoexiste:1') === null, 'GERADOR.porId deveria devolver null para gerador desconhecido');
-    check(lista.length === 30, `geradores: ${lista.length} (esperado 30)`);
+    check(lista.length === 33, `geradores: ${lista.length} (esperado 33: 30 do banco + 3 da M3)`);
     for (const g of lista) {
       check(MODS[g.mod] && !MODS[g.mod].emBreve, `gerador ${g.id}: estação ${g.mod} inexistente ou em breve`);
       check(!!RESPOSTA[g.id], `gerador ${g.id}: sem conferência independente da resposta neste teste`);

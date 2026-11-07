@@ -1,5 +1,6 @@
 /* Elétrica de Ouro: questões com números novos (Treino → "Números novos" e botão na aba Questões das estações).
-   Os 30 geradores vêm do banco do estudante (fontes/banco-de-questoes.html, const GEN), revisados na T4:
+   Os 30 primeiros geradores vêm do banco do estudante (fontes/banco-de-questoes.html, const GEN), revisados na T4; os 3 da
+   estação M3 (escorr, imotor, ydelta) foram escritos para o app com as mesmas regras:
    - cada questão sai no mesmo formato das do banco: {id, vol, mod, n, kind:'gerada', tag, base, cmd, alts[5], ans,
      ex:{A..E}, traps, erros, hab, dif};
    - toda alternativa errada sai de um erro identificado (tipo de erro de DATA.erros) e tem explicação própria com os
@@ -590,6 +591,53 @@
     });
     return { v: { fases: fases, S: S }, s: 'Os condutores de fase e de proteção (PE) são do mesmo material. Em qual das combinações abaixo o PE tem <b>exatamente</b> a seção mínima exigida pela NBR 5410 (tabela 58)?', text: true, corr: par(S, min(S)), ordem: ordem,
       sol: 'Tabela 58: ' + REGRA + '. Para fase de ' + mm(S) + ' → PE de ' + mm(min(S)) + '.' };
+  });
+
+  /* ================= M3 · máquinas, proteção e partidas ================= */
+  G('escorr', 'M3', '5.5', 'Escorregamento e rotação', 'fácil', function (r) {
+    var f = 60, p = pick(r, [2, 4, 6, 8]), sp = pick(r, [3.5, 4, 4.5, 5]), s = sp / 100, ns = 120 * f / p, n = ns * (1 - s);
+    /* Acima da resposta só há três deslizes reais (n_s, n_s·(1 + s) e a rotação dobrada pelos pares de polos); a letra A
+       fica de fora (exceção documentada em tests/questoes.test.mjs). Escorregamento a partir de 3,5%, para n_s e n_s·(1 + s)
+       ficarem a mais de 3% um do outro. */
+    return { letras: 'BCDE', v: { f: f, p: p, s: sp }, s: 'Um motor de indução trifásico de ' + p + ' polos é alimentado por uma rede de ' + f + ' Hz e opera em carga nominal com escorregamento de ' + fmt(sp, 1) + '%. A rotação do eixo é de, aproximadamente,', unit: 'rpm', dec: 0, ans: n,
+      sol: 'n<sub>s</sub> = 120 × ' + f + '/' + p + ' = ' + fmt(ns, 0) + ' rpm; n = n<sub>s</sub> × (1 − s) = ' + fmt(ns, 0) + ' × ' + fmt(1 - s, 3) + ' ≈ ' + fmt(n, 0) + ' rpm.',
+      d: [[ns, 'sincInd', fmt(ns, 0) + ' rpm é a velocidade síncrona: o rotor do motor de indução gira abaixo dela.'],
+        [ns * (1 + s), 'sinal', fmt(ns * (1 + s), 0) + ' rpm soma o escorregamento em vez de subtrair: o rotor fica abaixo da síncrona.'],
+        [2 * n, 'polos', fmt(2 * n, 0) + ' rpm usa 120·f/p com p = ' + p / 2 + ' (pares de polos); na fórmula, p é o número de polos.'],
+        [n / 2, 'polos', fmt(n / 2, 0) + ' rpm usa 120·f/(2p) com p = ' + p + ', o número de polos; essa forma pede pares de polos.'],
+        [ns * s, 'etapa', fmt(ns * s, 0) + ' rpm é a diferença n<sub>s</sub> − n, e não a rotação do eixo.'],
+        [n * 50 / 60, 'freq', fmt(n * 50 / 60, 0) + ' rpm calcula com 50 Hz; a rede é de 60 Hz.'],
+        [n / 60, 'unidade', fmt(n / 60, 0) + ' rpm é a rotação em rotações por segundo (n/60), escrita como se fosse em rpm.']] };
+  });
+  G('imotor', 'M3', '5.2', 'Corrente nominal do motor', 'média', function (r) {
+    var P = pick(r, [5.5, 7.5, 11, 15, 18.5, 22, 30, 37, 45]), Vn = pick(r, [220, 380, 440]), eta = pick(r, [0.88, 0.9, 0.91, 0.92, 0.93, 0.94]), fp = pick(r, [0.8, 0.82, 0.84, 0.85, 0.86, 0.88]);
+    var W1 = P * 1000, I = W1 / (R3 * Vn * eta * fp), ft = function (x) { return fmt(x, 1) + ' A'; };
+    return { v: { P: P, V: Vn, eta: eta, fp: fp }, s: 'A placa de um motor de indução trifásico indica ' + num(P) + ' kW, ' + Vn + ' V, rendimento de ' + num(eta) + ' e fator de potência de ' + num(fp) + '. Em carga nominal, a corrente de linha absorvida da rede é de, aproximadamente,', unit: 'A', dec: 1, ans: I,
+      sol: 'A placa dá a potência no eixo: I = P<sub>u</sub>/(√3·V·η·cos φ) = ' + fmt(W1, 0) + '/(√3 × ' + Vn + ' × ' + num(eta) + ' × ' + num(fp) + ') ≈ ' + ft(I) + '.',
+      d: [[I * eta, 'semRend', ft(I * eta) + ' esquece o rendimento: trata os ' + num(P) + ' kW do eixo como potência absorvida.'],
+        [I * fp, 'divFP', ft(I * fp) + ' esquece o fator de potência.'],
+        [I * eta * fp, 'semRend', ft(I * eta * fp) + ' esquece o rendimento e o fator de potência: calcula como se a potência fosse aparente e absorvida.'],
+        [I * eta * eta, 'invertida', ft(I * eta * eta) + ' multiplica pelo rendimento em vez de dividir.'],
+        [I / R3, 'tres', ft(I / R3) + ' usa 3 no lugar de √3.'],
+        [I * 0.736, 'cvKw', ft(I * 0.736) + ' multiplica a potência por 0,736, como se os ' + num(P) + ' kW fossem cv.'],
+        [I / 0.736, 'cvKw', ft(I / 0.736) + ' divide a potência por 0,736, como se convertesse de cv para kW um valor que já está em kW.'],
+        [I * R3 * eta, 'raiz3Mono', ft(I * R3 * eta) + ' usa P/(V·cos φ), a fórmula simplificada do monofásico: sem o √3 e sem o rendimento.'],
+        [I * R3, 'raiz3Mono', ft(I * R3) + ' esquece o √3, como se o motor fosse monofásico.'],
+        [I * 3, 'raiz3inv', ft(I * 3) + ' põe o √3 no numerador em vez do denominador.']] };
+  });
+  G('ydelta', 'M3', '5.7', 'Partida estrela-triângulo', 'média', function (r) {
+    var S = pick(r, [10, 15, 20, 25, 30, 40, 50]), Vn = pick(r, [220, 380]), k = pick(r, [6, 6.5, 7, 7.5, 8]), In = S * 1000 / (R3 * Vn), Ip = k * In, IY = Ip / 3;
+    var ft = function (x) { return fmt(x, 1) + ' A'; }, mot = Vn === 220 ? '220/380 V' : '380/660 V';
+    return { v: { S: S, V: Vn, k: k }, s: 'Um motor de indução trifásico de ' + mot + ', com potência aparente nominal de ' + S + ' kVA e corrente de partida direta igual a ' + num(k) + ' vezes a nominal, é alimentado por uma rede de ' + Vn + ' V e parte com chave estrela-triângulo. A corrente de partida na linha é de, aproximadamente,', unit: 'A', dec: 1, ans: IY,
+      sol: 'I<sub>n</sub> = ' + fmt(S * 1000, 0) + '/(√3 × ' + Vn + ') ≈ ' + ft(In) + '; partida direta: ' + num(k) + ' × ' + ft(In) + ' ≈ ' + ft(Ip) + '; em estrela-triângulo, 1/3 disso: ≈ ' + ft(IY) + '.',
+      d: [[In / 3, 'umTerco', ft(In / 3) + ' divide a corrente nominal por 3, e não a de partida.'],
+        [In / R3, 'umTerco', ft(In / R3) + ' é a corrente na bobina em regime (0,58·I<sub>n</sub>), a dos contatores K1 e K2 e do relé.'],
+        [In, 'etapa', ft(In) + ' é a corrente nominal.'],
+        [IY / R3, 'tres', ft(IY / R3) + ' calcula a nominal com 3 no lugar de √3 (S/(3·V)) antes de aplicar o 1/3.'],
+        [0.4225 * Ip, 'partidaMetodo', ft(0.4225 * Ip) + ' é a corrente na linha da chave compensadora no tap de 65% (0,65² × I<sub>p</sub>).'],
+        [Ip / R3, 'umTerco', ft(Ip / R3) + ' divide a partida direta por √3 em vez de 3.'],
+        [Ip, 'etapa', ft(Ip) + ' é a corrente de partida direta, sem a redução da estrela-triângulo.'],
+        [Ip * R3, 'raiz3inv', ft(Ip * R3) + ' multiplica a partida direta por √3 em vez de dividi-la por 3.']] };
   });
 
   /* ---------- montagem ---------- */

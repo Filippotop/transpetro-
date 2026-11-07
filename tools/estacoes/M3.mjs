@@ -85,7 +85,7 @@ export default {
     ['0.65**2', 'k² = 0,42', 'Chave compensadora (autotransformador)'],
     ['7*52', '364 A', 'Exemplo resolvido 9'], ['364/3', '121,3 A', 'Exemplo resolvido 9'], ['0.65*364', '236,6 A', 'Exemplo resolvido 9'],
     ['0.65**2*364', '153,8 A', 'Exemplo resolvido 9'], ['0.65**2*100', '42,25%', 'Exemplo resolvido 9'], ['0.8**2*364', '233,0 A', 'Exemplo resolvido 9'],
-    ['0.58*52', '30,2 A', 'Exemplo resolvido 9'], ['0.33*52', '17,2 A', 'Exemplo resolvido 9'], [`52/${R3}`, '30,0 A', 'Exemplo resolvido 9'],
+    [`52/${R3}`, '30,0 A', 'Exemplo resolvido 9'], ['52/3', '17,3 A', 'Exemplo resolvido 9'],
     /* exercícios */
     [`15000/(${R3}*380*0.9*0.84)`, '≈ 30,1 A', 'Exercícios de fixação da seção 1'], [`15000/(3*380*0.9*0.84)`, '17,4 A usa', 'Exercícios de fixação da seção 1'],
     [`15000/(${R3}*380*0.9)`, '25,3 A esquece', 'Exercícios de fixação da seção 1'], [`15000/(${R3}*380*0.84)`, '27,1 A esquece', 'Exercícios de fixação da seção 1'], ['15000/(380*0.9*0.84)', '52,2 A esquece', 'Exercícios de fixação da seção 1'],
