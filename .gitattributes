@@ -1,0 +1,2 @@
+# Os scripts de tools/ e os testes procuram quebras de linha LF nas fontes; no Windows o autocrlf quebrava o npm test.
+* text=auto eol=lf
