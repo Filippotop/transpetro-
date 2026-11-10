@@ -135,7 +135,7 @@
           'd) após ocorrência de acidente grave ou fatal, que indique a necessidade de novo treinamento.']),
         extra: 'Carga horária mínima em vigor (Anexo III de 2019): curso básico, 40 h; curso complementar do SEP, 40 h. No texto novo, o Quadro I do 10.9.2 lista: Básico 40 h; Complementar do SEP 40 h; Complementar de Média e Alta Tensão (SEC) 16 h; Complementar de Área Classificada 16 h; Específico e pontual 8 h; Específico de compartilhamento de infraestrutura do SEP 40 h.',
         mudou: '"Reciclagem" vira treinamento periódico bienal (mínimo de 16 h) mais treinamento eventual; "três meses" vira "90 dias"; "troca de função ou mudança de empresa" sai da lista e entram mudança de procedimento e acidente grave ou fatal.' },
-      { id: 'pie', titulo: 'Prontuário de Instalações Elétricas', a: A('10.2.4, 10.2.5, 10.2.5.1 e 10.2.7', 1, [
+      { id: 'pie', titulo: 'Prontuário de Instalações Elétricas', a: A('10.2.4, 10.2.5 e 10.2.7', 1, [
           '10.2.4 Os estabelecimentos com carga instalada superior a 75 kW devem constituir e manter o Prontuário de Instalações Elétricas, contendo, além do disposto no subitem 10.2.3, no mínimo:',
           'a) conjunto de procedimentos e instruções técnicas e administrativas de segurança e saúde, implantadas e relacionadas a esta NR e descrição das medidas de controle existentes;',
           'b) documentação das inspeções e medições do sistema de proteção contra descargas atmosféricas e aterramentos elétricos;',

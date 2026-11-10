@@ -227,6 +227,8 @@ Marcado com `confira`: a faixa típica da corrente de partida dos motores de gai
 (o guia da WEG mostra cerca de 6 vezes na figura 3.9 e remete à placa, I<sub>p</sub>/I<sub>n</sub>, e às tabelas da NBR 17094;
 não achei a faixa escrita numa fonte confiável).
 
+Revisão independente de 2026-11-10 (correções na fonte e em `tools/banco/M3.mjs`): (1) exercício `b2:0`, alternativa D: dizia "51,5% usa 8 como número de pares de polos"; agora diz que o erro é pôr os 4 pares de polos na fórmula 120·f/p, que pede o número de polos (com 8 pares, n<sub>s</sub> seria 450 rpm, e não 1.800 rpm). (2) "rotor travado" saiu da lista de causas de sobrecarga leve: rotor travado puxa a corrente de partida, de 5 a 8 vezes a nominal. (3) A rampa da soft-starter ("2 a 30 s"), as categorias de emprego e a classe de disparo 10 ganharam `confira`: a IEC 60947-4-1 não foi lida no texto integral. (4) AC-15 é categoria da IEC 60947-5-1, dito na explicação do exercício `b5:1`.
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão

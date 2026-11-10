@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-07. T1–T4 concluídas e revisadas. T5 implementada, aguardando revisão; depois vem T6.
+Última atualização: 2026-11-10. T1–T5 concluídas e revisadas. T6 implementada e revisada, M3 revisada; aguardando a avaliação do estudante.
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -13,7 +13,7 @@
 | T3c: estação I1 (instalações e NBR 5410) + estações "em breve" (M3, I2, I3, A1, A2, N1, X1–X3) | ✅ concluída e revisada | ..cec1278 |
 | T4: banco de questões do estudante (`fontes/banco-de-questoes.html`: 205 questões, 30 geradores) → Treino e aba Questões das estações | ✅ concluída e revisada (4 rodadas de correção; exceções de letra dos geradores documentadas em `tests/questoes.test.mjs`) | ..0d9c227 |
 | T5: prova Transpetro 2023 recortada por questão (`provas/t23`, `data/provas.js`) + gabarito **oficial** (`fontes/gabarito-2023.json`, Q28 e Q30 anuladas = ponto para todos), corte de 50% por bloco, `mapa2023` | ✅ concluída e revisada (ajustes de legibilidade em celular entram junto com a T6) | ..e005a80 |
-| T6: Biblioteca (formulário geral, números-âncora, NR-10 de 2019 × 2026), Arena, Plano até 29/11, Painel, Missão de hoje; entrega e parada para o estudante avaliar | ⬜ a fazer | — |
+| T6: Biblioteca (formulário, números-âncora, NR-10 de 2019 × 2026, simbologia, glossário próprio), Arena (Qual é a fórmula?, Ordene a NR-10, Grandeza e unidade), Plano de 10/11 a 28/11 (`data/plano.js`), Painel por item do edital com a marca da prova de 2023, Missão de hoje pelo peso do `mapa2023` | ✅ implementada e revisada; falta só a parada para o estudante avaliar | c43aeef.. |
 
 Ondas seguintes (spec, seção 3):
 - **Onda 2:** A1, A2 e M3 (escrever do zero, no padrão dos aprofundamentos).
@@ -34,11 +34,14 @@ Ondas seguintes (spec, seção 3):
 ## Pendências menores registradas pelas revisões
 
 Nenhuma bloqueia o trabalho:
+- T6, fora do que foi feito: o jogo "cálculo-relâmpago" da spec (os Números novos do Treino cobrem); a aba Simbologia mostra só o resumo da M1 (as figuras ficam na estação); o Plano manda Matemática, Português, A1/A2, N1, I2 e I3 para "fora do app" enquanto não houver estação; a página da NR-10 lado a lado é longa no celular;
+- `simCotas` ainda usa `peso2023`/`PESO_DIVIDIDO` (a Missão de hoje já usa o `mapa2023`);
+- chaves vazias herdadas do Humanas em `data/base.js` (`tl`, `fichas`, `rep`, `con`, `red`, `enemMap`);
 - texto pequeno em figuras largas a 390 px (há o botão "Ampliar");
 - o chip de faixa empurrado no cabeçalho das estações M (herdado do Humanas);
 - algumas `contas` da E1 são tautológicas;
 - o `bancada-runtime-v1` antigo (só com fontes) fica órfão;
-- alias CSS `.box.enem` e comentários internos que citam o Humanas.
+- comentários internos que citam o Humanas (o alias CSS `.box.enem` saiu na T6).
 
 ## Fora deste repositório
 

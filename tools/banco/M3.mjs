@@ -35,7 +35,7 @@ export default {
     'b2:0': { d: 'f', conta: '(900-873)/900*100', w: {
       B: '[formula] 3,1% divide a diferença pela rotação do rotor (27/873), e não pela síncrona.',
       C: '[unidade] 27% é a diferença em rpm escrita como porcentagem.',
-      D: '[polos] 51,5% usa 8 como número de pares de polos (n<sub>s</sub> = 1.800 rpm).',
+      D: '[polos] 51,5% põe o número de pares de polos (4) na fórmula 120·f/p, que pede o número de polos (n<sub>s</sub> = 1.800 rpm).',
       E: '[outra] 97% é a razão n/n<sub>s</sub>, e não o escorregamento.' } },
     'b2:1': { d: 'm', conta: '(1800-1746)/1800*60', w: {
       A: '[etapa] 0,03 é o escorregamento: faltou multiplicar pela frequência da rede.',
@@ -116,7 +116,7 @@ export default {
     'b5:1': { d: 'f', w: {
       A: '[valorNorma] AC-1 é para cargas resistivas (pouco indutivas).',
       B: '[valorNorma] AC-2 é para motores de anéis (rotor bobinado).',
-      C: '[valorNorma] AC-15 é para cargas eletromagnéticas em circuitos de comando, como bobinas de contatores.',
+      C: '[valorNorma] AC-15 é para cargas eletromagnéticas em circuitos de comando, como bobinas de contatores (categoria da IEC 60947-5-1).',
       E: '[valorNorma] DC-1 é para cargas resistivas em corrente contínua.' } },
     'b5:2': { d: 'm', conta: '45/3', w: {
       B: '[umTerco] 26 A (0,58 × 45) é a corrente de K1, de K2 e do relé, no ramo das bobinas.',

@@ -14,7 +14,7 @@ Se a sessão nova for na nuvem, anexe o repositório `Filippotop/transpetro-` e 
 
 - App no ar: <https://filippotop.github.io/transpetro-/> (PWA offline, tema claro e escuro).
 - **Estações completas e revisadas:** E1 (CC), E2 (CA/fasores), E3 (potência, trifásicos, medidor, dois wattímetros), M1 (simbologia e diagramas), M2 (eletromagnetismo e transformadores), I1 (instalações e NBR 5410).
-- **M3** (motores, proteção e partidas): escrita e no app (4 calculadoras, 34 questões, 3 geradores). **Falta a revisão técnica independente.**
+- **M3** (motores, proteção e partidas): escrita, no app (4 calculadoras, 34 questões, 3 geradores) e revisada em 10/11 (correções em `fontes/ERRATA.md`).
 - **Banco de questões** (205 + as da M3), 33 geradores de "números novos", simulado na proporção de 2023, Painel com tipos de erro (T4, concluída e revisada).
 - **Prova de 2023** recortada por questão, com **gabarito oficial** da Cesgranrio (`fontes/gabarito-2023.json`): Q28 e Q30 foram anuladas (ponto para todos). Corte de 50% por bloco e veredito do edital (T5, revisada e aprovada).
 - Bancada (simulador de OS) em `bancada/`.
@@ -22,8 +22,8 @@ Se a sessão nova for na nuvem, anexe o repositório `Filippotop/transpetro-` e 
 
 ## 3. O que falta, em ordem
 
-1. **T6** (em andamento, parou por limite de uso): Biblioteca (formulário geral, números-âncora, NR-10 lado a lado, simbologia, glossário), Arena, **Plano de 10/11 a 28/11**, Painel, Missão de hoje, limpeza de textos do Humanas, offline, prints. Arquivos soltos não commitados deixados pela T6: `data/biblioteca.js`, `data/nr10.js`, `tests/biblioteca.test.mjs`. Conferir, rodar `npm test` e seguir o brief em `.superpowers/sdd/2026-10-24-eletrica-de-ouro-onda1/task-6-brief.md` (esta pasta é ignorada pelo git e só existe na máquina onde foi gerada; se sumiu, use `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`, Task 6, e a spec).
-2. Revisão independente da M3 e da T6.
+1. **T6**: implementada em 10/11 (Biblioteca, três jogos da Arena, Plano de 10/11 a 28/11 em `data/plano.js`, Painel por item do edital, Missão pelo `mapa2023`), com `npm test` verde e revisão independente feita. O que ficou de fora está em `docs/PROGRESSO.md`, "Pendências menores".
+2. Revisões independentes da M3 e da T6: feitas em 10/11, achados corrigidos.
 3. **Parada obrigatória após a T6:** mandar o link e prints ao estudante para avaliar.
 4. Ondas seguintes (ordem escolhida pelo estudante, mantida mesmo depois do aviso de que Matemática elimina): **A1, A2** (eletrônica e automação, peso 6) → **N1, I3, I2** → **Matemática X1–X3**. Com 19 dias, provavelmente só cabem A1 e A2; decida com o estudante o que cortar.
 
@@ -44,7 +44,7 @@ Qualificado × habilitado; ordem 1–9 das medidas de controle inventada; queda 
 
 ## 6. Como trabalhar
 
-- Rodar: `npm install` e `CHROMIUM=/opt/pw-browsers/chromium npm test`.
+- Rodar: `npm install` e `CHROMIUM=/opt/pw-browsers/chromium npm test`. No Windows: `npx playwright install chromium` e `npm test` (o `.gitattributes` mantém LF; sem ele o `tools/banco.mjs` falha).
 - Cada estação nova segue `AGENTS.md` ("Para criar uma estação NOVA"): aprofundamento em `fontes/`, metadados em `tools/estacoes/<ID>.mjs`, gerar com `node tools/estacao.mjs`.
 - Modelos: **Opus** para conteúdo técnico e para revisões; **Sonnet** para telas, testes e código mecânico (julgamento, não medido).
 - O limite de 5 horas estourou várias vezes com agentes em paralelo. Prefira no máximo 2 ao mesmo tempo; quando um falha por limite, retome-o com a mesma mensagem depois do horário de reset.

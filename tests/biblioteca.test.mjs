@@ -22,7 +22,7 @@ if (D.nr10) {
   for (const it of D.nr10.itens) for (const k of ['a', 'b']) {
     check(it[k] && it[k].txt.length > 0 && /^https:\/\/www\.gov\.br\//.test(it[k].url) && it[k].pag > 0, `NR-10 ${it.id}/${k}: faltam texto, página ou link do gov.br`);
     for (const t of it[k].txt) check(md.includes(t.replace(/\s+/g, ' ').trim()), `NR-10 ${it.id}/${k}: trecho que não está em fontes/nr10-2019-x-2026.md: "${t.slice(0, 80)}"`);
-    check(!/nr-10\.pdf(#|$)/.test(it[k].url), `NR-10 ${it.id}/${k}: citou o endereço antigo nr-10.pdf, que agora serve o texto de 2027`);
+    check(!/normas-regulamentadoras\/nr-10\.pdf/.test(it[k].url), `NR-10 ${it.id}/${k}: citou o endereço antigo nr-10.pdf, que agora serve o texto de 2027`);
   }
   /* A sequência de 2019 do jogo "Ordene a NR-10" tem de ser exatamente as alíneas do 10.5.1 (a–f) e do 10.5.2 (a–e), na ordem. */
   const alineas = id => D.nr10.itens.find(i => i.id === id).a.txt.filter(t => /^[a-f]\) /.test(t)).map(t => t.replace(/^[a-f]\) /, '').replace(/[;.]$/, '').replace(/ \(Alterada.*$/, '').replace(/\s*;$/, ''));
@@ -77,6 +77,8 @@ if (B) {
     check(stationIds.has(u.mod), `unidade "${u.g}": estação ${u.mod} não existe`);
     const outras = new Set(B.unidades.filter(x => x.u !== u.u).map(x => x.u));
     check(outras.size >= 3, `unidade "${u.g}": faltam alternativas`);
+    /* Rótulo com nota, prefixo ou outro texto para "adimensional" vira distrator também correto no jogo. */
+    check(!/;/.test(u.u) && !/^(mili|quilo)/.test(u.u) && (!/adimensional/.test(u.u) || u.u === 'adimensional (não tem unidade)'), `unidade "${u.u}": rótulo que serviria de resposta a outra grandeza`);
   }
   check(B.unidades.length >= 30, `unidades: ${B.unidades.length} pares (esperado 30 ou mais)`);
 }
@@ -93,5 +95,30 @@ if (D.edital) {
   for (const q of D.questions) check(sub.includes(String(q.hab)), `edital: a questão ${q.id} cita o item ${q.hab}, que não está no edital`);
 }
 
+/* ---- Plano: um dia por data, de 10/11 a 28/11/2026, só com tarefas que o app sabe abrir ---- */
+check(D.plan && D.plan.length === 19, 'plano: DATA.plan precisa de 19 dias (10/11 a 28/11)');
+if (D.plan && D.plan.length) {
+  const SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  const built = D.modules.filter(m => !m.emBreve).map(m => m.id);
+  const KS = { game: ['formula', 'nr10', 'unid', 'cards', 'vf', 'traps'], bib: ['formulas', 'anc', 'nr10', 'simb', 'glos', 'metodo'], sim: ['tudo', 'EL', 'MT', 'fracos', 'novas'], prova: ['t23:PME'], provares: ['t23'], mod: built };
+  D.plan.forEach((p, i) => {
+    const dt = new Date(Date.UTC(2026, 10, 10 + i));
+    check(p.d === dt.toISOString().slice(0, 10), `plano: o dia ${i + 1} deveria ser ${dt.toISOString().slice(0, 10)} e é ${p.d}`);
+    check(p.l === `${SEM[dt.getUTCDay()]} ${p.d.slice(8)}/11`, `plano ${p.d}: rótulo "${p.l}" com dia da semana errado`);
+    check(p.foco && p.tasks.length >= 2 && p.tasks.length <= 4, `plano ${p.d}: precisa de foco e de 2 a 4 tarefas`);
+    for (const t of p.tasks) {
+      check(['mod', 'game', 'bib', 'sim', 'prova', 'provares', 'erros', 'refazer', 'novos', 'painel', 'bancada', 'out'].includes(t.k), `plano ${p.d}: tipo de tarefa desconhecido "${t.k}"`);
+      if (KS[t.k]) check(KS[t.k].includes(t.a), `plano ${p.d}: a tarefa ${t.k} aponta para "${t.a}", que não existe`);
+      if (t.k !== 'mod') check(t.t && t.t.length > 10, `plano ${p.d}: tarefa ${t.k} sem texto`);
+    }
+  });
+  const mods = D.plan.flatMap(p => p.tasks).filter(t => t.k === 'mod').map(t => t.a);
+  for (const id of built) check(mods.includes(id), `plano: a estação ${id} está pronta e não entrou no plano`);
+  /* Ordem pelo peso na prova de 2023 (mapa2023). */
+  const peso = id => Object.values(D.mapa2023).filter(x => x === id).length;
+  mods.forEach((id, i) => { if (i) check(peso(mods[i - 1]) >= peso(id), `plano: ${mods[i - 1]} (${peso(mods[i - 1])} em 2023) veio antes de ${id} (${peso(id)})`); });
+  check(D.plan.flatMap(p => p.tasks).some(t => t.k === 'out' && /Matemática/.test(t.t)), 'plano: Matemática elimina e precisa aparecer');
+}
+
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
-console.log(`biblioteca OK: NR-10 literal (${D.nr10.itens.length} itens), ${B.formulas.length} fórmulas, ${B.glos.length} termos, ${B.ancoras.length} números-âncora, ${B.unidades.length} unidades, Anexo IV`);
+console.log(`biblioteca OK: NR-10 literal (${D.nr10.itens.length} itens), ${B.formulas.length} fórmulas, ${B.glos.length} termos, ${B.ancoras.length} números-âncora, ${B.unidades.length} unidades, Anexo IV, plano de ${D.plan.length} dias`);

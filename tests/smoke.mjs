@@ -410,8 +410,10 @@ async function testEmpty(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
   const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
   await page.goto(URL_); await page.waitForTimeout(300);
-  for (const v of ['plano', 'painel']) { await page.evaluate(v => go(v), v); await page.waitForTimeout(150);
-    check(await page.locator('#app .empty').count() > 0, `vazio: ${v} sem mensagem de "ainda vazio"`); }
+  await page.evaluate(() => go('painel')); await page.waitForTimeout(150);
+  check(await page.locator('#app .empty').count() > 0, 'vazio: painel sem mensagem de "ainda vazio"');
+  await page.evaluate(() => go('plano')); await page.waitForTimeout(150); /* o Plano deixou de ser vazio na T6 */
+  check(await page.locator('#app .day').count() > 1, 'vazio: o Plano não mostra os dias');
   for (const e of errs) check(false, `vazio: erro de JS: ${e}`);
   await ctx.close();
 }
@@ -906,6 +908,78 @@ async function testBanco(browser) {
   }
 }
 
+/* T6: Biblioteca (números-âncora, NR-10 lado a lado, simbologia, glossário com botões de estação), os três jogos novos da
+   Arena, o Plano com o dia de hoje e o Painel por item do edital com a marca da prova de 2023. */
+async function testT6(browser) {
+  for (const colorScheme of ['light', 'dark']) {
+    const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], colorScheme, serviceWorkers: 'block' });
+    const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+    await page.clock.setFixedTime(new Date('2026-11-12T10:00:00-03:00'));
+    await page.goto(URL_); await page.waitForTimeout(300);
+    const where = `t6/${colorScheme}`;
+    const axe = async what => { await page.addScriptTag({ content: AXE });
+      const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations.filter(x => x.impact === 'serious' || x.impact === 'critical').map(x => `${x.id} em ${x.nodes.slice(0, 2).map(n => n.target.join(' ')).join(', ')}`));
+      for (const x of v) check(false, `${where}: ${what}: acessibilidade: ${x}`);
+      check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}: ${what}: rolagem horizontal`); };
+    for (const [s, re] of [['anc', /75 kW[\s\S]*31\/05\/2027/], ['nr10', /10\.5\.1[\s\S]*10\.13\.1[\s\S]*O que mudou[\s\S]*0,70/], ['simb', /unifilar × trifilar/i], ['glos', /Trabalhador qualificado/], ['formulas', /E3 ·/]]) {
+      await page.evaluate(s => go('biblioteca', { s }), s); await page.waitForTimeout(200);
+      check(re.test(await page.evaluate(() => document.body.innerText)), `${where}: Biblioteca/${s} sem o conteúdo esperado`);
+      await axe('Biblioteca/' + s);
+    }
+    check(await page.locator('#host [data-go="E1"]').count() > 0, `${where}: o formulário perdeu os botões de estação`);
+    await page.evaluate(() => go('biblioteca', { s: 'glos' })); await page.waitForTimeout(150);
+    check(await page.locator('#host [data-go]').count() > 30, `${where}: o glossário perdeu os botões de estação`);
+    await page.evaluate(() => go('biblioteca', { s: 'nr10' })); await page.waitForTimeout(150);
+    check(await page.locator('#host a[href*="nr-10-atualizada-2019"]').count() >= 9, `${where}: NR-10 sem os links do texto de 2019 no gov.br`);
+    /* Qual é a fórmula?: a certa pontua; a errada explica o erro. */
+    await page.evaluate(() => go('game', { g: 'formula' })); await page.waitForTimeout(150);
+    check(await page.locator('.opt').count() === 4, `${where}: Qual é a fórmula? sem 4 alternativas`);
+    await axe('Qual é a fórmula?');
+    await page.locator('.opt[data-ok="0"]').first().click(); await page.waitForTimeout(100);
+    check(!/[<>]/.test(await page.locator('#rd').textContent()), `${where}: Qual é a fórmula? mostra marcação HTML como texto`);
+    check(await page.locator('.fb.no').count() === 1 && (await page.locator('.fb.no').textContent()).length > 30, `${where}: fórmula errada sem explicação`);
+    /* Grandeza e unidade: 4 unidades diferentes. */
+    await page.evaluate(() => go('game', { g: 'unid' })); await page.waitForTimeout(150);
+    const us = await page.locator('.opt').allTextContents();
+    check(us.length === 4 && new Set(us).size === 4, `${where}: Grandeza e unidade com alternativas repetidas (${us.join(' | ')})`);
+    await axe('Grandeza e unidade');
+    /* Ordene a NR-10: passo errado não avança; a ordem da norma completa as duas sequências. */
+    await page.evaluate(() => go('game', { g: 'nr10' })); await page.waitForTimeout(150);
+    await axe('Ordene a NR-10');
+    for (let rodada = 0; rodada < 2; rodada++) {
+      const n = await page.locator('.opt').count();
+      check(n === 5 || n === 6, `${where}: Ordene a NR-10 com ${n} passos`);
+      if (rodada === 0) { await page.locator('.opt[data-i="2"]').click(); check(await page.locator('.opt.right').count() === 0 && await page.locator('.opt.wrong').count() === 1, `${where}: Ordene a NR-10 aceitou o 3º passo como 1º`); }
+      for (let i = 0; i < n; i++) await page.locator(`.opt[data-i="${i}"]`).click();
+      check(await page.locator('.opt.right').count() === n, `${where}: Ordene a NR-10 não completou a sequência`);
+      const ordem = await page.locator('.opt').evaluateAll(bs => bs.map(b => +b.dataset.i).join(''));
+      check(ordem === '012345'.slice(0, n), `${where}: Ordene a NR-10 não mostrou os passos na ordem (${ordem})`);
+      await page.click('#nx'); await page.waitForTimeout(100);
+    }
+    check(/1 de 2 certas/.test(await page.evaluate(() => document.body.innerText)), `${where}: Ordene a NR-10 não fechou com 1 de 2 certas`);
+    /* Plano: hoje (12/11) aparece, e a Missão de hoje aponta para ele. */
+    await page.evaluate(() => go('plano')); await page.waitForTimeout(200);
+    check(await page.locator('.day.today').count() === 1 && /qui 12\/11/.test(await page.locator('.day.today').textContent()), `${where}: o Plano não marca o dia de hoje`);
+    check(await page.locator('.day').count() === 20, `${where}: o Plano deveria ter 19 dias mais a prova`);
+    await axe('Plano');
+    await page.locator('.day.today [data-i]').nth(1).click(); await page.waitForTimeout(150);
+    check(await page.evaluate(() => view === 'game' && param.g === 'unid'), `${where}: a tarefa do plano não abriu o jogo`);
+    await page.evaluate(() => go('linhas')); await page.waitForTimeout(150);
+    check(/Plano de hoje: Circuitos CC/.test(await page.evaluate(() => document.body.innerText)), `${where}: a Missão de hoje não mostra o plano do dia`);
+    /* Painel: 11 itens do edital; a marca de 2023 só aparece depois de uma tentativa completa da prova. */
+    await page.evaluate(() => go('painel')); await page.waitForTimeout(150);
+    check(await page.locator('#edbars .brow').count() === 11 && await page.locator('#edbars .track2 b').count() === 0, `${where}: Painel por item do edital errado antes da prova`);
+    await page.evaluate(() => { const e = EX.t23, ans = {}; for (let n = 1; n <= 60; n++) ans[n] = n <= 40 ? (e.key[n] || 'A') : (e.key[n] === 'A' ? 'B' : 'A'); pvState('t23').runs.push({ id: 'x', areas: 'PME', mode: 'prova', ans, flag: {}, cut: {}, start: Date.now(), end: Date.now(), done: true }); go('painel'); }); await page.waitForTimeout(150);
+    const ref = await page.evaluate(() => editalStats().map(x => [String(x.it.n), x.n23, x.ref]));
+    check(ref.reduce((a, x) => a + x[1], 0) === 50, `${where}: os itens do edital somam ${ref.reduce((a, x) => a + x[1], 0)} questões de 2023 (esperado 50: 40 específicas + 10 de Matemática)`);
+    check(ref.find(x => x[0] === 'Mat')[2] === 100 && ref.find(x => x[0] === '4')[2] === 100 && ref.find(x => x[0] === '10')[2] === 0 && ref.find(x => x[0] === '1')[2] === null, `${where}: marca de 2023 errada (acertei da 1 à 40 e errei da 41 à 60: ${JSON.stringify(ref)})`);
+    check(await page.locator('#edbars .track2 b').count() === 10, `${where}: o Painel não mostra a marca da prova de 2023 nos 10 itens que caíram`);
+    await axe('Painel');
+    for (const e of errs) check(false, `${where}: erro de JS: ${e}`);
+    await ctx.close();
+  }
+}
+
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const run = async (name, fn) => { if (!ONLY || ONLY.has(name)) await fn(browser); };
 try {
@@ -931,6 +1005,7 @@ try {
   await run('banco', testBanco);
   await run('consent', testOfflineConsent);
   await run('prova', testProva);
+  await run('t6', testT6);
 } finally { await browser.close(); server.close(); }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }

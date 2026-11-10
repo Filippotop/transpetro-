@@ -184,13 +184,13 @@ table{border-collapse:collapse;font-family:var(--display);font-size:14px;line-he
 th{background:var(--ink);color:var(--surface);text-align:left;padding:8px 10px;font-weight:600}
 td{border-bottom:1px solid var(--rule);padding:8px 10px;vertical-align:top}
 .prose .tw{max-width:min(100%,900px)}
-/* Quadros didáticos do conteúdo: Conceito, Exemplo, Como a banca cobra (.banca; .enem fica como sinônimo), Pegadinha, Conexão. */
+/* Quadros didáticos do conteúdo: Conceito, Exemplo, Como a banca cobra (.banca), Pegadinha, Conexão. */
 .box{margin:var(--sp-4) 0;padding:var(--sp-3) var(--sp-4);border-left:4px solid var(--bx);background:var(--bx-bg);border-radius:0 var(--r-sm) var(--r-sm) 0;color:var(--ink)}
 .box-t{display:block;font-family:var(--display);font-size:var(--fs-1);font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--bx-t);margin-bottom:var(--sp-1)}
 .box p:last-child,.box ul:last-child{margin-bottom:0}
 .box.conceito{--bx:var(--f);--bx-bg:var(--sunk);--bx-t:var(--f)}
 .box.exemplo{--bx:var(--g);--bx-bg:var(--ok-soft);--bx-t:var(--ok)}
-.box.banca,.box.enem{--bx:var(--gold);--bx-bg:var(--gold-soft);--bx-t:var(--gold-ink)}
+.box.banca{--bx:var(--gold);--bx-bg:var(--gold-soft);--bx-t:var(--gold-ink)}
 .box.pegadinha{--bx:var(--bad);--bx-bg:var(--bad-soft);--bx-t:var(--bad)}
 .box.conexao{--bx:var(--s);--bx-bg:var(--sunk);--bx-t:var(--s)}
 .toc-m{display:none}
@@ -626,6 +626,9 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/embreve.js"></script>
 <script src="data/questoes.js"></script>
 <script src="data/provas.js"></script>
+<script src="data/biblioteca.js"></script>
+<script src="data/nr10.js"></script>
+<script src="data/plano.js"></script>
 <script src="js/calc.js"></script>
 <script src="js/gerador.js"></script>
 <script src="merge.js"></script>
@@ -746,12 +749,14 @@ function blockStats(vol){ return BLOCKS[vol].lines.map(lineStats).reduce((x,y)=>
 function modHtml(m){ return m.html; }
 function examTarget(){ return EXAM; }
 function daysLeft(){ const n=new Date(), t=examTarget(); const a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()); const b=Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()); return Math.max(0,Math.round((b-a)/86400000)); }
-/* Prioridade da estação: faixa e peso do item na prova de 2023, mais o que você errou aqui. */
+/* Peso da estação: nº de questões da prova de 2023 que caem nela (DATA.mapa2023), não o peso2023 do item inteiro. */
+const PESO23={}; Object.values(DATA.mapa2023||{}).forEach(id=>{ if(id) PESO23[id]=(PESO23[id]||0)+1; });
+/* Prioridade da estação: faixa e peso na prova de 2023, mais o que você errou aqui. */
 function priority(m){
   if(m.emBreve) return -99;
   const s=modStats(m.id); if(!s.n) return -99;
   let p={A:3,B:2,C:1}[m.faixa]||1;
-  p+=Math.min(3,(m.peso2023||0)/3);
+  p+=Math.min(3,(PESO23[m.id]||0)/3);
   if(s.done===s.n){ if(s.ok/s.n<0.67) p+=2.5; else p-=10; }
   if(s.read && s.done<s.n) p+=1;
   return p;
@@ -787,7 +792,7 @@ function vLinhas(){
   const tasks=[];
   const last=lsGet('edo-last'); if(last&&M[last.id]&&!M[last.id].emBreve){ const lm=M[last.id], ls=modStats(lm.id); if(ls.done<ls.n) tasks.push({lc:lm.line,ic:'▸',t:`Continuar: ${lm.id} · ${lm.title}`,s:`Você parou em ${({teoria:'Teoria',formulas:'Fórmulas',resumo:'Cartões-resumo',vf:'V ou F',q:'Questões',tutor:'Tutor',notas:'Anotações'})[last.tab]||'Teoria'} · ${ls.done}/${ls.n} questões`,act:()=>go('mod',{id:lm.id,tab:last.tab})}); }
   if(pday){ const pd=planDone(pday); tasks.push({ic:'▦',t:`Plano de hoje: ${pday.foco}`,s:`${pd.done} de ${pd.n} tarefas feitas · ${pday.l}`,act:()=>go('plano'),done:pd.done===pd.n}); }
-  nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${m.peso2023||0} ${m.peso2023===1?'questão':'questões'} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
+  nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${plural(PESO23[m.id]||0,'questão','questões')} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
   tasks.push({ic:'⚒',t:'Bancada: atenda uma ordem de serviço',s:'Meça, desenergize pela NR-10 e diagnostique o defeito. É a teoria aplicada na prática.',act:()=>go('bancada')});
@@ -863,7 +868,7 @@ function vMod(){
     $('#toc').innerHTML=tocHtml; $('#tocm').innerHTML=tocHtml; $('#tocm').previousElementSibling.textContent=`Nesta estação · ${plural(hs.length,'seção','seções')}`;
     body.querySelectorAll('.toc a').forEach(a=>a.onclick=e=>{e.preventDefault(); const d=a.closest('details'); if(d) d.open=false; hs[+a.dataset.i].scrollIntoView({behavior:'smooth',block:'start'});});
     /* Tabela larga rola de lado: a área de rolagem recebe foco pelo teclado (axe: scrollable-region-focusable). */
-    body.querySelectorAll('.prose .tw').forEach(t=>{ const sc=t.scrollWidth>t.clientWidth+2; t.classList.toggle('scrolls',sc); if(sc){ t.tabIndex=0; t.setAttribute('role','region'); t.setAttribute('aria-label','Tabela: deslize para o lado'); } });
+    twScroll(body.querySelectorAll('.prose .tw'));
     body.querySelectorAll('#prose a[data-ex]').forEach(a=>a.onclick=e=>{ e.preventDefault(); openQView(a.dataset.ex,a.dataset.n); });
     body.querySelectorAll('#prose a[data-ir]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const [v,id]=a.dataset.ir.split(':'); if(v==='mod'&&!(M[id]&&!M[id].emBreve)) return; go(v, id?{id,tab:'teoria'}:null); });
     if(window.montarCalculadoras) montarCalculadoras(body);
@@ -973,6 +978,9 @@ function questionCard(el,q,opts={}){
 const GAMES=[
   {g:'traps',t:'Detector de armadilhas',i:'alternativas erradas das questões',p:'Uma alternativa errada de verdade. Você diz qual armadilha ela usa: termo oposto, unidade ou prefixo, fórmula trocada, detalhe verdadeiro ou exagero.'},
   {g:'cards',t:'Cartões de véspera',i:`${DATA.cards.length} cartões · caixas de Leitner`,p:'Perguntas curtas de revisão. O que você erra volta hoje; o que acerta volta cada vez mais tarde.'},
+  {g:'formula',t:'Qual é a fórmula?',i:`${DATA.bib.formulas.length} fórmulas das estações`,p:'O nome da fórmula e quatro candidatas. As três erradas são erros de verdade: expoente trocado, √3 esquecido, grandeza no lugar errado.'},
+  {g:'nr10',t:'Ordene a NR-10',i:'10.5.1 e 10.5.2, texto em vigor',p:'Toque nos passos da desenergização e da reenergização na ordem da norma. A reenergização não é a ordem inversa.'},
+  {g:'unid',t:'Grandeza e unidade',i:`${DATA.bib.unidades.length} grandezas · 8 segundos`,p:'A grandeza aparece e você escolhe a unidade. Watt, var ou VA? Weber ou tesla?'},
   {g:'vf',t:'V ou F relâmpago',i:`${DATA.vf.length} afirmações · 8 segundos`,p:'Doze afirmações das estações. Sem tempo para enrolar: ou você sabe o conceito, ou não sabe.'}
 ];
 function vArena(){
@@ -995,7 +1003,7 @@ function ankiText(){
   return '#separator:tab\n#html:false\n#tags column:3\n'+rows.map(r=>r.map(x=>x.replace(/\t/g,' ')).join('\t')).join('\n');
 }
 let gameTimer=null;
-function vGame(){ clearInterval(gameTimer); const g={traps:gTraps,cards:gCards,vf:gVF}[param&&param.g]; if(g) g(); else go('arena'); }
+function vGame(){ clearInterval(gameTimer); const g={traps:gTraps,cards:gCards,vf:gVF,formula:gFormula,nr10:gNR10,unid:gUnid}[param&&param.g]; if(g) g(); else go('arena'); }
 function endGame(key,score,total,lines){
   clearInterval(gameTimer);
   const rec = S.best[key]==null || score>S.best[key]; if(rec){S.best[key]=score; save();}
@@ -1202,6 +1210,16 @@ function vMetodo(){
   <div class="games">${Object.values(TRAPS).map(t=>`<div class="game" style="cursor:default;min-height:0"><h3>${t.name}</h3><p>${t.tip}</p></div>`).join('')}</div>`;
 }
 
+/* Acerto de primeira por item do Anexo IV (q.hab é o subitem). ref = seu acerto no mesmo item na última tentativa completa
+   da prova de 2023 (anulada conta como certa, como na correção da banca); null enquanto você não fizer a prova. */
+function editalStats(){
+  const e=EX.t23, run=e?allRuns('t23').filter(runReal).pop():null, feitas=run?new Set(areaNums(run.areas)):null;
+  return DATA.edital.map(it=>{ const has=id=>it.sub.some(s=>s.id===String(id))||(it.n==='Mat'&&id==='Mat'); let done=0,ok=0,n23=0,rn=0,rok=0;
+    DATA.questions.forEach(q=>{ const a=S.ans[q.id]; if(a&&has(q.hab)){ done++; if(a.ok) ok++; } });
+    if(e) Object.entries(e.itens).forEach(([n,i])=>{ if(!has(i)) return; n23++; if(feitas&&feitas.has(+n)){ rn++; if(e.key[n]==null||run.ans[n]===e.key[n]) rok++; } });
+    return {it,done,ok,n23,ref:rn?pct(rok,rn):null}; });
+}
+
 /* ---------- PAINEL ---------- */
 function vPainel(){
   const answered=Object.entries(S.ans); const wrong=answered.filter(([,a])=>!a.ok);
@@ -1210,13 +1228,16 @@ function vPainel(){
   const traps={}, cats={}; wrong.forEach(([id,a])=>{const t=erroKey(id,a); traps[t]=(traps[t]||0)+1; const q=Q[id]; const c=t.startsWith('e:')?(DATA.erros[t.slice(2)].t):(a.trap||'conteudo'); cats[c]=(cats[c]||0)+1;});
   const topT=Object.entries(traps).sort((a,b)=>b[1]-a[1]);
   const boxes=[0,1,2,3,4,5].map(b=>Object.values(S.cards).filter(c=>c.box===b).length); const unseen=DATA.cards.length-Object.keys(S.cards).length;
+  const ed=editalStats();
   const worst=DATA.modules.map(m=>({m,s:modStats(m.id)})).filter(x=>x.s.done).sort((a,b)=>a.s.ok/a.s.done-b.s.ok/b.s.done).slice(0,4);
   app.innerHTML=`<div class="sec-title"><h2>Painel</h2><span class="eyebrow">${plural(answered.length,'resposta registrada','respostas registradas')} · ${daysLeft()} dias para a prova</span></div>
   <div class="grid2">
     <div class="panel"><div class="eyebrow">por bloco da prova</div><p class="muted" style="font-family:var(--read);font-size:14px">A linha preta marca o corte: 50% em cada bloco. A barra é o seu acerto de primeira aqui.</p>
       <div class="bars">${Object.entries(BLOCKS).map(([v,b])=>{ const st=volStats(v); return `<div class="brow lc-${b.lines[0]}"><span>${b.name}</span><span class="track2"><i style="width:${st.done?pct(st.ok,st.done):0}%"></i><b style="left:50%"></b></span><span class="mono">${st.done?pct(st.ok,st.done)+'%':'—'}</span></div>`; }).join('')}</div>
       <div class="eyebrow" style="margin-top:18px">por linha</div>
-      <div class="bars" style="margin-top:8px">${STUDY_LINES.map(L=>{const s=lineStats(L); return `<div class="brow lc-${L}"><span>${LINES[L].name}</span><span class="track2"><i style="width:${s.done?pct(s.ok,s.done):0}%"></i></span><span class="mono">${s.done?pct(s.ok,s.done)+'%':'—'}</span></div>`}).join('')}</div></div>
+      <div class="bars" style="margin-top:8px">${STUDY_LINES.map(L=>{const s=lineStats(L); return `<div class="brow lc-${L}"><span>${LINES[L].name}</span><span class="track2"><i style="width:${s.done?pct(s.ok,s.done):0}%"></i></span><span class="mono">${s.done?pct(s.ok,s.done)+'%':'—'}</span></div>`}).join('')}</div>
+      <div class="eyebrow" style="margin-top:18px">por item do edital</div><p class="muted" style="font-family:var(--read);font-size:14px;margin:6px 0 0">${ed.some(x=>x.ref!=null)?'A linha preta é o seu acerto no mesmo item na prova de 2023.':'Faça a prova de 2023 (aba Provas) para ganhar a linha de referência de cada item.'} Entre parênteses, quantas questões o item teve em 2023.</p>
+      <div class="bars" id="edbars" style="margin-top:8px">${ed.map(x=>`<div class="brow"><span style="overflow-wrap:anywhere">${x.it.n==='Mat'?'Matemática':x.it.n+' · '+esc(x.it.titulo)} <span class="muted">(${x.n23})</span></span><span class="track2"><i style="width:${x.done?pct(x.ok,x.done):0}%"></i>${x.ref!=null?`<b style="left:${Math.min(99,x.ref)}%" title="prova de 2023: ${x.ref}%"></b>`:''}</span><span class="mono">${x.done?pct(x.ok,x.done)+'%':'—'}</span></div>`).join('')}</div></div>
     <div class="panel"><div class="eyebrow">o que te derruba</div>
       ${wrong.length?`<div class="bars" style="margin-top:10px">${topT.slice(0,8).map(([t,n])=>`<div class="brow"><span>${esc(erroNome(t))}</span><span class="track2"><i style="width:${pct(n,wrong.length)}%"></i></span><span class="mono">${n}</span></div>`).join('')}</div>
       ${topT.length>8?`<p class="muted" style="font-size:12.5px;margin:6px 0 0">e mais ${plural(topT.length-8,'tipo','tipos')} com menos erros (veja o caderno de erros).</p>`:''}
@@ -1238,13 +1259,15 @@ function vPainel(){
   <div class="row" style="margin-top:28px"><button class="btn" id="reset">Apagar meu progresso</button><span class="muted" id="rs"></span></div>`;
   $('#copyRep').onclick=()=>{ const txt=buildReport(); const ta=$('#reptxt'); ta.value=txt;
     const fallback=()=>{ ta.hidden=false; ta.focus(); ta.select(); $('#cpst').textContent='Não consegui copiar sozinho: o texto está selecionado abaixo, copie manualmente.'; };
-    try{ navigator.clipboard.writeText(txt).then(()=>{ $('#cpst').textContent='Copiado. Cole no chat do projeto.'; },fallback); }catch(e){ fallback(); } };
+    try{ navigator.clipboard.writeText(txt).then(()=>{ $('#cpst').textContent='Copiado. Cole na conversa com o tutor.'; },fallback); }catch(e){ fallback(); } };
   app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>go('mod',{id:b.dataset.m,tab:'teoria'}));
   $('#reset').onclick=()=>{ const b=$('#reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Toque de novo para confirmar'; $('#rs').textContent='Isso apaga respostas, cartões e simulados.'; return; } S={v:1,ans:{},cards:{},read:{},best:{},sims:[],recal:{},vf:{},notes:{},plan:{},rep:{},marks:{},chute:{},redo:{},snotes:{},act:{},pv:{},updated:0,reset:Date.now()}; save(); toast('Progresso apagado'); render(); };
 }
 
 /* ================= v2: novos recursos ================= */
 function host(){ return document.getElementById('host')||app; }
+/* Tabela mais larga que a tela: avisa que desliza e entra na ordem do teclado. */
+function twScroll(list){ list.forEach(t=>{ const sc=t.scrollWidth>t.clientWidth+2; t.classList.toggle('scrolls',sc); if(sc){ t.tabIndex=0; t.setAttribute('role','region'); t.setAttribute('aria-label','Tabela: deslize para o lado'); } }); }
 const norm = s => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const lineOf = mod => mod&&M[mod]? M[mod].line : (mod? mod[0] : 'E');
 function subtabs(items,cur,onpick){
@@ -1252,7 +1275,7 @@ function subtabs(items,cur,onpick){
   setTimeout(()=>app.querySelectorAll('.subtabs button').forEach(b=>b.onclick=()=>onpick(b.dataset.t)),0);
   return html;
 }
-function stationBtn(mod){ return `<button class="chipbtn lc-${lineOf(mod)}" data-go="${mod}" style="border-color:var(--lc);color:var(--lc)">${mod}</button>`; }
+function stationBtn(mod){ if(M[mod]&&M[mod].emBreve) return `<span class="chip">${mod} · em breve</span>`; return `<button class="chipbtn lc-${lineOf(mod)}" data-go="${mod}" style="border-color:var(--lc);color:var(--lc)">${mod}</button>`; }
 function bindStations(el){ el.querySelectorAll('[data-go]').forEach(b=>b.onclick=e=>{e.stopPropagation(); go('mod',{id:b.dataset.go,tab:'teoria'});}); }
 
 /* ---- V ou F inside stations ---- */
@@ -1276,6 +1299,36 @@ function gVF(){
   runRounds({key:'vf',secs:8,rounds:items.map(v=>({v,missLine:`${v.s} <strong>${v.v?'Verdadeira':'Falsa'}.</strong> ${v.why} ${stationBtn(v.mod)}`})),
     renderRound(el,r,finish){ el.innerHTML=`<div class="prompt"><span class="k">estação ${r.v.mod} · ${LINES[lineOf(r.v.mod)].name}</span>${r.v.s}</div>${optsHTML([{label:'Verdadeiro',ok:r.v.v},{label:'Falso',ok:!r.v.v}])}`;
       bindOpts(el,finish,r.missLine,()=>{ const p=document.createElement('div'); p.className='why'; p.style.marginTop='10px'; p.innerHTML=r.v.why; el.appendChild(p); }); }});
+}
+
+/* Qual é a fórmula? Certa + três erradas de DATA.bib.formulas; a explicação diz por que a escolhida está errada. */
+function gFormula(){
+  runRounds({key:'formula',secs:0,rounds:shuffle(DATA.bib.formulas).slice(0,10).map(f=>({f,missLine:`${f.nome}: <strong>${f.f}</strong> ${stationBtn(f.mod)}`})),
+    renderRound(el,r,finish){ const f=r.f, alts=shuffle([{label:f.f,ok:true},...f.erros.map(e=>({label:e[0],ok:false,why:e[1]}))]);
+      el.innerHTML=`<div class="prompt"><span class="k">estação ${f.mod} · qual é a fórmula?</span>${f.nome}</div>${optsHTML(alts)}`;
+      const bs=[...el.querySelectorAll('.opt')]; let pick=null; bs.forEach((b,i)=>b.addEventListener('click',()=>{pick=alts[i];},true));
+      bindOpts(el,finish,r.missLine,ok=>{ const p=document.createElement('div'); p.className='fb '+(ok?'ok':'no');
+        p.innerHTML=`${ok||!pick?'':`<strong>${pick.label}</strong>: ${pick.why} `}<strong>${f.f}</strong>, com ${f.sim.map(s=>`${s[0]} = ${s[1]} (${s[2]})`).join('; ')}.`; el.appendChild(p); }); }});
+}
+/* Grandeza e unidade: as erradas saem das outras unidades, primeiro as da mesma família. */
+function gUnid(){
+  const U=DATA.bib.unidades;
+  runRounds({key:'unid',secs:8,rounds:shuffle(U).slice(0,12).map(u=>({u,missLine:`${u.g}: <strong>${esc(u.u)}</strong>${u.nota?'. '+esc(u.nota):''} ${stationBtn(u.mod)}`})),
+    renderRound(el,r,finish){ const u=r.u, outras=[...new Set([...shuffle(U.filter(x=>x.fam===u.fam)),...shuffle(U)].map(x=>x.u))].filter(x=>x!==u.u).slice(0,3);
+      el.innerHTML=`<div class="prompt"><span class="k">estação ${u.mod} · qual é a unidade?</span>${u.g}</div>${optsHTML(shuffle([{label:esc(u.u),ok:true},...outras.map(x=>({label:esc(x),ok:false}))]))}`;
+      bindOpts(el,finish,r.missLine,()=>{ if(u.nota){ const p=document.createElement('div'); p.className='why'; p.style.marginTop='10px'; p.textContent=u.nota; el.appendChild(p); } }); }});
+}
+/* Ordene a NR-10: as alíneas do 10.5.1 e do 10.5.2 em vigor (DATA.nr10.seq), embaralhadas. Toque na ordem da norma. */
+function gNR10(){
+  runRounds({key:'nr10',secs:0,rounds:shuffle(Object.values(DATA.nr10.seq)).map(q=>({q,missLine:`<strong>${esc(q.titulo)}</strong>: ${q.passos.map((p,i)=>`${i+1}) ${esc(p)}`).join('; ')}.`})),
+    renderRound(el,r,finish){ const q=r.q; let next=0, erros=0;
+      el.innerHTML=`<div class="prompt"><span class="k">NR-10 em vigor · ${esc(q.ref)}</span>${esc(q.titulo)}: toque nos passos na ordem da norma.<div class="muted" id="nrst" style="font-size:14px;margin-top:8px" aria-live="polite">Passo 1 de ${q.passos.length}</div></div>
+        <div class="opts" style="grid-template-columns:1fr">${shuffle(q.passos.map((p,i)=>({p,i}))).map(x=>`<button class="opt" data-i="${x.i}">${esc(x.p)}</button>`).join('')}</div>`;
+      el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ el.querySelectorAll('.opt.wrong').forEach(x=>x.classList.remove('wrong'));
+        if(+b.dataset.i!==next){ erros++; b.classList.add('wrong'); $('#nrst').textContent=`Ainda não é esse. Passo ${next+1} de ${q.passos.length} · ${plural(erros,'erro','erros')}`; return; }
+        next++; b.disabled=true; b.classList.add('right'); b.textContent=`${next}) ${b.textContent}`; b.parentNode.insertBefore(b,b.parentNode.children[next-1]);
+        $('#nrst').textContent=next<q.passos.length?`Passo ${next+1} de ${q.passos.length}${erros?' · '+plural(erros,'erro','erros'):''}`:(erros?`Sequência completa, com ${plural(erros,'erro','erros')}.`:'Sequência completa, sem erro.');
+        if(next===q.passos.length){ el.querySelectorAll('.opt').forEach(x=>x.disabled=true); finish(erros===0,r.missLine); } }); }});
 }
 
 /* ---- Treino ---- */
@@ -1332,20 +1385,21 @@ function vBib(){
   param=param||{};
   const s=(param&&param.s)||'formulas';
   app.innerHTML=`<div class="sec-title"><h2>Biblioteca</h2><span class="eyebrow">materiais para consulta e revisão</span></div>
-    ${subtabs([['formulas','Formulário'],['glos','Glossário'],['metodo','Método']],s,k=>{param={s:k}; vBib();})}<div id="host"></div>`;
-  ({formulas:bForm,glos:bGlos,metodo:vMetodo}[s]||bForm)();
+    ${subtabs([['formulas','Formulário'],['anc','Números-âncora'],['nr10','NR-10 lado a lado'],['simb','Simbologia'],['glos','Glossário'],['metodo','Método']],s,k=>{param={s:k}; vBib();})}<div id="host"></div>`;
+  ({formulas:bForm,anc:bAnc,nr10:bNR10,simb:()=>bForm('M1'),glos:bGlos,metodo:vMetodo}[s]||bForm)();
+  twScroll(host().querySelectorAll('.tw'));
 }
 /* Formulário geral: primeiro as fórmulas gerais (DATA.formulas, as que servem a mais de uma estação), depois as de cada
    estação (m.formulas). Cada item pode ser HTML pronto ou {titulo|nome, html}. */
 function fItem(f,k){ return typeof f==='string'?f:`<p><b>${f.titulo||f.nome||k||''}</b></p>${f.html||''}`; }
-function bForm(){
-  const mods=DATA.modules.filter(m=>!m.emBreve&&Array.isArray(m.formulas)&&m.formulas.length);
-  const gerais=Object.entries(DATA.formulas||{});
+function bForm(so){
+  const mods=DATA.modules.filter(m=>!m.emBreve&&Array.isArray(m.formulas)&&m.formulas.length&&(!so||m.id===so));
+  const gerais=so?[]:Object.entries(DATA.formulas||{});
   host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose estacao eq-grid" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
     :'<p class="empty">O formulário geral chega junto com as estações: cada fórmula com o nome e a unidade de cada símbolo.</p>';
   bindStations(host());
 }
-function glossItems(){ const out=[]; DATA.modules.forEach(m=>m.resumo.forEach(r=>out.push({t:r[0],d:r[1],mod:m.id}))); return out.sort((a,b)=>strip(a.t).localeCompare(strip(b.t),'pt')); }
+function glossItems(){ return DATA.bib.glos.slice().sort((a,b)=>strip(a.t).localeCompare(strip(b.t),'pt')); }
 function bGlos(){
   const qy=param.q||'', L=param.L||'all';
   const all=glossItems();
@@ -1355,6 +1409,25 @@ function bGlos(){
   const gq=$('#gq'); gq.oninput=()=>{ param.q=gq.value; const pos=gq.selectionStart; bGlos(); const n=$('#gq'); n.focus(); n.setSelectionRange(pos,pos); };
   host().querySelectorAll('[data-L]').forEach(b=>b.onclick=()=>{param.L=b.dataset.l; bGlos();});
   bindStations(host());
+}
+
+/* Números-âncora (DATA.bib.ancoras), já corrigidos pela errata; "validade" diz o que muda com a NR-10 de 2027. */
+function bAnc(){
+  const A=DATA.bib.ancoras, grupos=[...new Set(A.map(a=>a.g))];
+  host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Os números que a prova cobra de cor. Tampe a coluna da direita e diga o que cada um é.</p>
+    <div class="panel"><div class="tw" style="margin:0"><table><thead><tr><th>Número</th><th>O que é</th><th>Estação</th></tr></thead><tbody>${grupos.map(g=>`<tr><th colspan="3" scope="colgroup" style="text-align:left">${esc(g)}</th></tr>${A.filter(a=>a.g===g).map(a=>`<tr><td><strong>${a.n}</strong></td><td style="font-family:var(--read)">${a.t}${a.val?`<br><span class="muted">Validade: ${a.val}.</span>`:''}${a.corr?`<br><span class="muted">Correção da apostila: ${a.corr}</span>`:''}</td><td>${stationBtn(a.mod)}</td></tr>`).join('')}`).join('')}</tbody></table></div></div>`;
+  bindStations(host());
+}
+/* NR-10 lado a lado (DATA.nr10): texto literal do gov.br, em vigor (2019) × a partir de 01/06/2027 (Portaria 737/2026). */
+function bNR10(){
+  const N=DATA.nr10, col=(x,rot)=>`<div><div class="eyebrow">${rot} · ${esc(x.ref)}</div><blockquote style="font-family:var(--read);font-size:15.5px;margin:8px 0;padding-left:12px;border-left:3px solid var(--rule)">${x.txt.map(t=>`<p style="margin:0 0 6px">${esc(t)}</p>`).join('')}</blockquote><a class="mono" style="font-size:12px" href="${x.url}" target="_blank" rel="noopener">gov.br, página ${x.pag}</a></div>`;
+  host().innerHTML=`<div class="panel" style="margin-bottom:14px"><p style="font-family:var(--read);margin:0 0 8px">${N.aviso}</p><ul style="font-family:var(--read);font-size:15px;margin:0;padding-left:20px">${N.porVigencia.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p class="muted" style="font-size:13.5px;margin:8px 0 0">${esc(N.linkAntigo)}</p></div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:14px">${N.itens.map(it=>`<div class="panel lc-N"><h3 style="font-size:19px;font-weight:800;margin-bottom:10px">${esc(it.titulo)}</h3><div class="grid2">${col(it.a,'em vigor na prova (2019)')}${col(it.b,'a partir de 01/06/2027')}</div><p class="fb trap" style="font-family:var(--read)"><strong>O que mudou.</strong> ${esc(it.mudou)}</p></div>`).join('')}
+    <div class="panel lc-N"><h3 style="font-size:19px;font-weight:800">Raios da zona de risco e da zona controlada</h3><div class="tw"><table><thead><tr><th>Tensão nominal (kV)</th><th>Rr: zona de risco (m)</th><th>Rc: zona controlada (m)</th></tr></thead><tbody>${N.raios.linhas.map(l=>`<tr><td>${esc(l[0])}</td><td>${l[1]}</td><td>${l[2]}</td></tr>`).join('')}</tbody></table></div><p class="muted" style="font-size:13.5px;margin:0">Faixas escolhidas da tabela, não a tabela inteira. ${esc(N.raios.fonte)}</p></div>
+    <div class="panel lc-N"><h3 style="font-size:19px;font-weight:800">Pegadinhas da sua apostila</h3><div class="tw" style="margin-bottom:0"><table><thead><tr><th>Tema</th><th>O que a apostila diz</th><th>O que a norma diz</th></tr></thead><tbody>${N.pegadinhas.map(p=>`<tr><td><strong>${esc(p[0])}</strong></td><td style="font-family:var(--read)">${esc(p[1])}</td><td style="font-family:var(--read)">${esc(p[2])}</td></tr>`).join('')}</tbody></table></div></div>
+    <div class="panel"><div class="eyebrow">fontes · acesso em ${N.acesso}</div><ul style="font-family:var(--read);font-size:14.5px;margin:8px 0 0;padding-left:20px">${N.fontes.map(f=>`<li>${f.url?`<a href="${f.url}" target="_blank" rel="noopener">${esc(f.t)}</a>`:esc(f.t)}</li>`).join('')}</ul></div></div>
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="nrjogo">Treinar a ordem na Arena →</button></div>`;
+  $('#nrjogo').onclick=()=>go('game',{g:'nr10'});
 }
 
 /* ---- Plano ---- */
@@ -1374,6 +1447,7 @@ function taskGo(t){
   if(t.k==='prova') return ()=>go('provas');
   if(t.k==='provares') return ()=>{ const ex=t.a; go(allRuns(ex).some(r=>r.done)?'provares':'provas',{id:ex}); };
   if(t.k==='refazer') return ()=>go('treino',{s:'refazer'});
+  if(t.k==='novos') return ()=>go('treino',{s:'novos'});
   if(t.k==='bancada') return ()=>go('bancada');
   return null;
 }
@@ -1730,7 +1804,7 @@ function cutRun(sc){
 }
 function pts(v){ return String(v).replace('.',',')+(v===1?' ponto':' pontos'); }
 /* Estação de cada questão (mapa2023): a estação em breve abre o mapa das linhas, onde ela aparece como "em breve". */
-function stationBtn(n){ const id=(DATA.mapa2023||{})[n], m=id&&M[id]; if(!m) return '';
+function provaStBtn(n){ const id=(DATA.mapa2023||{})[n], m=id&&M[id]; if(!m) return '';
   return `<button class="chipbtn" data-st="${id}">Estação ${id} · ${esc(m.title)}${m.emBreve?' (em breve)':''} →</button>`; }
 function bindStationBtns(el){ el.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{ const id=b.dataset.st, m=M[id];
   if(!m.emBreve){ go('mod',{id,tab:'teoria'}); return; }
@@ -1844,7 +1918,7 @@ function vProva(){
           <button class="btn" id="pvprev" ${run.cur?'':'disabled'}>← anterior</button>
           <button class="chipbtn" id="pvflag" aria-pressed="${!!run.flag[n]}" ${run.flag[n]?'style="background:var(--warn-soft);border-color:var(--warn);color:var(--warn)"':''}>${run.flag[n]?'● marcada como dúvida':'marcar como dúvida'}</button>
           <button class="btn primary" id="pvnext" ${run.cur<nums.length-1?'':'disabled'}>próxima →</button></div>
-        ${study&&picked?`<div class="fb ${key==null?'trap':picked===key?'ok':'no'}" style="margin-top:12px"><strong>${key==null?'Anulada: ponto para todos.':picked===key?'Certa.':`Gabarito: ${key}.`}</strong>${e.notas&&e.notas[n]?`<p class="pvnote" style="margin-bottom:0">${e.notas[n]}</p>`:''}${stationBtn(n)?`<div style="margin-top:8px">${stationBtn(n)}</div>`:''}</div><div class="tutor-only row" style="margin-top:8px"><button class="btn" id="pvexp">Explicar esta questão com o tutor</button></div><div id="pvexpo"></div>`:''}
+        ${study&&picked?`<div class="fb ${key==null?'trap':picked===key?'ok':'no'}" style="margin-top:12px"><strong>${key==null?'Anulada: ponto para todos.':picked===key?'Certa.':`Gabarito: ${key}.`}</strong>${e.notas&&e.notas[n]?`<p class="pvnote" style="margin-bottom:0">${e.notas[n]}</p>`:''}${provaStBtn(n)?`<div style="margin-top:8px">${provaStBtn(n)}</div>`:''}</div><div class="tutor-only row" style="margin-top:8px"><button class="btn" id="pvexp">Explicar esta questão com o tutor</button></div><div id="pvexpo"></div>`:''}
         <p class="muted" style="font-size:12.5px;margin-top:14px">Toque no × para eliminar alternativas, como você faria riscando o caderno. Teclado: A a E responde, ← → navega, M marca dúvida.</p>
       </div>
       <aside class="pvside" id="pvside">${cardGrid(id,run,nums)}</aside>
@@ -1917,7 +1991,7 @@ function vProvaRes(){
     d.addEventListener('toggle',()=>{ if(!d.open||d.dataset.ok) return; d.dataset.ok=1; const sh=Object.entries(e.shared||{}).find(([kk])=>{ const [a,b]=kk.split('-').map(Number); return n>=a&&n<=b; });
       d.querySelector('.inner').innerHTML=`${sh?`<figure class="qimg shared"><img loading="lazy" src="provas/${id}/${sh[1].f}" alt="Texto-base" width="${sh[1].w}" height="${sh[1].h}"></figure>`:''}${qimgHTML(id,n,`Questão ${n}`,'loading="lazy"',true)}
         <div class="bubbles small">${'ABCDE'.split('').map(L=>`<div class="bub"><span class="bL ${k!=null&&L===k?'right':''} ${k!=null&&L===g&&g!==k?'wrong':''} ${k==null&&L===g?'on':''}">${L}</span></div>`).join('')}</div>
-        ${e.notas&&e.notas[n]?`<p class="pvnote">${e.notas[n]}</p>`:''}${stationBtn(n)?`<div style="margin-top:8px">${stationBtn(n)}</div>`:''}
+        ${e.notas&&e.notas[n]?`<p class="pvnote">${e.notas[n]}</p>`:''}${provaStBtn(n)?`<div style="margin-top:8px">${provaStBtn(n)}</div>`:''}
         <div class="row tutor-only" style="margin-top:10px"><button class="btn gold xp">Explicar com o tutor</button></div><div class="xo"></div>
         <label class="eyebrow" for="pn-${id}-${n}" style="display:block;margin-top:12px">a regra que teria evitado este erro</label><textarea id="pn-${id}-${n}" placeholder="Ex.: em proporção, conferir as unidades antes de multiplicar.">${esc(st.notes[n]||'')}</textarea>`;
       d.querySelector('.xp').onclick=()=>explainOfficial(d.querySelector('.xo'),id,n,g); bindStationBtns(d);
@@ -1943,7 +2017,7 @@ async function explainOfficial(out,id,n,his){
   out.innerHTML='<div class="tutor-out">Lendo a questão…</div>'; const box=out.firstChild;
   try{
     const lim=await sample.limits().catch(()=>null);
-    if(!lim||!lim.images){ box.textContent='Esta visualização não permite enviar imagens ao tutor. Copie o número da questão e peça a explicação no chat do projeto.'; return; }
+    if(!lim||!lim.images){ box.textContent='Esta visualização não permite enviar imagens ao tutor. Copie o número da questão e peça a explicação ao tutor.'; return; }
     let blobs=await imgBlobs(imgUrl(id,n)); const sh=Object.entries(e.shared||{}).find(([kk])=>{ const [a,b]=kk.split('-').map(Number); return n>=a&&n<=b; });
     if(sh) blobs=(await imgBlobs(`provas/${id}/${sh[1].f}`)).concat(blobs);
     blobs=blobs.slice(0,lim.images.maxCount||3);

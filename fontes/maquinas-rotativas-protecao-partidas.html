@@ -697,7 +697,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
   <h3>Contra o que se protege um circuito de motor</h3>
   <p>Dois defeitos têm natureza oposta e pedem dispositivos diferentes:</p>
   <ul>
-    <li><b>sobrecarga</b>: corrente um pouco acima da nominal (110%, 150%, 200%) por muito tempo, por excesso de carga no eixo, rotor travado, falta de uma fase ou tensão baixa. Não destrói nada na hora, mas aquece a isolação. A proteção é de <b>tempo inverso</b>: quanto maior a corrente, mais rápido atua;</li>
+    <li><b>sobrecarga</b>: corrente um pouco acima da nominal (110%, 150%, 200%) por muito tempo, por excesso de carga no eixo, falta de uma fase ou tensão baixa. Não destrói nada na hora, mas aquece a isolação. A proteção é de <b>tempo inverso</b>: quanto maior a corrente, mais rápido atua;</li>
     <li><b>curto-circuito</b>: corrente de dezenas ou centenas de vezes a nominal, limitada só pela impedância da rede. Precisa ser interrompido em milissegundos, por um dispositivo com <b>capacidade de interrupção</b> (em kA) maior que a corrente de curto no ponto.</li>
   </ul>
   <p>E há uma dificuldade própria do motor: a <b>corrente de partida</b> é de várias vezes a nominal durante alguns segundos, e a proteção não pode atuar com ela.</p>
@@ -710,7 +710,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
       <tr><td><b>Disjuntor termomagnético</b></td><td>sobrecarga (disparador <b>térmico</b>, bimetálico, de tempo inverso) e curto-circuito (disparador <b>magnético</b>, uma bobina que atua instantaneamente)</td><td>religável; nos minidisjuntores, as curvas B, C e D dizem a partir de quantas vezes I<sub>n</sub> o magnético atua (estação I1); para motores, usa-se em geral a C ou a D, conforme a corrente de partida</td></tr>
       <tr><td><b>Disjuntor-motor</b></td><td>sobrecarga (térmico <b>ajustável</b>, regulado na corrente do motor), falta de fase e curto-circuito (magnético calibrado acima da corrente de partida)</td><td>faz num só aparelho o papel de fusível + relé de sobrecarga</td></tr>
       <tr><td><b>Relé de sobrecarga térmico</b></td><td>sobrecarga e falta de fase</td><td><b>não</b> protege contra curto: precisa de fusível ou disjuntor antes dele. Ajusta-se na corrente que passa por ele. Contato NF 95-96 no comando, NA 97-98 para sinalização (estação M1). A <b>classe de disparo</b> diz o tempo máximo de atuação com 7,2 vezes a corrente ajustada: classe 10 = até 10 s (motores comuns), 20 e 30 para partidas longas (IEC 60947-4-1)</td></tr>
-      <tr><td><b>Contator</b></td><td>nada: é <b>manobra</b> (liga e desliga, a distância e muitas vezes)</td><td>categoria de emprego (IEC 60947-4-1): <b>AC-1</b> cargas resistivas; <b>AC-3</b> motores de gaiola, ligados e desligados em marcha (o caso comum); <b>AC-4</b> motores com frenagem por contracorrente e manobras intermitentes (jogging), as mais severas</td></tr>
+      <tr><td><b>Contator</b></td><td>nada: é <b>manobra</b> (liga e desliga, a distância e muitas vezes)</td><td>categoria de emprego (IEC 60947-4-1, <span class="confira">citada sem consulta ao texto integral</span>): <b>AC-1</b> cargas resistivas; <b>AC-3</b> motores de gaiola, ligados e desligados em marcha (o caso comum); <b>AC-4</b> motores com frenagem por contracorrente e manobras intermitentes (jogging), as mais severas</td></tr>
       <tr><td><b>DR</b> e <b>DPS</b></td><td>choque e fuga à terra (DR); surtos de tensão (DPS)</td><td>vistos na estação I1; o DR não vê sobrecarga nem curto entre fases</td></tr>
       <tr><td>Relés de falta de fase, de sub e sobretensão</td><td>perda de uma fase, tensão fora da faixa</td><td>acessórios comuns dos quadros de partida; na numeração ANSI (estação M1): 27 subtensão, 59 sobretensão, 49 térmico, 50 sobrecorrente instantâneo, 51 temporizado</td></tr>
     </tbody>
@@ -807,7 +807,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
 
   <h3>Partidas eletrônicas</h3>
   <ul>
-    <li><b>Soft-starter</b>: pares de tiristores (SCR) em cada fase controlam o ângulo de disparo e sobem a tensão numa rampa, ajustável tipicamente de 2 a 30 s. A corrente fica limitada e sem degraus, e há também a parada suave (bombas: evita o golpe de aríete). Ela varia só a <b>tensão</b>, não a frequência: o conjugado continua caindo com o quadrado da tensão, e a velocidade final é a nominal. Ao fim da rampa, um contator de <i>bypass</i> pode assumir.</li>
+    <li><b>Soft-starter</b>: pares de tiristores (SCR) em cada fase controlam o ângulo de disparo e sobem a tensão numa rampa, ajustável <span class="confira">tipicamente de 2 a 30 s (confira no manual do fabricante)</span>. A corrente fica limitada e sem degraus, e há também a parada suave (bombas: evita o golpe de aríete). Ela varia só a <b>tensão</b>, não a frequência: o conjugado continua caindo com o quadrado da tensão, e a velocidade final é a nominal. Ao fim da rampa, um contator de <i>bypass</i> pode assumir.</li>
     <li><b>Inversor de frequência</b>: retificador, barramento CC com capacitores e ponte de transistores IGBT que monta, por modulação por largura de pulso (PWM), uma tensão de frequência e amplitude variáveis. Mantendo <b>V/f constante</b> até a frequência nominal, o fluxo fica constante e o motor dá conjugado nominal em qualquer rotação, com corrente próxima da nominal. É o único destes métodos que <b>controla a velocidade</b> (n<sub>s</sub> = 120·f/p) e permite frenagem e rampas. Acima da frequência nominal, a tensão fica no máximo e o campo enfraquece: o conjugado cai.</li>
   </ul>
   <div class="tw"><table>
@@ -914,7 +914,7 @@ b1:[
 b2:[
  {s:"Um motor de indução trifásico de 8 polos é alimentado em 60 Hz e gira a 873 rpm em carga nominal. O escorregamento, nessas condições, é de",
   o:["3,0%","3,1%","27%","51,5%","97%"],a:0,
-  c:"n<sub>s</sub> = 120 × 60/8 = 900 rpm; s = (900 − 873)/900 = 0,03 = 3,0%. 3,1% divide a diferença pela rotação do rotor (27/873), e não pela síncrona; 27% é a diferença em rpm escrita como porcentagem; 51,5% usa 8 como número de pares de polos (n<sub>s</sub> = 1.800 rpm); 97% é a razão n/n<sub>s</sub>, e não o escorregamento."},
+  c:"n<sub>s</sub> = 120 × 60/8 = 900 rpm; s = (900 − 873)/900 = 0,03 = 3,0%. 3,1% divide a diferença pela rotação do rotor (27/873), e não pela síncrona; 27% é a diferença em rpm escrita como porcentagem; 51,5% põe o número de pares de polos (4) na fórmula 120·f/p, que pede o número de polos (n<sub>s</sub> = 1.800 rpm); 97% é a razão n/n<sub>s</sub>, e não o escorregamento."},
  {s:"Um motor de 4 polos, alimentado em 60 Hz, gira a 1.746 rpm. A frequência das correntes induzidas nas barras do rotor é de",
   o:["0,03 Hz","1,8 Hz","29,1 Hz","58,2 Hz","60 Hz"],a:1,
   c:"s = (1.800 − 1.746)/1.800 = 0,03; f<sub>r</sub> = s·f = 0,03 × 60 = 1,8 Hz. 0,03 é o próprio escorregamento, sem multiplicar pela frequência; 29,1 Hz é a rotação mecânica em rotações por segundo (1.746/60); 58,2 Hz é (1 − s)·f; 60 Hz seria a frequência do rotor parado, na partida."},
@@ -968,7 +968,7 @@ b5:[
   c:"O relé térmico tem atuação de tempo inverso e é sensível a sobrecargas e à falta de fase. Curto-circuito é com o fusível ou o disjuntor a montante (o relé não tem capacidade de interrupção para isso); choque por contato indireto e fuga à terra são com o DR; sobretensões atmosféricas, com o DPS."},
  {s:"Segundo a IEC 60947-4-1, a categoria de emprego de um contator destinado a ligar motores de indução com rotor de gaiola e desligá-los com o motor em marcha é a",
   o:["AC-1","AC-2","AC-15","AC-3","DC-1"],a:3,
-  c:"AC-3 é a categoria dos motores de gaiola com partida e desligamento em marcha, o caso comum. AC-1 é para cargas resistivas; AC-2, para motores de anéis; AC-15, para bobinas e cargas eletromagnéticas em circuitos de comando; DC-1, para cargas resistivas em corrente contínua."},
+  c:"AC-3 é a categoria dos motores de gaiola com partida e desligamento em marcha, o caso comum. AC-1 é para cargas resistivas; AC-2, para motores de anéis; AC-15, para bobinas e cargas eletromagnéticas em circuitos de comando (essa é da IEC 60947-5-1); DC-1, para cargas resistivas em corrente contínua."},
  {s:"Uma chave estrela-triângulo aciona um motor ligado em triângulo, com corrente nominal de 45 A. A corrente que percorre o contator de estrela (K3) durante a partida, desprezando o fator de serviço e as margens de escolha, é de, aproximadamente,",
   o:["15 A","26 A","45 A","78 A","135 A"],a:0,
   c:"K3 fecha o ponto da estrela e só conduz na partida: I<sub>K3</sub> = I<sub>n</sub>/3 = 0,33 × 45 ≈ 15 A, critério usual de dimensionamento. 26 A (0,58 × 45) é a corrente de K1 e K2 e do relé de sobrecarga, no ramo das bobinas; 45 A é a corrente de linha nominal; 78 A multiplica por √3 em vez de dividir; 135 A multiplica por 3."},
