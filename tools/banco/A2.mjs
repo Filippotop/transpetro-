@@ -16,9 +16,9 @@ export default {
       A: '[exagero] O SCADA não substitui os CLPs: se o computador cair, o controle continua no CLP.',
       C: '[detalhe] A conversão A/D é feita pelo cartão de entrada analógica do CLP.',
       D: '[detalhe] Quem alimenta os transmissores de dois fios é a fonte da malha de 4 a 20 mA.',
-      E: '[detalhe] A proteção contra sobrecarga é do relé de sobrecarga, no circuito de força.' } },
+      B: '[detalhe] A proteção contra sobrecarga é do relé de sobrecarga, no circuito de força.' } },
     'b1:2': { d: 'm', w: {
-      A: '[redeInd] O Profibus DP é serial (RS-485); a Ethernet industrial da família é o PROFINET.',
+      B: '[redeInd] O Profibus DP é serial (RS-485); a Ethernet industrial da família é o PROFINET.',
       C: '[redeInd] O HART sobrepõe o sinal digital ao de 4 a 20 mA; a medição analógica continua.',
       D: '[redeInd] O Modbus TCP é justamente o Modbus sobre Ethernet.',
       E: '[redeInd] A AS-Interface é a rede mais simples, de sensores e atuadores binários, no nível de campo.' } },
@@ -29,14 +29,14 @@ export default {
       E: '[redeInd] A IHM é supervisão local, e não um dispositivo de campo.' } },
     /* ---------- seção 2: sensores, entradas e saídas ---------- */
     'b2:0': { d: 'f', w: {
-      A: '[detalhe] O sensor indutivo só detecta metais.',
+      B: '[detalhe] O sensor indutivo só detecta metais.',
       C: '[detalhe] O fim de curso precisa de contato físico com o objeto.',
       D: '[detalhe] O reed responde ao campo de um ímã, e não a grãos.',
       E: '[detalhe] O encoder mede posição e velocidade de um eixo.' } },
     'b2:1': { d: 'm', w: {
       A: '[pnpNpn] É a ligação do NPN, que leva a saída ao 0 V quando acionado.',
       C: '[detalhe] O sensor de três fios tem alimentação própria; quem se alimenta pela malha é o de dois fios.',
-      D: '[exagero] Ligar a saída direto ao +24 V curto-circuitaria o transistor de saída quando acionado.',
+      B: '[exagero] Ligar a saída direto ao +24 V curto-circuitaria o transistor de saída quando acionado.',
       E: '[pnpNpn] PNP e NPN não são intercambiáveis: cada um casa com um tipo de entrada.' } },
     'b2:2': { d: 'm', h: '9.4', w: {
       A: '[pullup] 820 Ω deixa a entrada em ALTO, mas com a chave fechada dissiparia 24²/820 ≈ 0,70 W, acima de 0,5 W.',
@@ -73,7 +73,7 @@ export default {
     'b4:0': { d: 'f', w: {
       A: '[varredura] As entradas são lidas antes de executar o programa, e não depois.',
       C: '[varredura] A atualização das saídas vem depois da execução do programa.',
-      D: '[varredura] O programa usa a tabela-imagem lida no início do ciclo, e não o terminal a cada instrução.',
+      B: '[varredura] O programa usa a tabela-imagem lida no início do ciclo, e não o terminal a cada instrução.',
       E: '[varredura] O ciclo é contínuo; não é disparado por mudanças de entrada.' } },
     'b4:1': { d: 'f', w: {
       A: '[detalhe] Ladder (LD) é uma das linguagens gráficas da IEC 61131-3.',
@@ -105,9 +105,9 @@ export default {
       A: '[detalhe] Um contato em paralelo com a bobina não bloqueia a bobina.',
       C: '[naNf] Com NA, a bobina Q0.1 só ligaria se Q0.0 estivesse ligada: o contrário do intertravamento.',
       D: '[exagero] Bobinas no mesmo degrau ligariam juntas, causando o curto entre fases.',
-      E: '[temporizador] O temporizador dá um atraso, e não um bloqueio entre as saídas.' } },
+      B: '[temporizador] O temporizador dá um atraso, e não um bloqueio entre as saídas.' } },
     'b5:3': { d: 'd', w: {
-      A: '[varredura] Não há prioridade fixa do set: vale a ordem dos degraus.',
+      B: '[varredura] Não há prioridade fixa do set: vale a ordem dos degraus.',
       C: '[varredura] O resultado é o mesmo a cada varredura, sem oscilação.',
       D: '[exagero] Set e reset no mesmo bit não geram falha no CLP.',
       E: '[oposto] O bit setado é desligado pelo reset; é para isso que existe a bobina R.' } },
@@ -120,7 +120,7 @@ export default {
     'b6:1': { d: 'f', w: {
       A: '[temporizador] O TON atrasa o ligamento, e não o desligamento.',
       C: '[temporizador] O TP dá um pulso de duração fixa a cada subida da entrada.',
-      D: '[detalhe] O CTU é contador, e não temporizador.',
+      B: '[detalhe] O CTU é contador, e não temporizador.',
       E: '[detalhe] O CTD é contador decrescente, e não temporizador.' } },
     'b6:2': { d: 'm', conta: '24/(120/60)', w: {
       A: '[unidade] 24/120 = 0,2 min; 0,2 s é esse número lido como se fossem segundos.',
@@ -136,7 +136,7 @@ export default {
     'b7:0': { d: 'f', w: {
       A: '[malhaAberta] Ação definida só por tempo é malha aberta.',
       C: '[exagero] A malha fechada sofre perturbações; ela as corrige.',
-      D: '[exagero] O controlador de malha fechada precisa de sintonia.',
+      B: '[exagero] O controlador de malha fechada precisa de sintonia.',
       E: '[malhaAberta] Ganho excessivo pode desestabilizar uma malha fechada.' } },
     'b7:1': { d: 'f', conta: '60-6/2', w: {
       A: '[formula] 54 °C aplica os 6 °C inteiros abaixo do setpoint.',
@@ -147,7 +147,7 @@ export default {
       A: '[acaoPid] Mais ganho proporcional reduz o offset, mas não o zera, e traz a oscilação descrita.',
       C: '[acaoPid] A derivativa não age sobre erro constante.',
       D: '[detalhe] O liga-desliga oscila em torno do setpoint; não elimina a diferença.',
-      E: '[exagero] Sem ganho, não há ação de controle.' } },
+      B: '[exagero] Sem ganho, não há ação de controle.' } },
     'b7:3': { d: 'm', w: {
       A: '[acaoPid] Erro acumulado e eliminação do erro em regime são da ação integral.',
       C: '[acaoPid] Com erro constante, a derivada é zero: a derivativa não age.',
