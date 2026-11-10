@@ -102,5 +102,18 @@ export default {
   perdaRot: { n: 'Perdas rotacionais esquecidas', d: 'Não descontou as perdas rotacionais (atrito, ventilação e ferro) da potência desenvolvida E·I<sub>a</sub>.', t: 'formula' },
   umTerco: { n: '1/3 × 1/√3 na estrela-triângulo', d: 'Na estrela-triângulo, trocou o fator 1/3 (corrente de linha e conjugado) por 1/√3 (tensão e corrente na bobina), ou aplicou-o à corrente errada.', t: 'formula' },
   tapQuad: { n: 'Tap sem o quadrado', d: 'Na chave compensadora, aplicou o tap k à corrente de linha, que cai com k² (k é a corrente no motor).', t: 'formula' },
-  partidaMetodo: { n: 'Método de partida trocado', d: 'Atribuiu a um método de partida o funcionamento ou a redução de outro (direta, estrela-triângulo, compensadora, soft-starter, inversor).', t: 'detalhe' }
+  partidaMetodo: { n: 'Método de partida trocado', d: 'Atribuiu a um método de partida o funcionamento ou a redução de outro (direta, estrela-triângulo, compensadora, soft-starter, inversor).', t: 'detalhe' },
+  /* ---- tipos novos (estação A2: automação, CLP e controle) ---- */
+  zeroVivo: { n: '4 a 20 mA como 0 a 20 mA', d: 'Tratou o sinal de 4 a 20 mA como se fosse de 0 a 20 mA: dividiu por 20 em vez de 16 ou não descontou (ou não somou) os 4 mA do início.', t: 'formula' },
+  offsetFaixa: { n: 'Início da faixa esquecido', d: 'Na conversão de escala, não somou o início da faixa de medição (ou usou o fim da faixa no lugar da largura dela).', t: 'formula' },
+  bitsAD: { n: 'Níveis do conversor A/D', d: 'Errou o número de níveis do conversor A/D: n bits dão 2ⁿ níveis (dividiu pelo número de bits ou usou outra potência de 2).', t: 'formula' },
+  pnpNpn: { n: 'PNP × NPN', d: 'Confundiu a saída PNP (fornece o positivo; carga ao 0 V) com a NPN (leva ao 0 V; carga ao +V).', t: 'oposto' },
+  pullup: { n: 'Uma condição só do pull-up', d: 'No resistor de pull-up, conferiu só uma das condições: a tensão mínima da entrada com a chave aberta ou a potência com a chave fechada.', t: 'detalhe' },
+  saidaClp: { n: 'Tipo de saída do CLP', d: 'Trocou as aplicações das saídas do CLP: a relé (CA e CC, chaveamento lento), a transistor (só CC, rápida) e a triac (só CA).', t: 'detalhe' },
+  varredura: { n: 'Ciclo de varredura', d: 'Errou a ordem ou o efeito do ciclo de varredura do CLP (lê as entradas, executa o programa de cima para baixo, atualiza as saídas).', t: 'detalhe' },
+  temporizador: { n: 'Temporizador trocado', d: 'Confundiu TON, TOF, TP e o retentivo (RTO), ou somou tempos num TON, que zera quando a entrada cai.', t: 'detalhe' },
+  redeInd: { n: 'Rede ou nível trocado', d: 'Confundiu as redes industriais (Modbus, Profibus, PROFINET, HART, AS-i) ou os níveis da pirâmide da automação.', t: 'detalhe' },
+  malhaAberta: { n: 'Malha aberta × fechada', d: 'Confundiu malha aberta com malha fechada, ou atribuiu à realimentação um efeito que ela não tem.', t: 'oposto' },
+  acaoPid: { n: 'Ação do PID trocada', d: 'Atribuiu a uma ação do PID (proporcional, integral ou derivativa) o efeito de outra.', t: 'detalhe' },
+  estabilidade: { n: 'Polos e estabilidade', d: 'Errou o critério de estabilidade: estável exige todos os polos de malha fechada com parte real negativa (em s³ + a s² + b s + K, 0 < K < a·b).', t: 'formula' }
 };

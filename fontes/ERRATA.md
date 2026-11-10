@@ -229,6 +229,20 @@ não achei a faixa escrita numa fonte confiável).
 
 Revisão independente de 2026-11-10 (correções na fonte e em `tools/banco/M3.mjs`): (1) exercício `b2:0`, alternativa D: dizia "51,5% usa 8 como número de pares de polos"; agora diz que o erro é pôr os 4 pares de polos na fórmula 120·f/p, que pede o número de polos (com 8 pares, n<sub>s</sub> seria 450 rpm, e não 1.800 rpm). (2) "rotor travado" saiu da lista de causas de sobrecarga leve: rotor travado puxa a corrente de partida, de 5 a 8 vezes a nominal. (3) A rampa da soft-starter ("2 a 30 s"), as categorias de emprego e a classe de disparo 10 ganharam `confira`: a IEC 60947-4-1 não foi lida no texto integral. (4) AC-15 é categoria da IEC 60947-5-1, dito na explicação do exercício `b5:1`.
 
+## A2 · Automação, CLP e controle (`fontes/automacao-clp-controle.html`, escrita para o app)
+
+Onda 2 (2026-11-10). Estação nova, sem apostila do estudante (itens 9.3 a 9.5): o aprofundamento foi escrito para o app e **nenhuma fonte foi corrigida** (não há troca em `tools/estacoes/A2.mjs`). As contas dos exemplos resolvidos e dos exercícios estão em `contas`; as 34 questões da aba Questões (exercícios das seções mais extras, revisão em `tools/banco/A2.mjs`) são conferidas por `tests/questoes.test.mjs`. Calculadoras: `escala-analogica`, `pullup-clp` e `routh-3`.
+
+Fontes: UFRN/IMD (componentes e ciclo do CLP), Pepperl+Fuchs (PNP e NPN), M. Peet/ASU (Routh-Hurwitz: para s³ + a s² + b s + c, estável se a > 0, c > 0 e b > c/a, o mesmo que K < a·b), Ogata (Laplace, malha fechada, ações P, I e D) e Franchi e Camargo (CLP). O estilo de cobrança vem das questões 35, 36, 50 e 51 da prova de 2023.
+
+Decisões registradas (não são erros de fonte):
+- Resolução do conversor A/D: o app divide a faixa por 2<sup>n</sup>; alguns livros usam 2<sup>n</sup> − 1 (diferença de 0,02% com 12 bits). O texto cita as duas.
+- Pull-up: R<sub>máx</sub> pela tensão mínima do nível ALTO (divisor com R<sub>in</sub>) e R<sub>mín</sub> pela potência do resistor com a chave fechada; o resistor testado precisa atender às duas.
+
+Marcado com `confira`: detalhes de camada física e velocidade das redes industriais; a nomenclatura sink/source dos cartões de entrada; a retirada da linguagem IL na edição de 2025 da IEC 61131-3 (norma não lida no texto integral); a ligação do PNP e do NPN segundo a Pepperl+Fuchs (lida só no trecho mostrado pela busca); a base de tempo e o RTO, que variam por fabricante.
+
+Revisão independente de 2026-11-10 (subagente, só leitura; contas dos exemplos, das calculadoras e das 34 questões refeitas, sem erro numérico). Corrigido: (1) exercício `b6:2`, o distrator "20 s" não saía de conta nenhuma e virou "24 s" (uma peça por segundo); (2) exercício `b6:0`, a alternativa D descreve o pulso do TP, e não o TOF, e a E não é de nenhum bloco padrão; (3) fórmula `a2-mf` da Biblioteca, explicação do distrator G·H/(1 + G); (4) `confira` em "o mais comum no Brasil" (entrada que pede PNP) e nas cores dos fios do sensor. Não corrigido: o gabarito dos exercícios cai na letra B em 17 de 32; a contagem da calculadora do A/D usa 2<sup>n</sup> − 1 e a resolução usa 2<sup>n</sup> (o texto explica as duas convenções).
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão

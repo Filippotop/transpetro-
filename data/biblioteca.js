@@ -146,6 +146,22 @@
     F('m3-comp', 'M3', 'Chave compensadora no tap k: corrente na linha na partida', '{I}<sub>linha</sub> = k²·{I}<sub>p</sub>',
       [['I<sub>linha</sub>', 'corrente na linha com a compensadora', 'A'], ['k', 'tap do autotransformador (0,5; 0,65; 0,8)', '—'], ['I<sub>p</sub>', 'corrente de partida direta', 'A']],
       [['{I}<sub>linha</sub> = k·{I}<sub>p</sub>', 'Isso é a corrente no motor; na linha, o autotransformador reduz de novo e o fator é k².'], ['{I}<sub>linha</sub> = {I}<sub>p</sub>/k²', 'Dividiu: o tap k é menor que 1 e reduz a corrente.'], ['{I}<sub>linha</sub> = {I}<sub>p</sub>/k', 'Dividiu e esqueceu o quadrado.']]),
+    /* ---- A2 ---- */
+    F('a2-esc', 'A2', 'Escala de um transmissor de 4 a 20 mA: variável a partir da corrente', '{x} = {L}<sub>inf</sub> + (I − 4)/16·({L}<sub>sup</sub> − {L}<sub>inf</sub>)',
+      [['x', 'variável de processo', 'unidade da medição'], ['L<sub>inf</sub>, L<sub>sup</sub>', 'início e fim da faixa calibrada', 'unidade da medição'], ['I', 'corrente do sinal', 'mA']],
+      [['{x} = {L}<sub>inf</sub> + I/20·({L}<sub>sup</sub> − {L}<sub>inf</sub>)', 'Tratou o sinal como 0 a 20 mA: o início da faixa é 4 mA, e a largura, 16 mA.'], ['{x} = (I − 4)/16·({L}<sub>sup</sub> − {L}<sub>inf</sub>)', 'Esqueceu de somar o início da faixa L<sub>inf</sub>.'], ['{x} = {L}<sub>inf</sub> + (I − 4)/20·({L}<sub>sup</sub> − {L}<sub>inf</sub>)', 'Descontou os 4 mA, mas dividiu por 20; a largura do sinal é 20 − 4 = 16 mA.']]),
+    F('a2-ad', 'A2', 'Resolução de um conversor A/D de n bits', '{Δ} = ({L}<sub>sup</sub> − {L}<sub>inf</sub>)/2<sup>n</sup>',
+      [['Δ', 'resolução (menor variação distinguível)', 'unidade da faixa'], ['L<sub>sup</sub> − L<sub>inf</sub>', 'largura da faixa de entrada', 'unidade da faixa'], ['n', 'número de bits do conversor', '—']],
+      [['{Δ} = ({L}<sub>sup</sub> − {L}<sub>inf</sub>)/{n}', 'n bits dão 2<sup>n</sup> níveis, e não n níveis.'], ['{Δ} = ({L}<sub>sup</sub> − {L}<sub>inf</sub>)·2<sup>n</sup>', 'Inverteu: quanto mais bits, menor o passo.'], ['{Δ} = ({L}<sub>sup</sub> − {L}<sub>inf</sub>)/(2<sup>n</sup> − 2)', 'O número de níveis é 2<sup>n</sup>; o ajuste de −2 não existe.']]),
+    F('a2-pu', 'A2', 'Resistor de pull-up numa entrada de CLP: valor máximo', '{R}<sub>máx</sub> = {R}<sub>in</sub>·({V} − {V}<sub>min</sub>)/{V}<sub>min</sub>',
+      [['R<sub>máx</sub>', 'maior pull-up que mantém o nível ALTO', 'Ω'], ['R<sub>in</sub>', 'resistência de entrada do CLP', 'Ω'], ['V', 'tensão de alimentação', 'V'], ['V<sub>min</sub>', 'menor tensão reconhecida como ALTO', 'V']],
+      [['{R}<sub>máx</sub> = {R}<sub>in</sub>·{V}<sub>min</sub>/({V} − {V}<sub>min</sub>)', 'Inverteu a razão: R e R<sub>in</sub> formam um divisor, e a queda em R é V − V<sub>min</sub>.'], ['{R}<sub>máx</sub> = {V}²/{P}', 'Isso é o valor mínimo, pela potência do resistor com a chave fechada, e não o máximo.'], ['{R}<sub>máx</sub> = {R}<sub>in</sub>·({V} − {V}<sub>min</sub>)', 'Faltou dividir por V<sub>min</sub>.']]),
+    F('a2-mf', 'A2', 'Função de transferência em malha fechada (realimentação negativa)', '{T}(s) = {G}(s)/(1 + {G}(s)·{H}(s))',
+      [['T(s)', 'função de transferência de malha fechada', '—'], ['G(s)', 'ramo direto (controlador e processo)', '—'], ['H(s)', 'ramo de realimentação (sensor)', '—']],
+      [['{T}(s) = {G}(s)/(1 − {G}(s)·{H}(s))', 'O sinal de menos no denominador é o da realimentação positiva.'], ['{T}(s) = {G}(s)·{H}(s)/(1 + {G}(s))', 'H foi parar no numerador; ele só multiplica G no denominador.'], ['{T}(s) = {G}(s)/(1 + {G}(s))', 'Isso vale só com H = 1; no caso geral, entra o H.']]),
+    F('a2-rh', 'A2', 'Ganho crítico de s³ + a·s² + b·s + K (critério de Routh)', '{K}<sub>crít</sub> = {a}·{b}',
+      [['K<sub>crít</sub>', 'ganho no limite da estabilidade', '—'], ['a', 'coeficiente de s²', '—'], ['b', 'coeficiente de s', '—']],
+      [['{K}<sub>crít</sub> = {a} + {b}', 'Somou os coeficientes; a condição de Routh é a·b > K.'], ['{K}<sub>crít</sub> = {b}/{a}', 'Dividiu: o termo da primeira coluna é (a·b − K)/a e zera em K = a·b.'], ['{K}<sub>crít</sub> = {a}·{b}²', 'Não há quadrado: o limite é a·b.']]),
     /* ---- I1 ---- */
     F('i1-disj', 'I1', 'Coordenação entre a corrente de projeto, o disjuntor e o condutor', '{I}<sub>B</sub> ≤ {I}<sub>n</sub> ≤ {I}<sub>z</sub>',
       [['I<sub>B</sub>', 'corrente de projeto do circuito', 'A'], ['I<sub>n</sub>', 'corrente nominal do disjuntor', 'A'], ['I<sub>z</sub>', 'capacidade de condução do condutor (já corrigida)', 'A']],
@@ -270,6 +286,14 @@
     G('Índice horário', 'Defasagem entre as tensões de linha de AT e de BT, em múltiplos de 30° (cada hora vale 30°), com a BT atrasada. Dy5: 150°.', 'M2'),
     G('Transformador de corrente (TC)', 'Reduz a corrente para os instrumentos; secundário de 5 A ou 1 A. Nunca se abre o secundário energizado.', 'M2'),
     G('Transformador de potencial (TP)', 'Reduz a tensão para os instrumentos; secundário de 115 V ou 115/√3 V. Nunca se curto-circuita o secundário.', 'M2'),
+    G('Sensor indutivo', 'Detecta objetos metálicos sem contato, pela variação de um campo de alta frequência; o capacitivo detecta também plástico, líquidos e grãos.', 'A2'),
+    G('Saída PNP e NPN', 'PNP fornece o positivo à carga, ligada ao 0 V; NPN leva a saída ao 0 V, e a carga vai ao +V.', 'A2'),
+    G('Sinal de 4 a 20 mA', 'Padrão analógico de transmissores: 4 mA é o início da faixa e 20 mA, o fim; 0 mA indica falha (zero vivo).', 'A2'),
+    G('Conversor A/D', 'Converte a tensão ou corrente analógica em número; n bits dão 2<sup>n</sup> níveis e resolução igual à faixa dividida por 2<sup>n</sup>.', 'A2'),
+    G('Ciclo de varredura', 'Sequência repetida do CLP: lê as entradas, executa o programa e atualiza as saídas.', 'A2'),
+    G('Temporizador TON', 'Retardo na energização: a saída liga depois do tempo programado com a entrada ligada, e zera se a entrada cai antes.', 'A2'),
+    G('Ação integral (PID)', 'Soma o erro ao longo do tempo e, por isso, anula o erro em regime permanente; em excesso, causa oscilação.', 'A2'),
+    G('Malha fechada', 'A saída é medida e comparada com a referência, e o erro comanda a ação; a função de transferência é G/(1 + G·H).', 'A2'),
     G('Motor de indução trifásico', 'Motor cujo rotor (gaiola ou bobinado) recebe corrente induzida pelo campo girante do estator; gira abaixo da velocidade síncrona.', 'M3'),
     G('Velocidade síncrona (n<sub>s</sub>)', 'Velocidade do campo girante: n<sub>s</sub> = 120·f/p, em rpm. Com 4 polos em 60 Hz, 1.800 rpm.', 'M3'),
     G('Escorregamento (s)', 's = (n<sub>s</sub> − n)/n<sub>s</sub>: fração da velocidade síncrona que o rotor "perde". O rotor nunca alcança n<sub>s</sub>.', 'M3'),
@@ -344,7 +368,8 @@
     U('fator de potência', 'adimensional (não tem unidade)', 'E3', 'ad'),
     U('rendimento', 'adimensional (não tem unidade)', 'M2', 'ad', 'Costuma ser escrito como fração ou porcentagem.'),
     U('escorregamento', 'adimensional (não tem unidade)', 'M3', 'ad', 'Costuma ser escrito como fração ou porcentagem.'),
-    U('relação de transformação', 'adimensional (não tem unidade)', 'M2', 'ad')
+    U('relação de transformação', 'adimensional (não tem unidade)', 'M2', 'ad'),
+    U('constante de tempo de um circuito RC', 'segundo (s)', 'A2', 't')
   ];
 
   /* Anexo IV do edital (Ênfase 8), igual ao de bancada/js/apostila/edital.js, mais a Matemática (itens 1 a 10).

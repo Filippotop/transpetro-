@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-10. T1–T5 concluídas e revisadas. T6 implementada e revisada, M3 revisada; aguardando a avaliação do estudante.
+Última atualização: 2026-11-10. T1–T6 e M3 concluídas e revisadas. **A2 (automação, CLP e controle) integrada e revisada**: 34 questões, 3 calculadoras, 5 fórmulas e 8 termos na Biblioteca, dia 16/11 no Plano. Próximas: A1, N1, I3, I2 e Matemática (combinar com o estudante o que cortar).
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -16,7 +16,7 @@
 | T6: Biblioteca (formulário, números-âncora, NR-10 de 2019 × 2026, simbologia, glossário próprio), Arena (Qual é a fórmula?, Ordene a NR-10, Grandeza e unidade), Plano de 10/11 a 28/11 (`data/plano.js`), Painel por item do edital com a marca da prova de 2023, Missão de hoje pelo peso do `mapa2023` | ✅ implementada e revisada; falta só a parada para o estudante avaliar | c43aeef.. |
 
 Ondas seguintes (spec, seção 3):
-- **Onda 2:** A1, A2 e M3 (escrever do zero, no padrão dos aprofundamentos).
+- **Onda 2:** M3 ✅ e A2 ✅ (escritas para o app e revisadas; ver `fontes/ERRATA.md`). A1 ⬜: não há nada escrito, começa do zero.
 - **Onda 3:** N1, I3 e I2.
 - **Onda 4:** Matemática (X1–X3) e recalibração do Plano e do Painel.
 

@@ -46,6 +46,20 @@ if (fs.existsSync(path.join(ROOT, 'js/calc.js'))) {
     check(typeof f === 'function', `widget ${w}: sem a conta pura (.conta)`);
     if (f) { const r = f(ent); for (const [k, v] of Object.entries(esp)) check(perto(r[k], v), `widget ${w}: ${k} = ${r[k]}, esperado ${v}`); }
   }
+  /* Widgets da A2: escala de 4 a 20 mA, pull-up da entrada do CLP e ganho crítico de 3ª ordem (Routh). */
+  const A2W = [
+    ['escala-analogica', { aLo: 50, aHi: 250, aI: 12.8, aBits: 12 }, { pct: 55, val: 160, niveis: 4096, res: 200 / 4096 }],
+    ['pullup-clp', { uV: 24, uRin: 5, uVmin: 18, uPmax: 0.5, uR: 1500 }, { Rmax: 5000 * 6 / 18, Rmin: 1152, Vin: 24 * 5000 / 6500, P: 0.384 }],
+    ['routh-3', { ra: 6, rb: 11, rK: 30 }, { Kc: 66, w: Math.sqrt(11), c3: (66 - 30) / 6 }],
+  ];
+  for (const [w, ent, esp] of A2W) {
+    const f = CW[w] && CW[w].conta;
+    check(typeof f === 'function', `widget ${w}: sem a conta pura (.conta)`);
+    if (f) { const r = f(ent); for (const [k, v] of Object.entries(esp)) check(perto(r[k], v), `widget ${w}: ${k} = ${r[k]}, esperado ${v}`); }
+  }
+  if (CW['escala-analogica']) check(!!CW['escala-analogica'].conta({ aLo: 0, aHi: 10, aI: 2, aBits: 12 }).aviso, 'widget escala-analogica: corrente abaixo de 4 mA deveria dar aviso de falha');
+  if (CW['pullup-clp']) check(CW['pullup-clp'].conta({ uV: 24, uRin: 8, uVmin: 20, uPmax: 0.5, uR: 1000 }).ok === false, 'widget pullup-clp: 1 kΩ com 0,5 W não atende (0,576 W)');
+  if (CW['routh-3']) check(CW['routh-3'].conta({ ra: 8, rb: 17, rK: 140 }).estado === 'instável', 'widget routh-3: K acima de a·b deveria ser instável');
   if (CW.escorregamento) check(!!CW.escorregamento.conta({ eF: 60, eP: 4, eN: 1850 }).aviso, 'widget escorregamento: rotor acima da síncrona deveria dar aviso');
 } else check(false, 'widgets: falta js/calc.js');
 

@@ -531,6 +531,45 @@
       svg.innerHTML = s;
     } });
 
+  /* ---- A2: escala de 4 a 20 mA com conversor A/D, pull-up de entrada de CLP e ganho crítico de 3ª ordem (Routh).
+     Mesmo molde dos widgets da M3 (m3), com a conta pura em .conta, conferida por tests/estacoes.test.mjs. ---- */
+  m3('escala-analogica', [['aLo', 'Início da faixa L<sub>inf</sub>', 50, null, ''], ['aHi', 'Fim da faixa L<sub>sup</sub>', 250, null, ''], ['aI', 'Corrente lida I (mA)', 12.8, null, ' min="0"'], ['aBits', 'Bits do conversor', 12, null, ' min="4" max="24" step="1"']],
+    function (x) {
+      var n = Math.round(x.aBits);
+      if (!(x.aHi > x.aLo && n >= 4 && n <= 24)) return { aviso: 'Use o fim da faixa maior que o início e de 4 a 24 bits.' };
+      if (x.aI < 4) return { aviso: 'Abaixo de 4 mA não há medição válida: é falha (cabo rompido ou transmissor sem alimentação).' };
+      if (x.aI > 20) return { aviso: 'Acima de 20 mA: fora da faixa do sinal.' };
+      var f = (x.aI - 4) / 16, N = Math.pow(2, n);
+      return { pct: 100 * f, val: x.aLo + f * (x.aHi - x.aLo), cont: Math.floor(f * (N - 1) + 1e-9), niveis: N, res: (x.aHi - x.aLo) / N };
+    },
+    { mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('Valor medido', fmt(r.val)) + cell('Fração da faixa', fmt(r.pct, 1) + '%') + cell('Contagem (0 a ' + fmt(r.niveis - 1, 0) + ')', fmt(r.cont, 0)) + cell('Resolução', fmt(r.res, 4));
+      txt.innerHTML = 'x = ' + fmt(x.aLo) + ' + (' + fmt(x.aI) + ' − 4)/16 × (' + fmt(x.aHi) + ' − ' + fmt(x.aLo) + ') = ' + fmt(r.val) + '. Tratando o sinal como 0 a 20 mA, daria ' + fmt(x.aLo + x.aI / 20 * (x.aHi - x.aLo)) + ': o erro mais comum das alternativas.';
+    } });
+
+  m3('pullup-clp', [['uV', 'Alimentação V (V)', 24, null, ' min="1"'], ['uRin', 'Entrada R<sub>in</sub> (kΩ)', 5, null, ' min="0.1"'], ['uVmin', 'Mínimo do ALTO (V)', 18, null, ' min="0.1"'], ['uPmax', 'P máxima do resistor (W)', 0.5, null, ' min="0.01"'], ['uR', 'Resistor testado (Ω)', 1500, null, ' min="1"']],
+    function (x) {
+      if (!(x.uV > 0 && x.uRin > 0 && x.uVmin > 0 && x.uVmin < x.uV && x.uPmax > 0 && x.uR > 0)) return { aviso: 'Use valores positivos e o mínimo do ALTO abaixo da alimentação.' };
+      var Rin = 1000 * x.uRin, Rmax = Rin * (x.uV - x.uVmin) / x.uVmin, Rmin = x.uV * x.uV / x.uPmax;
+      return { Rmax: Rmax, Rmin: Rmin, Vin: x.uV * Rin / (x.uR + Rin), P: x.uV * x.uV / x.uR, existe: Rmin <= Rmax, ok: x.uR >= Rmin && x.uR <= Rmax };
+    },
+    { mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('R máximo (entrada)', fmt(r.Rmax, 0) + ' Ω') + cell('R mínimo (potência)', fmt(r.Rmin, 0) + ' Ω') + cell('Entrada, chave aberta', fmt(r.Vin) + ' V') + cell('Potência, chave fechada', fmt(r.P, 3) + ' W');
+      txt.innerHTML = !r.existe ? 'Nenhum resistor atende: o mínimo pela potência passa do máximo pela entrada. Seria preciso um resistor de potência maior.' : r.ok ? 'O resistor testado atende às duas condições.' :
+        'O resistor testado não atende: ' + (r.P > x.uPmax ? 'com a chave fechada ele dissiparia mais que ' + fmt(x.uPmax) + ' W' : 'com a chave aberta a entrada ficaria abaixo de ' + fmt(x.uVmin) + ' V') + '. Escolha um valor entre ' + fmt(r.Rmin, 0) + ' e ' + fmt(r.Rmax, 0) + ' Ω.';
+    } });
+
+  m3('routh-3', [['ra', 'Coeficiente a (de s²)', 6, null, ' min="0.01"'], ['rb', 'Coeficiente b (de s)', 11, null, ' min="0.01"'], ['rK', 'Ganho K', 30, null, ' min="0"']],
+    function (x) {
+      if (!(x.ra > 0 && x.rb > 0 && x.rK >= 0)) return { aviso: 'Use a e b positivos e K maior ou igual a zero.' };
+      var Kc = x.ra * x.rb;
+      return { Kc: Kc, w: Math.sqrt(x.rb), c3: (Kc - x.rK) / x.ra, estado: x.rK === 0 ? 'sem ganho' : x.rK < Kc ? 'estável' : x.rK === Kc ? 'limite' : 'instável' };
+    },
+    { mostra: function (r, out, txt, svg, x) {
+      out.innerHTML = cell('Primeira coluna', '1; ' + fmt(x.ra) + '; ' + fmt(r.c3) + '; ' + fmt(x.rK)) + cell('Ganho crítico a·b', fmt(r.Kc)) + cell('ω no limite (√b)', fmt(r.w) + ' rad/s') + cell('Situação', r.estado);
+      txt.innerHTML = r.estado === 'estável' ? 'Todos os termos da primeira coluna são positivos: os polos de malha fechada estão no semiplano esquerdo.' : r.estado === 'limite' ? 'O terceiro termo zera: dois polos em ±j' + fmt(r.w) + ', e a saída oscila com amplitude constante.' : r.estado === 'instável' ? 'O terceiro termo ficou negativo: há duas trocas de sinal na primeira coluna, logo dois polos no semiplano direito.' : 'Com K = 0 não há realimentação nem saída.';
+    } });
+
   /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar. */
   W['exercicios'] = function (el) {
     var qs = el.querySelectorAll('.exq'), n = qs.length;
