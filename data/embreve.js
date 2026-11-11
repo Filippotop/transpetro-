@@ -11,8 +11,6 @@
     stub('I2', 'I', 'Média tensão e SPDA', '8.2, 8.4', 'A', 6, 'Redes aéreas de 1,0 a 17,5 kV e proteção contra descargas atmosféricas; o peso de 6 é o do item 8 inteiro, dividido com a I1.'),
     stub('I3', 'I', 'Medidas, retificadores, baterias e no-breaks', '7.1, 7.3, 7.4', 'B', 3, 'Instrumentos, megômetro, retificadores, baterias e tipos de no-break (questões 40, 43 e 60 de 2023 no item 7; a 60, de unidades do SI, é ensinada na M2).'),
     stub('A1', 'A', 'Eletrônica analógica e digital', '9.1, 9.2', 'A', 6, 'Diodos, transistores, portas lógicas e diagramas lógicos; o peso de 6 é o do item 9 inteiro, dividido com a A2.'),
-    stub('N1', 'N', 'Segurança, NR-10 e manutenção', '6, 10.2–10.4', 'B', 5, 'Segurança e higiene do trabalho, EPI e EPC, manutenção, materiais e NR-10. Peso 5 = 2 questões do item 6 (39 e 41) + 3 do item 10 (44, 47 e 55); a 55, de NBR 5410, é ensinada na I1.'),
-    stub('X1', 'X', 'Números, proporções e matemática financeira', 'Mat 1, 2, 8', 'B', 4, 'Conjuntos numéricos, razão e proporção, regras de três, porcentagem, juros simples e compostos (questões 11, 12, 14 e 17 de 2023).'),
     stub('X2', 'X', 'Funções, equações e geometria', 'Mat 3, 4, 9, 10', 'B', 4, 'Funções, equações e sistemas lineares, triângulo retângulo, áreas e volumes (questões 16, 18, 19 e 20 de 2023).'),
     stub('X3', 'X', 'Contagem, probabilidade e estatística', 'Mat 5, 6, 7', 'B', 2, 'Princípio da contagem, arranjos e combinações, probabilidade, média, mediana, moda e desvio padrão (questões 13 e 15 de 2023).'),
   ].forEach(function (m) {

@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Números, proporções e matemática financeira — Transpetro 2026, Matemática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no edital</small></a></li>
+    <li><a href="#b1">1. Conjuntos numéricos, ordem e sinais<small>Mat 1</small></a></li>
+    <li><a href="#b2">2. Frações, decimais e dízimas<small>Mat 1</small></a></li>
+    <li><a href="#b3">3. Potências, raízes e ordem das operações<small>Mat 1</small></a></li>
+    <li><a href="#b4">4. MMC e MDC<small>Mat 1</small></a></li>
+    <li><a href="#b5">5. Razão, proporção e divisão proporcional<small>Mat 2</small></a></li>
+    <li><a href="#b6">6. Regra de três simples e composta<small>Mat 2</small></a></li>
+    <li><a href="#b7">7. Porcentagem<small>Mat 2</small></a></li>
+    <li><a href="#b8">8. Juros simples e compostos<small>Mat 8</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Números, proporções e matemática financeira</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), prova de Matemática do nível médio. Conjuntos numéricos, frações, potências, MMC e MDC, razão e proporção, regra de três, porcentagem e juros simples e compostos, em passos curtos, com um exemplo resolvido depois de cada regra e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>A prova tem <b>10 questões de Matemática</b>, e quem zera Matemática ou faz menos de 50% do bloco está eliminado. O conteúdo de Matemática do edital tem dez itens. Esta estação cobre três deles, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>Mat 1</b> Conjuntos numéricos: naturais, inteiros, racionais e reais; ordem, operações e suas propriedades;</li>
+    <li><b>Mat 2</b> Razão e proporção: regra de três simples e composta; porcentagem;</li>
+    <li><b>Mat 8</b> Matemática financeira: juros simples e juros compostos.</li>
+  </ul>
+  <p>Funções e equações (Mat 3 e 4) e geometria (Mat 9 e 10) ficam na estação <b>X2</b>; contagem, probabilidade e estatística (Mat 5 a 7), na <b>X3</b>.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (nível médio), quatro das dez questões de Matemática foram destes itens:</p>
+    <ul>
+      <li>a 11: colocar em ordem três <b>potências</b> de bases e expoentes diferentes, sem calculadora (seção 3);</li>
+      <li>a 12: um preço que sobe k% ao mês durante muitos meses; pedia a <b>expressão</b> de k, sem fazer a conta, o que é a fórmula dos juros compostos virada do avesso (seção 8);</li>
+      <li>a 14: para qual número a condição x ≤ x² é falsa, isto é, o que acontece com o quadrado de um número <b>entre 0 e 1</b> (seção 1);</li>
+      <li>a 17: torneiras, horas e volume de um tanque, com a resposta em <b>letras</b> (y em função de x): uma regra de três composta (seção 6).</li>
+    </ul>
+    <p>É um <b>padrão observado</b> numa prova só, não garantia de repetição. Mas mostra o estilo: enunciado curto, nenhuma conta longa, e a resposta sai de <b>uma ideia aplicada com cuidado</b>. As alternativas erradas são os resultados dos erros mais comuns; por isso, em cada exercício daqui, o comentário mostra a conta errada que leva a cada alternativa. Os exemplos e exercícios têm números próprios.</p>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Como estudar esta estação</p>
+    <p>Uma seção por vez. Em cada uma: leia a regra, refaça o exemplo resolvido no papel <b>sem olhar a solução</b> e só então faça os quatro exercícios. Errou? Leia qual foi o erro que levou à sua alternativa: ele costuma se repetir. Na prova não há calculadora: faça todas as contas à mão.</p>
+  </div>
+</section>
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Conjuntos numéricos, ordem e sinais</h2></div>
+  <p class="edital-ref">Edital, Mat 1</p>
+
+  <h3>Os quatro conjuntos, um dentro do outro</h3>
+  <ul>
+    <li><b>Naturais (N)</b>: os números de contar, com o zero: 0, 1, 2, 3…</li>
+    <li><b>Inteiros (Z)</b>: os naturais e os seus negativos: …, −2, −1, 0, 1, 2…</li>
+    <li><b>Racionais (Q)</b>: tudo o que pode ser escrito como <b>fração de dois inteiros</b>, com denominador diferente de zero. Entram aqui os inteiros (5 = 5/1), os decimais que terminam (0,25 = 1/4) e as dízimas periódicas (0,333… = 1/3).</li>
+    <li><b>Irracionais</b>: os que <b>não</b> podem ser escritos como fração de inteiros. O decimal não termina e não se repete: √2 = 1,41421…, √5, π = 3,14159…</li>
+    <li><b>Reais (R)</b>: os racionais e os irracionais juntos. É a reta numérica inteira.</li>
+  </ul>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Conjuntos numéricos encaixados: naturais dentro dos inteiros, dentro dos racionais, dentro dos reais; os irracionais ficam nos reais, fora dos racionais">
+<rect x="10" y="10" width="620" height="280" rx="14" class="comp"/><text x="26" y="36" class="tl">R: reais</text>
+<rect x="26" y="50" width="420" height="226" rx="12" class="comp"/><text x="42" y="76" class="tl">Q: racionais</text>
+<rect x="42" y="90" width="300" height="150" rx="10" class="comp"/><text x="58" y="116" class="tl">Z: inteiros</text>
+<rect x="58" y="128" width="180" height="76" rx="8" class="comp"/><text x="74" y="154" class="tl fc">N: naturais</text>
+<text x="74" y="186" class="ts">0, 1, 2, 3…</text>
+<text x="58" y="228" class="ts">−1, −2, −3…</text>
+<text x="42" y="264" class="ts">1/2; −3/4; 0,25; 0,333…</text>
+<text x="470" y="120" class="tl fa">irracionais</text>
+<text x="470" y="150" class="ts">√2; √5; π</text>
+</svg><figcaption>Figura 1. Todo natural é inteiro, todo inteiro é racional e todo racional é real. Os irracionais são reais que ficam fora dos racionais.</figcaption></figure>
+
+  <div class="box conceito">
+    <p class="box-title">Método: classificar um número em três perguntas</p>
+    <ol class="steps">
+      <li><b>Dá para simplificar?</b> Antes de tudo, resolva o que estiver indicado: √49 é 7; 12/4 é 3.</li>
+      <li><b>O decimal termina ou se repete?</b> Então é <b>racional</b>. Se, além disso, não tem parte decimal, é inteiro; se também não é negativo, é natural.</li>
+      <li><b>O decimal não termina e não se repete?</b> (raiz não exata, π) Então é <b>irracional</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Classifique: −8; 0,75; 0,444…; √49; √7.</p>
+    <ol class="steps">
+      <li>−8: inteiro (e racional e real). Não é natural, porque é negativo.</li>
+      <li>0,75: termina. É racional: 0,75 = 75/100 = 3/4.</li>
+      <li>0,444…: repete. É racional: vale 4/9 (a seção 2 mostra a conta).</li>
+      <li>√49: simplifique antes. √49 = <b>7</b>, que é natural.</li>
+      <li>√7: raiz não exata (7 não é quadrado perfeito). É irracional.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>Nem toda raiz é irracional</b> (√49 = 7) e <b>dízima periódica não é irracional</b> (0,444… = 4/9). Só é irracional o decimal infinito que <b>não</b> se repete.</p>
+  </div>
+
+  <h3>Ordem: quem é maior</h3>
+  <p>Na reta numérica, <b>quanto mais à direita, maior</b>. Duas regras resolvem as comparações:</p>
+  <ul>
+    <li><b>Negativos</b>: o que parece "maior" é o menor. −5 &lt; −2, porque −5 está mais à esquerda. Entre dois negativos, é menor o que está mais longe do zero.</li>
+    <li><b>Decimais</b>: iguale o número de casas com zeros e compare como inteiros. 0,5 e 0,45 viram 0,50 e 0,45; logo 0,5 &gt; 0,45. Não compare "5" com "45".</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Coloque em ordem crescente: −0,8; −3/4; −0,705.</p>
+    <ol class="steps">
+      <li>Tudo em decimal com três casas: −0,800; −3/4 = −0,750; −0,705.</li>
+      <li>Sem o sinal, a ordem é 0,705 &lt; 0,750 &lt; 0,800.</li>
+      <li>Com o sinal negativo, a ordem <b>inverte</b>: −0,800 &lt; −0,750 &lt; −0,705.</li>
+      <li>Resposta: −0,8 &lt; −3/4 &lt; −0,705.</li>
+    </ol>
+  </div>
+
+  <h3>Sinais nas operações</h3>
+  <ul>
+    <li><b>Multiplicar ou dividir</b>: sinais iguais dão resultado positivo; sinais diferentes, negativo. (−3) × (−4) = 12; (−12) ÷ 4 = −3.</li>
+    <li><b>Somar</b>: com sinais iguais, some e mantenha o sinal (−2 − 5 = −7); com sinais diferentes, subtraia e fique com o sinal do maior módulo (−9 + 4 = −5).</li>
+    <li><b>Menos antes de parênteses</b> troca o sinal de dentro: −(−6) = +6.</li>
+    <li><b>Potência de base negativa</b>: expoente par dá positivo, ímpar dá negativo. (−2)⁴ = 16; (−2)³ = −8.</li>
+    <li><b>O parêntese manda</b>: (−3)² = 9, mas −3² = −9, porque sem parênteses o quadrado pega só o 3.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Calcule −2⁴ + (−3)² − (−6).</p>
+    <ol class="steps">
+      <li>−2⁴: sem parênteses, a potência é só do 2. 2⁴ = 16, e o sinal fica: −16.</li>
+      <li>(−3)²: com parênteses, expoente par: +9.</li>
+      <li>−(−6) = +6.</li>
+      <li>−16 + 9 + 6 = <b>−1</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Números entre 0 e 1: o quadrado diminui</h3>
+  <p>Elevar ao quadrado nem sempre aumenta. Depende de onde o número está:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Onde está x</th><th>Exemplo</th><th>x²</th><th>Conclusão</th></tr></thead>
+    <tbody>
+      <tr><td>x &gt; 1</td><td>1,5</td><td>2,25</td><td>x² &gt; x</td></tr>
+      <tr><td>x = 1 ou x = 0</td><td>1</td><td>1</td><td>x² = x</td></tr>
+      <tr><td><b>0 &lt; x &lt; 1</b></td><td>0,5</td><td>0,25</td><td><b>x² &lt; x</b></td></tr>
+      <tr><td>x &lt; 0</td><td>−0,5</td><td>0,25</td><td>x² &gt; x (positivo é maior que negativo)</td></tr>
+    </tbody>
+  </table></div>
+  <figure><svg viewBox="0 0 640 160" role="img" aria-label="Reta numérica: o quadrado de 0,5 é 0,25, à esquerda; o quadrado de 1,5 é 2,25, à direita">
+<line x1="30" y1="80" x2="620" y2="80" class="ax"/>
+<line x1="80" y1="74" x2="80" y2="86" class="ax"/><text x="80" y="108" class="tm" text-anchor="middle">−2</text>
+<line x1="200" y1="74" x2="200" y2="86" class="ax"/><text x="200" y="108" class="tm" text-anchor="middle">−1</text>
+<line x1="320" y1="74" x2="320" y2="86" class="ax"/><text x="320" y="108" class="tm" text-anchor="middle">0</text>
+<line x1="440" y1="74" x2="440" y2="86" class="ax"/><text x="440" y="108" class="tm" text-anchor="middle">1</text>
+<line x1="560" y1="74" x2="560" y2="86" class="ax"/><text x="560" y="108" class="tm" text-anchor="middle">2</text>
+<circle cx="380" cy="80" r="5" class="f-pa"/><circle cx="350" cy="80" r="5" class="f-pa"/>
+<path d="M380,70 Q365,44 351,68" class="ar pa" marker-end="url(#ah-pa)"/>
+<text x="365" y="34" class="ts fa" text-anchor="middle">0,5² = 0,25</text>
+<circle cx="500" cy="80" r="5" class="f-pc"/><circle cx="590" cy="80" r="5" class="f-pc"/>
+<path d="M500,70 Q545,36 589,68" class="ar pc" marker-end="url(#ah-pc)"/>
+<text x="545" y="34" class="ts fc" text-anchor="middle">1,5² = 2,25</text>
+<text x="30" y="146" class="tm">quanto mais à esquerda, menor</text>
+</svg><figcaption>Figura 2. Entre 0 e 1, o quadrado anda para a esquerda (fica menor). Acima de 1, anda para a direita (fica maior).</figcaption></figure>
+  <p>O motivo: multiplicar por um número menor que 1 é pegar só uma parte. 0,5 × 0,5 é "metade de meio", que dá 0,25. O mesmo vale para a raiz, ao contrário: √0,25 = 0,5, que é <b>maior</b> que 0,25.</p>
+
+  <h3>Propriedades das operações</h3>
+  <ul>
+    <li><b>Comutativa</b> (soma e multiplicação): a ordem não muda o resultado. 3 + 5 = 5 + 3; 3 × 5 = 5 × 3. <b>Não vale</b> para subtração e divisão.</li>
+    <li><b>Associativa</b> (soma e multiplicação): pode agrupar como quiser. (2 + 3) + 4 = 2 + (3 + 4).</li>
+    <li><b>Distributiva</b>: a multiplicação se distribui na soma. 6 × (10 + 2) = 6 × 10 + 6 × 2 = 72. É o que permite fazer contas de cabeça.</li>
+    <li><b>Elemento neutro</b>: 0 na soma (a + 0 = a) e 1 na multiplicação (a × 1 = a).</li>
+    <li><b>Fechamento</b>: somar, subtrair ou multiplicar dois inteiros dá sempre um inteiro; dividir, nem sempre (3 ÷ 2 = 1,5 não é inteiro). Subtrair dois naturais pode sair dos naturais (3 − 5 = −2).</li>
+  </ul>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Frações, decimais e dízimas</h2></div>
+  <p class="edital-ref">Edital, Mat 1</p>
+
+  <h3>O que é uma fração</h3>
+  <p>A fração a/b é a <b>divisão</b> de a por b. O número de baixo (denominador) diz em quantas partes iguais o todo foi dividido; o de cima (numerador), quantas partes foram tomadas. Multiplicar ou dividir os dois pelo mesmo número não muda o valor: 6/8 = 3/4 (dividindo por 2). Isso é <b>simplificar</b>.</p>
+  <div class="eq">
+    <p class="eq-name">As quatro operações com frações</p>
+    <div class="eq-main"><span class="frac"><span><var>a</var></span><span><var>b</var></span></span> ± <span class="frac"><span><var>c</var></span><span><var>d</var></span></span> = <span class="frac"><span><var>a</var>·<var>d</var> ± <var>b</var>·<var>c</var></span><span><var>b</var>·<var>d</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="frac"><span><var>a</var></span><span><var>b</var></span></span> × <span class="frac"><span><var>c</var></span><span><var>d</var></span></span> = <span class="frac"><span><var>a</var>·<var>c</var></span><span><var>b</var>·<var>d</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="frac"><span><var>a</var></span><span><var>b</var></span></span> ÷ <span class="frac"><span><var>c</var></span><span><var>d</var></span></span> = <span class="frac"><span><var>a</var></span><span><var>b</var></span></span> × <span class="frac"><span><var>d</var></span><span><var>c</var></span></span></div>
+    <dl>
+      <dt><var>a</var>, <var>c</var></dt><dd>numeradores (os números de cima), sem unidade</dd>
+      <dt><var>b</var>, <var>d</var></dt><dd>denominadores (os números de baixo), diferentes de zero, sem unidade</dd>
+      <dt>±</dt><dd>soma ou subtração: só se somam frações com o <b>mesmo denominador</b>; b·d é um denominador comum (o MMC é o menor deles)</dd>
+      <dt>÷</dt><dd>dividir por uma fração é multiplicar pela fração invertida</dd>
+    </dl>
+  </div>
+
+  <h3>Somar e subtrair: mesmo denominador primeiro</h3>
+  <ol class="steps">
+    <li>Ache um denominador comum: o MMC dos denominadores (seção 4).</li>
+    <li>Reescreva cada fração: divida o denominador comum pelo de baixo e multiplique pelo de cima.</li>
+    <li>Some (ou subtraia) <b>só os numeradores</b>. O denominador fica.</li>
+    <li>Simplifique, se der.</li>
+  </ol>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Calcule 3/4 + 5/6.</p>
+    <ol class="steps">
+      <li>MMC de 4 e 6: 12.</li>
+      <li>3/4: 12 ÷ 4 = 3; 3 × 3 = 9. Fica 9/12.</li>
+      <li>5/6: 12 ÷ 6 = 2; 2 × 5 = 10. Fica 10/12.</li>
+      <li>9/12 + 10/12 = <b>19/12</b>, que vale cerca de 1,58.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Somar "em cima com em cima e embaixo com embaixo": 3/4 + 5/6 <b>não</b> é 8/10. Confira pelo bom senso: 3/4 já é quase 1, e 8/10 seria menos que 1. Operar em cima com em cima e embaixo com embaixo só vale na <b>multiplicação</b>.</p>
+  </div>
+
+  <h3>Multiplicar e dividir</h3>
+  <ul>
+    <li><b>Multiplicar</b>: numerador com numerador, denominador com denominador. A palavra <b>"de"</b> é multiplicação: 2/3 <b>de</b> 3/5 é 2/3 × 3/5.</li>
+    <li><b>Dividir</b>: copie a primeira e multiplique pela segunda <b>invertida</b>.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>(a) Quanto é 2/3 de 3/5? (b) Quantos pedaços de 2/5 de metro cabem em 3/4 de metro?</p>
+    <ol class="steps">
+      <li>(a) 2/3 × 3/5 = 6/15 = <b>2/5</b>, ou 0,4.</li>
+      <li>(b) "Quantos cabem" é divisão: 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8 = <b>1,875</b>. Cabe 1 pedaço inteiro, e sobra.</li>
+    </ol>
+  </div>
+
+  <h3>Fração do todo ou fração do resto?</h3>
+  <p>É a leitura que mais derruba. "Gastou 1/4 e <b>depois 2/3 do que restou</b>" não é o mesmo que "gastou 1/4 e depois 2/3 <b>do total</b>". Pergunte sempre: <b>fração de quê?</b></p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>De um tambor cheio de óleo, usou-se 1/4 na segunda-feira e, na terça, 2/3 do que tinha restado. Que fração do tambor sobrou?</p>
+    <ol class="steps">
+      <li>Depois da segunda: resta 1 − 1/4 = 3/4.</li>
+      <li>Terça: 2/3 <b>do resto</b> = 2/3 × 3/4 = 6/12 = 1/2 do tambor.</li>
+      <li>Sobra: 3/4 − 1/2 = 3/4 − 2/4 = <b>1/4</b> do tambor, isto é, 0,25.</li>
+    </ol>
+  </div>
+
+  <h3>Fração, decimal e dízima periódica</h3>
+  <ul>
+    <li><b>Fração para decimal</b>: divida o de cima pelo de baixo. 3/8 = 0,375.</li>
+    <li><b>Decimal que termina para fração</b>: ponha sobre 10, 100, 1.000… conforme as casas, e simplifique. 0,375 = 375/1.000 = 3/8.</li>
+    <li><b>Dízima periódica para fração</b> (a fração geratriz): o <b>período</b> (a parte que se repete) vai em cima; embaixo, <b>um 9 para cada algarismo do período</b>.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Fração geratriz de uma dízima periódica simples</p>
+    <div class="eq-main">0,<var>ppp</var>… = <span class="frac"><span><var>p</var></span><span>99…9</span></span></div>
+    <dl>
+      <dt><var>p</var></dt><dd>o período: o grupo de algarismos que se repete logo depois da vírgula, sem unidade</dd>
+      <dt>99…9</dt><dd>tantos noves quantos são os algarismos do período (período de 1 algarismo: 9; de 2: 99; de 3: 999)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Escreva como fração: (a) 0,727272…; (b) 0,1666…</p>
+    <ol class="steps">
+      <li>(a) O período é 72, com dois algarismos: 72/99. Simplificando por 9: <b>8/11</b>. Conferindo: 8 ÷ 11 dá cerca de 0,727.</li>
+      <li>(b) Aqui há um algarismo que não se repete (o 1) antes do período (6). Faça pela conta: chame x = 0,1666… Então 10x = 1,666… e 100x = 16,666… Subtraindo: 100x − 10x = 16,666… − 1,666… = 15. Logo 90x = 15 e x = 15/90 = <b>1/6</b>. Conferindo: 1 ÷ 6 dá cerca de 0,167.</li>
+    </ol>
+  </div>
+  <p>A conta do item (b) serve para qualquer dízima: multiplique por 10, 100… até alinhar duas vezes a parte que se repete, e subtraia para ela sumir.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio cobra</p>
+    <p>Fração quase sempre vem dentro de uma história (parte de um tanque, de um lote, de um salário). O trabalho é traduzir: "de" vira vezes, "o que restou" vira 1 menos a fração usada, e a pergunta final pode ser a parte usada <b>ou</b> a que sobrou. Releia a pergunta antes de marcar.</p>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Potências, raízes e ordem das operações</h2></div>
+  <p class="edital-ref">Edital, Mat 1</p>
+
+  <h3>Potência: multiplicação repetida</h3>
+  <p>2⁵ quer dizer 2 × 2 × 2 × 2 × 2 = 32. O 2 é a <b>base</b> (o que se repete) e o 5 é o <b>expoente</b> (quantas vezes). Não é 2 × 5.</p>
+  <div class="eq">
+    <p class="eq-name">Propriedades das potências</p>
+    <div class="eq-main"><var>a</var><sup><var>m</var></sup> · <var>a</var><sup><var>n</var></sup> = <var>a</var><sup><var>m</var>+<var>n</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; <span class="frac"><span><var>a</var><sup><var>m</var></sup></span><span><var>a</var><sup><var>n</var></sup></span></span> = <var>a</var><sup><var>m</var>−<var>n</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; (<var>a</var><sup><var>m</var></sup>)<sup><var>n</var></sup> = <var>a</var><sup><var>m</var>·<var>n</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; (<var>a</var>·<var>b</var>)<sup><var>n</var></sup> = <var>a</var><sup><var>n</var></sup> · <var>b</var><sup><var>n</var></sup></div>
+    <dl>
+      <dt><var>a</var>, <var>b</var></dt><dd>bases: números reais diferentes de zero, sem unidade</dd>
+      <dt><var>m</var>, <var>n</var></dt><dd>expoentes, sem unidade</dd>
+      <dt>mesma base</dt><dd>ao multiplicar, somam-se os expoentes; ao dividir, subtraem-se</dd>
+      <dt>potência de potência</dt><dd>multiplicam-se os expoentes</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Expoente zero, negativo e fracionário</p>
+    <div class="eq-main"><var>a</var><sup>0</sup> = 1 &nbsp;&nbsp;&nbsp;&nbsp; <var>a</var><sup>−<var>n</var></sup> = <span class="frac"><span>1</span><span><var>a</var><sup><var>n</var></sup></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>a</var><sup>1/<var>n</var></sup> = <sup><var>n</var></sup>√<var>a</var></div>
+    <dl>
+      <dt><var>a</var></dt><dd>base, diferente de zero (e positiva, no caso da raiz de índice par)</dd>
+      <dt><var>n</var></dt><dd>número natural maior que zero</dd>
+      <dt>expoente negativo</dt><dd>inverte a base; <b>não</b> deixa o resultado negativo</dd>
+      <dt>expoente 1/<var>n</var></dt><dd>é a raiz de índice n: a<sup>1/2</sup> é a raiz quadrada, a<sup>1/3</sup> é a raiz cúbica</dd>
+    </dl>
+  </div>
+  <p>Exemplos rápidos: 5⁰ = 1; 2<sup>−3</sup> = 1/2³ = 1/8 = 0,125; (1/2)<sup>−3</sup> = 2³ = 8 (a fração inverte); 27<sup>1/3</sup> = 3, porque 3 × 3 × 3 = 27.</p>
+
+  <h3>Comparar potências sem calculadora</h3>
+  <p>Potências com bases <b>e</b> expoentes diferentes não se comparam de olho. O método é deixar todas com o <b>mesmo expoente</b> (aí a de maior base é a maior) ou, quando os expoentes não têm divisor comum útil, com a <b>mesma base</b> (aí a de maior expoente é a maior). Às vezes é preciso as duas coisas: para 2<sup>75</sup>, 3<sup>50</sup> e 4<sup>37</sup>, tem-se 4<sup>37</sup> = 2<sup>74</sup> &lt; 2<sup>75</sup> (mesma base) e 2<sup>75</sup> = 8<sup>25</sup> &lt; 9<sup>25</sup> = 3<sup>50</sup> (mesmo expoente, só nesse par).</p>
+  <div class="box conceito">
+    <p class="box-title">Método: mesmo expoente</p>
+    <ol class="steps">
+      <li>Ache o maior número que divide todos os expoentes (o MDC deles).</li>
+      <li>Reescreva cada potência como (base<sup>k</sup>)<sup>MDC</sup>, usando potência de potência ao contrário.</li>
+      <li>Calcule as bases novas (são números pequenos).</li>
+      <li>Com expoentes iguais, compare só as bases.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Ponha em ordem crescente: 2⁴⁵, 3³⁰ e 5¹⁵.</p>
+    <ol class="steps">
+      <li>Expoentes 45, 30 e 15: o maior divisor comum é 15.</li>
+      <li>2⁴⁵ = (2³)¹⁵ = 8¹⁵, porque 3 × 15 = 45.</li>
+      <li>3³⁰ = (3²)¹⁵ = 9¹⁵, porque 2 × 15 = 30.</li>
+      <li>5¹⁵ já está pronto.</li>
+      <li>Bases 5 &lt; 8 &lt; 9. Logo <b>5¹⁵ &lt; 2⁴⁵ &lt; 3³⁰</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Olhar só a base ("5 é a maior, então 5¹⁵ é o maior") ou só o expoente ("45 é o maior, então 2⁴⁵ é o maior"). No exemplo, os dois palpites erram: o maior é 3³⁰ e o menor é 5¹⁵.</p>
+  </div>
+
+  <h3>Raízes</h3>
+  <p>√a é o número não negativo que, elevado ao quadrado, dá a: √81 = 9. Convém saber de cor os quadrados de 1 a 15 (… 11² = 121, 12² = 144, 13² = 169, 14² = 196, 15² = 225).</p>
+  <ul>
+    <li>A raiz <b>se distribui</b> na multiplicação e na divisão: √(4 × 25) = √4 × √25 = 2 × 5 = 10.</li>
+    <li>A raiz <b>não se distribui</b> na soma: √(36 + 64) = √100 = 10, e não √36 + √64 = 6 + 8 = 14.</li>
+  </ul>
+
+  <h3>Ordem das operações</h3>
+  <p>Numa expressão, a ordem é sempre esta:</p>
+  <ol class="steps">
+    <li><b>Parênteses</b> (de dentro para fora);</li>
+    <li><b>Potências e raízes</b>;</li>
+    <li><b>Multiplicações e divisões</b>, na ordem em que aparecem, da esquerda para a direita;</li>
+    <li><b>Somas e subtrações</b>, da esquerda para a direita.</li>
+  </ol>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>Calcule 50 − 2 × (3 + 4)² ÷ 7 + √81.</p>
+    <ol class="steps">
+      <li>Parênteses: 3 + 4 = 7. Fica 50 − 2 × 7² ÷ 7 + √81.</li>
+      <li>Potência e raiz: 7² = 49 e √81 = 9. Fica 50 − 2 × 49 ÷ 7 + 9.</li>
+      <li>Multiplicação e divisão, da esquerda para a direita: 2 × 49 = 98; 98 ÷ 7 = 14. Fica 50 − 14 + 9.</li>
+      <li>Soma e subtração, da esquerda para a direita: 50 − 14 = 36; 36 + 9 = <b>45</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Fazer a conta na ordem em que se lê. Em 20 − 12 ÷ 4, a divisão vem antes: 20 − 3 = 17, e não 8 ÷ 4 = 2. E em 50 − 14 + 9 não se soma primeiro o 14 com o 9: subtração e soma têm a mesma prioridade e vão da esquerda para a direita.</p>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>MMC e MDC</h2></div>
+  <p class="edital-ref">Edital, Mat 1</p>
+
+  <h3>Múltiplos, divisores e números primos</h3>
+  <ul>
+    <li><b>Múltiplos</b> de 6: 6, 12, 18, 24… (a tabuada do 6). São infinitos e vão <b>para cima</b>.</li>
+    <li><b>Divisores</b> de 12: 1, 2, 3, 4, 6 e 12 (quem divide 12 sem sobra). São poucos e vão <b>para baixo</b>.</li>
+    <li><b>Primo</b>: número maior que 1 que só se divide por 1 e por ele mesmo: 2, 3, 5, 7, 11, 13, 17, 19…</li>
+  </ul>
+  <p><b>Fatorar</b> é escrever o número como produto de primos. Divida pelo menor primo possível, até chegar a 1: 60 ÷ 2 = 30; 30 ÷ 2 = 15; 15 ÷ 3 = 5; 5 ÷ 5 = 1. Então 60 = 2² · 3 · 5.</p>
+  <div class="eq">
+    <p class="eq-name">MMC e MDC pela fatoração</p>
+    <div class="eq-main">MMC = todos os primos, cada um com o <b>maior</b> expoente &nbsp;&nbsp;&nbsp;&nbsp; MDC = só os primos comuns, cada um com o <b>menor</b> expoente</div>
+    <dl>
+      <dt>MMC</dt><dd>mínimo múltiplo comum: o menor número (maior que zero) que é múltiplo de todos os números dados</dd>
+      <dt>MDC</dt><dd>máximo divisor comum: o maior número que divide todos os números dados sem sobra</dd>
+      <dt>primo comum</dt><dd>fator primo que aparece na fatoração de <b>todos</b> os números</dd>
+      <dt>dois números <var>a</var> e <var>b</var></dt><dd>vale MMC(a, b) × MDC(a, b) = a × b</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 10</p>
+    <p>Três alarmes de teste tocam a cada 8, 12 e 20 minutos. Tocaram juntos agora. Daqui a quantos minutos tocam juntos de novo?</p>
+    <ol class="steps">
+      <li>"Juntos de novo" pede um múltiplo comum, o menor: MMC.</li>
+      <li>Fatore: 8 = 2³; 12 = 2² · 3; 20 = 2² · 5.</li>
+      <li>Todos os primos, com o maior expoente: 2³ · 3 · 5 = 8 × 3 × 5.</li>
+      <li>MMC = <b>120 minutos</b> (2 horas).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 11</p>
+    <p>Um almoxarife tem 48 fusíveis, 60 bornes e 84 terminais e quer montar o maior número possível de kits iguais, sem sobrar peça. Quantos kits? O que vai em cada um?</p>
+    <ol class="steps">
+      <li>"Dividir em grupos iguais, o maior número, sem sobra" pede um divisor comum, o maior: MDC.</li>
+      <li>Fatore: 48 = 2⁴ · 3; 60 = 2² · 3 · 5; 84 = 2² · 3 · 7.</li>
+      <li>Só os primos comuns (2 e 3), com o menor expoente: 2² · 3.</li>
+      <li>MDC = <b>12 kits</b>.</li>
+      <li>Cada kit: 48 ÷ 12 = 4 fusíveis, 60 ÷ 12 = 5 bornes e 84 ÷ 12 = 7 terminais.</li>
+    </ol>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Qual dos dois usar? Olhe a pergunta</p>
+    <div class="tw"><table>
+      <thead><tr><th>O enunciado fala em…</th><th>Use</th><th>O resultado é…</th></tr></thead>
+      <tbody>
+        <tr><td>coisas que se repetem a cada tanto tempo e "voltam a coincidir", "juntos de novo", "próxima vez"</td><td><b>MMC</b></td><td>maior ou igual ao maior dos números</td></tr>
+        <tr><td>"dividir em partes iguais", "o maior tamanho possível", "o maior número de grupos", "sem sobra"</td><td><b>MDC</b></td><td>menor ou igual ao menor dos números</td></tr>
+        <tr><td>somar ou subtrair frações de denominadores diferentes</td><td><b>MMC</b> dos denominadores</td><td>o denominador comum</td></tr>
+        <tr><td>simplificar uma fração de uma vez</td><td><b>MDC</b> de numerador e denominador</td><td>o número pelo qual dividir os dois</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Trocar um pelo outro. Faça o teste do tamanho: o MMC nunca é menor que o maior dos números; o MDC nunca é maior que o menor deles. Se três alarmes tocam a cada 8, 12 e 20 minutos, a resposta "4 minutos" (o MDC) não faz sentido: nenhum deles toca de 4 em 4 minutos.</p>
+    <p>Outra: depois do MDC, a pergunta pode ser o <b>tamanho</b> de cada parte ou a <b>quantidade</b> de partes. No exemplo dos kits, 12 é a quantidade de kits; o conteúdo de cada kit sai da divisão seguinte.</p>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Razão, proporção e divisão proporcional</h2></div>
+  <p class="edital-ref">Edital, Mat 2</p>
+
+  <h3>Razão: uma comparação por divisão</h3>
+  <p>A <b>razão</b> entre a e b é a fração a/b (lê-se "a para b", e também se escreve a : b). A ordem importa: a razão entre aprovados e reprovados não é a mesma que entre reprovados e aprovados.</p>
+  <p>Preste atenção em <b>quem está sendo comparado com quem</b>:</p>
+  <ul>
+    <li><b>parte para parte</b>: "a razão entre peças boas e defeituosas é 7 para 3" quer dizer 7 boas para cada 3 defeituosas;</li>
+    <li><b>parte para o todo</b>: nesse mesmo lote, a cada 7 + 3 = 10 peças, 7 são boas. As boas são 7/10 do <b>total</b>, e não 7/3 nem 3/7.</li>
+  </ul>
+  <p>Uma razão muito usada é a <b>escala</b> de um desenho: escala 1 : 50 quer dizer que 1 cm no papel vale 50 cm na realidade.</p>
+
+  <h3>Proporção: duas razões iguais</h3>
+  <div class="eq">
+    <p class="eq-name">Proporção e a multiplicação em cruz</p>
+    <div class="eq-main"><span class="frac"><span><var>a</var></span><span><var>b</var></span></span> = <span class="frac"><span><var>c</var></span><span><var>d</var></span></span> &nbsp;&nbsp;⟺&nbsp;&nbsp; <var>a</var> · <var>d</var> = <var>b</var> · <var>c</var></div>
+    <dl>
+      <dt><var>a</var>, <var>d</var></dt><dd>os extremos da proporção (o primeiro e o último termo), na unidade de cada grandeza</dd>
+      <dt><var>b</var>, <var>c</var></dt><dd>os meios da proporção (os dois termos do meio), diferentes de zero</dd>
+      <dt>em cruz</dt><dd>o produto dos extremos é igual ao produto dos meios; com três valores conhecidos, acha-se o quarto</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 12</p>
+    <p>Numa planta em escala 1 : 50, uma parede mede 8 cm. Qual o comprimento real, em metros?</p>
+    <ol class="steps">
+      <li>Monte a proporção, papel sobre real: 1/50 = 8/x.</li>
+      <li>Em cruz: 1 · x = 50 · 8, então x = 400 cm.</li>
+      <li>Converta: 400 cm ÷ 100 = <b>4 m</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Grandezas diretamente e inversamente proporcionais</h3>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Diretamente proporcionais</th><th>Inversamente proporcionais</th></tr></thead>
+    <tbody>
+      <tr><td>O que acontece</td><td>uma dobra, a outra <b>dobra</b></td><td>uma dobra, a outra cai <b>pela metade</b></td></tr>
+      <tr><td>O que fica constante</td><td>o <b>quociente</b>: y/x = k</td><td>o <b>produto</b>: x · y = k</td></tr>
+      <tr><td>Exemplos</td><td>horas trabalhadas e peças produzidas; litros e preço; tempo e distância (mesma velocidade)</td><td>número de pessoas e dias para o mesmo serviço; velocidade e tempo (mesma distância); vazão e tempo para encher</td></tr>
+    </tbody>
+  </table></div>
+  <p>Cuidado: "uma aumenta e a outra aumenta" não basta para ser diretamente proporcional. Precisa aumentar <b>na mesma razão</b> (dobra com dobra). Idade e altura de uma criança crescem juntas, mas não são proporcionais.</p>
+
+  <h3>Divisão em partes proporcionais</h3>
+  <div class="box conceito">
+    <p class="box-title">Método das partes (divisão direta)</p>
+    <ol class="steps">
+      <li>Some os números da proporção: é o total de <b>partes</b>.</li>
+      <li>Divida o valor total pelo número de partes: é o valor de <b>uma parte</b>.</li>
+      <li>Multiplique o valor de uma parte pelo número de cada um.</li>
+      <li>Confira: a soma dos resultados tem de dar o total.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 13</p>
+    <p>R$ 7.200,00 serão divididos entre três sócios em partes diretamente proporcionais a 2, 3 e 4. Quanto recebe cada um?</p>
+    <ol class="steps">
+      <li>Partes: 2 + 3 + 4 = 9.</li>
+      <li>Uma parte: 7.200 ÷ 9 = R$ 800,00.</li>
+      <li>Cada um: 2 × 800 = <b>R$ 1.600,00</b>; 3 × 800 = <b>R$ 2.400,00</b>; 4 × 800 = <b>R$ 3.200,00</b>.</li>
+      <li>Conferindo: 1.600 + 2.400 + 3.200 = 7.200.</li>
+    </ol>
+  </div>
+  <p>Na divisão <b>inversamente</b> proporcional, quem tem o número maior recebe <b>menos</b>. Só muda o começo: <b>inverta cada número</b> (2 vira 1/2) e depois siga o método das partes.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 14</p>
+    <p>Um bônus de R$ 6.000,00 será dividido entre dois técnicos em partes inversamente proporcionais aos seus números de faltas: 2 e 3. Quanto recebe cada um?</p>
+    <ol class="steps">
+      <li>Inverta: 1/2 e 1/3.</li>
+      <li>Tire as frações multiplicando as duas pelo MMC dos denominadores (6): 1/2 × 6 = 3 e 1/3 × 6 = 2. A divisão agora é <b>direta</b>, proporcional a 3 e 2.</li>
+      <li>Partes: 3 + 2 = 5. Uma parte: 6.000 ÷ 5 = R$ 1.200,00.</li>
+      <li>Quem teve 2 faltas: 3 × 1.200 = <b>R$ 3.600,00</b>. Quem teve 3 faltas: 2 × 1.200 = <b>R$ 2.400,00</b>.</li>
+      <li>Faz sentido: quem faltou menos recebeu mais.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Na divisão inversa, apenas <b>trocar</b> os números de lugar só funciona com dois números. Com três (por exemplo, 1, 2 e 3), inverter dá 1/1, 1/2 e 1/3, que viram 6, 3 e 2 (multiplicando por 6), e não 3, 2 e 1. Inverta sempre pela fração.</p>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Regra de três simples e composta</h2></div>
+  <p class="edital-ref">Edital, Mat 2</p>
+
+  <h3>Regra de três simples: duas grandezas</h3>
+  <div class="box conceito">
+    <p class="box-title">Método em quatro passos</p>
+    <ol class="steps">
+      <li><b>Tabela</b>: uma coluna para cada grandeza, uma linha para cada situação. O valor procurado é x.</li>
+      <li><b>Unidades</b>: cada coluna na mesma unidade (tudo em horas, ou tudo em minutos).</li>
+      <li><b>Direta ou inversa?</b> Pergunte: "se uma aumenta, a outra aumenta ou diminui?"</li>
+      <li><b>Conta</b>: se for <b>direta</b>, multiplique em cruz. Se for <b>inversa</b>, multiplique em linha (cada linha dá o mesmo produto).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 15</p>
+    <p>Um gerador consome 15 litros de diesel em 4 horas. Quanto consome em 10 horas, no mesmo regime?</p>
+    <div class="tw"><table>
+      <thead><tr><th>Tempo (h)</th><th>Diesel (L)</th></tr></thead>
+      <tbody><tr><td>4</td><td>15</td></tr><tr><td>10</td><td>x</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Mais horas, mais diesel: <b>direta</b>.</li>
+      <li>Em cruz: 4 · x = 10 · 15, isto é, 4x = 150.</li>
+      <li>x = 150 ÷ 4 = <b>37,5 litros</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 16</p>
+    <p>A 80 km/h, um caminhão faz um trajeto em 3 horas. A 60 km/h, quanto tempo leva no mesmo trajeto?</p>
+    <div class="tw"><table>
+      <thead><tr><th>Velocidade (km/h)</th><th>Tempo (h)</th></tr></thead>
+      <tbody><tr><td>80</td><td>3</td></tr><tr><td>60</td><td>x</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Menos velocidade, mais tempo: <b>inversa</b>.</li>
+      <li>Em linha: 80 · 3 = 60 · x, isto é, 240 = 60x.</li>
+      <li>x = 240 ÷ 60 = <b>4 horas</b>.</li>
+      <li>Faz sentido: mais devagar, demora mais. Em cruz daria 2,25 h, menos tempo andando mais devagar: absurdo.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Multiplicar em cruz sem perguntar se é inversa. Antes de marcar, faça o <b>teste do bom senso</b>: mais gente no serviço tem de dar <b>menos</b> dias; velocidade menor tem de dar <b>mais</b> tempo. E não esqueça as unidades: 1 h 20 min são 80 minutos, e não 120; 2 h 15 min são 2,25 h, e não 2,15 h.</p>
+  </div>
+
+  <h3>Regra de três composta: três ou mais grandezas</h3>
+  <p>O método mais seguro dispensa a análise "direta ou inversa" de cada coluna. Ele separa as grandezas em dois grupos:</p>
+  <ul>
+    <li><b>causas</b>: tudo o que <b>faz</b> o trabalho: máquinas, pessoas, torneiras, horas por dia, dias, velocidade;</li>
+    <li><b>efeito</b>: o que <b>fica pronto</b>: peças, metros de vala, volume, páginas, serviço feito.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Método causa e efeito</p>
+    <div class="eq-main">(causas da linha 1) × (efeito da linha 2) = (causas da linha 2) × (efeito da linha 1)</div>
+    <dl>
+      <dt>causas</dt><dd>o produto de todas as grandezas que produzem o resultado, naquela linha (por exemplo, máquinas × horas por dia × dias)</dd>
+      <dt>efeito</dt><dd>o resultado produzido naquela linha (peças, m³, metros); se o serviço é o mesmo nas duas linhas, vale 1 nas duas</dd>
+      <dt>linha 1, linha 2</dt><dd>as duas situações do enunciado; uma delas tem o valor procurado, x</dd>
+    </dl>
+  </div>
+  <p>A multiplicação é <b>cruzada</b>: as causas de uma linha com o efeito da outra. A ideia por trás é simples: o que cada "unidade de causa" produz (peças por máquina-hora, por exemplo) é igual nas duas situações.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 17</p>
+    <p>Três máquinas, trabalhando 8 horas por dia durante 5 dias, produzem 1.800 peças. Quantas peças produzem 5 máquinas iguais, trabalhando 6 horas por dia durante 8 dias?</p>
+    <div class="tw"><table>
+      <thead><tr><th>Máquinas (causa)</th><th>Horas/dia (causa)</th><th>Dias (causa)</th><th>Peças (efeito)</th></tr></thead>
+      <tbody><tr><td>3</td><td>8</td><td>5</td><td>1.800</td></tr><tr><td>5</td><td>6</td><td>8</td><td>x</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Causas da linha 1 × efeito da linha 2: 3 · 8 · 5 · x = 120x.</li>
+      <li>Causas da linha 2 × efeito da linha 1: 5 · 6 · 8 · 1.800 = 240 · 1.800 = 432.000.</li>
+      <li>120x = 432.000, então x = <b>3.600 peças</b>.</li>
+      <li>Conferindo pelo bom senso: as causas dobraram (de 120 para 240 máquinas-hora), e a produção dobrou.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 18</p>
+    <p>Seis técnicos, trabalhando 8 horas por dia, fazem a revisão de uma subestação em 15 dias. Em quantos dias 10 técnicos, trabalhando 6 horas por dia, fazem a mesma revisão?</p>
+    <div class="tw"><table>
+      <thead><tr><th>Técnicos (causa)</th><th>Horas/dia (causa)</th><th>Dias (causa)</th><th>Revisão (efeito)</th></tr></thead>
+      <tbody><tr><td>6</td><td>8</td><td>15</td><td>1</td></tr><tr><td>10</td><td>6</td><td>x</td><td>1</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>O x agora está numa causa. O método é o mesmo.</li>
+      <li>6 · 8 · 15 · 1 = 10 · 6 · x · 1.</li>
+      <li>720 = 60x, então x = <b>12 dias</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 19</p>
+    <p>Quatro bombas iguais transferem 120 m³ de combustível em 5 horas. Três dessas bombas transferem x m³ em y horas. Escreva y em função de x.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Bombas (causa)</th><th>Horas (causa)</th><th>Volume em m³ (efeito)</th></tr></thead>
+      <tbody><tr><td>4</td><td>5</td><td>120</td></tr><tr><td>3</td><td>y</td><td>x</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Com letras, o método não muda: 4 · 5 · x = 3 · y · 120.</li>
+      <li>20x = 360y.</li>
+      <li>Isole o y: y = 20x/360 = <b>x/18</b>.</li>
+      <li>Conferindo: cada bomba transfere 120 ÷ (4 × 5) = 6 m³ por hora; três bombas, 18 m³ por hora; para x m³, x/18 horas.</li>
+    </ol>
+  </div>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio cobra</p>
+    <p>A questão 17 da prova de 2023 era deste tipo: torneiras, horas e volume, com a resposta em letras. Quando a resposta vem em letras, não tente adivinhar números: monte a tabela com x e y dentro dela e isole a letra pedida no fim. Se a resposta final vier como fração, simplifique e compare com as alternativas (x/18 também pode aparecer escrito como 2x/36, por exemplo).</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<!-- ============ SEÇÃO 7 ============ -->
+<section id="b7" class="block">
+  <div class="block-head"><span class="block-num">7</span><h2>Porcentagem</h2></div>
+  <p class="edital-ref">Edital, Mat 2</p>
+
+  <h3>Por cento é "dividido por 100"</h3>
+  <p>35% = 35/100 = 0,35. Para calcular uma porcentagem <b>de</b> um valor, multiplique (o "de" é vezes, como nas frações).</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 20</p>
+    <p>Quanto é 35% de R$ 1.800,00?</p>
+    <ol class="steps">
+      <li>35% = 0,35.</li>
+      <li>0,35 × 1.800 = <b>R$ 630,00</b>.</li>
+      <li>De cabeça: 10% de 1.800 é 180; 30% é 3 × 180 = 540; 5% é metade de 10%, 90. Soma: 540 + 90 = 630.</li>
+    </ol>
+  </div>
+
+  <h3>Fator multiplicativo: o atalho para aumentos e descontos</h3>
+  <div class="eq">
+    <p class="eq-name">Fator de aumento e fator de desconto</p>
+    <div class="eq-main"><var>V</var><sub>final</sub> = <var>V</var><sub>inicial</sub> · (1 + <var>p</var>) &nbsp;&nbsp;&nbsp;&nbsp; <var>V</var><sub>final</sub> = <var>V</var><sub>inicial</sub> · (1 − <var>p</var>)</div>
+    <dl>
+      <dt><var>V</var><sub>inicial</sub></dt><dd>valor antes da variação, em reais (ou na unidade do problema)</dd>
+      <dt><var>V</var><sub>final</sub></dt><dd>valor depois da variação, na mesma unidade</dd>
+      <dt><var>p</var></dt><dd>a porcentagem escrita em decimal (12% = 0,12), sem unidade</dd>
+      <dt>1 + <var>p</var></dt><dd>fator de <b>aumento</b>: aumento de 12% é multiplicar por 1,12</dd>
+      <dt>1 − <var>p</var></dt><dd>fator de <b>desconto</b>: desconto de 25% é multiplicar por 0,75</dd>
+    </dl>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Variação</th><th>Fator</th><th>Variação</th><th>Fator</th></tr></thead>
+    <tbody>
+      <tr><td>aumento de 5%</td><td>× 1,05</td><td>desconto de 5%</td><td>× 0,95</td></tr>
+      <tr><td>aumento de 20%</td><td>× 1,20</td><td>desconto de 20%</td><td>× 0,80</td></tr>
+      <tr><td>aumento de 50%</td><td>× 1,50</td><td>desconto de 50%</td><td>× 0,50</td></tr>
+      <tr><td>aumento de 100% (dobrar)</td><td>× 2</td><td>desconto de 100%</td><td>× 0 (de graça)</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 21</p>
+    <p>(a) Um salário de R$ 2.500,00 tem reajuste de 12%. (b) Uma ferramenta de R$ 240,00 tem desconto de 25%. Quais os novos valores?</p>
+    <ol class="steps">
+      <li>(a) Fator 1,12: 2.500 × 1,12 = <b>R$ 2.800,00</b>.</li>
+      <li>(b) Fator 0,75: 240 × 0,75 = <b>R$ 180,00</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Aumentos e descontos sucessivos: multiplique os fatores</h3>
+  <p>Quando há duas variações seguidas, a segunda incide sobre o valor <b>já alterado</b>. Por isso <b>as porcentagens não se somam</b>: os fatores se multiplicam.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 22</p>
+    <p>Uma peça de R$ 200,00 sofre dois aumentos seguidos, de 20% e de 30%. (a) Qual o preço final? (b) Qual o aumento total, em porcentagem?</p>
+    <ol class="steps">
+      <li>Fatores: 1,20 e 1,30. Produto: 1,20 × 1,30 = 1,56.</li>
+      <li>(a) 200 × 1,56 = <b>R$ 312,00</b>.</li>
+      <li>(b) Fator 1,56 é aumento de <b>56%</b>, e não de 50%.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>Aumentar 10% e depois descontar 10% não volta ao mesmo valor.</b> Os fatores são 1,10 e 0,90, e 1,10 × 0,90 = 0,99: o resultado é uma <b>queda de 1%</b>. O desconto incide sobre um valor maior do que o aumento incidiu.</p>
+  </div>
+
+  <h3>Variação percentual: sempre sobre o valor antigo</h3>
+  <div class="eq">
+    <p class="eq-name">Variação percentual</p>
+    <div class="eq-main">variação = <span class="frac"><span><var>V</var><sub>novo</sub> − <var>V</var><sub>antigo</sub></span><span><var>V</var><sub>antigo</sub></span></span> × 100%</div>
+    <dl>
+      <dt><var>V</var><sub>novo</sub></dt><dd>valor depois da mudança, em reais (ou na unidade do problema)</dd>
+      <dt><var>V</var><sub>antigo</sub></dt><dd>valor antes da mudança, na mesma unidade: é a <b>base</b> da porcentagem</dd>
+      <dt>variação</dt><dd>em %; positiva é aumento, negativa é queda</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 23</p>
+    <p>A conta de energia de uma oficina passou de R$ 1.250,00 para R$ 1.400,00. De quanto foi o aumento, em porcentagem? E, se no mês seguinte ela voltar de R$ 1.400,00 para R$ 1.250,00, de quanto será a queda?</p>
+    <ol class="steps">
+      <li>Subida: (1.400 − 1.250)/1.250 = 150/1.250 = 0,12. Aumento de <b>12%</b>.</li>
+      <li>Descida: a base agora é 1.400. (1.250 − 1.400)/1.400 = −150/1.400, cerca de −0,107. Queda de aproximadamente <b>10,7%</b>.</li>
+      <li>Os mesmos R$ 150,00 são 12% de um valor e 10,7% do outro: a porcentagem depende da base.</li>
+    </ol>
+  </div>
+
+  <h3>Voltar ao valor original: divida pelo fator</h3>
+  <p>Se o valor final saiu de uma multiplicação pelo fator, o caminho de volta é a <b>divisão</b> pelo mesmo fator.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 24</p>
+    <p>Depois de um aumento de 15%, um disjuntor passou a custar R$ 207,00. Quanto custava antes?</p>
+    <ol class="steps">
+      <li>Antes × 1,15 = 207.</li>
+      <li>Antes = 207 ÷ 1,15 = <b>R$ 180,00</b>.</li>
+      <li>O erro comum é tirar 15% de 207: 207 × 0,85 = R$ 175,95. Não confere: 175,95 com 15% de aumento não dá 207.</li>
+    </ol>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">A pergunta que evita metade dos erros: "por cento de quê?"</p>
+    <ul>
+      <li>Aumento ou queda: a base é o valor <b>antigo</b>.</li>
+      <li>Desconto "sobre o novo preço": a base é o preço já alterado.</li>
+      <li>Porcentagem de porcentagem: multiplique. Se 40% dos funcionários são da manutenção e 30% <b>desses</b> são eletricistas, os eletricistas da manutenção são 0,30 × 0,40 = 0,12, isto é, 12% do total (e não 70%, nem 30%).</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-set="b7"></div>
+</section>
+
+<!-- ============ SEÇÃO 8 ============ -->
+<section id="b8" class="block">
+  <div class="block-head"><span class="block-num">8</span><h2>Juros simples e compostos</h2></div>
+  <p class="edital-ref">Edital, Mat 8</p>
+
+  <h3>As cinco palavras</h3>
+  <ul>
+    <li><b>Capital (C)</b>: o valor aplicado ou emprestado no início.</li>
+    <li><b>Taxa (i)</b>: a porcentagem cobrada por período: 2% ao mês (a.m.), 12% ao ano (a.a.).</li>
+    <li><b>Tempo (t)</b>: o número de períodos.</li>
+    <li><b>Juros (J)</b>: o que se paga (ou se ganha) pelo uso do dinheiro.</li>
+    <li><b>Montante (M)</b>: o total no fim. M = C + J.</li>
+  </ul>
+  <div class="box alert">
+    <p class="box-title">Duas conferências antes de qualquer conta</p>
+    <ol class="steps">
+      <li><b>Taxa em decimal</b>: 2% entra na fórmula como 0,02.</li>
+      <li><b>Taxa e tempo na mesma unidade</b>: taxa ao mês pede tempo em meses; taxa ao ano pede tempo em anos. Se não baterem, converta um dos dois <b>antes</b> de começar.</li>
+    </ol>
+  </div>
+
+  <h3>Juros simples: sempre sobre o capital inicial</h3>
+  <p>Nos juros simples, o juro de cada período é calculado sobre o <b>capital inicial</b>. Todo período rende o mesmo valor.</p>
+  <div class="eq">
+    <p class="eq-name">Juros simples</p>
+    <div class="eq-main"><var>J</var> = <var>C</var> · <var>i</var> · <var>t</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>M</var> = <var>C</var> + <var>J</var> = <var>C</var> · (1 + <var>i</var> · <var>t</var>)</div>
+    <dl>
+      <dt><var>J</var></dt><dd>juros, em reais (R$)</dd>
+      <dt><var>C</var></dt><dd>capital inicial, em reais (R$)</dd>
+      <dt><var>i</var></dt><dd>taxa de juros por período, em decimal (2% a.m. = 0,02 ao mês)</dd>
+      <dt><var>t</var></dt><dd>tempo, em número de períodos, na <b>mesma unidade da taxa</b> (meses, anos)</dd>
+      <dt><var>M</var></dt><dd>montante: capital mais juros, em reais (R$)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 25</p>
+    <p>R$ 3.000,00 são aplicados a juros simples de 2% ao mês, durante 5 meses. Quais os juros e o montante?</p>
+    <ol class="steps">
+      <li>Taxa ao mês e tempo em meses: unidades iguais. i = 0,02.</li>
+      <li>J = 3.000 × 0,02 × 5 = <b>R$ 300,00</b>.</li>
+      <li>M = 3.000 + 300 = <b>R$ 3.300,00</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 26</p>
+    <p>R$ 6.000,00 são emprestados a juros simples de 24% ao ano, por 5 meses. Quais os juros?</p>
+    <ol class="steps">
+      <li>Taxa ao <b>ano</b>, tempo em <b>meses</b>: é preciso converter.</li>
+      <li>Nos juros simples, a taxa se divide: 24% ao ano ÷ 12 = 2% ao mês.</li>
+      <li>J = 6.000 × 0,02 × 5 = <b>R$ 600,00</b>.</li>
+      <li>Sem converter, a conta daria 6.000 × 0,24 × 5 = R$ 7.200,00 de juros: mais que o valor emprestado, em cinco meses. O absurdo avisa o erro.</li>
+    </ol>
+  </div>
+
+  <h3>Juros compostos: juros sobre juros</h3>
+  <p>Nos juros compostos, o juro de cada período é calculado sobre o <b>montante do período anterior</b>. É o aumento sucessivo da seção 7, repetido t vezes com o mesmo fator (1 + i).</p>
+  <div class="eq">
+    <p class="eq-name">Juros compostos</p>
+    <div class="eq-main"><var>M</var> = <var>C</var> · (1 + <var>i</var>)<sup><var>t</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; <var>J</var> = <var>M</var> − <var>C</var></div>
+    <dl>
+      <dt><var>M</var></dt><dd>montante ao fim de t períodos, em reais (R$)</dd>
+      <dt><var>C</var></dt><dd>capital inicial, em reais (R$)</dd>
+      <dt><var>i</var></dt><dd>taxa de juros por período, em decimal</dd>
+      <dt><var>t</var></dt><dd>número de períodos, na mesma unidade da taxa; aqui ele é <b>expoente</b></dd>
+      <dt>(1 + <var>i</var>)</dt><dd>o fator de aumento de um período</dd>
+      <dt><var>J</var></dt><dd>juros, em reais (R$): nos compostos, saem da subtração M − C</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 27</p>
+    <p>R$ 2.000,00 são aplicados a juros compostos de 5% ao mês, durante 3 meses. Qual o montante? Quanto a mais do que a juros simples?</p>
+    <ol class="steps">
+      <li>Fator de um mês: 1,05. Sem calculadora, vá um mês de cada vez.</li>
+      <li>Mês 1: 2.000 × 1,05 = R$ 2.100,00.</li>
+      <li>Mês 2: 2.100 × 1,05 = R$ 2.205,00.</li>
+      <li>Mês 3: 2.205 × 1,05 = <b>R$ 2.315,25</b>.</li>
+      <li>A juros simples: 2.000 × (1 + 0,05 × 3) = R$ 2.300,00. Os compostos rendem <b>R$ 15,25</b> a mais: são os juros sobre os juros.</li>
+    </ol>
+  </div>
+  <p>Vale decorar algumas potências que aparecem muito: 1,1² = 1,21; 1,1³ = 1,331; 1,2² = 1,44; 1,05² = 1,1025.</p>
+
+  <h3>Simples × compostos, lado a lado</h3>
+  <p>R$ 10.000,00 a 10% ao ano, nos dois regimes:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Ano</th><th>Juros simples</th><th>Juros compostos</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>R$ 11.000,00</td><td>R$ 11.000,00</td></tr>
+      <tr><td>2</td><td>R$ 12.000,00</td><td>R$ 12.100,00</td></tr>
+      <tr><td>3</td><td>R$ 13.000,00</td><td>R$ 13.310,00</td></tr>
+      <tr><td>4</td><td>R$ 14.000,00</td><td>R$ 14.641,00</td></tr>
+    </tbody>
+  </table></div>
+  <figure><svg viewBox="0 0 640 270" role="img" aria-label="Montante de 10.000 reais a 10 por cento ao ano: a juros simples cresce em linha reta até 14.000; a juros compostos cresce em curva até 14.641">
+<line x1="80" y1="230" x2="610" y2="230" class="ax"/><line x1="80" y1="230" x2="80" y2="14" class="ax"/>
+<line x1="80" y1="230" x2="80" y2="236" class="ax"/><text x="80" y="254" class="tm" text-anchor="middle">0</text>
+<line x1="200" y1="230" x2="200" y2="236" class="ax"/><text x="200" y="254" class="tm" text-anchor="middle">1</text>
+<line x1="320" y1="230" x2="320" y2="236" class="ax"/><text x="320" y="254" class="tm" text-anchor="middle">2</text>
+<line x1="440" y1="230" x2="440" y2="236" class="ax"/><text x="440" y="254" class="tm" text-anchor="middle">3</text>
+<line x1="560" y1="230" x2="560" y2="236" class="ax"/><text x="560" y="254" class="tm" text-anchor="middle">4</text>
+<text x="596" y="254" class="tm">anos</text>
+<text x="70" y="224" class="tm" text-anchor="end">10.000</text>
+<line x1="200" y1="181.2" x2="200" y2="230" class="guide"/>
+<polyline points="80,220 200,181.2 320,142.4 440,103.6 560,64.9" class="w pb"/>
+<polyline points="80,220 200,181.2 320,138.6 440,91.6 560,40" class="w pc"/>
+<circle cx="200" cy="181.2" r="5" class="f-ink"/>
+<text x="216" y="212" class="tm">em 1 período, empatam</text>
+<text x="540" y="28" class="ts fc" text-anchor="end">compostos: 14.641</text>
+<text x="610" y="96" class="ts fb" text-anchor="end">simples: 14.000</text>
+</svg><figcaption>Figura 3. A juros simples, o montante cresce em linha reta (soma o mesmo valor todo ano). A juros compostos, cresce em curva cada vez mais inclinada. Depois de um período, os dois dão o mesmo; daí em diante, os compostos passam à frente.</figcaption></figure>
+  <div class="tw"><table>
+    <thead><tr><th>Tempo</th><th>Quem rende mais</th></tr></thead>
+    <tbody>
+      <tr><td>exatamente 1 período</td><td>empate</td></tr>
+      <tr><td>mais de 1 período</td><td>juros <b>compostos</b></td></tr>
+      <tr><td>menos de 1 período (fração de período)</td><td>juros <b>simples</b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>"Juros compostos rendem sempre mais" é <b>falso</b>: vale só depois do primeiro período. E, nos compostos, a taxa <b>não se divide</b> como nos simples: 1% ao mês, composto por 12 meses, dá 1,01¹² ≈ 1,1268, ou seja, cerca de 12,68% ao ano, e não 12%.</p>
+  </div>
+
+  <h3>Achar a taxa nos juros compostos: a fórmula virada</h3>
+  <p>Se o enunciado dá o capital, o montante e o tempo, e pede a taxa, isole o i em três passos:</p>
+  <div class="eq">
+    <p class="eq-name">Taxa a partir do montante (juros compostos)</p>
+    <div class="eq-main"><var>i</var> = <span class="frac"><span><var>M</var></span><span><var>C</var></span></span><sup>&nbsp;1/<var>t</var></sup> − 1 &nbsp;&nbsp;&nbsp;&nbsp; <var>k</var> = 100 · <span class="frac"><span><var>M</var></span><span><var>C</var></span></span><sup>&nbsp;1/<var>t</var></sup> − 100</div>
+    <dl>
+      <dt><var>i</var></dt><dd>taxa por período, em decimal</dd>
+      <dt><var>k</var></dt><dd>a mesma taxa em porcentagem (k% por período): k = 100 · i</dd>
+      <dt><var>M</var>, <var>C</var></dt><dd>montante e capital, em reais (R$); M/C é o fator total de crescimento</dd>
+      <dt>expoente 1/<var>t</var></dt><dd>a raiz de índice t do fator total (t é o número de períodos); o expoente vale para a fração M/C inteira</dd>
+    </dl>
+  </div>
+  <ol class="steps">
+    <li>Divida pelo capital: (1 + i)<sup>t</sup> = M/C.</li>
+    <li>Tire a raiz de índice t (expoente 1/t): 1 + i = (M/C)<sup>1/t</sup>.</li>
+    <li>Subtraia 1: i = (M/C)<sup>1/t</sup> − 1. Para ter em porcentagem, multiplique tudo por 100.</li>
+  </ol>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 28</p>
+    <p>Um capital de R$ 5.000,00 virou R$ 6.050,00 em 2 anos, a juros compostos. Qual a taxa anual?</p>
+    <ol class="steps">
+      <li>M/C = 6.050 ÷ 5.000 = 1,21.</li>
+      <li>t = 2: raiz quadrada. √1,21 = 1,1.</li>
+      <li>i = 1,1 − 1 = 0,1, isto é, <b>10% ao ano</b>.</li>
+      <li>A juros simples, a conta seria outra: os juros de R$ 1.050,00 em 2 anos dão 1.050 ÷ (5.000 × 2) = 0,105, isto é, 10,5% ao ano.</li>
+    </ol>
+  </div>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio cobra</p>
+    <p>A questão 12 da prova de 2023 dava um preço inicial, um preço final e o número de meses, e pedia a <b>expressão</b> da taxa mensal k%, sem calcular. As alternativas erradas trocavam o expoente 1/t por t, usavam − 1 no lugar de − 100, somavam 0,01 ou misturavam a forma decimal com a percentual. Quando a resposta é uma expressão, monte a fórmula passo a passo e compare com as alternativas pedaço por pedaço: o expoente, o que é subtraído e se há o fator 100.</p>
+  </div>
+
+  <div class="quiz" data-set="b8"></div>
+</section>
+
+<!-- ============ FORMULARIO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Soma de frações</td><td>a/b + c/d = (a·d + b·c)/(b·d)</td><td>mesmo denominador antes de somar; nunca some os denominadores</td></tr>
+      <tr><td>Divisão de frações</td><td>a/b ÷ c/d = a/b × d/c</td><td>multiplica pela segunda invertida</td></tr>
+      <tr><td>Dízima periódica simples</td><td>0,ppp… = p/99…9</td><td>um 9 para cada algarismo do período: 0,7272… = 72/99</td></tr>
+      <tr><td>Potências de mesma base</td><td>a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup>; a<sup>m</sup>/a<sup>n</sup> = a<sup>m−n</sup></td><td>(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></td></tr>
+      <tr><td>Expoentes especiais</td><td>a<sup>0</sup> = 1; a<sup>−n</sup> = 1/a<sup>n</sup>; a<sup>1/n</sup> = <sup>n</sup>√a</td><td>expoente negativo inverte, não troca o sinal</td></tr>
+      <tr><td>Ordem das operações</td><td>parênteses → potências e raízes → × e ÷ → + e −</td><td>mesma prioridade: da esquerda para a direita</td></tr>
+      <tr><td>MMC e MDC</td><td>MMC(a, b) × MDC(a, b) = a × b</td><td>MMC: "juntos de novo"; MDC: "partes iguais, o maior possível"</td></tr>
+      <tr><td>Proporção</td><td>a/b = c/d ⟺ a·d = b·c</td><td>direta: y/x constante; inversa: x·y constante</td></tr>
+      <tr><td>Divisão proporcional</td><td>uma parte = total ÷ soma das partes</td><td>inversa: inverta os números antes</td></tr>
+      <tr><td>Regra de três composta</td><td>causas<sub>1</sub> × efeito<sub>2</sub> = causas<sub>2</sub> × efeito<sub>1</sub></td><td>causas: quem faz (máquinas, horas, dias); efeito: o que fica pronto</td></tr>
+      <tr><td>Fator multiplicativo</td><td>V<sub>final</sub> = V<sub>inicial</sub> · (1 ± p)</td><td>sucessivos: multiplique os fatores; para voltar, divida</td></tr>
+      <tr><td>Variação percentual</td><td>(V<sub>novo</sub> − V<sub>antigo</sub>)/V<sub>antigo</sub> × 100%</td><td>a base é sempre o valor antigo</td></tr>
+      <tr><td>Juros simples</td><td>J = C·i·t; M = C·(1 + i·t)</td><td>taxa em decimal; taxa e tempo na mesma unidade</td></tr>
+      <tr><td>Juros compostos</td><td>M = C·(1 + i)<sup>t</sup>; J = M − C</td><td>o tempo é expoente; 1,1² = 1,21; 1,1³ = 1,331</td></tr>
+      <tr><td>Taxa nos juros compostos</td><td>i = (M/C)<sup>1/t</sup> − 1</td><td>em porcentagem: k = 100·(M/C)<sup>1/t</sup> − 100</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, conteúdo de Matemática, itens 1, 2 e 8 — conferidos na transcrição do edital usada pelo app (data/biblioteca.js).</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, nível médio (questões 11, 12, 14 e 17 de Matemática), conferido nos recortes da prova, e o gabarito oficial (A, A, B e E); usados só para identificar o estilo de cobrança.</li>
+    <li>U. Sodré, <a href="https://www.uel.br/projetos/matessencial/superior/matzoo/razoes-aplic.pdf"><i>Matemática Essencial – Proporções: aplicações</i></a> (Universidade Estadual de Londrina, 2010): proporção e produto dos meios e dos extremos, grandezas direta e inversamente proporcionais, regra de três simples e composta, porcentagem e juros simples <span class="confira">(conferido pelo sumário e pelo início do texto; as seções de cálculo não foram relidas)</span>.</li>
+    <li>C. Vieira (coord.), <a href="https://www.udesc.br/arquivos/ceplan/id_cpmenu/463/Apostila_Completa_2024_v2_17086306377595_463.pdf"><i>Projeto SABERMAT – Matemática Básica</i></a> (UDESC/CEPLAN, 2024): conjuntos numéricos, regras de sinais, potenciação e operações com frações <span class="confira">(conferido pelo sumário e pelo início do texto; o restante da apostila não foi relido)</span>.</li>
+    <li>R. F. M. da Costa, <a href="https://www.cead.ufv.br/site/wp-content/uploads/2023/10/tad011-matematica-financeira.pdf"><i>Matemática Financeira</i></a> (Universidade Federal de Viçosa, CEAD, curso técnico em Administração): regimes de capitalização simples e composta <span class="confira">(só o sumário e os trechos mostrados pela busca foram lidos; o texto integral não abriu)</span>.</li>
+    <li>R. J. Medeiros Junior, <i>Matemática Financeira</i> (Instituto Federal do Paraná, Rede e-Tec Brasil, 2012): J = C·i·t, M = C·(1 + i)<sup>n</sup>, taxa em decimal e taxa e prazo na mesma unidade <span class="confira">(lido no trecho mostrado pela busca; o servidor recusou o acesso direto ao arquivo)</span>.</li>
+    <li>Bibliografia de apoio, sem consulta direta nesta redação: G. Iezzi e outros, <i>Fundamentos de Matemática Elementar</i>, volumes 1 e 11 (Atual); L. R. Dante, <i>Matemática: contexto e aplicações</i> (Ática).</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+
+<script>
+const QUIZ = {
+b1:[
+ {"s":"Considere os números −7; 0; 0,333…; √16; √5 e π. Quantos deles são números racionais?","o":["2","3","4","5","6"],"a":2,"c":"São racionais os que podem ser escritos como fração de inteiros: −7, 0, 0,333… (que é 1/3) e √16 (que é 4). São 4. √5 e π são irracionais. A resposta 2 conta só −7 e 0, deixando de fora a dízima e a raiz exata; 3 deixa de fora √16, como se toda raiz fosse irracional; 5 inclui √5, que não é raiz exata; 6 trata todo número real como racional."},
+ {"s":"O quadrado de um número real x é menor do que o próprio x quando x é igual a","o":["3/4","1","−3/4","4/3","0"],"a":0,"c":"O quadrado só é menor que o número quando ele está entre 0 e 1: (3/4)² = 9/16 = 0,5625, menor que 0,75. Para 1 e para 0, o quadrado é igual ao número. Para −3/4, o quadrado é 9/16, positivo, maior que o número, que é negativo. Para 4/3, o quadrado é 16/9, cerca de 1,78, maior que 1,33."},
+ {"s":"O valor da expressão −3² + (−2)³ − (−5) é","o":["22","6","4","−7","−12"],"a":4,"c":"−3² = −9 (sem parênteses, o quadrado pega só o 3); (−2)³ = −8; −(−5) = +5. Então −9 − 8 + 5 = −12. O valor 22 faz tudo positivo (9 + 8 + 5); 6 lê −3² como (−3)² = 9 (9 − 8 + 5); 4 dá sinal positivo a (−2)³ (−9 + 8 + 5); −7 multiplica cada base pelo expoente (−6 − 6 + 5)."},
+ {"s":"Sejam a = −5/4, b = −1,3 e c = −6/5. A ordem crescente desses números é","o":["a &lt; b &lt; c","b &lt; a &lt; c","c &lt; a &lt; b","c &lt; b &lt; a","b &lt; c &lt; a"],"a":1,"c":"Em decimais: a = −1,25; b = −1,30; c = −1,20. Entre negativos, é menor o que está mais longe do zero: −1,30 &lt; −1,25 &lt; −1,20, isto é, b &lt; a &lt; c. A ordem c &lt; a &lt; b é a dos números sem o sinal; a &lt; b &lt; c compara 1,25 com 1,3 como se 25 fosse maior que 3; c &lt; b &lt; a junta esses dois erros; b &lt; c &lt; a inverte a fração e toma −5/4 como −0,8."}
+],
+b2:[
+ {"s":"Um reservatório de óleo isolante estava cheio. Na segunda-feira, foram retirados 2/5 do volume total e, na terça-feira, mais 1/3 do volume total. A fração do reservatório que ainda restou é","o":["11/15","5/8","2/5","4/15","2/15"],"a":3,"c":"Retirado: 2/5 + 1/3 = 6/15 + 5/15 = 11/15. Resta 1 − 11/15 = 4/15. A fração 11/15 é a retirada, e não a que restou; 5/8 soma numeradores e denominadores (2/5 + 1/3 = 3/8) e tira de 1; 2/5 lê a retirada de terça-feira como 1/3 do que tinha restado (3/5 − 1/5); 2/15 multiplica as duas frações (2/5 × 1/3)."},
+ {"s":"A dízima periódica 0,454545… é igual à fração","o":["9/20","5/11","1/2","4/9","5/111"],"a":1,"c":"O período é 45, com dois algarismos: 45/99 = 5/11. A fração 9/20 é 45/100, o decimal 0,45, que termina; 1/2 põe o período sobre 90 (45/90); 4/9 é 0,444…, que repete só o primeiro algarismo; 5/111 põe um 9 a mais no denominador (45/999)."},
+ {"s":"De um lote de 240 lâmpadas, 3/8 foram instaladas no galpão A. Das lâmpadas restantes, 2/5 foram instaladas no galpão B. O número de lâmpadas instaladas no galpão B é","o":["60","90","96","150","186"],"a":0,"c":"Galpão A: 3/8 de 240 = 90. Restam 150. Galpão B: 2/5 de 150 = 60. O valor 90 é o do galpão A; 96 é 2/5 do lote inteiro, e não do resto; 150 é o que restou depois do galpão A, sem aplicar os 2/5; 186 soma 90 com 96."},
+ {"s":"O valor de (1/2 + 1/3) ÷ 1/4 é","o":["5/24","5/6","8/5","11/6","10/3"],"a":4,"c":"Parênteses primeiro: 1/2 + 1/3 = 3/6 + 2/6 = 5/6. Dividir por 1/4 é multiplicar por 4: 5/6 × 4 = 20/6 = 10/3. A fração 5/24 multiplica por 1/4 em vez de dividir; 5/6 para na soma; 8/5 soma numeradores e denominadores (2/5) antes de multiplicar por 4; 11/6 ignora os parênteses e divide só o 1/3 por 1/4 (1/2 + 4/3)."}
+],
+b3:[
+ {"s":"Entre os números 2<sup>60</sup>, 3<sup>40</sup> e 5<sup>20</sup>, o menor e o maior são, respectivamente,","o":["5<sup>20</sup> e 3<sup>40</sup>","5<sup>20</sup> e 2<sup>60</sup>","2<sup>60</sup> e 3<sup>40</sup>","2<sup>60</sup> e 5<sup>20</sup>","3<sup>40</sup> e 5<sup>20</sup>"],"a":0,"c":"Mesmo expoente (20): 2<sup>60</sup> = (2³)<sup>20</sup> = 8<sup>20</sup>; 3<sup>40</sup> = (3²)<sup>20</sup> = 9<sup>20</sup>; 5<sup>20</sup> já está pronto. Como 5 &lt; 8 &lt; 9, o menor é 5<sup>20</sup> e o maior é 3<sup>40</sup>. O par 5<sup>20</sup> e 2<sup>60</sup> olha só os expoentes; 2<sup>60</sup> e 5<sup>20</sup> olha só as bases; 2<sup>60</sup> e 3<sup>40</sup> acerta o maior, mas escolhe o menor pela menor base; 3<sup>40</sup> e 5<sup>20</sup> traz o maior e o menor na ordem trocada."},
+ {"s":"O valor da expressão 20 − 12 ÷ 4 + 2 × 3² é","o":["−1","20","29","35","53"],"a":3,"c":"Potência: 3² = 9. Depois, divisão e multiplicação: 12 ÷ 4 = 3 e 2 × 9 = 18. Por fim, 20 − 3 + 18 = 35. O valor −1 soma 3 + 18 antes de subtrair (20 − 21); 20 subtrai antes de dividir ((20 − 12) ÷ 4 + 18); 29 calcula 3² como 3 × 2 = 6 (20 − 3 + 12); 53 multiplica antes da potência ((2 × 3)² = 36)."},
+ {"s":"O valor de (2³ × 2⁵) ÷ 4² + √(9 + 16) é","o":["6","16","21","23","37"],"a":2,"c":"2³ × 2⁵ = 2⁸ = 256; 4² = 16; 256 ÷ 16 = 16. √(9 + 16) = √25 = 5. Total: 16 + 5 = 21. O valor 6 calcula 2⁸ como 2 × 8 = 16 (16 ÷ 16 + 5); 16 esquece de somar a raiz; 23 distribui a raiz na soma (√9 + √16 = 7); 37 calcula 4² como 4 × 2 = 8 (256 ÷ 8 + 5)."},
+ {"s":"O valor de (1/2)<sup>−3</sup> + 27<sup>1/3</sup> + 5<sup>0</sup> é","o":["−4","2,5","4,125","11","12"],"a":4,"c":"(1/2)<sup>−3</sup> = 2³ = 8 (o expoente negativo inverte a base); 27<sup>1/3</sup> = 3 (raiz cúbica); 5<sup>0</sup> = 1. Soma: 8 + 3 + 1 = 12. O valor −4 toma o expoente negativo como sinal (−8 + 3 + 1); 2,5 multiplica a base pelo expoente (−1,5 + 3 + 1); 4,125 ignora o sinal do expoente ((1/2)³ = 0,125); 11 toma 5<sup>0</sup> como 0."}
+],
+b4:[
+ {"s":"Três bombas de uma estação passam por manutenção preventiva a cada 12, 18 e 30 dias, respectivamente. Hoje, as três foram revisadas no mesmo dia. Mantidos os intervalos, as três voltarão a ser revisadas juntas daqui a quantos dias?","o":["60","180","360","540","6.480"],"a":1,"c":"Coincidir de novo pede o MMC. 12 = 2² · 3; 18 = 2 · 3²; 30 = 2 · 3 · 5. MMC = 2² · 3² · 5 = 180. O valor 60 soma os intervalos (e 60 nem é múltiplo de 18); 360 é 12 × 30 e 540 é 18 × 30: são múltiplos comuns, mas não o menor; 6.480 multiplica os três intervalos."},
+ {"s":"Três rolos de cabo, com 72 m, 108 m e 180 m, serão cortados em pedaços de mesmo comprimento, o maior possível, sem sobras. O comprimento de cada pedaço, em metros, será","o":["6","10","12","18","36"],"a":4,"c":"Partes iguais, do maior tamanho, sem sobra: MDC. 72 = 2³ · 3²; 108 = 2² · 3³; 180 = 2² · 3² · 5. MDC = 2² · 3² = 36 m. O valor 6 usa cada primo comum uma vez só (2 · 3), sem os expoentes; 12 (2² · 3) deixa um fator 3 de fora; 18 (2 · 3²) deixa um fator 2 de fora; 10 é o número de pedaços (2 + 3 + 5), e não o comprimento."},
+ {"s":"Numa unidade, uma sirene de teste toca a cada 40 minutos e outra, a cada 1 hora e 15 minutos. As duas tocaram juntas às 7h00. O próximo horário em que tocarão juntas é","o":["7h05","8h55","9h00","17h00","22h20"],"a":3,"c":"1 h 15 min = 75 min. 40 = 2³ · 5; 75 = 3 · 5². MMC = 2³ · 3 · 5² = 600 min = 10 h. 7h00 + 10 h = 17h00. O horário 7h05 usa o MDC (5 min); 8h55 soma os intervalos (115 min); 9h00 usa o 5 com o menor expoente (2³ · 3 · 5 = 120 min, que não é múltiplo de 75); 22h20 lê 1 h 15 min como 115 min (MMC de 40 e 115 = 920 min)."},
+ {"s":"A decomposição do número 360 em fatores primos é","o":["2³ · 3² · 5","2² · 3² · 10","2³ · 3 · 15","2² · 3² · 5","2³ · 3² · 5²"],"a":0,"c":"360 ÷ 2 = 180; ÷ 2 = 90; ÷ 2 = 45; ÷ 3 = 15; ÷ 3 = 5; ÷ 5 = 1. Então 360 = 2³ · 3² · 5. Os produtos 2² · 3² · 10 e 2³ · 3 · 15 também dão 360, mas 10 e 15 não são primos; 2² · 3² · 5 vale 180 (faltou um fator 2); 2³ · 3² · 5² vale 1.800 (um fator 5 a mais)."}
+],
+b5:[
+ {"s":"Em um lote de 1.260 conectores inspecionados, a razão entre o número de aprovados e o de reprovados é de 7 para 3. O número de conectores aprovados é","o":["126","378","540","720","882"],"a":4,"c":"7 aprovados para 3 reprovados: 10 partes. Uma parte: 1.260 ÷ 10 = 126. Aprovados: 7 × 126 = 882. O valor 126 é só uma parte; 378 são os reprovados (3 partes); 540 é 3/7 do lote, lendo a razão entre as partes como fração do total; 720 é o que sobra depois de tirar esses 540."},
+ {"s":"Uma gratificação de R$ 5.400,00 será dividida entre três eletricistas em partes diretamente proporcionais aos seus tempos de serviço: 3, 5 e 10 anos. O eletricista com 5 anos de serviço receberá","o":["R$ 900,00","R$ 1.080,00","R$ 1.500,00","R$ 1.800,00","R$ 3.000,00"],"a":2,"c":"Partes: 3 + 5 + 10 = 18. Uma parte: 5.400 ÷ 18 = R$ 300,00. Com 5 anos: 5 × 300 = R$ 1.500,00. R$ 900,00 é a parte de quem tem 3 anos; R$ 1.080,00 divide o total por 5, o tempo de serviço dele; R$ 1.800,00 divide em três partes iguais; R$ 3.000,00 é a parte de quem tem 10 anos."},
+ {"s":"Um prêmio de R$ 3.300,00 será dividido entre três operadores em partes inversamente proporcionais aos seus números de faltas no ano: 1, 2 e 3. O operador que teve 3 faltas receberá","o":["R$ 300,00","R$ 600,00","R$ 900,00","R$ 1.100,00","R$ 1.650,00"],"a":1,"c":"Inverta: 1/1, 1/2 e 1/3. Multiplicando por 6: 6, 3 e 2. Partes: 11. Uma parte: 3.300 ÷ 11 = R$ 300,00. Com 3 faltas: 2 × 300 = R$ 600,00. R$ 300,00 é só uma parte; R$ 900,00 é o prêmio de quem teve 2 faltas; R$ 1.100,00 divide em três partes iguais; R$ 1.650,00 faz a divisão direta (3 partes de 6), dando mais a quem faltou mais."},
+ {"s":"Na planta de uma subestação, desenhada na escala 1 : 250, a distância entre dois pórticos mede 6 cm. A distância real entre eles é de","o":["0,024 cm","1,5 m","2,5 m","15 m","150 m"],"a":3,"c":"Real = 6 × 250 = 1.500 cm = 15 m. O valor 0,024 cm divide 6 por 250 em vez de multiplicar; 1,5 m e 150 m erram a conversão de centímetros para metros (dividem 1.500 por 1.000 e por 10); 2,5 m converte só os 250 cm da escala, sem multiplicar pelos 6 cm."}
+],
+b6:[
+ {"s":"Seis técnicos, com o mesmo ritmo de trabalho, concluem a inspeção de um parque de tanques em 15 dias. Com 9 técnicos, no mesmo ritmo, a mesma inspeção seria concluída em","o":["10 dias","12 dias","18 dias","22,5 dias","90 dias"],"a":0,"c":"Mais técnicos, menos dias: inversa. Em linha: 6 × 15 = 9 × x; x = 90 ÷ 9 = 10 dias. A resposta 12 dias tira um dia para cada técnico a mais (15 − 3); 18 dias soma os 3 (15 + 3); 22,5 dias multiplica em cruz, como se fosse direta (9 × 15 ÷ 6); 90 dias é o produto 6 × 15, o tempo que um técnico sozinho levaria."},
+ {"s":"Um gerador a diesel consumiu 27 litros em 2 horas e 15 minutos de funcionamento. Mantido o mesmo regime, em 5 horas ele consumirá","o":["12,0 L","37,7 L","54,0 L","60,0 L","67,5 L"],"a":3,"c":"2 h 15 min = 2,25 h. Direta: 2,25 · x = 5 · 27; x = 135 ÷ 2,25 = 60,0 L. O valor 12,0 L é o consumo de uma hora (27 ÷ 2,25); 37,7 L conta 2 h 15 min como 215 minutos (27 × 300 ÷ 215); 54,0 L conta 15 minutos como meia hora (27 ÷ 2,5 × 5); 67,5 L despreza os 15 minutos (27 ÷ 2 × 5)."},
+ {"s":"Em uma oficina, 8 operários, trabalhando 6 horas por dia, produzem 1.200 peças em 5 dias. Mantido o ritmo, 10 operários, trabalhando 8 horas por dia durante 6 dias, produzirão","o":["600 peças","1.350 peças","1.536 peças","2.000 peças","2.400 peças"],"a":4,"c":"Causas de uma linha vezes o efeito da outra: 8 · 6 · 5 · x = 10 · 8 · 6 · 1.200; 240x = 576.000; x = 2.400 peças. A resposta 600 inverte as três razões (1.200 × 240/480); 1.350 trata as horas por dia como inversas (1.200 × 10/8 × 6/8 × 6/5); 1.536 trata o número de operários como inverso (1.200 × 8/10 × 8/6 × 6/5); 2.000 esquece a mudança no número de dias (1.200 × 10/8 × 8/6)."},
+ {"s":"Em uma fábrica, 4 máquinas iguais produzem 600 peças em 5 horas. Outras 6 máquinas, iguais às primeiras, deverão produzir x peças em y horas. Nessas condições, o valor de y em função de x é dado por","o":["y = x/30","y = x/80","y = x/180","y = x/120","y = x/720"],"a":2,"c":"4 · 5 · x = 6 · y · 600; 20x = 3.600y; y = x/180. Conferindo: cada máquina faz 600 ÷ 20 = 30 peças por hora, e seis fazem 180. A expressão x/30 usa a produção de uma máquina só; x/80 trata o número de máquinas como inverso da produção (120 × 4/6 = 80 peças por hora); x/120 esquece que o número de máquinas mudou (600 ÷ 5 = 120 peças por hora); x/720 multiplica por 6 as 120 peças por hora, que já eram das quatro máquinas."}
+],
+b7:[
+ {"s":"Um relé de proteção custava R$ 800,00. Seu preço sofreu um aumento de 20% e, em seguida, um desconto de 15% sobre o novo preço. O preço final do relé é","o":["R$ 736,00","R$ 805,00","R$ 816,00","R$ 840,00","R$ 960,00"],"a":2,"c":"Fatores 1,20 e 0,85: 800 × 1,20 = 960; 960 × 0,85 = R$ 816,00. R$ 736,00 troca os fatores (desconto de 20% e aumento de 15%: 800 × 0,80 × 1,15); R$ 805,00 trata as porcentagens como reais (800 + 20 − 15); R$ 840,00 soma as porcentagens (20% − 15% = 5%); R$ 960,00 para no aumento."},
+ {"s":"O salário de um técnico passou de R$ 2.500,00 para R$ 2.900,00. O aumento percentual foi de","o":["13,8%","16,0%","86,2%","116,0%","400,0%"],"a":1,"c":"Aumento: 2.900 − 2.500 = 400. Sobre o valor antigo: 400 ÷ 2.500 = 0,16 = 16,0%. O valor 13,8% divide pelo salário novo (400 ÷ 2.900); 86,2% é 2.500 ÷ 2.900, a razão entre os salários, invertida; 116,0% é 2.900 ÷ 2.500, o salário novo como porcentagem do antigo, e não o aumento; 400,0% lê a diferença em reais como porcentagem."},
+ {"s":"Depois de um desconto de 20%, um multímetro foi vendido por R$ 360,00. O preço do multímetro antes do desconto era","o":["R$ 288,00","R$ 380,00","R$ 432,00","R$ 450,00","R$ 1.800,00"],"a":3,"c":"Antes × 0,80 = 360; antes = 360 ÷ 0,80 = R$ 450,00. R$ 288,00 aplica o desconto de novo (360 × 0,80); R$ 380,00 soma 20 reais, e não 20%; R$ 432,00 soma 20% de 360 (360 × 1,20), mas os 20% eram do preço antigo; R$ 1.800,00 divide por 0,20, tratando 360 como o valor do desconto."},
+ {"s":"Em uma empresa, 40% dos funcionários trabalham na manutenção e, entre os funcionários da manutenção, 25% são eletricistas. Os eletricistas da manutenção representam, em relação ao total de funcionários da empresa,","o":["10%","15%","25%","62,5%","65%"],"a":0,"c":"Porcentagem de porcentagem: 0,25 × 0,40 = 0,10 = 10%. O valor 15% subtrai as porcentagens (40 − 25); 25% é a parte deles dentro da manutenção, e não do total; 62,5% divide 25 por 40; 65% soma as porcentagens."}
+],
+b8:[
+ {"s":"Um capital de R$ 4.000,00 foi aplicado a juros simples, à taxa de 18% ao ano, durante 8 meses. Os juros obtidos foram de","o":["R$ 60,00","R$ 480,00","R$ 720,00","R$ 4.480,00","R$ 5.760,00"],"a":1,"c":"18% ao ano = 1,5% ao mês. J = 4.000 × 0,015 × 8 = R$ 480,00. R$ 60,00 são os juros de um mês só; R$ 720,00 são os juros de um ano inteiro (4.000 × 0,18); R$ 4.480,00 é o montante, e não os juros; R$ 5.760,00 usa a taxa anual com o tempo em meses (4.000 × 0,18 × 8)."},
+ {"s":"Um capital de R$ 5.000,00 é aplicado a juros compostos, à taxa de 10% ao mês. Ao final de 3 meses, o montante será de","o":["R$ 1.500,00","R$ 1.655,00","R$ 6.050,00","R$ 6.500,00","R$ 6.655,00"],"a":4,"c":"M = 5.000 × 1,1³ = 5.000 × 1,331 = R$ 6.655,00. R$ 1.500,00 são os juros simples (5.000 × 0,10 × 3); R$ 1.655,00 são os juros compostos, e não o montante; R$ 6.050,00 capitaliza só dois meses (1,1² = 1,21); R$ 6.500,00 é o montante a juros simples."},
+ {"s":"Um capital dobrou de valor em exatos 6 anos, aplicado a juros compostos com taxa anual constante i, escrita em forma decimal. O valor de i é dado por","o":["2<sup>1/6</sup> − 1","2<sup>6</sup> − 1","1/6","1 − (1/2)<sup>1/6</sup>","2<sup>1/6</sup>"],"a":0,"c":"M = 2C. Então (1 + i)<sup>6</sup> = 2; 1 + i = 2<sup>1/6</sup>; i = 2<sup>1/6</sup> − 1. A expressão 2<sup>6</sup> − 1 eleva a 6 em vez de tirar a raiz sexta; 1/6 é a taxa a juros simples (100% divididos por 6 anos); 1 − (1/2)<sup>1/6</sup> inverte a razão entre montante e capital; 2<sup>1/6</sup> é o fator anual 1 + i: faltou subtrair 1."},
+ {"s":"Um técnico tem R$ 10.000,00 e duas opções de aplicação por 2 anos: a opção I paga juros simples de 12% ao ano; a opção II paga juros compostos de 11% ao ano. Ao final dos 2 anos, o montante da opção I, em relação ao da opção II, será","o":["R$ 79,00 menor","R$ 21,00 menor","R$ 79,00 maior","R$ 200,00 maior","R$ 223,00 maior"],"a":2,"c":"Opção I: 10.000 × (1 + 0,12 × 2) = R$ 12.400,00. Opção II: 10.000 × 1,11² = 10.000 × 1,2321 = R$ 12.321,00. A opção I dá R$ 79,00 a mais. A resposta 79 menor inverte a comparação, supondo que juros compostos sempre rendem mais; 21 menor compara só os juros do segundo ano (1.200 contra 1.221); 200 maior calcula a opção II a juros simples (12.200); 223 maior calcula a opção I a juros compostos (12.544)."}
+]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+</script>
+</body>
+</html>

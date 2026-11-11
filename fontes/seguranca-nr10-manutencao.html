@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Segurança, NR-10 e manutenção — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. Segurança e higiene: perigo, risco e acidente<small>Item 6.1</small></a></li>
+    <li><a href="#b2">2. Choque elétrico, arco elétrico e primeiros socorros<small>Item 6.1</small></a></li>
+    <li><a href="#b3">3. Proteção coletiva e individual em eletricidade<small>Item 6.2</small></a></li>
+    <li><a href="#b4">4. Interpretação e análise de projetos elétricos<small>Item 6.3</small></a></li>
+    <li><a href="#b5">5. Manutenção: tipos, técnicas e indicadores<small>Item 10.2</small></a></li>
+    <li><a href="#b6">6. Materiais, ferramentas e instrumentos de teste<small>Item 10.3</small></a></li>
+    <li><a href="#b7">7. NR-10: medidas de controle, prontuário e trabalhadores<small>Item 10.4</small></a></li>
+    <li><a href="#b8">8. NR-10: desenergização, zonas e trabalho energizado<small>Item 10.4</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Segurança, NR-10 e manutenção</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Conceitos de segurança e higiene do trabalho, choque e arco elétrico, proteção coletiva e individual, leitura de projetos, tipos e indicadores de manutenção, materiais e ferramentas e a NR-10, com o texto oficial citado item por item, exemplos resolvidos e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>No Anexo IV do Edital nº 03, esta estação cobre o bloco <b>6. Segurança e higiene do trabalho</b> inteiro e três dos quatro subitens do bloco <b>10. Normas e regulamentações</b>, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>6.1</b> Conceitos básicos de segurança e higiene do trabalho;</li>
+    <li><b>6.2</b> Equipamentos de proteção individual e coletiva com ênfase em eletricidade;</li>
+    <li><b>6.3</b> Interpretação e análise de projetos elétricos;</li>
+    <li><b>10.2</b> Conceitos básicos de Manutenção Elétrica;</li>
+    <li><b>10.3</b> Conhecimentos de materiais e ferramentas utilizados em instalações e serviços em eletricidade;</li>
+    <li><b>10.4</b> Conhecimento da Norma Regulamentadora NR-10 Segurança em Eletricidade.</li>
+  </ul>
+  <p>O item 10.1 (ABNT NBR 5410) está na estação <b>I1</b>. A simbologia e os tipos de diagrama (unifilar, trifilar, funcional) estão na estação <b>M1</b>; a seção 4 daqui trata do que se confere num projeto, sem repetir os símbolos.</p>
+  <div class="box alert">
+    <p class="box-title">Qual NR-10 cai na prova</p>
+    <p>Há dois textos da NR-10. O que vale <b>até 31/05/2027</b> é o da Portaria nº 598/2004, com as alterações de 2016 e de 2019: é o que está em vigor no dia da prova, 29/11/2026. O texto novo, da Portaria MTE nº 737/2026, só entra em vigor em <b>01/06/2027</b>. O edital cita a norma sem dizer a portaria. <span class="confira">Por isso, é uma inferência, e não uma informação do edital, que a banca cobre o texto de 2019.</span> Esta estação ensina o de 2019 e avisa, em cada ponto, o que muda em 2027. Na Biblioteca do app, os dois textos estão lado a lado.</p>
+  </div>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (Manutenção – Elétrica), quatro das 40 questões específicas foram destes itens, todas conceituais, sem conta:</p>
+    <ul>
+      <li>a 39 (item 6.1): a diferença entre <b>perigo</b> e <b>risco</b>, com as definições trocadas entre as alternativas (seção 1);</li>
+      <li>a 41 (item 6.2): proteção coletiva e individual em eletricidade; a resposta era o texto da NR-10, de que as medidas de proteção coletiva compreendem, <b>prioritariamente, a desenergização</b> (seções 3 e 7);</li>
+      <li>a 44 (item 10.4): o documento obrigatório para carga instalada acima de 75, isto é, o <b>Prontuário de Instalações Elétricas</b> (seção 7);</li>
+      <li>a 47 (item 10.3): o material de <b>isolação</b> mais adequado para substituir um condutor (seção 6).</li>
+    </ul>
+    <p>É um <b>padrão observado</b> numa prova só, não garantia de repetição. O que ele mostra: a banca copia frases da norma e troca uma palavra (coletiva por individual, qualificado por habilitado, risco por perigo). Por isso as seções 7 e 8 citam a NR-10 pelo número do item. Manutenção (item 10.2) não caiu em 2023, mas é o subitem em que cabem contas simples, de MTBF, MTTR e disponibilidade. Os exemplos e exercícios daqui são próprios.</p>
+  </div>
+</section>
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Segurança e higiene: perigo, risco e acidente</h2></div>
+  <p class="edital-ref">Edital, item 6.1</p>
+
+  <h3>Segurança do trabalho e higiene do trabalho</h3>
+  <p>As duas áreas cuidam da saúde de quem trabalha, com focos diferentes:</p>
+  <ul>
+    <li>a <b>segurança do trabalho</b> trata de prevenir <b>acidentes</b>: choque, queda, queimadura, esmagamento. O resultado indesejado costuma ser súbito;</li>
+    <li>a <b>higiene do trabalho</b> (ou higiene ocupacional) trata de prevenir <b>doenças</b> causadas pelos agentes do ambiente: ruído, calor, poeiras, vapores, microrganismos. <span class="confira">A definição clássica é "antecipar, reconhecer, avaliar e controlar" esses agentes; o texto dela não foi conferido numa fonte oficial.</span> O resultado indesejado costuma aparecer com o tempo de exposição.</li>
+  </ul>
+  <p>Nenhuma das duas "elimina os perigos" de um ambiente: a eletricidade de uma subestação continua lá. O que se faz é identificar os perigos, avaliar os riscos e controlá-los.</p>
+
+  <h3>Perigo e risco</h3>
+  <p>É a distinção mais cobrada do item. As definições da NR-1 (Disposições Gerais e Gerenciamento de Riscos Ocupacionais) são:</p>
+  <ul>
+    <li><b>perigo</b> (ou fator de risco ocupacional): "Elemento ou situação que, isoladamente ou em combinação, tem o potencial de dar origem a lesões ou agravos à saúde." É a <b>fonte</b>: o barramento energizado, o piso molhado, o ruído do compressor;</li>
+    <li><b>risco ocupacional</b>: "Combinação da probabilidade de ocorrer lesão ou agravo à saúde causados por um evento perigoso, exposição a agente nocivo ou exigência da atividade de trabalho e da severidade dessa lesão ou agravo à saúde." É uma <b>medida</b>: probabilidade combinada com severidade.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Nível de risco (ideia da matriz de risco)</p>
+    <div class="eq-main">risco = probabilidade combinada com severidade</div>
+    <dl>
+      <dt>probabilidade</dt><dd>chance de a lesão ou o agravo ocorrer (depende da exposição e das medidas de prevenção que já existem)</dd>
+      <dt>severidade</dt><dd>gravidade da lesão ou do agravo possível</dd>
+      <dt>perigo</dt><dd>a fonte; existe mesmo quando o risco está controlado</dd>
+    </dl>
+  </div>
+  <p>Um painel de 13,8 kV é o mesmo perigo com a porta trancada ou aberta. O que muda é o risco: com barreira, bloqueio e pessoal autorizado, a probabilidade de alguém tocar numa parte viva cai, e o risco fica baixo; a severidade possível continua alta.</p>
+  <p>O glossário da própria NR-10 de 2019 traz redações mais antigas, que convém reconhecer: perigo é "situação ou condição de risco com probabilidade de causar lesão física ou dano à saúde das pessoas por ausência de medidas de controle", e risco é "capacidade de uma grandeza com potencial para causar lesões ou danos à saúde das pessoas". A questão 39 de 2023 usou as definições no estilo da NR-1: perigo como fonte ou situação com potencial de dano, risco como combinação de probabilidade e gravidade.</p>
+
+  <h3>Acidente do trabalho</h3>
+  <p>A definição legal está na Lei nº 8.213/1991, art. 19: acidente do trabalho "é o que ocorre pelo exercício do trabalho a serviço de empresa ou de empregador doméstico [...], provocando lesão corporal ou perturbação funcional que cause a morte ou a perda ou redução, permanente ou temporária, da capacidade para o trabalho". A mesma lei equipara ao acidente:</p>
+  <ul>
+    <li>a <b>doença profissional</b>, "produzida ou desencadeada pelo exercício do trabalho peculiar a determinada atividade" (art. 20, I);</li>
+    <li>a <b>doença do trabalho</b>, "adquirida ou desencadeada em função de condições especiais em que o trabalho é realizado e com ele se relacione diretamente" (art. 20, II);</li>
+    <li>outras situações do art. 21, como o acidente no percurso entre a residência e o local de trabalho (acidente de trajeto).</li>
+  </ul>
+  <p>Na linguagem da prevenção usa-se também <b>incidente</b> (ou quase acidente): o evento que não causou lesão, mas poderia ter causado. <span class="confira">Esse termo não tem definição na Lei nº 8.213 nem na NR-10; a redação varia entre as normas de gestão.</span> Para a prevenção, o incidente é investigado como o acidente, porque as causas são as mesmas.</p>
+
+  <h3>Os cinco grupos de riscos ambientais</h3>
+  <p>A classificação usada no mapa de riscos (tabela da Portaria nº 25/1994, <span class="confira">cuja vigência não foi conferida</span>) divide os riscos em cinco grupos, cada um com uma cor:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Grupo</th><th>Cor</th><th>Exemplos</th></tr></thead>
+    <tbody>
+      <tr><td>1. Físicos</td><td>verde</td><td>ruído, vibrações, calor, frio, pressões anormais, umidade, radiações ionizantes e não ionizantes</td></tr>
+      <tr><td>2. Químicos</td><td>vermelho</td><td>poeiras, fumos, névoas, neblinas, gases, vapores</td></tr>
+      <tr><td>3. Biológicos</td><td>marrom</td><td>vírus, bactérias, fungos, protozoários, parasitas, bacilos</td></tr>
+      <tr><td>4. Ergonômicos</td><td>amarelo</td><td>esforço físico intenso, levantamento de peso, postura inadequada, ritmo excessivo, trabalho em turno e noturno, monotonia e repetitividade</td></tr>
+      <tr><td>5. De acidentes</td><td>azul</td><td>arranjo físico inadequado, máquinas sem proteção, ferramentas inadequadas ou defeituosas, iluminação inadequada, <b>eletricidade</b>, probabilidade de incêndio ou explosão, animais peçonhentos</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os três primeiros grupos são os agentes de que trata a higiene do trabalho. A <b>eletricidade</b> entra no grupo 5, de acidentes (também chamados de mecânicos): o choque é um acidente, e não uma doença por exposição.</p>
+
+  <h3>A ordem de prioridade das medidas de prevenção</h3>
+  <p>A NR-1 (item 1.4.1, alínea g) manda o empregador implementar as medidas de prevenção nesta ordem de prioridade:</p>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="Ordem de prioridade das medidas de prevenção da NR-1, da eliminação à proteção individual">
+<rect x="20" y="16" width="250" height="44" class="comp"/><text x="145" y="44" class="tl" text-anchor="middle">1</text><text x="300" y="34" class="ts">Eliminação dos fatores de risco</text><text x="300" y="52" class="tm">ex.: desenergizar a instalação</text>
+<rect x="50" y="72" width="220" height="44" class="comp"/><text x="160" y="100" class="tl" text-anchor="middle">2</text><text x="300" y="90" class="ts">Medidas de proteção coletiva</text><text x="300" y="108" class="tm">ex.: barreira, invólucro, bloqueio</text>
+<rect x="80" y="128" width="190" height="44" class="comp"/><text x="175" y="156" class="tl" text-anchor="middle">3</text><text x="300" y="146" class="ts">Medidas administrativas</text><text x="300" y="164" class="tm">ex.: procedimento, treinamento</text>
+<rect x="110" y="184" width="160" height="44" class="comp"/><text x="190" y="212" class="tl" text-anchor="middle">4</text><text x="300" y="202" class="ts">Proteção individual (EPI)</text><text x="300" y="220" class="tm">ex.: luva isolante, vestimenta</text>
+</svg><figcaption>Figura 1. Ordem de prioridade das medidas de prevenção na NR-1, item 1.4.1, alínea g. O EPI é o último recurso: não elimina o perigo, só protege quem o usa. Os exemplos são deste material, não da norma.</figcaption></figure>
+  <ol>
+    <li>eliminação dos fatores de risco;</li>
+    <li>minimização e controle dos fatores de risco, com a adoção de medidas de <b>proteção coletiva</b>;</li>
+    <li>minimização e controle, com medidas <b>administrativas ou de organização do trabalho</b>;</li>
+    <li>adoção de medidas de <b>proteção individual</b>.</li>
+  </ol>
+  <p>Livros e apostilas costumam citar uma lista de cinco degraus (eliminação, substituição, controles de engenharia, controles administrativos e EPI), que vem das normas de gestão. A ideia é a mesma; a lista da NR-1 tem quatro itens e não usa a palavra "substituição".</p>
+
+  <h3>Análise de risco e direito de interromper o trabalho</h3>
+  <p>A NR-10 (item 10.2.1) exige que, em todas as intervenções em instalações elétricas, sejam adotadas medidas preventivas de controle do risco elétrico e de outros riscos adicionais, "mediante técnicas de análise de risco". Os <b>riscos adicionais</b> são os que vêm junto com o serviço elétrico: altura, confinamento, campos elétricos e magnéticos, explosividade, umidade, poeira, fauna e flora (item 10.4.2).</p>
+  <p>O trabalhador pode interromper a atividade quando constatar risco grave e iminente para a sua vida ou saúde, informando imediatamente o superior hierárquico (NR-1, item 1.4.3). Na NR-10, o item que falava do <b>direito de recusa</b> (10.14.1) foi revogado em 2019, quando a regra geral passou para a NR-1; o termo continua no glossário da NR-10.</p>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>A banca troca as definições: escreve que "<b>perigo</b> é a combinação da probabilidade com a gravidade" (isso é risco) ou que "risco é a fonte com potencial de dano" (isso é perigo). Também escreve que a segurança do trabalho "visa à eliminação dos perigos": o que se busca é controlar os riscos; muitos perigos fazem parte do processo.</p>
+  </div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Choque elétrico, arco elétrico e primeiros socorros</h2></div>
+  <p class="edital-ref">Edital, item 6.1</p>
+
+  <h3>O que é o choque elétrico</h3>
+  <p>Choque elétrico é o efeito da passagem de corrente elétrica pelo corpo. Quem fere é a <b>corrente</b>; a tensão é o que a empurra através da resistência do corpo. O curso básico da NR-10 (Anexo III) lista três riscos elétricos: o <b>choque</b>, o <b>arco elétrico</b> (com queimaduras e quedas) e os <b>campos eletromagnéticos</b>.</p>
+  <div class="eq">
+    <p class="eq-name">Corrente de choque (lei de Ohm aplicada ao corpo)</p>
+    <div class="eq-main"><var>I</var> = <span class="frac"><span><var>U</var></span><span><var>R</var><sub>c</sub></span></span></div>
+    <dl>
+      <dt><var>I</var></dt><dd>corrente que atravessa o corpo, em ampères (A); em geral expressa em miliampères (mA)</dd>
+      <dt><var>U</var></dt><dd>tensão entre os dois pontos de contato (tensão de toque), em volts (V)</dd>
+      <dt><var>R</var><sub>c</sub></dt><dd>resistência do percurso da corrente pelo corpo, incluindo a pele e o contato, em ohms (Ω)</dd>
+    </dl>
+  </div>
+  <p>A gravidade do choque depende de:</p>
+  <ul>
+    <li><b>intensidade da corrente</b>, que cresce com a tensão e cai com a resistência do percurso;</li>
+    <li><b>percurso</b> pelo corpo: os mais perigosos passam pelo tórax (mão a mão, mão a pé), porque atingem o coração e os músculos da respiração;</li>
+    <li><b>tempo</b> de passagem da corrente: quanto mais tempo, maior a chance de fibrilação e maiores as queimaduras;</li>
+    <li><b>condições da pele e do contato</b>: pele molhada, suada ou ferida e grande área de contato reduzem a resistência;</li>
+    <li>tipo de corrente e <b>frequência</b>. <span class="confira">Os limiares em corrente contínua são mais altos que em corrente alternada de 50 ou 60 Hz; os valores não foram conferidos na norma IEC 60479-1.</span></li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Um trabalhador toca, com as mãos, dois pontos entre os quais há 220 V. Suponha que a resistência do percurso seja de 2.000 Ω (valor de exemplo: a resistência do corpo varia com a pessoa, a tensão, a umidade e a área de contato). Qual a corrente? E se o contato fosse num circuito de 48 V?</p>
+    <ol class="steps">
+      <li>Com 220 V: I = 220/2.000 = 0,11 A = <b>110 mA</b>.</li>
+      <li>Com 48 V: I = 48/2.000 = 0,024 A = <b>24 mA</b>.</li>
+      <li>Leitura: a corrente é proporcional à tensão. Com a mesma resistência, a tensão de 220 V empurra mais que o triplo dos 30 mA em que atuam os dispositivos DR de alta sensibilidade (estação I1), e a de 48 V fica abaixo desse valor. É a lógica da extra-baixa tensão: na NR-10, até 50 V em corrente alternada ou 120 V em corrente contínua.</li>
+    </ol>
+  </div>
+  <p>O contato pode ser <b>direto</b>, com uma parte viva (um condutor ou borne energizado), ou <b>indireto</b>, com uma massa que ficou energizada por falha de isolação (a carcaça de um motor, a porta de um painel). Contra o contato indireto atuam o aterramento, a equipotencialização e o seccionamento automático, vistos na estação I1.</p>
+
+  <h3>Efeitos da corrente no corpo</h3>
+  <ul>
+    <li><b>Percepção</b>: formigamento, sem dano.</li>
+    <li><b>Tetanização</b>: contração involuntária dos músculos. Acima do chamado <b>limite de largar</b>, a pessoa não consegue soltar o condutor que segurou, e o tempo de choque aumenta.</li>
+    <li><b>Parada respiratória</b>: a contração atinge os músculos do tórax; se a corrente persiste, a pessoa perde a consciência e morre por asfixia.</li>
+    <li><b>Fibrilação ventricular</b>: o coração perde o ritmo e passa a tremer, sem bombear sangue. É considerada a principal causa de morte por choque. Não se reverte sozinha: é preciso um desfibrilador; até ele chegar, a massagem cardíaca mantém a circulação.</li>
+    <li><b>Queimaduras</b>: o calor gerado pela corrente (efeito Joule) queima a pele nos pontos de entrada e de saída e os tecidos internos do percurso.</li>
+    <li><b>Efeitos indiretos</b>: a contração brusca derruba o trabalhador da escada ou o lança contra objetos. Um choque "fraco" em altura pode matar pela queda.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Corrente alternada, 50 ou 60 Hz</th><th>Efeito provável (ordem de grandeza)</th></tr></thead>
+    <tbody>
+      <tr><td>até cerca de 0,5 mA</td><td>em geral, nenhuma reação</td></tr>
+      <tr><td>de 0,5 a cerca de 10 mA</td><td>percepção e formigamento; em geral sem efeito perigoso</td></tr>
+      <tr><td>de 10 a 30 mA</td><td>contrações musculares, dificuldade de soltar e de respirar</td></tr>
+      <tr><td>acima de 30 mA</td><td>probabilidade crescente de fibrilação ventricular, conforme o tempo; parada respiratória e queimaduras</td></tr>
+    </tbody>
+  </table></div>
+  <p><span class="confira">As faixas da tabela vêm de material didático que resume a IEC 60479-1 e mudam de uma fonte para outra (o limite de largar aparece de 6 a 23 mA, conforme a fonte e a pessoa). Use-as como ordem de grandeza.</span> O que a prova costuma pedir é a relação entre os efeitos, e não um número exato: a corrente de dezenas de miliampères já é perigosa, e a de um disjuntor comum (dezenas de ampères) é centenas de vezes maior. O disjuntor protege o cabo e não atua com as dezenas de mA que atravessam o corpo num contato direto: aí a proteção adicional é o DR de 30 mA. No contato indireto, em esquema TN, a corrente de falta é alta e o próprio disjuntor pode fazer o seccionamento automático (estação I1).</p>
+
+  <h3>Arco elétrico</h3>
+  <p>O arco elétrico é uma descarga através do ar, que se torna condutor (ionizado) entre duas partes em potenciais diferentes. Aparece em curtos-circuitos, em manobras de abertura de circuitos com carga, em conexões frouxas e quando uma ferramenta cai sobre barramentos. Libera, numa fração de segundo, muito calor, luz intensa, onda de pressão, ruído e partículas de metal fundido.</p>
+  <ul>
+    <li>O arco queima <b>sem contato</b>: o trabalhador pode estar a alguma distância das partes vivas e sofrer queimaduras graves, pelo calor irradiado e pela ignição da roupa.</li>
+    <li>O arco <b>não é só de alta tensão</b>: painéis de baixa tensão com corrente de curto-circuito elevada também produzem arcos de grande energia.</li>
+    <li>A luva isolante protege do choque, não do arco. Contra o arco usam-se a desenergização, a distância, as barreiras e, como proteção individual, vestimenta e protetor facial resistentes ao arco (seção 3).</li>
+  </ul>
+  <p>A NR-10 de 2019 cita o arco só no conteúdo do treinamento. A de 2027 passa a tratar choque <b>e arco</b> como os dois perigos nomeados e inclui a proteção contra o arco na sequência de desenergização.</p>
+
+  <h3>Primeiros socorros no choque elétrico</h3>
+  <p>Pela NR-10 (item 10.12.2), os trabalhadores autorizados devem estar aptos a executar o resgate e a prestar primeiros socorros, "especialmente por meio de reanimação cardio-respiratória"; as ações de emergência devem constar do plano de emergência da empresa (10.12.1), e os autorizados devem saber operar os equipamentos de combate a incêndio das instalações elétricas (10.12.4). A ordem de atendimento:</p>
+  <ol>
+    <li><b>Não toque na vítima enquanto ela estiver em contato com a parte energizada.</b> Primeiro, a segurança de quem socorre: desligue o circuito (chave, disjuntor, plugue).</li>
+    <li>Se não for possível desligar e a instalação for de baixa tensão, afaste a vítima ou o condutor com material isolante e seco (bastão ou vara isolante). Em alta tensão, não se aproxime: peça o desligamento.</li>
+    <li>Chame o socorro (SAMU 192 ou Bombeiros 193) e peça um desfibrilador externo automático (DEA), se houver.</li>
+    <li>Verifique se a vítima responde e respira. Se não respira normalmente, inicie a <b>reanimação cardiopulmonar</b>: compressões no centro do tórax, de 100 a 120 por minuto, com 5 a 6 cm de profundidade; quem é treinado alterna 30 compressões e 2 ventilações. Só pare quando o socorro assumir ou a vítima reagir.</li>
+    <li>Use o DEA assim que chegar, seguindo as instruções do aparelho.</li>
+    <li>Queimaduras: cubra com pano limpo. <span class="confira">A orientação usual é resfriar com água corrente e não aplicar pomadas ou produtos caseiros; não foi conferida em protocolo oficial.</span> Toda vítima de choque deve ser avaliada por um serviço médico, mesmo que pareça bem.</li>
+  </ol>
+  <p>Em princípio de incêndio em equipamento energizado, <span class="confira">usa-se extintor de gás carbônico (CO<sub>2</sub>) ou de pó químico, e não água nem espuma, que conduzem; a classificação "classe C" não foi conferida na norma de extintores</span>.</p>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>"Quem mata é a tensão": incompleto. O dano vem da <b>corrente</b> que atravessa o corpo, que depende da tensão <b>e</b> da resistência do percurso. Outra: a primeira ação do socorro não é a massagem cardíaca, é <b>desligar a fonte</b>. Quem toca na vítima ainda energizada vira a segunda vítima.</p>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Proteção coletiva e individual em eletricidade</h2></div>
+  <p class="edital-ref">Edital, item 6.2</p>
+
+  <h3>EPC e EPI: o que cada um é</h3>
+  <ul>
+    <li><b>EPC</b>, equipamento de proteção coletiva (glossário da NR-10): "dispositivo, sistema, ou meio, fixo ou móvel de abrangência coletiva, destinado a preservar a integridade física e a saúde dos trabalhadores, usuários e terceiros". Protege todos os que estão no local, sem depender de cada um.</li>
+    <li><b>EPI</b>, equipamento de proteção individual (NR-6, item 6.3.1): "o dispositivo ou produto de uso individual utilizado pelo trabalhador, concebido e fabricado para oferecer proteção contra os riscos ocupacionais existentes no ambiente de trabalho". Só protege quem o usa, e só se for usado direito.</li>
+  </ul>
+  <p>O EPI só pode ser posto à venda ou utilizado com a indicação do <b>Certificado de Aprovação (CA)</b> (NR-6, item 6.4.1). Pela NR-6:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Cabe à organização (6.5.1)</th><th>Cabe ao trabalhador (6.6.1)</th></tr></thead>
+    <tbody>
+      <tr><td>adquirir somente o EPI aprovado; orientar e treinar o empregado; fornecer <b>gratuitamente</b> o EPI adequado ao risco e em perfeito estado</td><td>usar o EPI fornecido; utilizá-lo apenas para a finalidade a que se destina; responsabilizar-se pela limpeza, guarda e conservação; comunicar quando extraviado ou danificado; cumprir as determinações sobre o uso adequado</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>A regra da NR-10: coletiva antes da individual</h3>
+  <p>São quatro itens curtos, e a banca os cobra quase palavra por palavra (a questão 41 de 2023 saiu daqui):</p>
+  <ul>
+    <li><b>10.2.8.1</b>: em todos os serviços executados em instalações elétricas devem ser previstas e adotadas, <b>prioritariamente, medidas de proteção coletiva</b> aplicáveis;</li>
+    <li><b>10.2.8.2</b>: as medidas de proteção coletiva compreendem, <b>prioritariamente, a desenergização</b> elétrica e, na sua impossibilidade, o emprego de <b>tensão de segurança</b>;</li>
+    <li><b>10.2.8.2.1</b>: na impossibilidade das duas, devem ser utilizadas outras medidas de proteção coletiva, "tais como: isolação das partes vivas, obstáculos, barreiras, sinalização, sistema de seccionamento automático de alimentação, bloqueio do religamento automático";</li>
+    <li><b>10.2.9.1</b>: quando as medidas de proteção coletiva forem <b>tecnicamente inviáveis ou insuficientes</b> para controlar os riscos, devem ser adotados equipamentos de proteção individual específicos e adequados às atividades.</li>
+  </ul>
+  <p>Repare que a norma de 2019 só põe em ordem os dois primeiros degraus (desenergização; depois tensão de segurança). A lista do 10.2.8.2.1 começa com "tais como": são exemplos, <b>sem ordem entre eles</b>. A partir de 2027 a hierarquia passa a ser: desenergização, proteção coletiva, medidas administrativas e, por fim, EPI; a tensão de segurança deixa de ser o segundo degrau.</p>
+
+  <h3>Proteção coletiva em eletricidade</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Medida</th><th>O que é (glossário da NR-10, quando entre aspas)</th></tr></thead>
+    <tbody>
+      <tr><td>Desenergização</td><td>o conjunto de seis passos do item 10.5.1 (seção 8); é mais que desligar</td></tr>
+      <tr><td>Aterramento elétrico temporário</td><td>"ligação elétrica efetiva confiável e adequada intencional à terra, destinada a garantir a equipotencialidade e mantida continuamente durante a intervenção na instalação elétrica"</td></tr>
+      <tr><td>Impedimento de reenergização (bloqueio)</td><td>"condição que garante a não energização do circuito através de recursos e procedimentos apropriados, sob controle dos trabalhadores envolvidos nos serviços"; na prática, cadeado e etiqueta no dispositivo de seccionamento</td></tr>
+      <tr><td>Travamento</td><td>"ação destinada a manter, por meios mecânicos, um dispositivo de manobra fixo numa determinada posição, de forma a impedir uma operação não autorizada"</td></tr>
+      <tr><td>Sinalização</td><td>"procedimento padronizado destinado a orientar, alertar, avisar e advertir": placas, etiquetas, fitas e cones</td></tr>
+      <tr><td>Barreira</td><td>"dispositivo que impede qualquer contato com partes energizadas das instalações elétricas"</td></tr>
+      <tr><td>Invólucro</td><td>"envoltório de partes energizadas destinado a impedir qualquer contato com partes internas"</td></tr>
+      <tr><td>Obstáculo</td><td>"elemento que impede o contato acidental, mas não impede o contato direto por ação deliberada"</td></tr>
+      <tr><td>Isolação das partes vivas</td><td>cobertura das partes energizadas com material isolante (mantas, coberturas e lençóis isolantes)</td></tr>
+      <tr><td>Tensão de segurança</td><td>"extra baixa tensão originada em uma fonte de segurança"</td></tr>
+    </tbody>
+  </table></div>
+  <p>O <b>aterramento temporário</b> liga à terra, e entre si, os condutores do trecho em que se vai trabalhar. Se o circuito for energizado por engano, por um gerador, por indução de uma linha vizinha ou por uma descarga atmosférica, a corrente vai para a terra e a proteção atua, em vez de a tensão aparecer no ponto de trabalho. Ele só é instalado <b>depois</b> de constatada a ausência de tensão.</p>
+  <p>No <b>bloqueio</b>, a boa prática é cada trabalhador pôr o seu próprio cadeado, com etiqueta de identificação, e só ele o retirar. <span class="confira">Essa regra de "um cadeado por pessoa" é prática consagrada de bloqueio e etiquetagem; o texto da NR-10 de 2019 diz apenas que o impedimento fica "sob controle dos trabalhadores envolvidos".</span> A sinalização (item 10.10.1) deve atender, entre outras situações, à identificação de circuitos, aos travamentos e bloqueios, às restrições de acesso, às delimitações de áreas e à sinalização de impedimento de energização.</p>
+
+  <h3>Proteção individual do eletricista</h3>
+  <ul>
+    <li><b>Luvas isolantes de borracha</b>, escolhidas pela classe de tensão. Por cima delas vai a <b>luva de cobertura</b>, de couro, que protege a borracha de cortes e furos; a luva de cobertura sozinha não isola.</li>
+    <li><b>Mangas isolantes</b>, que protegem braços e ombros.</li>
+    <li><b>Capacete</b> com proteção contra choque elétrico <span class="confira">(o de "classe B" da norma brasileira de capacetes, não conferida)</span>, óculos de segurança e <b>protetor facial</b>.</li>
+    <li><b>Calçado de segurança</b> para eletricista <span class="confira">(isolante, sem componentes metálicos; requisito não conferido em norma)</span>.</li>
+    <li><b>Vestimenta</b> adequada ao risco de arco elétrico, de tecido resistente à chama.</li>
+    <li>Cinturão de segurança, para o risco adicional de altura.</li>
+  </ul>
+  <p>Sobre a vestimenta, a NR-10 diz (item 10.2.9.2): "As vestimentas de trabalho devem ser adequadas às atividades, devendo contemplar a <b>condutibilidade, inflamabilidade e influências eletromagnéticas</b>." E o item 10.2.9.3: "É vedado o uso de <b>adornos pessoais</b> nos trabalhos com instalações elétricas ou em suas proximidades" (anéis, relógios, correntes, pulseiras). A resistência de uma vestimenta ao arco é indicada pelo ATPV, <span class="confira">o valor de proteção térmica ao arco, em cal/cm², que deve ser maior ou igual à energia incidente calculada para a tarefa; a definição não foi conferida na norma de ensaio</span>. A NR-10 de 2027 ganha um anexo próprio (Anexo IV) com o EPI contra arco por categoria.</p>
+
+  <h3>Classes das luvas isolantes</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Classe</th><th>Tensão máxima de uso (CA)</th><th>Tensão de ensaio (CA)</th><th>Cor da etiqueta</th></tr></thead>
+    <tbody>
+      <tr><td>00</td><td>500 V</td><td>2.500 V</td><td>bege</td></tr>
+      <tr><td>0</td><td>1.000 V</td><td>5.000 V</td><td>vermelha</td></tr>
+      <tr><td>1</td><td>7.500 V</td><td>10.000 V</td><td>branca</td></tr>
+      <tr><td>2</td><td>17.000 V</td><td>20.000 V</td><td>amarela</td></tr>
+      <tr><td>3</td><td>26.500 V</td><td>30.000 V</td><td>verde</td></tr>
+      <tr><td>4</td><td>36.000 V</td><td>40.000 V</td><td>laranja</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os valores são os do catálogo de um fabricante brasileiro (Orion), que cita as normas NBR IEC 60903 e ASTM D120; <span class="confira">outro fabricante (Ritz) dá as mesmas tensões de uso para as classes 0 a 4</span>. <span class="confira">A tensão de uso é comparada com a tensão nominal entre fases da instalação; esse critério não foi conferido no texto da norma.</span> Antes de cada uso, a luva passa por <b>inspeção visual</b> e por <b>teste de ar</b>: infla-se a luva para procurar furos e fissuras. Luva com furo, corte ou ressecamento é descartada.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Qual a menor classe de luva isolante para trabalhar: (a) num quadro de 380 V; (b) numa rede de 13,8 kV; (c) numa rede de 34,5 kV?</p>
+    <ol class="steps">
+      <li>380 V: a classe 00 vai até 500 V. Atende: <b>classe 00</b>.</li>
+      <li>13,8 kV = 13.800 V: a classe 1 vai só até 7.500 V; a classe 2 vai até 17.000 V. Atende: <b>classe 2</b>.</li>
+      <li>34,5 kV = 34.500 V: a classe 3 vai só até 26.500 V; a classe 4 vai até 36.000 V. Atende: <b>classe 4</b>.</li>
+    </ol>
+  </div>
+  <p>Ensaios periódicos: pela NR-10 de 2019 (item 10.7.8), os equipamentos, ferramentas e dispositivos isolantes destinados ao trabalho em <b>alta tensão</b> devem passar por testes elétricos ou ensaios de laboratório periódicos, conforme as especificações do fabricante e os procedimentos da empresa e, <b>na ausência desses, anualmente</b>. Os resultados dos testes de isolação de EPI e EPC ficam no prontuário (item 10.2.4, alínea e). A partir de 2027, o ensaio passa a valer também para luvas, mangas e EPC isolantes de baixa tensão.</p>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Três trocas de palavra: (1) "as medidas de proteção <b>individual</b> devem ser adotadas prioritariamente": é a <b>coletiva</b>; (2) a vestimenta deve contemplar "influências <b>eletrostáticas</b>": o texto diz <b>eletromagnéticas</b>; (3) "<b>obstáculo</b> impede qualquer contato": quem impede qualquer contato é a <b>barreira</b>; o obstáculo só impede o contato acidental.</p>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Interpretação e análise de projetos elétricos</h2></div>
+  <p class="edital-ref">Edital, item 6.3</p>
+
+  <h3>Por que o projeto está no bloco de segurança</h3>
+  <p>O edital põe a leitura de projetos dentro de "Segurança e higiene do trabalho" porque é o projeto que diz ao técnico <b>onde desligar, onde bloquear e o que continua energizado</b>. A NR-10 dedica um capítulo a isso (10.3, Segurança em projetos) e exige, de toda empresa, documentação mínima atualizada.</p>
+
+  <h3>Os documentos de um projeto</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Documento</th><th>O que traz</th><th>O que o técnico tira dele</th></tr></thead>
+    <tbody>
+      <tr><td>Memorial descritivo</td><td>a descrição da instalação, os critérios adotados e os itens de segurança</td><td>esquema de aterramento, proteções previstas, restrições de acesso</td></tr>
+      <tr><td>Memorial de cálculo</td><td>dimensionamento dos condutores, queda de tensão, curto-circuito, demanda</td><td>de onde veio cada seção e cada corrente nominal</td></tr>
+      <tr><td>Diagrama unifilar</td><td>o caminho da energia, da entrada às cargas, com uma linha por circuito</td><td>pontos de seccionamento, dispositivos de proteção, o que alimenta o quê</td></tr>
+      <tr><td>Diagramas trifilar e funcional</td><td>todas as fases e o comando, contato por contato</td><td>ligação de medidores e relés; lógica de comando e intertravamentos</td></tr>
+      <tr><td>Plantas</td><td>a posição de pontos, quadros, eletrodutos e o encaminhamento dos circuitos</td><td>por onde passa cada circuito e onde fica cada equipamento</td></tr>
+      <tr><td>Quadro de cargas</td><td>circuito por circuito: carga, tensão, fases, corrente, condutor e proteção</td><td>a carga de cada fase e a coerência entre cabo e disjuntor</td></tr>
+      <tr><td>Lista de materiais</td><td>especificação e quantidade dos componentes</td><td>o que comprar e conferir no recebimento</td></tr>
+    </tbody>
+  </table></div>
+  <p>A simbologia desses desenhos está na estação M1. <span class="confira">O projeto vem acompanhado do documento de responsabilidade técnica do profissional: a ART, no caso do engenheiro registrado no CREA, ou o TRT, no caso do técnico industrial registrado no seu conselho; os nomes e as leis desses documentos não foram conferidos.</span></p>
+
+  <h3>O que a NR-10 exige dos projetos</h3>
+  <p>Vale para toda empresa, qualquer que seja a carga instalada (item 10.2.3): manter <b>esquemas unifilares atualizados</b> das instalações elétricas, "com as especificações do sistema de aterramento e demais equipamentos e dispositivos de proteção". E o capítulo 10.3 lista o que o projeto precisa ter:</p>
+  <ul>
+    <li><b>10.3.1</b>: especificar dispositivos de desligamento de circuitos que possuam recursos para <b>impedimento de reenergização</b>, para sinalização de advertência com indicação da condição operativa;</li>
+    <li><b>10.3.2</b>: prever, na medida do possível, dispositivo de <b>seccionamento de ação simultânea</b>, que permita a aplicação de impedimento de reenergização do circuito;</li>
+    <li><b>10.3.3</b>: considerar o <b>espaço seguro</b>, quanto ao dimensionamento e à localização dos componentes e às influências externas, na operação e nos serviços de construção e manutenção;</li>
+    <li><b>10.3.3.1</b>: circuitos com finalidades diferentes (comunicação, sinalização, controle e tração elétrica) devem ser <b>identificados e instalados separadamente</b>, salvo quando o desenvolvimento tecnológico permitir compartilhamento;</li>
+    <li><b>10.3.4</b>: definir a configuração do <b>esquema de aterramento</b>, a obrigatoriedade ou não da interligação entre o condutor neutro e o de proteção e a conexão à terra das partes condutoras não destinadas à condução da eletricidade;</li>
+    <li><b>10.3.5</b>: sempre que tecnicamente viável e necessário, projetar dispositivos de seccionamento com recursos fixos de equipotencialização e aterramento do circuito seccionado;</li>
+    <li><b>10.3.6</b>: "Todo projeto deve prever condições para a adoção de <b>aterramento temporário</b>";</li>
+    <li><b>10.3.7</b>: o projeto deve ficar <b>à disposição dos trabalhadores autorizados</b>, das autoridades competentes e de outras pessoas autorizadas pela empresa, e ser <b>mantido atualizado</b>;</li>
+    <li><b>10.3.8</b>: o projeto deve atender às normas regulamentadoras e às regulamentações técnicas oficiais e ser <b>assinado por profissional legalmente habilitado</b>;</li>
+    <li><b>10.3.10</b>: os projetos devem assegurar iluminação adequada e posição de trabalho segura, de acordo com a NR 17 (Ergonomia).</li>
+  </ul>
+  <p>O <b>memorial descritivo</b> deve conter, no mínimo, os itens de segurança do 10.3.9:</p>
+  <ol>
+    <li>especificação das características relativas à proteção contra choques elétricos, queimaduras e outros riscos adicionais;</li>
+    <li>indicação de posição dos dispositivos de manobra dos circuitos elétricos: <b>Verde – "D", desligado</b> e <b>Vermelho – "L", ligado</b>;</li>
+    <li>descrição do sistema de identificação de circuitos elétricos e equipamentos, incluindo dispositivos de manobra, de controle, de proteção, de intertravamento, dos condutores e os próprios equipamentos e estruturas;</li>
+    <li>recomendações de restrições e advertências quanto ao acesso de pessoas aos componentes das instalações;</li>
+    <li>precauções aplicáveis em face das influências externas;</li>
+    <li>o princípio funcional dos dispositivos de proteção, constantes do projeto, destinados à segurança das pessoas;</li>
+    <li>descrição da compatibilidade dos dispositivos de proteção com a instalação elétrica.</li>
+  </ol>
+  <p>Vermelho para "ligado" contraria a intuição do semáforo: vermelho, aqui, quer dizer <b>perigo, circuito energizado</b>; verde quer dizer que o circuito está desligado.</p>
+
+  <h3>Roteiro de conferência de um projeto</h3>
+  <p>Antes de executar ou de fazer manutenção com base num projeto, o técnico confere:</p>
+  <ol>
+    <li><b>identificação e revisão</b>: o desenho é a última revisão? Corresponde à instalação como foi construída? Instalação modificada sem atualização do desenho é fonte de acidente;</li>
+    <li><b>alimentação</b>: tensão, número de fases, esquema de aterramento, ponto de entrada e fontes alternativas (gerador, no-break, banco de capacitores) que possam energizar o circuito pelo outro lado;</li>
+    <li><b>seccionamento</b>: qual dispositivo isola o trecho do serviço, se ele aceita bloqueio e onde instalar o aterramento temporário;</li>
+    <li><b>proteção</b>: corrente nominal e tipo de cada dispositivo (disjuntor, fusível, DR, DPS) e a capacidade de interrupção;</li>
+    <li><b>coerência entre os documentos</b>: o mesmo circuito tem de aparecer com o mesmo número, a mesma seção e a mesma proteção no unifilar, na planta e no quadro de cargas;</li>
+    <li><b>coerência elétrica</b> de cada circuito: a corrente de projeto não pode passar da corrente nominal do disjuntor, que não pode passar da capacidade do condutor (regra da estação I1);</li>
+    <li><b>equilíbrio</b> das cargas entre as fases.</li>
+  </ol>
+  <div class="eq">
+    <p class="eq-name">Corrente de projeto de um circuito</p>
+    <div class="eq-main"><var>I</var><sub>B</sub> = <span class="frac"><span><var>P</var></span><span><var>U</var>·cos φ</span></span> &nbsp;&nbsp;&nbsp; <var>I</var><sub>B</sub> = <span class="frac"><span><var>S</var></span><span>√3·<var>U</var><sub>L</sub></span></span></div>
+    <dl>
+      <dt><var>I</var><sub>B</sub></dt><dd>corrente de projeto do circuito, em ampères (A)</dd>
+      <dt><var>P</var></dt><dd>potência ativa da carga, em watts (W); <var>S</var>, potência aparente, em volt-ampères (VA)</dd>
+      <dt><var>U</var></dt><dd>tensão do circuito monofásico ou bifásico, em volts (V); <var>U</var><sub>L</sub>, tensão de linha do circuito trifásico</dd>
+      <dt>cos φ</dt><dd>fator de potência da carga (1 para cargas resistivas)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>O quadro de cargas de um projeto traz o circuito 7, bifásico em 220 V, para um aquecedor resistivo de 5.500 W, com disjuntor de 20 A. As cargas das três fases do quadro somam 4.400 VA, 3.900 VA e 3.700 VA, em sistema trifásico de 220 V entre fases. O que o técnico confere?</p>
+    <ol class="steps">
+      <li>Corrente do circuito 7: I<sub>B</sub> = 5.500/220 = <b>25 A</b>. O disjuntor de 20 A é menor que a corrente de projeto: viola IB ≤ In e tende a desarmar por sobrecarga. O projeto tem um erro e volta ao responsável técnico; o técnico não "corrige" por conta própria trocando só o disjuntor, porque o condutor também precisa suportar a nova corrente nominal.</li>
+      <li>Carga total do quadro: 4.400 + 3.900 + 3.700 = <b>12.000 VA</b>.</li>
+      <li>Corrente na alimentação do quadro, tratando a carga como equilibrada: I = 12.000/(√3 × 220) ≈ <b>31,5 A</b>.</li>
+      <li>Equilíbrio: a fase mais carregada tem 4.400 VA e a menos carregada, 3.700 VA; a diferença é de 700 VA. Se o quadro de cargas mostrasse uma fase com o dobro das outras, valeria pedir a redistribuição dos circuitos.</li>
+    </ol>
+  </div>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>O <b>esquema unifilar atualizado</b> é exigido de <b>todas</b> as empresas (10.2.3); o que depende dos 75 kW de carga instalada é o Prontuário (10.2.4). Atenção: a questão 44 de 2023 escreveu "75 kVA" e manteve o Prontuário como resposta; <span class="confira">se a unidade for a única diferença entre as alternativas, não elimine uma por isso</span>. E quem assina o projeto é o profissional <b>legalmente habilitado</b>, e não o trabalhador apenas qualificado, capacitado ou autorizado.</p>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Manutenção: tipos, técnicas e indicadores</h2></div>
+  <p class="edital-ref">Edital, item 10.2</p>
+
+  <h3>O que é manutenção</h3>
+  <p>Manutenção é o conjunto das ações técnicas e administrativas que mantêm um equipamento em condições de cumprir a sua função, ou o recolocam nessas condições. A norma brasileira de referência para os termos é a ABNT NBR 5462 (Confiabilidade e mantenabilidade). Três palavras que a banca mistura:</p>
+  <ul>
+    <li><b>defeito</b>: um desvio em relação ao esperado que ainda <b>não impede</b> o equipamento de funcionar (um mancal que aquece, uma conexão que escurece);</li>
+    <li><b>falha</b>: o <b>fim da capacidade</b> de o equipamento cumprir a função (o motor travou, o disjuntor não fecha);</li>
+    <li><b>falha oculta</b>: a que não aparece na operação normal, só quando o equipamento é exigido (o relé de proteção que não atuaria num curto).</li>
+  </ul>
+  <p><span class="confira">As definições de defeito e falha acima são um resumo do uso corrente; a redação exata da NBR 5462 não foi conferida.</span></p>
+
+  <h3>Tipos de manutenção</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo</th><th>Quando é feita</th><th>Exemplo em elétrica</th></tr></thead>
+    <tbody>
+      <tr><td><b>Corretiva não planejada</b></td><td>depois da falha, de surpresa; é a manutenção de emergência</td><td>trocar o motor que queimou no meio da operação</td></tr>
+      <tr><td><b>Corretiva planejada</b></td><td>para corrigir uma falha ou um desempenho abaixo do esperado, com a intervenção programada, a partir de um acompanhamento ou da decisão de operar até a falha</td><td>programar para a parada do fim de semana o reaperto de uma conexão que a termografia mostrou quente</td></tr>
+      <tr><td><b>Preventiva</b></td><td>em <b>intervalos predeterminados</b> (tempo, horas de operação, número de manobras), para reduzir a probabilidade de falha</td><td>limpeza e reaperto anual de painéis; troca de rolamentos a cada tantas horas</td></tr>
+      <tr><td><b>Preditiva</b></td><td>conforme a <b>condição</b> do equipamento, acompanhada por medições; a intervenção só vem quando a medição indica</td><td>termografia, análise de vibração, análise do óleo do transformador, tendência da resistência de isolamento</td></tr>
+      <tr><td><b>Detectiva</b></td><td>testes em sistemas de proteção, comando e controle, para achar <b>falhas ocultas</b></td><td>botão de teste do DR, ensaio de relés de proteção, partida de teste do gerador de emergência</td></tr>
+      <tr><td><b>Engenharia de manutenção</b></td><td>atuação na causa das falhas repetitivas, para que deixem de ocorrer</td><td>mudar o projeto de uma conexão que afrouxa sempre</td></tr>
+    </tbody>
+  </table></div>
+  <p>As definições da NBR 5462, de 1994:</p>
+  <ul>
+    <li><b>corretiva</b>: manutenção "efetuada após a ocorrência de uma pane destinada a recolocar um item em condições de executar uma função requerida";</li>
+    <li><b>preventiva</b>: manutenção "efetuada em intervalos predeterminados, ou de acordo com critérios prescritos, destinada a reduzir a probabilidade de falha ou a degradação do funcionamento de um item";</li>
+    <li><b>preditiva</b> (ou controlada): manutenção "que permite garantir uma qualidade de serviço desejada, com base na aplicação sistemática de técnicas de análise, utilizando-se de meios de supervisão centralizados ou de amostragem, para reduzir ao mínimo a manutenção preventiva e diminuir a manutenção corretiva".</li>
+  </ul>
+  <p>A divisão em corretiva planejada e não planejada, a <b>detectiva</b> e a engenharia de manutenção não estão na norma: vêm do livro de Kardec e Nascif <span class="confira">(citação lida em fonte secundária; o livro não foi aberto)</span>, que define a detectiva como a "atuação efetuada em sistemas de proteção, comando e controle, buscando detectar falhas ocultas ou não perceptíveis ao pessoal de operação e manutenção".</p>
+  <p>O jeito de separar as três mais cobradas: a <b>corretiva</b> espera a falha; a <b>preventiva</b> segue o <b>calendário</b> (pode trocar uma peça ainda boa); a <b>preditiva</b> segue a <b>medição</b> (troca quando a condição pede).</p>
+
+  <h3>Técnicas preditivas em instalações elétricas</h3>
+  <ul>
+    <li><b>Termografia</b>: uma câmera de infravermelho mostra a temperatura das superfícies. Um ponto mais quente que os vizinhos indica resistência de contato elevada (conexão frouxa ou oxidada), sobrecarga ou desequilíbrio entre fases. É feita com a instalação <b>energizada e com carga</b>, sem contato: sem corrente, a conexão ruim não aquece.</li>
+    <li><b>Análise de vibração</b>: sensores no mancal de motores, bombas e ventiladores medem a vibração e as suas frequências. Cada defeito mecânico tem a sua assinatura: desbalanceamento, desalinhamento, folgas, rolamento danificado. Acompanha-se a tendência ao longo dos meses.</li>
+    <li><b>Análise de óleo</b> isolante de transformadores: ensaios físico-químicos e análise dos gases dissolvidos no óleo, que denunciam aquecimento e descargas internas.</li>
+    <li><b>Resistência de isolamento</b>, medida com megômetro em motores, cabos e transformadores: uma queda de uma medição para a outra indica umidade, contaminação ou envelhecimento da isolação.</li>
+    <li><b>Ultrassom</b>: detecta o ruído de alta frequência do efeito corona, de descargas e de arcos em painéis e isoladores.</li>
+  </ul>
+
+  <h3>Indicadores: MTBF, MTTR e disponibilidade</h3>
+  <figure><svg viewBox="0 0 640 190" role="img" aria-label="Linha do tempo de um equipamento com três períodos de operação separados por dois períodos de reparo">
+<rect x="40" y="60" width="160" height="40" class="comp"/><rect x="200" y="60" width="40" height="40" class="core"/><rect x="240" y="60" width="160" height="40" class="comp"/><rect x="400" y="60" width="40" height="40" class="core"/><rect x="440" y="60" width="160" height="40" class="comp"/>
+<text x="120" y="46" class="ts" text-anchor="middle">operando</text><text x="320" y="46" class="ts" text-anchor="middle">operando</text><text x="520" y="46" class="ts" text-anchor="middle">operando</text>
+<text x="220" y="124" class="tm" text-anchor="middle">reparo</text><text x="420" y="124" class="tm" text-anchor="middle">reparo</text>
+<line x1="40" y1="150" x2="600" y2="150" class="ar ink" marker-end="url(#ah-ink)"/><text x="40" y="176" class="tm">tempo</text>
+</svg><figcaption>Figura 2. A vida de um equipamento reparável: trechos em operação, interrompidos por falhas e reparos. O MTBF é a média dos trechos em operação; o MTTR é a média dos reparos.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Tempo médio entre falhas e tempo médio para reparo</p>
+    <div class="eq-main">MTBF = <span class="frac"><span><var>T</var><sub>op</sub></span><span><var>n</var></span></span> &nbsp;&nbsp;&nbsp; MTTR = <span class="frac"><span><var>T</var><sub>rep</sub></span><span><var>n</var></span></span></div>
+    <dl>
+      <dt>MTBF</dt><dd>tempo médio entre falhas (<i>mean time between failures</i>), em horas; mede a <b>confiabilidade</b>: quanto maior, melhor</dd>
+      <dt>MTTR</dt><dd>tempo médio para reparo (<i>mean time to repair</i>; na NBR 5462, "tempo de restabelecimento médio"), em horas; mede a <b>mantenabilidade</b>: quanto menor, melhor</dd>
+      <dt><var>T</var><sub>op</sub></dt><dd>tempo total em operação no período, em horas (tempo do período menos o tempo parado para reparo)</dd>
+      <dt><var>T</var><sub>rep</sub></dt><dd>tempo total gasto em reparos no período, em horas</dd>
+      <dt><var>n</var></dt><dd>número de falhas (e de reparos) no período</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Disponibilidade</p>
+    <div class="eq-main"><var>D</var> = <span class="frac"><span>MTBF</span><span>MTBF + MTTR</span></span> = <span class="frac"><span><var>T</var><sub>op</sub></span><span><var>T</var><sub>op</sub> + <var>T</var><sub>rep</sub></span></span></div>
+    <dl>
+      <dt><var>D</var></dt><dd>disponibilidade: fração do tempo em que o equipamento está apto a operar (sem unidade; multiplica-se por 100 para ter em %)</dd>
+      <dt>1 − <var>D</var></dt><dd>indisponibilidade: fração do tempo parado</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Num mês de 720 h, o motor de uma bomba de transferência falhou 3 vezes. Os reparos levaram 4 h, 6 h e 8 h. Calcule o MTBF, o MTTR e a disponibilidade.</p>
+    <ol class="steps">
+      <li>Tempo de reparo: T<sub>rep</sub> = 4 + 6 + 8 = 18 h. Tempo em operação: T<sub>op</sub> = 720 − 18 = 702 h.</li>
+      <li>MTBF = 702/3 = <b>234 h</b>.</li>
+      <li>MTTR = 18/3 = <b>6 h</b>.</li>
+      <li>D = 234/(234 + 6) = 234/240 = 0,975 = <b>97,5%</b>. Conferindo pelo outro caminho: 702/720 = 0,975.</li>
+      <li>Indisponibilidade: 1 − 0,975 = 0,025 = 2,5% do mês, que são as 18 h paradas.</li>
+    </ol>
+  </div>
+  <p>Há duas maneiras de aumentar a disponibilidade: fazer o equipamento falhar menos (aumentar o MTBF, com preventiva, preditiva e engenharia de manutenção) ou consertar mais depressa (reduzir o MTTR, com sobressalentes à mão, procedimentos e treinamento).</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>No motor do exemplo anterior, a equipe passou a manter um rolamento e um conjunto de escovas de reserva no almoxarifado, e o MTTR caiu de 6 h para 3 h, com o mesmo MTBF de 234 h. Qual a nova disponibilidade? E qual a disponibilidade de uma linha em que esse motor trabalha em série com um inversor de disponibilidade 96%?</p>
+    <ol class="steps">
+      <li>D = 234/(234 + 3) = 234/237 ≈ 0,987 = <b>98,7%</b>.</li>
+      <li>Em série, a linha só funciona se os dois funcionarem: multiplicam-se as disponibilidades. D<sub>linha</sub> = 0,987 × 0,96 ≈ 0,948 = <b>94,8%</b>, menor que a de cada um.</li>
+    </ol>
+  </div>
+  <p>Dois complementos que aparecem em provas de manutenção:</p>
+  <div class="eq">
+    <p class="eq-name">Taxa de falhas e confiabilidade (taxa de falhas constante)</p>
+    <div class="eq-main">λ = <span class="frac"><span>1</span><span>MTBF</span></span> &nbsp;&nbsp;&nbsp; <var>R</var>(<var>t</var>) = e<sup>−λ<var>t</var></sup></div>
+    <dl>
+      <dt>λ</dt><dd>taxa de falhas, em falhas por hora (1/h)</dd>
+      <dt><var>R</var>(<var>t</var>)</dt><dd>confiabilidade: probabilidade de o equipamento operar sem falhar durante o tempo <var>t</var> (sem unidade)</dd>
+      <dt><var>t</var></dt><dd>tempo de missão, em horas, na mesma unidade do MTBF</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Um conjunto motor-bomba tem MTBF de 2.000 h. Supondo taxa de falhas constante, qual a probabilidade de operar 500 h sem falhar? E 2.000 h?</p>
+    <ol class="steps">
+      <li>λ = 1/2.000 = 0,0005 falha por hora.</li>
+      <li>R(500) = e<sup>−0,0005 × 500</sup> = e<sup>−0,25</sup> ≈ 0,779 = <b>77,9%</b>.</li>
+      <li>R(2.000) = e<sup>−1</sup> ≈ 0,368 = <b>36,8%</b>. Ou seja: MTBF de 2.000 h <b>não</b> quer dizer que o equipamento dura 2.000 h com certeza; nesse modelo, só cerca de 37% chegam lá sem falhar.</li>
+    </ol>
+  </div>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Trocar <b>preventiva</b> por <b>preditiva</b>: termografia e análise de vibração são preditivas (seguem a condição); a troca de óleo a cada 6 meses é preventiva (segue o calendário). E trocar os indicadores: disponibilidade <b>não</b> é MTTR/MTBF nem MTBF/MTTR; no denominador vai a <b>soma</b> MTBF + MTTR. No cálculo do MTBF, desconta-se do período o tempo parado para reparo.</p>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Materiais, ferramentas e instrumentos de teste</h2></div>
+  <p class="edital-ref">Edital, item 10.3</p>
+
+  <h3>Materiais condutores: cobre e alumínio</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Característica</th><th>Cobre</th><th>Alumínio</th></tr></thead>
+    <tbody>
+      <tr><td>Resistividade a 20 °C</td><td>cerca de 0,0172 Ω·mm²/m</td><td>cerca de 0,0282 Ω·mm²/m</td></tr>
+      <tr><td>Condutividade relativa</td><td>100% (referência)</td><td>cerca de 61% da do cobre</td></tr>
+      <tr><td>Densidade</td><td>cerca de 8,9 g/cm³</td><td>cerca de 2,7 g/cm³</td></tr>
+      <tr><td>Seção para a mesma resistência</td><td>S</td><td>cerca de 1,6 × S</td></tr>
+      <tr><td>Onde aparece</td><td>instalações prediais e industriais, enrolamentos, barramentos</td><td>linhas aéreas de transmissão e de distribuição, cabos de grande seção, barramentos</td></tr>
+    </tbody>
+  </table></div>
+  <p>O alumínio conduz pior, mas é muito mais leve e mais barato: mesmo com a seção maior, o cabo de alumínio pesa menos que o de cobre equivalente, o que explica o seu uso nas linhas aéreas. Os cuidados estão nas <b>conexões</b>: a camada de óxido que se forma na superfície do alumínio é isolante, e o metal dilata mais e cede sob pressão com o tempo (fluência), o que afrouxa a conexão e a faz aquecer. Por isso o alumínio exige conectores e procedimentos próprios, e a emenda com cobre é feita com conector <b>bimetálico</b>.</p>
+  <div class="eq">
+    <p class="eq-name">Resistência de um condutor</p>
+    <div class="eq-main"><var>R</var> = ρ·<span class="frac"><span><var>L</var></span><span><var>S</var></span></span></div>
+    <dl>
+      <dt><var>R</var></dt><dd>resistência do condutor, em ohms (Ω)</dd>
+      <dt>ρ</dt><dd>resistividade do material, em Ω·mm²/m</dd>
+      <dt><var>L</var></dt><dd>comprimento do condutor, em metros (m)</dd>
+      <dt><var>S</var></dt><dd>seção transversal do condutor, em mm²</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Um condutor de cobre de 10 mm² e 100 m será comparado com um de alumínio. Qual a resistência de cada um com a mesma seção? Que seção de alumínio dá a mesma resistência do cobre?</p>
+    <ol class="steps">
+      <li>Cobre: R = 0,0172 × 100/10 = <b>0,172 Ω</b>.</li>
+      <li>Alumínio de 10 mm²: R = 0,0282 × 100/10 = <b>0,282 Ω</b>, cerca de 64% a mais.</li>
+      <li>Para a mesma resistência, a seção cresce na proporção das resistividades: S = 10 × 0,0282/0,0172 ≈ <b>16,4 mm²</b>. É o mesmo que dividir por 0,61: 10/0,61 ≈ 16,4.</li>
+    </ol>
+  </div>
+  <p>Quanto à construção, o condutor pode ser um fio sólido, um cabo encordoado (vários fios) ou um cabo flexível (muitos fios finos), que as normas de cabos separam em classes de encordoamento. O flexível é usado onde há curvas e movimento; o rígido, em trechos retos e fixos.</p>
+
+  <h3>Materiais isolantes dos cabos</h3>
+  <p>Os isolantes sólidos dos cabos se dividem em duas famílias: os <b>termoplásticos</b>, que amolecem com o aumento da temperatura, e os <b>termofixos</b>, que não amolecem.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Isolação</th><th>Família</th><th>Serviço contínuo</th><th>Sobrecarga</th><th>Curto-circuito</th></tr></thead>
+    <tbody>
+      <tr><td>PVC (cloreto de polivinila)</td><td>termoplástico</td><td>70 °C</td><td>100 °C</td><td>160 °C</td></tr>
+      <tr><td>EPR e HEPR (borracha etileno-propileno)</td><td>termofixo</td><td>90 °C</td><td>130 °C</td><td>250 °C</td></tr>
+      <tr><td>XLPE (polietileno reticulado)</td><td>termofixo</td><td>90 °C</td><td>130 °C</td><td>250 °C</td></tr>
+    </tbody>
+  </table></div>
+  <p>São as temperaturas máximas no condutor, dadas pelos catálogos da Prysmian com base na NBR 5410 (para o PVC acima de 300 mm², o limite de curto-circuito cai para 140 °C). A consequência prática: com a mesma seção e a mesma instalação, o cabo de EPR, HEPR ou XLPE conduz <b>mais corrente</b> que o de PVC, porque pode trabalhar 20 °C mais quente, e suporta melhor o curto-circuito.</p>
+  <p>Na questão 47 de 2023, a banca perguntou a isolação mais adequada para substituir um condutor deteriorado por impactos mecânicos, com as alternativas EPR, PVC, PVA, HERP e XLPE; o gabarito oficial foi <b>XLPE</b>. <span class="confira">A justificativa usual é que o XLPE é mais duro e mais resistente mecanicamente, enquanto o EPR é mais flexível; não encontramos essa comparação escrita num catálogo de fabricante, e a banca não publicou justificativa.</span> Repare também nas siglas-armadilha: "HERP" não existe (a sigla real é HEPR), e PVA (acetato de polivinila) é material de colas e tintas, não isolação de cabos.</p>
+  <p>Outros isolantes que o técnico encontra: porcelana, vidro e polímeros nos isoladores; óleo mineral nos transformadores; papel, vernizes e resina epóxi em enrolamentos; borracha em luvas, mantas e tapetes; e o próprio ar, nas distâncias entre partes vivas.</p>
+
+  <h3>Ferramentas manuais e ferramentas isoladas</h3>
+  <ul>
+    <li><b>Alicates</b>: universal, de corte, de bico, desencapador e o alicate de <b>crimpar</b> (prensar) terminais.</li>
+    <li><b>Chaves</b> de fenda, Phillips, fixas e de soquete; <b>torquímetro</b> para o aperto de conexões com o torque especificado: aperto insuficiente deixa a conexão frouxa, que aquece; aperto excessivo danifica o terminal ou o parafuso.</li>
+    <li><b>Vara de manobra</b> isolante, para operar chaves e instalar o aterramento temporário à distância.</li>
+  </ul>
+  <p>As <b>ferramentas isoladas</b> para trabalho em baixa tensão têm estas características (catálogo da Gedore, que cita as normas IEC 60900 e ABNT NBR 9699):</p>
+  <ul>
+    <li>são marcadas com <b>1.000 V</b> e com o símbolo do <b>duplo triângulo</b>;</li>
+    <li>destinam-se a tensões de até <b>1.000 V em corrente alternada</b> e <b>1.500 V em corrente contínua</b>;</li>
+    <li>são ensaiadas uma a uma com <b>10.000 V</b> em corrente alternada, dez vezes a tensão de uso <span class="confira">(valor da IEC 60900 lido no catálogo da Ega Master; o catálogo da Gedore traz 1.000 V CA e 1.500 V CC como tensão de uso)</span>;</li>
+    <li>passam também por ensaios de aderência do isolamento, impacto, inflamabilidade e penetração.</li>
+  </ul>
+  <p>Ferramenta com cabo plastificado <b>não é</b> ferramenta isolada: o mesmo catálogo separa as linhas "com isolamento", ensaiadas pela norma, das linhas de cabo plastificado "sem isolamento elétrico". A NR-10 (item 10.4.3.1) exige que os equipamentos, dispositivos e ferramentas que possuam isolamento elétrico estejam adequados às tensões envolvidas e sejam inspecionados e testados de acordo com as regulamentações existentes ou as recomendações dos fabricantes. Isolamento trincado, cortado ou descolado tira a ferramenta de uso. E a ferramenta isolada não dispensa a desenergização: é o recurso para quando o trabalho energizado é inevitável.</p>
+
+  <h3>Instrumentos de teste</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Instrumento</th><th>Para que serve</th></tr></thead>
+    <tbody>
+      <tr><td>Detector de tensão</td><td>constatar a presença ou a ausência de tensão; há os de contato (de dois polos), os de aproximação e, em alta tensão, os acoplados à vara de manobra</td></tr>
+      <tr><td>Multímetro</td><td>medir tensão, corrente e resistência; testar continuidade</td></tr>
+      <tr><td>Alicate amperímetro</td><td>medir a corrente sem abrir o circuito, abraçando um condutor</td></tr>
+      <tr><td>Megômetro</td><td>medir a resistência de isolamento, aplicando tensão contínua elevada; só em circuito desenergizado</td></tr>
+      <tr><td>Terrômetro</td><td>medir a resistência de aterramento</td></tr>
+      <tr><td>Indicador de sequência de fases</td><td>verificar a ordem das fases antes de ligar um motor</td></tr>
+      <tr><td>Termovisor</td><td>fazer a termografia (seção 5)</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os instrumentos têm <b>categoria de medição</b> (norma IEC 61010), que indica onde podem ser ligados com segurança diante dos surtos de tensão da rede:</p>
+  <ul>
+    <li><b>CAT IV</b>: a origem da instalação (a entrada de energia, o medidor, os condutores externos);</li>
+    <li><b>CAT III</b>: a distribuição fixa (quadros, barramentos, alimentadores, motores);</li>
+    <li><b>CAT II</b>: cargas ligadas a tomadas (aparelhos e ferramentas portáteis).</li>
+  </ul>
+  <p>Escolhe-se o instrumento pela categoria <b>mais alta</b> em que ele será usado e pela tensão: para um quadro de distribuição de 480 V, pelo menos CAT III 600 V <span class="confira">(exemplo de aula; não consta dos catálogos da Fluke consultados)</span>. Um multímetro CAT II dentro de um painel de distribuição é um risco de arco na mão do técnico.</p>
+  <p>Na <b>constatação da ausência de tensão</b>, o detector é verificado <b>antes e depois</b> do teste, numa fonte sabidamente energizada: se ele não indicar tensão no circuito, é preciso ter certeza de que estava funcionando. Mede-se entre todas as fases e entre cada fase e a terra. Lâmpada de sinalização apagada e chave na posição "desligado" não provam ausência de tensão.</p>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>PVC é 70 °C; EPR, HEPR e XLPE são 90 °C. A banca inverte os números ou diz que o PVC é termofixo. Nas ferramentas isoladas, os limites são 1.000 V em corrente <b>alternada</b> e 1.500 V em corrente <b>contínua</b>, os mesmos números que separam a baixa da alta tensão na NR-10 de 2019; trocar CA por CC é a armadilha.</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<!-- ============ SEÇÃO 7 ============ -->
+<section id="b7" class="block">
+  <div class="block-head"><span class="block-num">7</span><h2>NR-10: medidas de controle, prontuário e trabalhadores</h2></div>
+  <p class="edital-ref">Edital, item 10.4</p>
+  <p>Esta seção e a seguinte seguem o texto da NR-10 <b>em vigor até 31/05/2027</b> (redação de 2004, com as alterações de 2016 e 2019), citado pelo número do item. Cada quadro "O que muda em 2027" resume a Portaria MTE nº 737/2026, que <span class="confira">por inferência não é a cobrada na prova de 29/11/2026</span>, mas pode aparecer como alternativa errada.</p>
+
+  <h3>Objetivo, campo de aplicação e faixas de tensão</h3>
+  <ul>
+    <li><b>Objetivo</b> (10.1.1): estabelecer os requisitos e condições mínimas para a implementação de medidas de controle e sistemas preventivos, de forma a garantir a segurança e a saúde dos trabalhadores que, <b>direta ou indiretamente</b>, interajam em instalações elétricas e serviços com eletricidade.</li>
+    <li><b>Aplicação</b> (10.1.2): às fases de <b>geração, transmissão, distribuição e consumo</b>, incluindo as etapas de projeto, construção, montagem, operação e manutenção das instalações elétricas e quaisquer trabalhos realizados nas suas proximidades.</li>
+    <li><b>Não se aplica</b> (10.14.6) a instalações elétricas alimentadas por extra-baixa tensão.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Faixa (glossário da NR-10 de 2019)</th><th>Corrente alternada</th><th>Corrente contínua</th></tr></thead>
+    <tbody>
+      <tr><td>Extra-baixa tensão (EBT)</td><td>não superior a 50 V</td><td>não superior a 120 V</td></tr>
+      <tr><td>Baixa tensão (BT)</td><td>superior a 50 V e igual ou inferior a 1.000 V</td><td>superior a 120 V e igual ou inferior a 1.500 V</td></tr>
+      <tr><td>Alta tensão (AT)</td><td>superior a 1.000 V</td><td>superior a 1.500 V</td></tr>
+    </tbody>
+  </table></div>
+  <p>As tensões são "entre fases ou entre fase e terra". Na NR-10 de 2019 <b>não existe média tensão</b>: 13,8 kV é alta tensão. O <b>Sistema Elétrico de Potência (SEP)</b> é o "conjunto das instalações e equipamentos destinados à geração, transmissão e distribuição de energia elétrica até a medição, inclusive".</p>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>O glossário novo cria a <b>média tensão</b>: acima de 1.000 V e até 36.200 V em corrente alternada (acima de 1.500 V e até 3.000 V em corrente contínua). Alta tensão passa a ser acima de 36.200 V em corrente alternada ou 3.000 V em corrente contínua. Baixa e extra-baixa tensão não mudam.</p>
+  </div>
+
+  <h3>Medidas de controle</h3>
+  <p>Em todas as intervenções em instalações elétricas devem ser adotadas medidas preventivas de controle do risco elétrico e de outros riscos adicionais, mediante técnicas de análise de risco (10.2.1). A prioridade é a proteção coletiva, e dentro dela a desenergização e, na sua impossibilidade, a tensão de segurança (10.2.8, visto na seção 3); o EPI entra quando a proteção coletiva é tecnicamente inviável ou insuficiente (10.2.9.1).</p>
+
+  <h3>Esquemas unifilares e Prontuário de Instalações Elétricas</h3>
+  <ul>
+    <li><b>Todas as empresas</b> (10.2.3): manter esquemas unifilares atualizados, com as especificações do sistema de aterramento e demais equipamentos e dispositivos de proteção.</li>
+    <li><b>Estabelecimentos com carga instalada superior a 75 kW</b> (10.2.4): constituir e manter o <b>Prontuário de Instalações Elétricas</b>, contendo, além dos unifilares, no mínimo:
+      <ol>
+        <li>conjunto de procedimentos e instruções técnicas e administrativas de segurança e saúde e a descrição das medidas de controle existentes;</li>
+        <li>documentação das inspeções e medições do sistema de proteção contra descargas atmosféricas e aterramentos elétricos;</li>
+        <li>especificação dos equipamentos de proteção coletiva e individual e do ferramental;</li>
+        <li>documentação comprobatória da qualificação, habilitação, capacitação, autorização dos trabalhadores e dos treinamentos realizados;</li>
+        <li>resultados dos testes de isolação elétrica realizados em equipamentos de proteção individual e coletiva;</li>
+        <li>certificações dos equipamentos e materiais elétricos em áreas classificadas;</li>
+        <li>relatório técnico das inspeções atualizadas, com recomendações e cronogramas de adequações.</li>
+      </ol></li>
+    <li><b>Empresas que operam no SEP</b> (10.2.5): o mesmo prontuário, mais a descrição dos procedimentos para emergências e as certificações dos equipamentos de proteção coletiva e individual.</li>
+    <li>O prontuário é <b>organizado e mantido atualizado pelo empregador</b> ou pessoa formalmente designada pela empresa e fica <b>à disposição dos trabalhadores</b> envolvidos nas instalações e serviços em eletricidade (10.2.6).</li>
+    <li>Os documentos técnicos do prontuário são elaborados por <b>profissional legalmente habilitado</b> (10.2.7).</li>
+  </ul>
+  <p>O critério é <b>carga instalada</b>, em <b>kW</b>: não é demanda contratada, nem potência do transformador em kVA.</p>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>Acaba o critério de 75 kW. O Prontuário passa a ser exigido das organizações que integram o SEP ou que realizam atividades em instalações de média e alta tensão, e os procedimentos de resposta a emergências passam a ser conteúdo obrigatório dele.</p>
+  </div>
+
+  <h3>Qualificado, habilitado, capacitado e autorizado</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Quem</th><th>O que a norma exige</th><th>Item</th></tr></thead>
+    <tbody>
+      <tr><td><b>Trabalhador qualificado</b></td><td>comprovar conclusão de <b>curso específico na área elétrica reconhecido pelo Sistema Oficial de Ensino</b></td><td>10.8.1</td></tr>
+      <tr><td><b>Profissional legalmente habilitado</b></td><td>ser previamente qualificado <b>e ter registro no competente conselho de classe</b></td><td>10.8.2</td></tr>
+      <tr><td><b>Trabalhador capacitado</b></td><td>simultaneamente: receber capacitação sob orientação e responsabilidade de profissional habilitado e autorizado; <b>e</b> trabalhar sob a responsabilidade de profissional habilitado e autorizado</td><td>10.8.3</td></tr>
+      <tr><td><b>Trabalhador autorizado</b></td><td>ser qualificado, capacitado ou habilitado <b>e ter a anuência formal da empresa</b></td><td>10.8.4</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>A capacitação <b>só vale para a empresa que capacitou</b> o trabalhador e nas condições estabelecidas pelo profissional habilitado e autorizado responsável (10.8.3.1).</li>
+    <li>A empresa deve ter um sistema de identificação que permita conhecer, a qualquer tempo, a abrangência da autorização de cada trabalhador (10.8.5), e a condição de autorizado é consignada no sistema de registro de empregado (10.8.6).</li>
+    <li>Os autorizados passam por <b>exame de saúde</b> compatível com as atividades, conforme a NR 7 (10.8.7), e por treinamento específico, conforme o Anexo III (10.8.8). A autorização é concedida a quem participou dos cursos <b>com avaliação e aproveitamento satisfatórios</b> (10.8.8.1).</li>
+    <li>As intervenções em instalações com tensão igual ou superior a 50 V em corrente alternada ou superior a 120 V em corrente contínua só podem ser feitas por trabalhadores que atendam ao item 10.8 (10.6.1). A exceção (10.6.1.2): operações elementares, como ligar e desligar circuitos, em baixa tensão, com materiais e equipamentos em perfeito estado, podem ser realizadas por <b>qualquer pessoa não advertida</b>.</li>
+    <li>Trabalhadores de atividades não elétricas que atuem em zona livre e na vizinhança da zona controlada devem ser instruídos formalmente para identificar e avaliar os riscos (10.8.9).</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Classifique, pela NR-10 de 2019: (a) Ana concluiu o curso técnico em eletrotécnica numa escola reconhecida; (b) depois, registrou-se no conselho de classe; (c) a empresa em que ela trabalha emitiu a anuência formal, depois do curso básico de 40 h com aproveitamento; (d) Bruno, sem curso na área, foi treinado por Ana e trabalha sob a responsabilidade dela.</p>
+    <ol class="steps">
+      <li>(a) Ana é <b>qualificada</b>: tem o curso reconhecido. Ainda não é habilitada.</li>
+      <li>(b) Com o registro no conselho, passa a ser <b>legalmente habilitada</b>.</li>
+      <li>(c) Com a anuência formal da empresa, passa a ser <b>autorizada</b>. Sem a anuência, nem o habilitado pode intervir.</li>
+      <li>(d) Bruno é <b>capacitado</b>, desde que Ana seja habilitada e autorizada. A capacitação dele vale só nessa empresa; para intervir, ele também precisa da anuência formal.</li>
+    </ol>
+  </div>
+
+  <h3>Treinamento</h3>
+  <ul>
+    <li><b>Curso básico</b>, Segurança em instalações e serviços com eletricidade: carga horária mínima de <b>40 h</b>, para os trabalhadores autorizados (Anexo III).</li>
+    <li><b>Curso complementar</b>, Segurança no Sistema Elétrico de Potência (SEP) e em suas proximidades: carga horária mínima de <b>40 h</b>; o pré-requisito é ter feito o básico com aproveitamento satisfatório.</li>
+    <li><b>Reciclagem bienal</b> (10.8.8.2), isto é, a cada dois anos, e sempre que ocorrer: (a) troca de função ou mudança de empresa; (b) retorno de afastamento ao trabalho ou inatividade por período <b>superior a três meses</b>; (c) modificações significativas nas instalações elétricas ou troca de métodos, processos e organização do trabalho.</li>
+    <li>Os trabalhos em áreas classificadas devem ser precedidos de treinamento específico, de acordo com o risco envolvido (10.8.8.4).</li>
+  </ul>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>A "reciclagem" passa a se chamar treinamento <b>periódico bienal</b>, com mínimo de <b>16 h</b>, mais o treinamento <b>eventual</b>; "três meses" vira "90 dias"; sai da lista a "troca de função ou mudança de empresa" e entram a mudança de procedimentos e o acidente grave ou fatal. Básico e SEP continuam com 40 h, e surgem outros treinamentos iniciais. A autorização ganha capítulo próprio e passa a exigir, por escrito, exame médico apto e treinamento com aproveitamento.</p>
+  </div>
+
+  <h3>Procedimentos, ordens de serviço e responsabilidades</h3>
+  <ul>
+    <li>Os serviços em instalações elétricas devem ser planejados e realizados conforme <b>procedimentos de trabalho</b> específicos, padronizados, com descrição detalhada de cada tarefa, passo a passo, assinados por profissional que atenda ao item 10.8 (10.11.1).</li>
+    <li>Devem ser precedidos de <b>ordens de serviço</b> específicas, aprovadas por trabalhador autorizado, contendo, no mínimo, o tipo, a data, o local e as referências aos procedimentos de trabalho a serem adotados (10.11.2).</li>
+    <li>Toda equipe deve ter um de seus trabalhadores indicado e em condições de exercer a <b>supervisão</b> e a condução dos trabalhos (10.11.6); antes de iniciar, a equipe faz uma avaliação prévia e planeja as atividades (10.11.7).</li>
+    <li>Os locais de serviços elétricos, compartimentos e invólucros de equipamentos são <b>exclusivos</b> para essa finalidade: é expressamente proibido usá-los para armazenamento ou guarda de quaisquer objetos (10.4.4.1).</li>
+    <li>Em <b>áreas classificadas</b>, os serviços só podem ser realizados mediante permissão para o trabalho com liberação formalizada, ou com a supressão do agente de risco que determina a classificação da área (10.9.5).</li>
+    <li>Cabe aos trabalhadores (10.13.4): zelar pela sua segurança e saúde e a de outras pessoas; responsabilizar-se, junto com a empresa, pelo cumprimento das disposições legais e regulamentares; e comunicar, de imediato, ao responsável pela execução do serviço as situações que considerarem de risco.</li>
+  </ul>
+  <p>Dois itens antigos que as apostilas ainda repetem foram <b>revogados em 2019</b>: o 10.13.1 (responsabilidade solidária de contratantes e contratados) e o 10.14.1 (direito de recusa, hoje tratado na NR-1).</p>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>Qualificado não precisa de registro no conselho.</b> O registro é o que transforma o qualificado em legalmente habilitado. A banca escreve "qualificado é o que possui curso reconhecido e registro no conselho de classe": errado. Outras trocas: 75 <b>kW de carga instalada</b> (não kVA, não demanda); reciclagem <b>bienal</b> (não anual); afastamento superior a <b>três meses</b> (não 30 dias); a capacitação vale <b>só na empresa</b> que capacitou.</p>
+  </div>
+
+  <div class="quiz" data-set="b7"></div>
+</section>
+
+<!-- ============ SEÇÃO 8 ============ -->
+<section id="b8" class="block">
+  <div class="block-head"><span class="block-num">8</span><h2>NR-10: desenergização, zonas e trabalho energizado</h2></div>
+  <p class="edital-ref">Edital, item 10.4</p>
+  <p>Texto em vigor até 31/05/2027 (itens 10.5, 10.6 e 10.7 e Anexo II), conferido na base do app (<code>fontes/nr10-2019-x-2026.md</code> e a Biblioteca). O quadro "O que muda em 2027" resume a Portaria MTE nº 737/2026.</p>
+
+  <h3>Instalação desenergizada: a sequência de seis passos</h3>
+  <p>O item 10.5.1 diz que só são consideradas desenergizadas as instalações "liberadas para trabalho, mediante os procedimentos apropriados, obedecida a sequência" abaixo. Desligar a chave <b>não basta</b>: sem os seis passos, a instalação não é considerada desenergizada (10.5.1); se puder ser energizada, segue o 10.6 (10.5.4).</p>
+  <figure><svg viewBox="0 0 640 330" role="img" aria-label="Os seis passos da desenergização, na ordem do item 10.5.1 da NR-10">
+<rect x="20" y="12" width="600" height="40" class="comp"/><text x="44" y="39" class="tl">a</text><text x="84" y="39" class="ts">Seccionamento</text>
+<rect x="20" y="64" width="600" height="40" class="comp"/><text x="44" y="91" class="tl">b</text><text x="84" y="91" class="ts">Impedimento de reenergização</text>
+<rect x="20" y="116" width="600" height="40" class="comp"/><text x="44" y="143" class="tl">c</text><text x="84" y="143" class="ts">Constatação da ausência de tensão</text>
+<rect x="20" y="168" width="600" height="40" class="comp"/><text x="44" y="195" class="tl">d</text><text x="84" y="195" class="ts">Aterramento temporário com equipotencialização dos condutores</text>
+<rect x="20" y="220" width="600" height="40" class="comp"/><text x="44" y="247" class="tl">e</text><text x="84" y="247" class="ts">Proteção dos elementos energizados na zona controlada</text>
+<rect x="20" y="272" width="600" height="40" class="comp"/><text x="44" y="299" class="tl">f</text><text x="84" y="299" class="ts">Sinalização de impedimento de reenergização</text>
+</svg><figcaption>Figura 3. Sequência de desenergização da NR-10 em vigor (item 10.5.1, alíneas a a f). Para memorizar: seccionar, impedir, constatar, aterrar, proteger, sinalizar.</figcaption></figure>
+  <ul>
+    <li><b>Seccionamento</b>: abrir o dispositivo que separa o circuito da alimentação.</li>
+    <li><b>Impedimento de reenergização</b>: bloqueio (cadeado e etiqueta) e travamento do dispositivo, para que ninguém religue (seção 3).</li>
+    <li><b>Constatação da ausência de tensão</b>: medição com o detector, verificado antes e depois (seção 6).</li>
+    <li><b>Aterramento temporário</b> com equipotencialização dos condutores dos circuitos: só depois de constatada a ausência de tensão.</li>
+    <li><b>Proteção dos elementos energizados existentes na zona controlada</b> (Anexo II): barreiras ou coberturas isolantes nas partes vivas vizinhas.</li>
+    <li><b>Sinalização</b> de impedimento de reenergização, que avisa a todos que o circuito não pode ser religado.</li>
+  </ul>
+  <p>A <b>reenergização</b> (item 10.5.2) tem cinco passos, e <b>não é a ordem inversa</b> da desenergização. O estado desenergizado é mantido até a autorização para reenergizar; então:</p>
+  <ol>
+    <li>retirada das ferramentas, utensílios e equipamentos;</li>
+    <li>retirada da zona controlada de todos os trabalhadores não envolvidos no processo de reenergização;</li>
+    <li>remoção do aterramento temporário, da equipotencialização e das proteções adicionais;</li>
+    <li>remoção da sinalização de impedimento de reenergização;</li>
+    <li>destravamento, se houver, e religação dos dispositivos de seccionamento.</li>
+  </ol>
+  <p>Duas regras do mesmo capítulo: as medidas dos itens 10.5.1 e 10.5.2 podem ser alteradas, substituídas, ampliadas ou eliminadas, por <b>profissional legalmente habilitado, autorizado</b> e com <b>justificativa técnica previamente formalizada</b>, desde que se mantenha o mesmo nível de segurança (10.5.3). E o serviço em instalação <b>desligada, mas com possibilidade de energização</b>, por qualquer meio ou razão, segue as regras das instalações energizadas (10.5.4, que remete ao 10.6).</p>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>A sequência passa a ter sete passos (item 10.13.1): a constatação da ausência de tensão sobe para <b>antes</b> do impedimento de reenergização e é repetida antes do aterramento; entram a proteção contra os efeitos do arco elétrico e a delimitação e sinalização da área de trabalho. A reenergização passa a ter sete passos (10.13.2), começando pela retirada da delimitação. Quem estudou "seccionar, impedir, constatar, aterrar, proteger, sinalizar" tem a sequência certa <b>para a prova de 29/11/2026</b>.</p>
+  </div>
+
+  <h3>Instalação energizada</h3>
+  <ul>
+    <li><b>10.6.1</b>: as intervenções em instalações com tensão igual ou superior a <b>50 V em corrente alternada</b> ou superior a <b>120 V em corrente contínua</b> só podem ser feitas por trabalhadores que atendam ao item 10.8 (seção 7), e eles recebem treinamento específico para trabalho energizado (10.6.1.1).</li>
+    <li><b>10.6.1.2</b>: operações elementares, como ligar e desligar circuitos em baixa tensão, com materiais em perfeito estado, podem ser feitas por qualquer pessoa não advertida.</li>
+    <li><b>10.6.2</b>: o trabalho que exige o <b>ingresso na zona controlada</b> é feito mediante <b>procedimentos específicos</b>, respeitando as distâncias do Anexo II.</li>
+    <li><b>10.6.3</b>: os serviços em instalações energizadas, ou nas proximidades, devem ser <b>suspensos de imediato</b> na iminência de ocorrência que possa colocar os trabalhadores em perigo.</li>
+    <li><b>10.6.5</b>: o responsável pela execução do serviço deve suspender as atividades ao verificar situação ou condição de risco não prevista, cuja eliminação ou neutralização imediata não seja possível.</li>
+  </ul>
+
+  <h3>Zonas de risco, controlada e livre</h3>
+  <p>Em volta de uma parte viva (energizada e não segregada) a NR-10 define zonas pela distância, que depende da tensão nominal (Anexo II):</p>
+  <ul>
+    <li><b>Zona de risco</b> (glossário 30): "entorno de parte condutora energizada, não segregada, acessível inclusive acidentalmente [...] cuja aproximação só é permitida a profissionais autorizados e com a adoção de técnicas e instrumentos apropriados de trabalho". É a mais próxima da parte viva.</li>
+    <li><b>Zona controlada</b> (glossário 31): "entorno de parte condutora energizada, não segregada, acessível [...] cuja aproximação só é permitida a profissionais autorizados". Fica entre a zona de risco e a zona livre.</li>
+    <li><b>Zona livre</b>: a legenda do Anexo II a identifica como ZL, além da zona controlada. A NR-10 em vigor não traz uma definição escrita da zona livre; a de 2027 a define como a região limítrofe da zona controlada, sem necessidade de invadi-la.</li>
+  </ul>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Zonas de risco, controlada e livre em volta de uma parte viva, com os raios Rr e Rc">
+<circle cx="200" cy="150" r="130" class="comp"/><circle cx="200" cy="150" r="70" class="core"/><circle cx="200" cy="150" r="10" class="f-ink"/>
+<line x1="200" y1="150" x2="270" y2="150" class="ar ink"/><line x1="200" y1="150" x2="200" y2="20" class="ar ink"/>
+<text x="276" y="146" class="tm">Rr</text><text x="206" y="72" class="tm">Rc</text>
+<text x="360" y="60" class="ts">Zona livre (ZL): além do raio Rc</text>
+<text x="360" y="120" class="ts">Zona controlada (ZC): entre Rr e Rc</text>
+<text x="360" y="180" class="ts">Zona de risco (ZR): dentro do raio Rr</text>
+<text x="360" y="240" class="tm">Ponto central: parte viva não segregada</text>
+</svg><figcaption>Figura 4. As zonas em volta de uma parte viva, vistas em corte. R<sub>r</sub> é o raio da zona de risco; R<sub>c</sub>, o da zona controlada. O desenho não está em escala.</figcaption></figure>
+  <div class="tw"><table>
+    <thead><tr><th>Faixa de tensão nominal (kV)</th><th>R<sub>r</sub>: zona de risco / controlada (m)</th><th>R<sub>c</sub>: zona controlada / livre (m)</th></tr></thead>
+    <tbody>
+      <tr><td>menor que 1</td><td>0,20</td><td>0,70</td></tr>
+      <tr><td>de 1 a menos de 3</td><td>0,22</td><td>1,22</td></tr>
+      <tr><td>de 3 a menos de 6</td><td>0,25</td><td>1,25</td></tr>
+      <tr><td>de 6 a menos de 10</td><td>0,35</td><td>1,35</td></tr>
+      <tr><td>de 10 a menos de 15</td><td>0,38</td><td>1,38</td></tr>
+      <tr><td>de 15 a menos de 20</td><td>0,40</td><td>1,40</td></tr>
+      <tr><td>de 20 a menos de 30</td><td>0,56</td><td>1,56</td></tr>
+      <tr><td>de 30 a menos de 36</td><td>0,58</td><td>1,58</td></tr>
+      <tr><td>de 70 a menos de 110</td><td>1,00</td><td>2,00</td></tr>
+      <tr><td>de 110 a menos de 132</td><td>1,10</td><td>3,10</td></tr>
+      <tr><td>de 480 a menos de 700</td><td>5,20</td><td>7,20</td></tr>
+    </tbody>
+  </table></div>
+  <p>São as linhas que mais caem; a tabela completa do Anexo II tem mais faixas. Nelas, R<sub>c</sub> = R<sub>r</sub> + 0,50 m abaixo de 1 kV, R<sub>c</sub> = R<sub>r</sub> + 1,00 m de 1 kV a 110 kV e R<sub>c</sub> = R<sub>r</sub> + 2,00 m de 110 kV para cima. <b>Quanto maior a tensão, maiores os raios.</b></p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>Um barramento de 13,8 kV, sem proteção, está acessível numa subestação. Em que zona está um trabalhador a (a) 0,30 m, (b) 0,90 m e (c) 1,50 m das partes vivas? E qual o raio R<sub>c</sub> de um quadro de 380 V?</p>
+    <ol class="steps">
+      <li>13,8 kV está na faixa de 10 a menos de 15 kV: R<sub>r</sub> = 0,38 m e R<sub>c</sub> = 1,38 m (conferindo: 0,38 + 1,00 = 1,38 m).</li>
+      <li>(a) 0,30 m &lt; 0,38 m: <b>zona de risco</b>. Só profissional autorizado, com técnicas e instrumentos apropriados.</li>
+      <li>(b) 0,38 m &lt; 0,90 m &lt; 1,38 m: <b>zona controlada</b>. Só profissionais autorizados, com procedimento específico (10.6.2).</li>
+      <li>(c) 1,50 m &gt; 1,38 m: <b>zona livre</b>: sem restrição por distância; quem faz ali atividade não elétrica, na vizinhança da zona controlada, precisa de instrução formal (10.8.9).</li>
+      <li>Quadro de 380 V (menor que 1 kV): R<sub>r</sub> = 0,20 m e R<sub>c</sub> = 0,20 + 0,50 = <b>0,70 m</b>.</li>
+    </ol>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>Os raios da tabela <b>não mudam</b>. A zona controlada passa a ser definida como "entorno da zona de risco", a zona livre ganha definição, e a tensão da tabela é a tensão entre fases.</p>
+  </div>
+
+  <h3>Trabalho em alta tensão e no SEP</h3>
+  <ul>
+    <li><b>10.7.1 e 10.7.2</b>: quem intervém em instalações energizadas em alta tensão, dentro das zonas controlada e de risco, atende ao item 10.8 e faz o treinamento específico do Sistema Elétrico de Potência (SEP) e suas proximidades (curso complementar, seção 7).</li>
+    <li><b>10.7.3</b>: serviços energizados em AT, e os executados no SEP, <b>não podem ser realizados individualmente</b>.</li>
+    <li><b>10.7.4</b>: exigem <b>ordem de serviço</b> específica para data e local, assinada por superior responsável pela área.</li>
+    <li><b>10.7.5 e 10.7.6</b>: antes de começar, o superior imediato e a equipe fazem avaliação prévia e planejam as atividades, e os serviços só podem ser feitos com <b>procedimentos específicos, detalhados e assinados</b> por profissional autorizado.</li>
+    <li><b>10.7.7</b>: na <b>zona de risco</b>, só com a <b>desativação (bloqueio) dos dispositivos de religamento automático</b> do circuito, e os equipamentos desativados são sinalizados com a condição de desativação (10.7.7.1).</li>
+    <li><b>10.7.8</b>: ferramentas e dispositivos isolantes para AT passam por testes elétricos ou ensaios periódicos (fabricante, procedimentos da empresa e, na ausência, <b>anualmente</b>; seção 3).</li>
+    <li><b>10.7.9</b>: todo trabalhador em AT energizada e no SEP dispõe de <b>equipamento de comunicação permanente</b> com a equipe ou com o centro de operação.</li>
+  </ul>
+  <div class="box conceito">
+    <p class="box-title">O que muda em 2027</p>
+    <p>Os capítulos 10.6 e 10.7 se fundem no 10.14. "Alta tensão" passa a "média e alta tensão", porque o glossário novo cria a média tensão; a ordem de serviço dá lugar a procedimento (trabalho rotineiro) ou permissão de trabalho (não rotineiro). O bloqueio do religamento automático na zona de risco e a proibição do trabalho individual continuam.</p>
+  </div>
+
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Quatro armadilhas: (1) a banca põe a <b>constatação da ausência de tensão</b> antes do impedimento de reenergização: no texto em vigor, o <b>impedimento vem primeiro</b>; (2) diz que a reenergização é "a ordem inversa": não é; (3) troca <b>zona de risco</b> por <b>zona controlada</b> (a de risco é a mais próxima da parte viva); (4) escreve que o religamento automático é bloqueado na <b>zona controlada</b>: o item 10.7.7 fala da <b>zona de risco</b>. E uma instalação desligada com <b>possibilidade de energização</b> não é "desenergizada" para a NR-10.</p>
+  </div>
+
+  <div class="quiz" data-set="b8"></div>
+</section>
+
+<!-- ============ FORMULÁRIO-RESUMO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula ou valor</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Corrente de choque</td><td>I = U/R<sub>c</sub></td><td>quem fere é a corrente; R<sub>c</sub> é a do percurso</td></tr>
+      <tr><td>Risco</td><td>probabilidade combinada com severidade</td><td>perigo é a fonte; risco é a medida</td></tr>
+      <tr><td>Corrente de projeto</td><td>I<sub>B</sub> = P/(U·cos φ); I<sub>B</sub> = S/(√3·U<sub>L</sub>)</td><td>I<sub>B</sub> ≤ In do disjuntor ≤ capacidade do cabo</td></tr>
+      <tr><td>MTBF</td><td>T<sub>op</sub>/n</td><td>confiabilidade; T<sub>op</sub> = período − tempo de reparo</td></tr>
+      <tr><td>MTTR</td><td>T<sub>rep</sub>/n</td><td>mantenabilidade</td></tr>
+      <tr><td>Disponibilidade</td><td>D = MTBF/(MTBF + MTTR)</td><td>em série, multiplicam-se as disponibilidades</td></tr>
+      <tr><td>Taxa de falhas e confiabilidade</td><td>λ = 1/MTBF; R(t) = e<sup>−λt</sup></td><td>taxa constante; R(MTBF) ≈ 36,8%</td></tr>
+      <tr><td>Resistência de um condutor</td><td>R = ρ·L/S</td><td>ρ(Cu) ≈ 0,0172 e ρ(Al) ≈ 0,0282 Ω·mm²/m</td></tr>
+      <tr><td>Zonas (Anexo II)</td><td>R<sub>c</sub> = R<sub>r</sub> + 0,50 m (&lt; 1 kV); + 1,00 m (1 a 110 kV); + 2,00 m (≥ 110 kV)</td><td>dentro de R<sub>r</sub>: risco; entre R<sub>r</sub> e R<sub>c</sub>: controlada</td></tr>
+      <tr><td>Faixas de tensão (NR-10 de 2019)</td><td>EBT ≤ 50 V CA / 120 V CC; BT até 1.000 V CA / 1.500 V CC; AT acima</td><td>não há média tensão até 31/05/2027</td></tr>
+      <tr><td>Prazos e números da NR-10 de 2019</td><td>Prontuário: mais de 75 kW; cursos básico e SEP: 40 h; reciclagem bienal</td><td>afastamento superior a três meses também exige reciclagem</td></tr>
+      <tr><td>Desenergização (10.5.1)</td><td>seccionar, impedir, constatar, aterrar, proteger, sinalizar</td><td>reenergização: 5 passos, não é a ordem inversa</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, Ênfase 8 (Manutenção – Elétrica), itens 6.1 a 6.3 e 10.2 a 10.4, no arquivo do edital do app (fontes/edital-03-2026.pdf).</li>
+    <li>Ministério do Trabalho e Emprego, NR-10 em vigor até 31/05/2027 (Portaria MTE nº 598/2004, com as alterações das Portarias MTPS nº 508/2016 e SEPRT nº 915/2019), e Portaria MTE nº 737/2026 (vigência em 01/06/2027), lidas no gov.br e reproduzidas lado a lado em fontes/nr10-2019-x-2026.md e na Biblioteca do app (acesso em 25/10/2026). Os itens da NR-10 citados nesta estação que não estão naquele arquivo (por exemplo 10.3.x, 10.4.x, 10.9.5, 10.11.x e 10.12.x) foram conferidos no PDF oficial de 2019.</li>
+    <li>Ministério do Trabalho, NR-1 (Disposições Gerais e Gerenciamento de Riscos Ocupacionais), NR-6 (EPI), e Lei nº 8.213/1991, arts. 19 a 21 (texto consolidado do Planalto): definições de perigo, risco, EPI, ordem de prioridade das medidas e acidente do trabalho.</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, Manutenção – Elétrica (questões 39, 41, 44 e 47), usado só para identificar o estilo de cobrança; as questões desta estação são originais.</li>
+    <li>ABNT NBR 5462:1994, <i>Confiabilidade e mantenabilidade: terminologia</i> (definições de manutenção corretiva, preventiva e preditiva); A. Kardec e J. Nascif, <i>Manutenção: função estratégica</i> (Qualitymark): manutenção detectiva, corretiva planejada, MTBF e disponibilidade. <span class="confira">Os números de página e a redação exata de cada definição não foram conferidos.</span></li>
+    <li>Prysmian, <i>Guia de dimensionamento de cabos para baixa tensão</i> (temperaturas das isolações PVC, EPR e XLPE); Alubar, <i>Catálogo técnico de condutores elétricos de alumínio</i>; Orion, catálogo de luvas isolantes de borracha (classes, tensões de uso e de ensaio); Gedore, catálogo de ferramentas isoladas VDE e NR-10 (IEC 60900 e NBR 9699); Fluke, <i>Categorias de medição</i> (IEC 61010).</li>
+    <li>Fundacentro e Comissão Tripartite do Setor Elétrico de SP, <i>NR-10: curso básico</i>; Ministério do Trabalho e Emprego, <i>Manual de auxílio na interpretação e aplicação da NR-10 (NR-10 comentada)</i>; IFSC, aula <i>NR10: choque elétrico</i>; Ministério da Saúde/SAMU 192, <i>Protocolos de suporte básico de vida</i> (reanimação cardiopulmonar). <span class="confira">As faixas de corrente de choque são ordens de grandeza de material didático, não da IEC 60479-1.</span></li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+
+</main>
+</div>
+
+<script>
+const QUIZ = {
+b1:[
+ {"s":"Numa sala de painéis, o barramento de 480 V de um centro de controle de motores fica atrás de uma porta com fecho, e só eletricistas autorizados têm a chave. Sobre perigo e risco nessa situação, é correto afirmar que","o":["o perigo deixa de existir enquanto a porta está fechada, pois ninguém toca no barramento","o risco é o barramento energizado, e o perigo é a chance de alguém tocá-lo","o barramento energizado é o perigo, e o risco combina a probabilidade de alguém sofrer o choque com a severidade da lesão","perigo e risco são sinônimos, e as normas usam um termo ou o outro","o risco depende só da tensão do barramento, e não das barreiras nem de quem tem acesso"],"a":2,"c":"Perigo é a fonte ou situação com potencial de causar lesão (o barramento energizado); risco é a combinação da probabilidade de a lesão ocorrer com a severidade dela. A porta fechada reduz a probabilidade, e portanto o risco, mas o perigo continua lá. Trocar as duas definições é o erro clássico; os termos não são sinônimos; e o risco depende das medidas de controle, não só da tensão."},
+ {"s":"No mapa de riscos de uma oficina de manutenção elétrica, o risco de choque elétrico numa bancada de testes é classificado no grupo dos riscos","o":["de acidentes","físicos","químicos","ergonômicos","biológicos"],"a":0,"c":"Na classificação dos cinco grupos, a eletricidade está no grupo 5, de acidentes (cor azul), junto com máquinas sem proteção, arranjo físico inadequado e probabilidade de incêndio ou explosão. Os físicos são formas de energia a que o trabalhador fica exposto, como ruído, calor, vibração e radiações; os químicos são poeiras, gases e vapores; os ergonômicos são esforço, postura e ritmo; os biológicos são microrganismos."},
+ {"s":"Para um serviço num painel elétrico, foram propostas quatro medidas: (I) fornecer luvas isolantes à equipe; (II) instalar uma barreira isolante sobre as partes vivas vizinhas; (III) desenergizar o painel; (IV) treinar a equipe no procedimento de trabalho. Pela ordem de prioridade das medidas de prevenção da NR-1, a sequência correta, da primeira à última, é","o":["I, II, III, IV","II, III, IV, I","III, IV, II, I","IV, III, II, I","III, II, IV, I"],"a":4,"c":"A ordem da NR-1 é: eliminação do fator de risco (III, desenergizar), proteção coletiva (II, barreira), medidas administrativas ou de organização do trabalho (IV, treinamento e procedimento) e, por último, proteção individual (I, luvas). Começar pelo EPI inverte a ordem; pôr a barreira antes da desenergização troca a eliminação pela proteção coletiva; pôr o treinamento antes da barreira troca a medida administrativa pela coletiva; e começar pelo treinamento põe a medida administrativa na frente de todas."},
+ {"s":"Um eletricista desenvolveu perda auditiva depois de anos trabalhando, sem proteção, numa casa de compressores muito ruidosa. Pela Lei nº 8.213/1991, essa perda auditiva","o":["não tem relação com acidente do trabalho, porque não houve um evento súbito","é equiparada ao acidente do trabalho, como doença adquirida em função das condições em que o trabalho é realizado","é um incidente, pois não houve lesão corporal","é um acidente de trajeto","só seria considerada acidente do trabalho se causasse a morte"],"a":1,"c":"O art. 20 da Lei nº 8.213 considera acidente do trabalho a doença profissional e a doença do trabalho, esta última adquirida em função das condições especiais em que o trabalho é realizado, como o ruído do ambiente. Não é preciso evento súbito; incidente é o evento sem lesão, e aqui há lesão; acidente de trajeto é o do percurso entre a casa e o trabalho; e o art. 19 inclui a redução, permanente ou temporária, da capacidade para o trabalho, e não só a morte."}
+],
+b2:[
+ {"s":"Num sistema trifásico de 220 V entre fases e 127 V entre fase e neutro, um trabalhador toca, ao mesmo tempo, duas fases diferentes, uma com cada mão. Supondo que a resistência do percurso da corrente pelo corpo seja de 2,5 kΩ, a corrente que o atravessa é de, aproximadamente,","o":["0,088 mA","11,4 mA","50,8 mA","88 mA","550 mA"],"a":3,"c":"O contato é entre duas fases: U = 220 V. I = 220/2.500 = 0,088 A = 88 mA. 0,088 mA é o resultado em ampères lido como se fosse em miliampères; 11,4 vem da divisão invertida (2.500/220); 50,8 mA usa a tensão entre fase e neutro (127/2.500); 550 multiplica 220 por 2,5 em vez de dividir."},
+ {"s":"Uma corrente alternada de 60 Hz atravessa o tórax de um trabalhador, de uma mão à outra. O efeito considerado a principal causa de morte por choque elétrico, em que o coração perde o ritmo e deixa de bombear sangue, e que exige um desfibrilador para ser revertido, é a","o":["tetanização","fibrilação ventricular","queimadura por efeito Joule","percepção","parada respiratória"],"a":1,"c":"Na fibrilação ventricular, as fibras do coração se contraem de forma desordenada, e o sangue deixa de circular; ela não cessa sozinha, e o desfibrilador é o recurso para revertê-la. A tetanização é a contração dos músculos, que impede de largar o condutor; a queimadura é o efeito térmico da corrente; a percepção é o formigamento das correntes pequenas; a parada respiratória é a contração dos músculos do tórax, socorrida com respiração artificial, e não a perda de ritmo do coração."},
+ {"s":"Um eletricista encontra um colega caído, desacordado, com a mão sobre o borne energizado de um quadro de baixa tensão. A primeira ação correta é","o":["desligar a alimentação do circuito ou, se isso não for possível, afastar o colega do contato com um material isolante e seco, sem tocá-lo diretamente","puxar o colega pelo braço, o mais rápido possível, para afastá-lo do quadro","iniciar imediatamente as compressões torácicas, no local em que o colega está","jogar água no rosto do colega, para que ele recupere a consciência","aguardar a chegada do socorro especializado, sem intervir"],"a":0,"c":"Primeiro vem a segurança de quem socorre: enquanto a vítima estiver em contato com a parte viva, tocá-la faz do socorrista a segunda vítima. Desliga-se o circuito ou, em baixa tensão, afasta-se a vítima com material isolante e seco. Só depois vêm o pedido de socorro e a reanimação. Puxar pelo braço e iniciar as compressões com o circuito ligado expõem o socorrista ao choque; a água conduz e piora a situação; e esperar sem interromper a corrente deixa o choque continuar."},
+ {"s":"Sobre o arco elétrico, é correto afirmar que ele","o":["só ocorre em instalações de alta tensão","é o nome dado à passagem da corrente elétrica pelo corpo humano","tem os seus efeitos evitados pelo uso de luvas isolantes de borracha","não oferece risco quando o circuito é protegido por dispositivo DR","pode causar queimaduras graves em quem está próximo, mesmo sem contato com as partes vivas"],"a":4,"c":"O arco libera calor intenso, luz, pressão e metal fundido, e queima a distância, sem contato. Ele também ocorre em baixa tensão, principalmente em painéis com corrente de curto-circuito elevada; a passagem de corrente pelo corpo é o choque, e não o arco; a luva isolante protege do choque, não do calor do arco; e o DR atua por corrente de fuga à terra, não limita a energia de um arco entre fases."}
+],
+b3:[
+ {"s":"De acordo com a NR-10 em vigor, nos trabalhos em instalações elétricas, os equipamentos de proteção individual devem ser adotados","o":["quando as medidas de proteção coletiva forem tecnicamente inviáveis ou insuficientes para controlar os riscos","prioritariamente, antes de qualquer medida de proteção coletiva","apenas nos trabalhos em alta tensão","no lugar da desenergização, sempre que o trabalhador for legalmente habilitado","somente quando solicitados pelo trabalhador"],"a":0,"c":"É o item 10.2.9.1: o EPI entra quando as medidas de proteção coletiva são tecnicamente inviáveis ou insuficientes. A prioridade é da proteção coletiva (10.2.8.1), e dentro dela a desenergização (10.2.8.2). A regra vale para qualquer tensão acima da extra-baixa; a habilitação do trabalhador não dispensa a desenergização; e o fornecimento do EPI adequado ao risco é obrigação da organização, e não depende de pedido."},
+ {"s":"Uma equipe vai trabalhar com luvas isolantes de borracha numa rede de distribuição de 13,8 kV. Considerando as tensões máximas de uso das classes de luvas isolantes, a menor classe que atende é a","o":["classe 00","classe 0","classe 1","classe 2","luva de cobertura de couro, usada sem a luva de borracha"],"a":3,"c":"13,8 kV = 13.800 V. A classe 2 tem tensão máxima de uso de 17.000 V e é a menor que atende. A classe 00 vai até 500 V, e a classe 0 até 1.000 V: são de baixa tensão. A classe 1 vai até 7.500 V, abaixo de 13.800 V. A luva de cobertura de couro só protege a borracha contra cortes e furos; sozinha, não isola."},
+ {"s":"No glossário da NR-10, o \"elemento que impede o contato acidental, mas não impede o contato direto por ação deliberada\" é a definição de","o":["barreira","invólucro","obstáculo","isolamento elétrico","travamento"],"a":2,"c":"É a definição de obstáculo: uma corrente, um corrimão, uma tela baixa, que evitam o contato sem querer, mas podem ser contornados de propósito. A barreira impede qualquer contato com as partes energizadas; o invólucro é o envoltório que impede o contato com as partes internas; o isolamento elétrico impede a passagem de corrente por interposição de materiais isolantes; o travamento mantém um dispositivo de manobra fixo numa posição, por meios mecânicos."},
+ {"s":"Sobre vestimentas de trabalho e adornos, a NR-10 em vigor estabelece que","o":["as vestimentas devem contemplar apenas a inflamabilidade, pois a condutibilidade é tratada pelas luvas isolantes","os adornos pessoais são permitidos, desde que não sejam metálicos","a vestimenta adequada dispensa as medidas de proteção coletiva em baixa tensão","as vestimentas devem contemplar a condutibilidade, a inflamabilidade e as influências eletrostáticas","é vedado o uso de adornos pessoais nos trabalhos com instalações elétricas ou em suas proximidades"],"a":4,"c":"É o item 10.2.9.3: adornos pessoais são vedados, sem exceção para o material. Pelo item 10.2.9.2, as vestimentas devem contemplar a condutibilidade, a inflamabilidade e as influências eletromagnéticas: os três aspectos, e a palavra é eletromagnéticas, não eletrostáticas. E a vestimenta é proteção individual, que só entra quando a coletiva é inviável ou insuficiente."}
+],
+b4:[
+ {"s":"Uma pequena empresa tem carga instalada de 40 kW. Em relação à documentação das instalações elétricas, a NR-10 em vigor obriga essa empresa a manter","o":["o Prontuário de Instalações Elétricas completo, com todos os documentos do item 10.2.4","esquemas unifilares atualizados das instalações, com as especificações do sistema de aterramento e dos demais equipamentos e dispositivos de proteção","diagramas trifilares de todos os circuitos, assinados pelos trabalhadores autorizados","apenas as notas fiscais dos materiais elétricos instalados","nenhum documento, pois a carga instalada é inferior a 75 kW"],"a":1,"c":"O item 10.2.3 vale para todas as empresas: esquemas unifilares atualizados, com as especificações do aterramento e dos demais equipamentos e dispositivos de proteção. O Prontuário só é exigido acima de 75 kW de carga instalada (10.2.4), mas isso não libera a empresa menor de ter o unifilar. A norma não pede diagramas trifilares de todos os circuitos, e notas fiscais não são documentação técnica da instalação."},
+ {"s":"Pela NR-10 em vigor, o projeto elétrico deve atender às Normas Regulamentadoras e às regulamentações técnicas oficiais e ser assinado por","o":["trabalhador qualificado","trabalhador capacitado","trabalhador autorizado pela empresa","pessoa advertida","profissional legalmente habilitado"],"a":4,"c":"É o item 10.3.8: o projeto é assinado por profissional legalmente habilitado, isto é, o qualificado com registro no conselho de classe. O qualificado tem o curso, mas pode não ter o registro; o capacitado trabalha sob a responsabilidade de um habilitado; a autorização é a anuência da empresa para intervir nas instalações, e não dá atribuição de projeto; pessoa advertida é só quem tem conhecimento suficiente para evitar os perigos da eletricidade."},
+ {"s":"Ao conferir o quadro de cargas de um projeto, um técnico encontra o circuito 4, bifásico em 220 V, que alimenta uma carga resistiva de 6.600 W. A corrente de projeto desse circuito, que deve constar do quadro, é de","o":["0,033 A","15 A","17,3 A","30 A","52 A"],"a":3,"c":"I = P/U = 6.600/220 = 30 A (carga resistiva, fator de potência 1). 0,033 inverte a divisão (220/6.600); 15 A divide a corrente pelos dois condutores do circuito; 17,3 A aplica o √3 de circuito trifásico a um circuito bifásico (6.600/(√3 × 220)); 52 A usa 127 V no lugar de 220 V."},
+ {"s":"Segundo o capítulo de segurança em projetos da NR-10 em vigor, todo projeto de instalações elétricas deve","o":["prever condições para a adoção de aterramento temporário","prever que os circuitos de comunicação, sinalização e controle sejam instalados junto com os demais, sem identificação própria","dispensar os recursos de impedimento de reenergização nos dispositivos de desligamento de baixa tensão","indicar a posição dos dispositivos de manobra com verde para ligado e vermelho para desligado","ficar arquivado com o projetista, com acesso restrito às autoridades competentes"],"a":0,"c":"Item 10.3.6: todo projeto deve prever condições para a adoção de aterramento temporário. Os circuitos de finalidades diferentes devem ser identificados e instalados separadamente (10.3.3.1); os dispositivos de desligamento devem ter recursos para impedimento de reenergização (10.3.1); a indicação é verde para desligado (D) e vermelho para ligado (L) (10.3.9); e o projeto deve ficar à disposição dos trabalhadores autorizados e ser mantido atualizado (10.3.7)."}
+],
+b5:[
+ {"s":"Sobre os tipos de manutenção, é correto afirmar que a manutenção","o":["preventiva é a efetuada depois da ocorrência da falha, para recolocar o equipamento em operação","corretiva é a efetuada em intervalos predeterminados, para reduzir a probabilidade de falha","preditiva consiste em trocar componentes em intervalos fixos, qualquer que seja a condição deles","detectiva dispensa testes, pois as falhas ocultas se revelam na operação normal do equipamento","preditiva acompanha a condição do equipamento por medições, como a termografia, e a intervenção é feita quando a medição indica"],"a":4,"c":"A preditiva decide a intervenção pela condição medida (termografia, vibração, análise de óleo). Intervir depois da falha é a corretiva; os intervalos predeterminados são da preventiva; trocar em intervalo fixo, sem olhar a condição, também é preventiva; e a detectiva existe justamente porque as falhas ocultas não aparecem na operação normal: é preciso testar a proteção."},
+ {"s":"Um compressor apresentou, num ano, tempo médio entre falhas (MTBF) de 480 h e tempo médio para reparo (MTTR) de 20 h. A disponibilidade desse compressor no período foi de","o":["4,0%","92,3%","96,0%","104,2%","2.400%"],"a":2,"c":"D = MTBF/(MTBF + MTTR) = 480/(480 + 20) = 480/500 = 0,96 = 96,0%. 4,0% é a indisponibilidade (20/500); 92,3% é 480/520: somou o MTTR duas vezes no denominador; 104,2% inverte a fração (500/480); 2.400% é MTBF/MTTR (480/20 = 24)."},
+ {"s":"Durante 1.000 h de calendário, um motor falhou 4 vezes e ficou, ao todo, 40 h parado para reparo. O MTBF e o MTTR desse motor no período foram, respectivamente, de","o":["250 h e 10 h","240 h e 10 h","240 h e 40 h","960 h e 10 h","10 h e 240 h"],"a":1,"c":"Tempo em operação: 1.000 − 40 = 960 h. MTBF = 960/4 = 240 h; MTTR = 40/4 = 10 h. 250 h divide as 1.000 h de calendário, sem descontar o tempo parado; 40 h é o tempo total de reparo, e não a média; 960 h é o tempo total em operação, sem dividir pelo número de falhas; e a última alternativa troca os dois indicadores."},
+ {"s":"Numa subestação, a equipe aciona todo mês o botão de teste dos dispositivos DR e, uma vez por ano, injeta corrente nos relés de proteção para verificar se eles comandam a abertura dos disjuntores. Essas tarefas, que procuram falhas que não aparecem na operação normal, são exemplos de manutenção","o":["corretiva não planejada","preditiva","preventiva por troca programada de componentes","detectiva","corretiva planejada"],"a":3,"c":"A manutenção detectiva atua em sistemas de proteção, comando e controle, para achar falhas ocultas: um relé defeituoso não dá sinal nenhum até o dia em que precisa atuar. Não há falha a corrigir, o que afasta as corretivas; a preditiva acompanha um parâmetro de condição (temperatura, vibração) em equipamento que está operando; e a troca programada de componentes é preventiva, feita por tempo, sem teste de funcionamento."}
+],
+b6:[
+ {"s":"Um alimentador de cobre de 25 mm² será substituído por um de alumínio de mesmo comprimento, que deve ter, no máximo, a mesma resistência elétrica. Considerando que a condutividade do alumínio é 61% da do cobre, a seção mínima do condutor de alumínio é de, aproximadamente,","o":["15,3 mm²","25,0 mm²","41,0 mm²","64,1 mm²","67,2 mm²"],"a":2,"c":"Para a mesma resistência, a seção cresce na razão inversa da condutividade: S = 25/0,61 ≈ 41,0 mm². 15,3 mm² multiplica por 0,61 em vez de dividir; 25,0 mm² ignora a diferença entre os materiais; 64,1 mm² divide por 0,39 (1 − 0,61); 67,2 mm² divide por 0,61 ao quadrado."},
+ {"s":"Dois cabos de cobre de mesma seção, instalados da mesma maneira, diferem só na isolação: um é de PVC e o outro, de HEPR. Sobre eles, é correto afirmar que","o":["o de HEPR admite 90 °C no condutor em serviço contínuo, contra 70 °C do de PVC, e por isso conduz mais corrente","o de PVC admite 90 °C no condutor em serviço contínuo, contra 70 °C do de HEPR, e por isso conduz mais corrente","os dois admitem 70 °C em serviço contínuo, e a capacidade de corrente é a mesma","o PVC é um material termofixo e o HEPR, um termoplástico","em curto-circuito, o de PVC admite 250 °C e o de HEPR, 160 °C"],"a":0,"c":"O HEPR, como o EPR e o XLPE, é termofixo e admite 90 °C em serviço contínuo, 130 °C em sobrecarga e 250 °C em curto-circuito; o PVC é termoplástico e admite 70 °C, 100 °C e 160 °C. Com 20 °C a mais de limite, o cabo de HEPR conduz mais corrente na mesma seção. As outras alternativas invertem as temperaturas, igualam os dois materiais ou trocam as famílias."},
+ {"s":"Sobre as ferramentas manuais isoladas usadas em serviços de baixa tensão, é correto afirmar que","o":["qualquer alicate com cabo plastificado pode ser usado em circuito energizado de baixa tensão","o uso de ferramenta isolada dispensa a desenergização do circuito sempre que a tensão for inferior a 1.000 V","elas se destinam a tensões de até 1.000 V em corrente contínua e 1.500 V em corrente alternada","elas trazem a marcação de 1.000 V e se destinam a tensões de até 1.000 V em corrente alternada e 1.500 V em corrente contínua","por serem certificadas, dispensam a inspeção visual antes do uso"],"a":3,"c":"A ferramenta isolada é marcada com 1.000 V (e o duplo triângulo) e serve até 1.000 V em corrente alternada e 1.500 V em corrente contínua. Cabo plastificado não é isolamento ensaiado; a ferramenta isolada não muda a prioridade da desenergização; os limites de CA e CC estão trocados na terceira alternativa; e toda ferramenta isolada é inspecionada antes do uso, porque um corte no isolamento a inutiliza."},
+ {"s":"Um circuito de baixa tensão foi seccionado e bloqueado. Antes de instalar o aterramento temporário, o técnico vai constatar a ausência de tensão com um detector de tensão de contato. O procedimento correto é","o":["medir uma única vez, entre a fase mais próxima e a terra, e liberar o circuito se não houver indicação","testar o detector numa fonte sabidamente energizada, medir o circuito entre as fases e entre cada fase e a terra e testar o detector de novo na fonte conhecida","dispensar a medição, pois a chave está aberta e a lâmpada de sinalização do painel está apagada","usar um multímetro na escala de resistência entre as fases, que indica com segurança se há tensão","encostar rapidamente o dorso da mão no condutor, para sentir se há tensão"],"a":1,"c":"O detector é verificado antes e depois, numa fonte conhecida, para garantir que a falta de indicação no circuito não é defeito do instrumento, e a medição cobre todas as fases, entre si e para a terra. Medir uma fase só deixa as outras sem verificação; posição da chave e lâmpada apagada não provam ausência de tensão; a escala de resistência não serve para detectar tensão e danifica o instrumento se o circuito estiver vivo; e o contato com a mão é exatamente o acidente que o procedimento quer evitar."}
+],
+b7:[
+ {"s":"Um trabalhador concluiu um curso técnico em eletrotécnica reconhecido pelo Sistema Oficial de Ensino. Ele ainda não se registrou no conselho de classe e não recebeu a anuência formal da empresa em que acaba de ser admitido. Pela NR-10 em vigor, esse trabalhador é","o":["profissional legalmente habilitado","trabalhador capacitado","trabalhador autorizado","trabalhador qualificado","pessoa não advertida"],"a":3,"c":"Qualificado é quem comprova a conclusão de curso específico na área elétrica reconhecido pelo Sistema Oficial de Ensino (10.8.1). Para ser legalmente habilitado falta o registro no conselho de classe (10.8.2); capacitado é quem é capacitado por um habilitado e autorizado, sob cuja responsabilidade trabalha (10.8.3); autorizado exige a anuência formal da empresa (10.8.4); e quem tem formação na área não é pessoa não advertida."},
+ {"s":"Sobre o Prontuário de Instalações Elétricas, a NR-10 em vigor estabelece que ele","o":["é exigido de todos os estabelecimentos, qualquer que seja a carga instalada","é exigido dos estabelecimentos com demanda contratada superior a 75 kW","deve ser organizado e mantido atualizado pelos trabalhadores autorizados","pode ter os seus documentos técnicos elaborados por qualquer trabalhador autorizado","deve permanecer à disposição dos trabalhadores envolvidos nas instalações e serviços em eletricidade"],"a":4,"c":"Item 10.2.6: o prontuário fica à disposição dos trabalhadores envolvidos nas instalações e serviços em eletricidade. Ele é exigido dos estabelecimentos com carga instalada superior a 75 kW, e não de todos (os demais mantêm os esquemas unifilares); o critério é a carga instalada, e não a demanda contratada; quem o organiza e mantém atualizado é o empregador ou pessoa formalmente designada; e os documentos técnicos são elaborados por profissional legalmente habilitado (10.2.7)."},
+ {"s":"De acordo com a NR-10 em vigor, o treinamento de reciclagem dos trabalhadores autorizados deve ser realizado","o":["a cada dois anos e, entre outras situações, no retorno de afastamento ao trabalho ou inatividade por período superior a três meses","todos os anos e, entre outras situações, no retorno de afastamento ao trabalho por período superior a três meses","a cada dois anos, e somente nesse intervalo, quaisquer que sejam as mudanças na função ou nas instalações","a cada cinco anos, junto com a renovação do exame de saúde","a cada dois anos e, entre outras situações, no retorno de afastamento ao trabalho por período superior a trinta dias"],"a":0,"c":"Item 10.8.8.2: reciclagem bienal e sempre que ocorrer troca de função ou mudança de empresa, retorno de afastamento ou inatividade por período superior a três meses, ou modificações significativas nas instalações, métodos, processos e organização do trabalho. Não é anual nem quinquenal; não se limita ao intervalo de dois anos; e o afastamento que a exige é o superior a três meses, não a trinta dias."},
+ {"s":"Uma empresa capacitou um auxiliar para executar serviços simples em quadros de baixa tensão, sob orientação de um engenheiro eletricista habilitado e autorizado. Sobre esse trabalhador capacitado, a NR-10 em vigor estabelece que","o":["ele é considerado qualificado, pois recebeu treinamento na área elétrica","depois de capacitado, ele pode trabalhar sem a responsabilidade de um profissional habilitado","a capacitação só tem validade para a empresa que o capacitou e nas condições estabelecidas pelo profissional habilitado e autorizado responsável pela capacitação","a capacitação vale em qualquer empresa do mesmo ramo de atividade","a capacitação dispensa a anuência formal da empresa para que ele intervenha nas instalações"],"a":2,"c":"Item 10.8.3.1: a capacitação só vale na empresa que capacitou e nas condições estabelecidas pelo profissional habilitado e autorizado responsável. Qualificado é quem tem curso reconhecido pelo Sistema Oficial de Ensino, e não o treinamento interno; o capacitado trabalha sempre sob a responsabilidade de profissional habilitado e autorizado; a capacitação não se transfere para outra empresa; e a autorização exige a anuência formal da empresa (10.8.4)."}
+],
+b8:[
+ {"s":"Pela sequência de desenergização do item 10.5.1 da NR-10 em vigor até 31/05/2027, a ação que vem imediatamente depois da constatação da ausência de tensão é","o":["o impedimento de reenergização","a instalação do aterramento temporário com equipotencialização dos condutores dos circuitos","a proteção dos elementos energizados existentes na zona controlada","a instalação da sinalização de impedimento de reenergização","o seccionamento do circuito"],"a":1,"c":"A sequência é: seccionamento, impedimento de reenergização, constatação da ausência de tensão, aterramento temporário com equipotencialização, proteção dos elementos energizados na zona controlada e sinalização. Logo, depois de constatar a ausência de tensão vem o aterramento. O impedimento de reenergização vem antes da constatação (é a ordem da nova NR-10, de 2027, que põe a constatação antes do impedimento); a proteção na zona controlada é o quinto passo; a sinalização é o último; e o seccionamento é o primeiro."},
+ {"s":"Em um painel não segregado de 6,6 kV, o Anexo II da NR-10 dá R<sub>r</sub> = 0,35 m e R<sub>c</sub> = 1,35 m. Um eletricista autorizado precisa trabalhar com o corpo a 0,80 m das partes vivas, sem barreiras. Ele estará","o":["na zona de risco, porque está a menos de 1,35 m","na zona livre, porque está a mais de 0,35 m","na zona controlada, porque a distância fica entre R<sub>r</sub> e R<sub>c</sub>, e o ingresso exige procedimentos específicos","na zona de risco, porque a zona de risco termina em R<sub>c</sub>","fora de qualquer zona, porque 6,6 kV está abaixo de 10 kV"],"a":2,"c":"A zona de risco vai até R<sub>r</sub> = 0,35 m; a controlada, de 0,35 m a 1,35 m; a livre começa depois de 1,35 m. A 0,80 m (entre os dois raios) o trabalhador está na zona controlada, e o ingresso nela exige procedimentos específicos (item 10.6.2). Dizer que é zona de risco por estar a menos de 1,35 m confunde R<sub>c</sub> com o limite da zona de risco; a zona livre só começa além de R<sub>c</sub>; e toda tensão tem zonas definidas na tabela (6,6 kV está na faixa de 6 a menos de 10 kV), e não existe faixa sem zona."},
+ {"s":"Pelo item 10.5.2 da NR-10 em vigor, depois da autorização para reenergizar e da retirada das ferramentas, utensílios e equipamentos, a ação seguinte é","o":["a remoção do aterramento temporário, da equipotencialização e das proteções adicionais","a remoção da sinalização de impedimento de reenergização","o destravamento, se houver, e a religação dos dispositivos de seccionamento","a retirada da zona controlada de todos os trabalhadores não envolvidos no processo de reenergização","a constatação da ausência de tensão em todos os condutores"],"a":3,"c":"A reenergização tem cinco passos: retirada das ferramentas, utensílios e equipamentos; retirada da zona controlada dos trabalhadores não envolvidos; remoção do aterramento, da equipotencialização e das proteções adicionais; remoção da sinalização; e destravamento e religação. Os passos das letras A, B e C são o terceiro, o quarto e o quinto, e a constatação de ausência de tensão não faz parte da sequência de reenergização do item 10.5.2. Quem escolhe B supõe que a reenergização seja a ordem inversa da desenergização, o que a norma não diz."},
+ {"s":"Um eletricista autorizado vai intervir numa linha de 13,8 kV energizada, dentro da zona de risco. Entre as exigências da NR-10 em vigor para esse serviço está","o":["a desativação (bloqueio) dos conjuntos e dispositivos de religamento automático, com os equipamentos desativados sinalizados","a execução por um único trabalhador, para reduzir o número de pessoas expostas","a autorização por ordem verbal do superior, para não atrasar o serviço","o uso das luvas isolantes como única medida, dispensados os procedimentos específicos","a manutenção do religamento automático ativo, para restabelecer a energia depressa se houver desligamento"],"a":0,"c":"O item 10.7.7 exige, para intervir em instalação energizada em alta tensão dentro da zona de risco, a desativação (bloqueio) dos dispositivos de religamento automático, e o 10.7.7.1 manda sinalizar os equipamentos desativados. Os serviços em AT e no SEP não podem ser feitos individualmente (10.7.3); exigem ordem de serviço específica para data e local, assinada por superior responsável (10.7.4), e não ordem verbal; só podem ser feitos com procedimentos específicos, detalhados e assinados (10.7.6); e deixar o religamento automático ativo é o contrário do que a norma pede."}
+]
+};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+</script>
+</body>
+</html>
