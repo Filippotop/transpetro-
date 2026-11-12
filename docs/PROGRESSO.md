@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-12. T1–T6, M3, A2, N1, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus). Matemática completa (X1–X3). Faltam A1, I3 e I2 (pesos 2, 2 e 2 em 2023).
+Última atualização: 2026-11-12. T1–T6, M3, A2, N1, A1, I3, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus; A1 e I3 por uma passada em Opus, só leitura). Matemática completa (X1–X3). Falta a I2 (peso 2 em 2023).
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -16,8 +16,8 @@
 | T6: Biblioteca (formulário, números-âncora, NR-10 de 2019 × 2026, simbologia, glossário próprio), Arena (Qual é a fórmula?, Ordene a NR-10, Grandeza e unidade), Plano de 10/11 a 28/11 (`data/plano.js`), Painel por item do edital com a marca da prova de 2023, Missão de hoje pelo peso do `mapa2023` | ✅ implementada e revisada; falta só a parada para o estudante avaliar | c43aeef.. |
 
 Ondas seguintes (spec, seção 3):
-- **Onda 2:** M3 ✅ e A2 ✅ (escritas para o app e revisadas; ver `fontes/ERRATA.md`). A1 ⬜: não há nada escrito, começa do zero.
-- **Onda 3:** N1, I3 e I2.
+- **Onda 2:** M3 ✅, A2 ✅ e A1 ✅ (escritas para o app e revisadas; ver `fontes/ERRATA.md`).
+- **Onda 3:** N1 ✅, I3 ✅ e I2 ⬜.
 - **Onda 4:** Matemática (X1–X3) e recalibração do Plano e do Painel.
 
 ## Decisões já tomadas (não reabrir sem motivo)

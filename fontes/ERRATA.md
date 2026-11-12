@@ -273,6 +273,26 @@ Onda 3 (2026-11-12). Mat 5, 6 e 7; **nenhuma fonte foi corrigida**. 110 contas; 
 
 Revisão independente de 2026-11-12 (duas passadas em Sonnet, sem erro de conta): corrigidos o distrator de `x3-comb` (a nota "só vale para p = 2" era falsa), o uso de "chance" como favoráveis ÷ desfavoráveis (agora "razão de chances", com `confira` de que em enunciado costuma ser sinônimo de probabilidade), a dica de √2 em `b8:1`, a regra da variância, "Na prova não há calculadora" (`confira`: não achei no edital) e a moda multimodal. Não incluído: histograma com classes de larguras diferentes, polígono de frequência e ogiva.
 
+## A1 · Eletrônica analógica e digital (`fontes/eletronica-analogica-digital.html`, escrita para o app)
+
+Onda 4 (2026-11-12). Estação nova (itens 9.1 e 9.2): o aprofundamento foi escrito para o app e **nenhuma fonte foi corrigida**. As contas dos exemplos e dos exercícios estão em `contas` (107); as 34 questões estão em `tools/banco/A1.mjs`, com letras corretas A 7, B 6, C 6, D 8, E 7.
+
+Fontes: texto do edital (Anexo IV, itens 9.1 e 9.2), questões 31 e 34 da prova de 2023 (só para o estilo de cobrança) e a bibliografia citada ao fim da fonte (Malvino e Bates, Boylestad e Nashelsky, Tocci, Idoeta e Capuano). **As fórmulas foram deduzidas e recalculadas no app, sem consulta ao texto integral desses livros**; o texto manda conferir a ondulação do filtro (V<sub>r</sub> = I/(f<sub>r</sub>·C)) e a do SCR (V<sub>p</sub>(1 + cos α)/(2π)).
+
+Marcado com `confira`: valores típicos de folha de dados (queda e corrente do LED, queda mínima do 7805, famílias TTL).
+
+Decisão de formato: nas alternativas que só diferem por barras de negação (De Morgan), cada barra leva o texto oculto "não" para leitores de tela e para o teste de alternativas repetidas.
+
+Revisão independente de 2026-11-12 (subagente Opus, só leitura; as 107 contas e as 34 questões refeitas, gabarito das questões 31 e 34 de 2023 conferido contra o oficial). Corrigido: (1) exemplo resolvido 9, 42,87 V virou 42,88 V; (2) as barras de negação (De Morgan) ganharam texto oculto \"não\" em toda a fonte, nos cartões e nas explicações, para leitor de tela; (3) tiradas ou suavizadas afirmações sem fonte (\"NPN é o mais comum\", NAND por causa dos circuitos integrados, \"a prova costuma citar\", \"outras provas\"); (4) redação do secundário do transformador, do complemento de dois e do flip-flop (JK ou T). **Não corrigido:** o mapa de Karnaugh ocupa uma frase só, sem exemplo nem exercício.
+
+## I3 · Medidas, retificadores, baterias e no-breaks (`fontes/medidas-retificadores-baterias-nobreaks.html`, escrita para o app)
+
+Onda 4 (2026-11-12). Estação nova (itens 7.1, 7.3 e 7.4): **nenhuma fonte foi corrigida**. Contas em `contas`; 30 questões em `tools/banco/I3.mjs` (6 de cada letra).
+
+Fontes: edital, questões 40 e 43 de 2023 (só estilo), NBR 5410 (tabela 60 e tensão aplicada), IEEE 43-2013 (IP, correção para 40 °C), Fluke (categorias CAT, IEC 61010-1), AEMC (queda de potencial, 62%), Socomec e IEC 62040-3 (VFD, VI, VFI), fabricantes de baterias VRLA e práticas IEEE 450, 1106 e 1188. **As normas foram lidas em artigos técnicos e resumos públicos, e não no texto integral**; o texto marca a diferença. O valor de compensação de temperatura (2 a 5,5 mV/°C por célula) é de fabricantes; vale o do modelo instalado.
+
+Revisão independente de 2026-11-12 (subagente Opus, só leitura; as 68 contas e as 30 questões refeitas, questões 40 e 43 de 2023 conferidas contra o gabarito oficial). Corrigido: (1) a frase sobre as questões de 2023 no item 7 (a 60 é do 7.2, ensinada na M2); (2) distrator da bateria VRLA que chamava 28,8 V de \"equalização\" (VRLA não tem equalização separada); (3) PIV da meia onda com filtro capacitivo (2·V<sub>p</sub>); (4) o zener é regulador em paralelo, e não em série; (5) tabela 60 vale para SELV e PELV; (6) limite em kW do no-break; (7) lítio-ferro-fosfato (3,2 V); (8) `confira` na recomendação de não ligar motores a UPS e \"aproximadamente\" na regra de dobrar a cada 10 °C. **Não corrigido:** o distrator \"estabilizador de tensão com bateria\" (b6:0) não é categoria definida no texto, e a \"conversão simples\" da Q43 de 2023 não é explicada; a nota de que a CAT I saiu da IEC 61010-2-030; o `peso2023: 3` da I3 (convenção do item 7 inteiro; o `mapa2023` dá 2).
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão

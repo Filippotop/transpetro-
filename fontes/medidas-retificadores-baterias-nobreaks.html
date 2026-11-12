@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medidas elétricas, retificadores, baterias e no-breaks — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. Fundamentos de medidas: erro, exatidão, shunt e multiplicador<small>Item 7.1</small></a></li>
+    <li><a href="#b2">2. Multímetro, alicate, osciloscópio e potência<small>Itens 7.1 e 7.3</small></a></li>
+    <li><a href="#b3">3. Resistência, isolação e aterramento: ponte, megôhmetro, hipot e terrômetro<small>Itens 7.1 e 7.3</small></a></li>
+    <li><a href="#b4">4. Retificadores, filtros e fontes de corrente contínua<small>Item 7.4</small></a></li>
+    <li><a href="#b5">5. Baterias e carregadores<small>Item 7.4</small></a></li>
+    <li><a href="#b6">6. No-breaks (UPS)<small>Item 7.4</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Medidas elétricas, retificadores, baterias e no-breaks</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Erro e classe de exatidão, instrumentos de campo e de bancada, resistência de isolação e de aterramento, retificadores e filtros, baterias e carregadores e os tipos de no-break, com figuras, equações com cada símbolo nomeado, exemplos resolvidos e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>No Anexo IV do Edital nº 03, o bloco <b>7. Medidas elétricas</b> da Ênfase 8 tem quatro subitens. Esta estação cobre três deles, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>7.1</b> Fundamentos de Medidas Elétricas;</li>
+    <li><b>7.3</b> Utilização de instrumentos de medição e testes elétricos: Corrente, tensão, potência e isolação;</li>
+    <li><b>7.4</b> Funcionamento básico e aplicação de: Retificadores, Baterias e No-Breaks.</li>
+  </ul>
+  <p>O item 7.2 (grandezas elétricas e magnéticas e Sistema Internacional de Unidades) está na estação <b>M2</b>, e o método dos dois wattímetros e o medidor de energia estão na <b>E3</b>; aqui eles aparecem só para ligar ao uso do instrumento. Valor médio, valor eficaz e fasores são da <b>E2</b> e são usados sem ser ensinados de novo, mas a seção 4 refaz as contas de valor médio de ondas retificadas.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (Manutenção – Elétrica), duas questões ficaram nos itens 7.1, 7.3 e 7.4 (a 60, do 7.2, é ensinada na M2) e são de <b>reconhecer o equipamento ou o tipo</b>, sem conta:</p>
+    <ul>
+      <li>a 40: qual equipamento faz o <b>teste de tensão aplicada ao dielétrico</b>, com fonte CA ou CC e medição de corrente de fuga: o <b>hipot</b> (gabarito B), e não o megôhmetro nem o megger (seção 3);</li>
+      <li>a 43: qual tipo de UPS alimenta a carga com a energia da rede, sem tratamento, enquanto a rede está dentro dos limites: o <b>off-line</b> (gabarito D), e não a dupla conversão nem o line-interactive (seção 6).</li>
+    </ul>
+    <p>Outras questões da mesma prova usam instrumentos como cenário e pertencem a outras estações: o osciloscópio que mostra o pico de 212 V (a 33, valor eficaz), o medidor de energia de disco (a 21), os dois wattímetros (a 58), o ensaio com amperímetro e voltímetro para achar a resistência interna de uma bateria (a 49) e o joule e o quilowatt-hora (a 60, ensinada na M2). É um <b>padrão observado</b> numa prova só, não garantia de repetição. Mas ele indica o formato: nome do equipamento certo para o ensaio, tipo de no-break e conceitos, mais do que contas longas. Os exemplos e exercícios daqui têm números próprios.</p>
+  </div>
+</section>
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Fundamentos de medidas: erro, exatidão, shunt e multiplicador</h2></div>
+  <p class="edital-ref">Edital, item 7.1</p>
+
+  <h3>Medir é comparar, e toda medida tem erro</h3>
+  <p>O <b>valor lido</b> nunca é exatamente o <b>valor verdadeiro</b> da grandeza. A diferença é o <b>erro absoluto</b> (na unidade da grandeza); dividido pelo valor verdadeiro, é o <b>erro relativo</b>, em porcentagem. Quatro palavras que a banca gosta de misturar:</p>
+  <ul>
+    <li><b>exatidão</b>: o quanto a leitura se aproxima do valor verdadeiro;</li>
+    <li><b>precisão</b> (repetibilidade): o quanto leituras repetidas se parecem entre si, mesmo que todas estejam deslocadas do valor verdadeiro;</li>
+    <li><b>resolução</b>: a menor variação que o instrumento mostra (o último dígito de um digital);</li>
+    <li><b>sensibilidade</b>: quanto o indicador se move por unidade da grandeza.</li>
+  </ul>
+  <p>Os erros se dividem em <b>sistemáticos</b> (sempre para o mesmo lado: instrumento descalibrado, efeito de carga, método), <b>aleatórios</b> (variam de leitura para leitura) e <b>grosseiros</b> (engano do operador: escala errada, paralaxe, ponta no lugar errado).</p>
+
+  <h3>Classe de exatidão</h3>
+  <p>Num instrumento <b>analógico</b>, a classe (0,5; 1,0; 1,5; 2,5…) é o erro máximo admitido, em porcentagem do <b>fundo de escala</b>, o valor máximo da escala em uso, e <b>não</b> da leitura. Por isso o erro <b>relativo</b> cresce quando o ponteiro fica no começo da escala.</p>
+  <div class="eq">
+    <p class="eq-name">Erro máximo de um instrumento analógico</p>
+    <div class="eq-main"><var>E</var><sub>máx</sub> = <span class="frac"><span>classe</span><span>100</span></span> · <var>FE</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>e</var> = <span class="frac"><span><var>E</var><sub>máx</sub></span><span><var>L</var></span></span> · 100%</div>
+    <dl>
+      <dt><var>E</var><sub>máx</sub></dt><dd>erro máximo absoluto, na unidade da grandeza (V, A…)</dd>
+      <dt>classe</dt><dd>número gravado no mostrador, em % do fundo de escala</dd>
+      <dt><var>FE</var></dt><dd>fundo de escala: o valor máximo da escala selecionada</dd>
+      <dt><var>e</var></dt><dd>erro relativo máximo na leitura, em %</dd>
+      <dt><var>L</var></dt><dd>valor lido</dd>
+    </dl>
+  </div>
+  <p>Num <b>digital</b>, a exatidão vem em duas parcelas: ±(x% da leitura + n dígitos), isto é, uma parte proporcional à leitura mais n vezes a resolução (o valor do último dígito).</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Um voltímetro analógico de classe 1,5 tem a escala de 300 V e lê 120 V. Qual o erro máximo, e quanto ele seria se a escala fosse a de 150 V? E um multímetro digital de ±(0,5% + 3 dígitos), com resolução de 0,1 V, lendo 230,0 V?</p>
+    <ol class="steps">
+      <li>Escala de 300 V: <var>E</var><sub>máx</sub> = 0,015 × 300 = <b>4,5 V</b>, ou 4,5/120 = <b>3,75%</b> da leitura.</li>
+      <li>Escala de 150 V: <var>E</var><sub>máx</sub> = 0,015 × 150 = <b>2,25 V</b>, ou 2,25/120 ≈ <b>1,88%</b> da leitura. Mesma classe, metade do erro: a escala mais baixa que comporta a leitura é a melhor.</li>
+      <li>Digital: 0,005 × 230 + 3 × 0,1 = <b>1,45 V</b> (parcela proporcional 1,15 V mais 0,3 V dos dígitos).</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Classe 1,5 <b>não</b> quer dizer erro de 1,5% da leitura. É 1,5% do fundo de escala, e vale o mesmo erro em volts ao longo de toda a escala. A regra prática: escolha a menor escala que comporta a leitura e prefira ler na metade final do mostrador.</p>
+  </div>
+
+  <h3>Instrumento de bobina móvel, shunt e multiplicador</h3>
+  <p>O galvanômetro de <b>bobina móvel e ímã permanente</b> (d'Arsonval) tem a deflexão proporcional à corrente média na bobina: é polarizado e responde ao valor médio. Ele é caracterizado por duas grandezas: a <b>corrente de fundo de escala</b> <var>I</var><sub>m</sub> (alguns miliampères ou menos) e a <b>resistência da bobina</b> <var>R</var><sub>m</sub>. Para medir correntes maiores, desvia-se o excesso por um resistor em paralelo, o <b>shunt</b>; para medir tensões, coloca-se um resistor em série, o <b>multiplicador</b>.</p>
+  <figure><svg viewBox="0 0 640 210" role="img" aria-label="Dois circuitos: galvanômetro com shunt em paralelo formando um amperímetro, e galvanômetro com resistor multiplicador em série formando um voltímetro">
+<path class="wire" d="M30,100 H80 M80,100 V50 H128 M172,50 H220 V100 M80,100 V150 H120 M180,150 H220 V100 M220,100 H270"/>
+<circle class="comp" cx="30" cy="100" r="5"/><circle class="comp" cx="275" cy="100" r="5"/>
+<circle class="comp" cx="150" cy="50" r="22"/><rect class="zbox" x="120" y="138" width="60" height="24"/>
+<text x="150" y="56" class="ts" text-anchor="middle">G</text><text x="150" y="18" class="tm" text-anchor="middle">Rm, Im</text>
+<text x="150" y="182" class="ts" text-anchor="middle">Rsh</text>
+<text x="52" y="90" class="tm" text-anchor="middle">I</text><text x="100" y="42" class="tm" text-anchor="middle">Im</text><text x="100" y="140" class="tm" text-anchor="middle">Ish</text>
+<text x="150" y="204" class="tl" text-anchor="middle">Amperímetro: shunt em paralelo</text>
+<path class="wire" d="M350,100 H380 M450,100 H490 M534,100 H585"/>
+<circle class="comp" cx="350" cy="100" r="5"/><circle class="comp" cx="590" cy="100" r="5"/>
+<rect class="zbox" x="380" y="88" width="70" height="24"/><circle class="comp" cx="512" cy="100" r="22"/>
+<text x="415" y="80" class="ts" text-anchor="middle">Rs</text><text x="512" y="106" class="ts" text-anchor="middle">G</text><text x="512" y="140" class="tm" text-anchor="middle">Rm, Im</text>
+<text x="470" y="204" class="tl" text-anchor="middle">Voltímetro: multiplicador em série</text>
+</svg><figcaption>Figura 1. À esquerda, o shunt R<sub>sh</sub> desvia a parte da corrente que o galvanômetro (G) não suporta: I = I<sub>m</sub> + I<sub>sh</sub>, e as duas quedas de tensão são iguais (R<sub>m</sub>·I<sub>m</sub> = R<sub>sh</sub>·I<sub>sh</sub>). À direita, o multiplicador R<sub>s</sub> fica em série com G e absorve o excesso de tensão.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Shunt e multiplicador</p>
+    <div class="eq-main"><var>R</var><sub>sh</sub> = <span class="frac"><span><var>R</var><sub>m</sub> · <var>I</var><sub>m</sub></span><span><var>I</var> − <var>I</var><sub>m</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>R</var><sub>s</sub> = <span class="frac"><span><var>V</var></span><span><var>I</var><sub>m</sub></span></span> − <var>R</var><sub>m</sub></div>
+    <dl>
+      <dt><var>R</var><sub>sh</sub></dt><dd>resistência do shunt, em Ω</dd>
+      <dt><var>R</var><sub>m</sub></dt><dd>resistência da bobina do galvanômetro, em Ω</dd>
+      <dt><var>I</var><sub>m</sub></dt><dd>corrente de fundo de escala do galvanômetro, em A</dd>
+      <dt><var>I</var></dt><dd>fundo de escala desejado para o amperímetro, em A</dd>
+      <dt><var>R</var><sub>s</sub></dt><dd>resistência do multiplicador, em Ω</dd>
+      <dt><var>V</var></dt><dd>fundo de escala desejado para o voltímetro, em V</dd>
+    </dl>
+  </div>
+  <p>A primeira vem de R<sub>m</sub>·I<sub>m</sub> = R<sub>sh</sub>·(I − I<sub>m</sub>): o galvanômetro e o shunt estão em paralelo, com a mesma tensão, e o shunt leva só a corrente que sobra (I − I<sub>m</sub>), não a corrente total. A segunda vem de V = (R<sub>s</sub> + R<sub>m</sub>)·I<sub>m</sub>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Um galvanômetro tem <var>I</var><sub>m</sub> = 1 mA e <var>R</var><sub>m</sub> = 50 Ω. Calcule o shunt para um amperímetro de 0 a 100 mA e o multiplicador para um voltímetro de 0 a 50 V.</p>
+    <ol class="steps">
+      <li>Shunt: <var>R</var><sub>sh</sub> = 50 × 0,001/(0,1 − 0,001) ≈ <b>0,505 Ω</b>.</li>
+      <li>Com o shunt, o amperímetro inteiro (G em paralelo com R<sub>sh</sub>) tem 0,05 V/0,1 A = <b>0,5 Ω</b>: um bom amperímetro tem resistência baixíssima.</li>
+      <li>Multiplicador: <var>R</var><sub>s</sub> = 50/0,001 − 50 = <b>49.950 Ω</b>. A resistência total do voltímetro é 50 kΩ, isto é, 1.000 Ω por volt de fundo de escala (a <b>sensibilidade</b> do voltímetro, o inverso de I<sub>m</sub>).</li>
+    </ol>
+  </div>
+
+  <h3>Efeito de carga: o instrumento também faz parte do circuito</h3>
+  <p>O voltímetro ideal teria resistência infinita; o amperímetro ideal, resistência nula. Os reais não são, e a leitura muda o que se mede. Por isso o <b>voltímetro vai em paralelo</b> (alta impedância) e o <b>amperímetro em série</b> (baixa impedância). Os dois erros de ligação são clássicos: amperímetro em paralelo é um <b>curto-circuito</b>; voltímetro em série deixa o circuito praticamente <b>aberto</b>, com leitura perto da tensão da fonte e corrente quase nula.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Dois resistores iguais de 100 kΩ formam um divisor ligado a 20 V; a tensão no segundo é de 10 V. Que valor mede um voltímetro de 100 kΩ nesse resistor, e um digital de 10 MΩ?</p>
+    <ol class="steps">
+      <li>Voltímetro de 100 kΩ: o paralelo de 100 kΩ com 100 kΩ é 50 kΩ, e a leitura é 20 × 50/(100 + 50) ≈ <b>6,67 V</b>, erro de −33%.</li>
+      <li>Voltímetro de 10 MΩ: o paralelo vale 1/(1/100 + 1/10.000) ≈ <b>99,01 kΩ</b>, e a leitura é 20 × 99,01/(100 + 99,01) ≈ <b>9,95 V</b>, erro de −0,5%.</li>
+    </ol>
+  </div>
+  <p>A regra é comparar a resistência do instrumento com a do circuito no ponto medido: o voltímetro deve ser muito maior; o amperímetro, muito menor.</p>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Multímetro, alicate, osciloscópio e potência</h2></div>
+  <p class="edital-ref">Edital, itens 7.1 e 7.3</p>
+
+  <h3>Multímetro: o que mede e como se liga</h3>
+  <p>O multímetro reúne voltímetro (CC e CA), amperímetro, ôhmetro, teste de continuidade e de diodo e, em muitos modelos, capacitância e frequência. Regras de uso:</p>
+  <ul>
+    <li><b>tensão</b>: em <b>paralelo</b>, com a ponta vermelha na entrada de V e a preta no COM;</li>
+    <li><b>corrente</b>: em <b>série</b>, com o circuito aberto para inserir o instrumento, na entrada de mA ou de A, que tem fusível. Medir tensão com a ponteira na entrada de corrente é um curto-circuito e queima o fusível, ou algo pior;</li>
+    <li><b>resistência e continuidade</b>: com o circuito <b>desenergizado</b>; o ôhmetro injeta a própria corrente, e uma tensão externa danifica o instrumento ou falseia a leitura;</li>
+    <li>a escolha de CC ou CA importa: um multímetro em CA não mostra o nível contínuo de um sinal.</li>
+  </ul>
+  <p>Na tensão e na corrente alternadas, há dois tipos de instrumento. O de <b>resposta média calibrado em eficaz</b> retifica o sinal, mede o valor médio e multiplica por 1,11 (o <b>fator de forma</b> da senoide, que é o eficaz dividido pelo médio retificado): só acerta para onda senoidal. O <b>true RMS</b> (valor eficaz verdadeiro) calcula o eficaz real e vale também para ondas distorcidas, como as de inversores e fontes chaveadas.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Uma onda quadrada simétrica de ±10 V é medida por um multímetro de resposta média calibrado para eficaz e por um true RMS. Que leituras aparecem?</p>
+    <ol class="steps">
+      <li>O valor médio da onda retificada é 10 V (a onda é sempre ±10 V). O instrumento de resposta média multiplica por 1,11 e mostra 10 × 1,11 = <b>11,1 V</b>.</li>
+      <li>O valor eficaz verdadeiro de uma onda quadrada simétrica é o próprio valor de pico, <b>10 V</b>, que é o que o true RMS indica. O erro do outro é de 11%.</li>
+    </ol>
+  </div>
+
+  <h3>Alicate amperímetro</h3>
+  <p>O alicate mede a corrente sem abrir o circuito. O núcleo bipartido faz o papel de um transformador de corrente: o condutor abraçado é o primário, de uma espira, e o instrumento lê a <b>soma vetorial das correntes que atravessam o núcleo</b>. Daí vêm as regras:</p>
+  <ul>
+    <li>abrace <b>um único condutor</b>. Abraçando fase e neutro de um circuito (corrente de ida e de volta), as correntes se anulam e a leitura é aproximadamente zero;</li>
+    <li>num circuito trifásico equilibrado, abraçar as três fases também dá zero (a soma de três correntes defasadas de 120° é nula);</li>
+    <li>o <b>alicate de fuga</b> usa essa mesma soma: abraça fase e neutro (ou as três fases e o neutro) e lê só a diferença, a corrente que escapa para a terra. É o princípio do DR;</li>
+    <li>o alicate de transformador mede só corrente alternada; para corrente contínua, é preciso um alicate com sensor de efeito Hall (CA/CC);</li>
+    <li>para correntes pequenas, dá-se várias <b>voltas</b> do cabo no núcleo: a leitura vale N vezes a corrente, e a corrente real é a leitura dividida por N.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Um cabo foi enrolado em 4 voltas no núcleo de um alicate, que indicou 24 A. Qual a corrente real?</p>
+    <ol class="steps">
+      <li>Cada volta passa pelo núcleo e conta como um condutor: a leitura é 4 vezes a corrente real.</li>
+      <li><var>I</var> = 24/4 = <b>6 A</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>"Abraçar todos os condutores para medir mais" dá <b>zero</b> em circuito equilibrado. Em cabo multipolar fechado (fase e neutro na mesma capa), o alicate também lê zero: é preciso separar um condutor.</p>
+  </div>
+
+  <h3>Osciloscópio básico</h3>
+  <p>O osciloscópio desenha a tensão em função do tempo. O eixo vertical é graduado em volts por divisão (V/div), e o horizontal, em tempo por divisão (s/div, ms/div ou µs/div). Para ler: conte divisões e multiplique pela escala.</p>
+  <figure><svg viewBox="0 0 640 320" role="img" aria-label="Tela de osciloscópio com uma senoide de dois períodos, quatro divisões de pico a pico, escala de 2 volts por divisão e 0,5 milissegundo por divisão">
+<path class="guide" d="M40,30 V270 M80,30 V270 M120,30 V270 M160,30 V270 M200,30 V270 M240,30 V270 M280,30 V270 M320,30 V270 M360,30 V270 M40,30 H360 M40,70 H360 M40,110 H360 M40,190 H360 M40,230 H360 M40,270 H360"/>
+<path class="ax" d="M40,150 H360 M200,30 V270"/>
+<path class="w pc" d="M40,150 C62,43 98,43 120,150 C142,257 178,257 200,150 C222,43 258,43 280,150 C302,257 338,257 360,150"/>
+<path class="ar ink" d="M376,70 V230" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="386" y="155" class="tm">Vpp</text>
+<path class="ar ink" d="M80,292 H240" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="160" y="312" class="tm" text-anchor="middle">T</text>
+<text x="440" y="70" class="ts">Escala vertical: 2 V/div</text>
+<text x="440" y="96" class="ts">Base de tempo: 0,5 ms/div</text>
+<text x="440" y="136" class="ts">Vpp = 4 div × 2 V = 8 V</text>
+<text x="440" y="162" class="ts">T = 4 div × 0,5 ms = 2 ms</text>
+<text x="440" y="188" class="ts">f = 1/T = 500 Hz</text>
+</svg><figcaption>Figura 2. Tela de um osciloscópio com uma senoide: 4 divisões de pico a pico (8 V) e um período de 4 divisões (2 ms). O pico é metade do pico a pico; o valor eficaz de uma senoide é o pico dividido por √2.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Leitura de uma senoide no osciloscópio</p>
+    <div class="eq-main"><var>V</var><sub>p</sub> = <span class="frac"><span><var>V</var><sub>pp</sub></span><span>2</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>V</var><sub>ef</sub> = <span class="frac"><span><var>V</var><sub>p</sub></span><span>√2</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>f</var> = <span class="frac"><span>1</span><span><var>T</var></span></span></div>
+    <dl>
+      <dt><var>V</var><sub>pp</sub></dt><dd>tensão de pico a pico: divisões verticais × V/div</dd>
+      <dt><var>V</var><sub>p</sub></dt><dd>tensão de pico, em V</dd>
+      <dt><var>V</var><sub>ef</sub></dt><dd>tensão eficaz da senoide, em V</dd>
+      <dt><var>T</var></dt><dd>período: divisões horizontais de um ciclo × tempo/div</dd>
+      <dt><var>f</var></dt><dd>frequência, em Hz</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Na tela da figura 2, qual o valor eficaz do sinal e a frequência?</p>
+    <ol class="steps">
+      <li><var>V</var><sub>pp</sub> = 4 × 2 = <b>8 V</b>, logo <var>V</var><sub>p</sub> = 4 V.</li>
+      <li><var>V</var><sub>ef</sub> = 4/√2 ≈ <b>2,83 V</b>.</li>
+      <li><var>T</var> = 4 × 0,5 = <b>2 ms</b>, e <var>f</var> = 1/0,002 = <b>500 Hz</b>.</li>
+    </ol>
+  </div>
+  <ul>
+    <li><b>Ponta de prova 10:1</b>: atenua o sinal por 10 e eleva a impedância de entrada; se o canal não estiver configurado para a ponta, multiplica-se a leitura por 10.</li>
+    <li><b>Acoplamento CC</b> mostra o sinal inteiro, com o nível contínuo; <b>CA</b> bloqueia a componente contínua.</li>
+    <li>O terra da ponta (o "jacaré") é ligado ao terra do instrumento. Em circuito ligado à rede, isso pode curto-circuitar um ponto contra a terra: usa-se ponta diferencial ou um transformador de isolação.</li>
+  </ul>
+
+  <h3>Categorias de medição (CAT)</h3>
+  <p>A norma de segurança de instrumentos de medição (IEC 61010-1) classifica os locais pela energia que um transitório de tensão pode ter: quanto <b>mais perto da fonte</b>, maior a corrente de curto-circuito disponível e mais severos os transitórios. O instrumento traz a categoria e a tensão máxima marcadas, por exemplo "CAT III 600 V", e as duas precisam cobrir o local e o circuito.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Categoria</th><th>Onde se aplica</th></tr></thead>
+    <tbody>
+      <tr><td>CAT I</td><td>circuitos eletrônicos protegidos, com transitórios limitados por medidas específicas</td></tr>
+      <tr><td>CAT II</td><td>cargas ligadas a tomadas: eletrodomésticos, ferramentas portáteis, circuitos longos a partir do quadro</td></tr>
+      <tr><td>CAT III</td><td>instalação fixa do prédio ou da planta: quadros de distribuição, barramentos, alimentadores, motores trifásicos fixos</td></tr>
+      <tr><td>CAT IV</td><td>origem da instalação: entrada de serviço, medidor de energia, ramal entre o poste e o quadro, linhas externas</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>A tensão de 600 V ou 1.000 V da marcação <b>não substitui</b> a categoria: um multímetro "CAT II 1000 V" não é adequado a um quadro de distribuição, que é CAT III. Para o quadro, vale "CAT III" ou "CAT IV" com tensão igual ou maior que a do circuito.</p>
+  </div>
+
+  <h3>Medição de potência</h3>
+  <p>O <b>wattímetro</b> (tipo eletrodinâmico, ou o canal de potência de um analisador) tem uma bobina de <b>corrente</b>, ligada em <b>série</b> com a carga, e uma de <b>potencial</b>, ligada em <b>paralelo</b>, geralmente em série com um resistor multiplicador. Ele indica a potência <b>ativa</b>, <var>V</var>·<var>I</var>·cos φ. Os terminais marcados (±) das duas bobinas precisam ser ligados no mesmo sentido, senão o ponteiro tenta ir para trás.</p>
+  <p>Num circuito trifásico a quatro fios, usam-se três wattímetros, um por fase. A três fios, o <b>método dos dois wattímetros</b> (Aron) soma algebricamente as duas leituras, e para carga equilibrada o ângulo φ sai da razão entre elas (a estação E3 mostra a dedução).</p>
+  <div class="eq">
+    <p class="eq-name">Dois wattímetros, carga trifásica equilibrada</p>
+    <div class="eq-main"><var>P</var> = <var>W</var><sub>1</sub> + <var>W</var><sub>2</sub> &nbsp;&nbsp;&nbsp;&nbsp; tan φ = √3 · <span class="frac"><span><var>W</var><sub>1</sub> − <var>W</var><sub>2</sub></span><span><var>W</var><sub>1</sub> + <var>W</var><sub>2</sub></span></span></div>
+    <dl>
+      <dt><var>P</var></dt><dd>potência ativa trifásica total, em W</dd>
+      <dt><var>W</var><sub>1</sub>, <var>W</var><sub>2</sub></dt><dd>leituras dos dois wattímetros, em W (<var>W</var><sub>1</sub> é a maior)</dd>
+      <dt>φ</dt><dd>ângulo entre a tensão e a corrente de cada fase; cos φ é o fator de potência</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Num motor trifásico a três fios e carga equilibrada, os dois wattímetros indicam 2.400 W e 1.200 W. Qual a potência e o fator de potência?</p>
+    <ol class="steps">
+      <li><var>P</var> = 2.400 + 1.200 = <b>3.600 W</b>.</li>
+      <li>tan φ = √3 × (2.400 − 1.200)/3.600 ≈ <b>0,577</b>, logo φ = 30°.</li>
+      <li>cos 30° ≈ <b>0,866</b>. Com FP = 0,5 um dos wattímetros marca zero; com FP menor que 0,5, ele marca negativo.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Resistência, isolação e aterramento: ponte, megôhmetro, hipot e terrômetro</h2></div>
+  <p class="edital-ref">Edital, itens 7.1 e 7.3</p>
+
+  <h3>Ponte de Wheatstone</h3>
+  <p>A ponte de Wheatstone mede uma resistência desconhecida <var>R</var><sub>x</sub> por <b>comparação</b>. Quatro resistores formam um losango, com a fonte em duas pontas opostas e um galvanômetro entre as outras duas. Ajusta-se um dos resistores até a corrente no galvanômetro ser <b>zero</b>: a ponte está em <b>equilíbrio</b>, e os dois divisores de tensão têm o mesmo ponto médio.</p>
+  <figure><svg viewBox="0 0 640 220" role="img" aria-label="Ponte de Wheatstone: losango com os resistores Rx e R3 à esquerda, R1 e R2 à direita, fonte E de um lado e galvanômetro G entre os pontos médios">
+<path class="wire" d="M240,30 L140,110 L240,190 L340,110 Z M140,110 H222 M258,110 H340 M240,30 H60 V92 M60,128 V190 H240"/>
+<circle class="comp" cx="60" cy="110" r="18"/><circle class="comp" cx="240" cy="110" r="18"/>
+<rect class="zbox" x="168" y="60" width="44" height="20"/><rect class="zbox" x="168" y="140" width="44" height="20"/><rect class="zbox" x="268" y="60" width="44" height="20"/><rect class="zbox" x="268" y="140" width="44" height="20"/>
+<circle class="f-ink" cx="240" cy="30" r="3"/><circle class="f-ink" cx="140" cy="110" r="3"/><circle class="f-ink" cx="340" cy="110" r="3"/><circle class="f-ink" cx="240" cy="190" r="3"/>
+<text x="60" y="115" class="ts" text-anchor="middle">E</text><text x="240" y="115" class="ts" text-anchor="middle">G</text>
+<text x="190" y="75" class="ts" text-anchor="middle">Rx</text><text x="190" y="155" class="ts" text-anchor="middle">R3</text><text x="290" y="75" class="ts" text-anchor="middle">R1</text><text x="290" y="155" class="ts" text-anchor="middle">R2</text>
+<text x="370" y="95" class="ts">Equilíbrio: corrente em G = 0</text>
+<text x="370" y="125" class="tl">Rx · R2 = R3 · R1</text>
+<text x="370" y="153" class="ts">Rx = R3 · R1 / R2</text>
+</svg><figcaption>Figura 3. Ponte de Wheatstone. Em equilíbrio, os pontos médios das duas colunas ficam no mesmo potencial e a corrente no galvanômetro G é nula. O produto vale para resistores em lados <b>opostos</b>: R<sub>x</sub> (alto à esquerda) com R<sub>2</sub> (baixo à direita), e R<sub>3</sub> com R<sub>1</sub>.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Equilíbrio da ponte de Wheatstone</p>
+    <div class="eq-main"><var>R</var><sub>x</sub> = <var>R</var><sub>3</sub> · <span class="frac"><span><var>R</var><sub>1</sub></span><span><var>R</var><sub>2</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>V</var><sub>G</sub> = <var>E</var> · [ <span class="frac"><span><var>R</var><sub>3</sub></span><span><var>R</var><sub>x</sub> + <var>R</var><sub>3</sub></span></span> − <span class="frac"><span><var>R</var><sub>2</sub></span><span><var>R</var><sub>1</sub> + <var>R</var><sub>2</sub></span></span> ]</div>
+    <dl>
+      <dt><var>R</var><sub>x</sub></dt><dd>resistência desconhecida, em Ω</dd>
+      <dt><var>R</var><sub>1</sub>, <var>R</var><sub>2</sub>, <var>R</var><sub>3</sub></dt><dd>resistores conhecidos da ponte, em Ω (como na figura 3)</dd>
+      <dt><var>E</var></dt><dd>tensão da fonte, em V</dd>
+      <dt><var>V</var><sub>G</sub></dt><dd>tensão sobre o galvanômetro quando a ponte está <b>fora</b> do equilíbrio, em V; é zero no equilíbrio</dd>
+    </dl>
+  </div>
+  <p>A segunda expressão é a diferença entre os dois divisores (a tensão no ponto médio da esquerda menos a da direita, medidas em relação ao ponto de baixo); igualá-la a zero dá <var>R</var><sub>x</sub>·<var>R</var><sub>2</sub> = <var>R</var><sub>3</sub>·<var>R</var><sub>1</sub>. A vantagem do método: no equilíbrio, o resultado <b>não depende da tensão da fonte</b> nem da exatidão do galvanômetro, que só precisa indicar zero. Fora do equilíbrio, a ponte é a base dos extensômetros e dos sensores resistivos, que leem <var>V</var><sub>G</sub>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Numa ponte de Wheatstone, <var>R</var><sub>1</sub> = 1.000 Ω, <var>R</var><sub>2</sub> = 250 Ω e <var>R</var><sub>3</sub> = 340 Ω deixam o galvanômetro em zero. Qual o valor de <var>R</var><sub>x</sub>? E, com <var>E</var> = 10 V, que tensão aparece em G se <var>R</var><sub>x</sub> subir para 1.400 Ω, com os outros mantidos?</p>
+    <ol class="steps">
+      <li><var>R</var><sub>x</sub> = 340 × 1.000/250 = <b>1.360 Ω</b>.</li>
+      <li>Com <var>R</var><sub>x</sub> = 1.400 Ω: <var>V</var><sub>G</sub> = 10 × (340/1.740 − 250/1.250) = 10 × (0,1954 − 0,2) = <b>−0,046 V</b>. O sinal negativo só indica a polaridade; o módulo é de 46 mV.</li>
+    </ol>
+  </div>
+
+  <h3>Ôhmetro e baixas resistências</h3>
+  <p>O ôhmetro do multímetro injeta uma corrente pequena e mede a queda de tensão. Só vale em circuito <b>desenergizado</b>, e a leitura inclui a resistência dos cabos de ponta. Para <b>baixas resistências</b> (contatos de disjuntores e chaves, emendas de barramento, juntas), usa-se o microhmímetro, que injeta corrente contínua alta, da ordem de amperes <span class="confira">(10 A ou mais, conforme o modelo)</span>, e mede a queda de tensão com fios separados (ligação a <b>quatro fios</b>, ou Kelvin), de modo que a resistência dos cabos não entra na medida.</p>
+
+  <h3>Megôhmetro: a resistência de isolamento</h3>
+  <p>O <b>megôhmetro</b> aplica uma tensão contínua alta (250, 500, 1.000, 2.500, 5.000 V ou mais) entre o condutor e a terra (ou entre dois condutores) e mede a pequena corrente que escoa pela isolação: <var>R</var> = <var>V</var>/<var>I</var>, em megohms ou gigohms. "Megger" é o nome de uma marca que virou sinônimo do aparelho. O ôhmetro comum <b>não serve</b> para isolação, porque a tensão baixa dele não revela falhas que só aparecem sob tensão alta.</p>
+  <p>A corrente que o instrumento mede é a soma de quatro parcelas: a <b>capacitiva</b> (carga da capacitância do isolante, some em segundos), a de <b>absorção</b> (polarização do dielétrico, decai em minutos), a de <b>condução</b> (fuga pelo volume do isolante, constante) e a de <b>fuga superficial</b> (sujeira e umidade, constante). Como as duas primeiras diminuem com o tempo, a resistência <b>cresce</b> durante o ensaio quando a isolação está boa.</p>
+  <figure><svg viewBox="0 0 640 215" role="img" aria-label="Gráfico da resistência de isolamento em função do tempo: uma curva sobe de 1 para 10 minutos num isolamento seco e limpo, e outra fica quase plana num isolamento úmido ou sujo">
+<path class="ax" d="M60,170 H600 M60,170 V20"/>
+<path class="guide" d="M110,170 V36 M560,170 V36"/>
+<path class="w pc" d="M60,160 C80,110 95,102 110,100 C220,84 400,62 560,54"/>
+<path class="w pa" d="M60,162 C80,140 95,134 110,132 C300,128 450,126 560,124"/>
+<circle class="f-pc" cx="110" cy="100" r="4"/><circle class="f-pc" cx="560" cy="54" r="4"/>
+<text x="68" y="14" class="ts">R (MΩ)</text><text x="110" y="188" class="tm" text-anchor="middle">1 min</text><text x="560" y="188" class="tm" text-anchor="middle">10 min</text><text x="330" y="207" class="tm" text-anchor="middle">tempo de ensaio</text>
+<text x="122" y="92" class="tm">R1</text><text x="560" y="44" class="tm" text-anchor="middle">R10</text>
+<text x="230" y="44" class="ts">isolamento seco e limpo: IP alto</text>
+<text x="230" y="152" class="ts fa">isolamento úmido ou sujo: IP perto de 1</text>
+</svg><figcaption>Figura 4. Resistência de isolamento lida durante o ensaio. No isolamento bom, a resistência sobe com o tempo (as correntes de carga e de absorção diminuem); no úmido ou sujo, a fuga é constante e a curva fica quase plana. O índice de polarização compara a leitura de 10 minutos (R10) com a de 1 minuto (R1).</figcaption></figure>
+  <p>Procedimento e cuidados:</p>
+  <ul>
+    <li><b>desenergize</b>, bloqueie, verifique a ausência de tensão e <b>desconecte</b> dos circuitos os equipamentos eletrônicos (inversores, soft-starters, fontes, CLP) e os capacitores, que seriam danificados ou falseariam a leitura;</li>
+    <li>ligue o terminal LINE ao condutor (ou ao enrolamento) e o EARTH à carcaça ou à terra; o terminal GUARD desvia correntes de fuga superficial para não entrarem na medida;</li>
+    <li>aplique a tensão de ensaio pelo tempo definido (leitura-padrão de <b>1 minuto</b>) e não toque nos terminais durante o ensaio;</li>
+    <li>ao fim, <b>descarregue</b> o isolamento (o instrumento costuma fazê-lo; mantém-se o equipamento aterrado por algum tempo, que a norma de máquinas coloca como pelo menos 4 vezes o tempo de aplicação da tensão <span class="confira">(valor lido em resumo público da IEEE Std 43)</span>), porque a capacitância do equipamento guarda carga;</li>
+    <li>registre a temperatura: a resistência de isolamento <b>cai com a temperatura</b>, e só se compara com o histórico a mesma temperatura.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Situação</th><th>Tensão de ensaio (CC)</th><th>Valor de referência</th></tr></thead>
+    <tbody>
+      <tr><td>Instalação de BT, circuito até 500 V (NBR 5410, tabela 60)</td><td>500 V</td><td>mínimo de 0,5 MΩ</td></tr>
+      <tr><td>Circuito de BT acima de 500 V (NBR 5410, tabela 60)</td><td>1.000 V</td><td>mínimo de 1,0 MΩ</td></tr>
+      <tr><td>SELV e PELV, extrabaixa tensão (NBR 5410, tabela 60)</td><td>250 V</td><td>mínimo de 0,25 MΩ</td></tr>
+      <tr><td>Enrolamento de máquina de até 1.000 V (IEEE 43)</td><td>500 V</td><td>mínimo de 5 MΩ a 40 °C <span class="confira">(valor lido em resumos públicos da norma)</span></td></tr>
+      <tr><td>Enrolamento de 1.000 a 2.500 V (IEEE 43)</td><td>500 a 1.000 V</td><td>depende do tipo do enrolamento</td></tr>
+      <tr><td>Enrolamento de 2.501 a 5.000 V (IEEE 43)</td><td>1.000 a 2.500 V</td><td>depende do tipo do enrolamento</td></tr>
+    </tbody>
+  </table></div>
+  <p>A <b>correção de temperatura</b> da IEEE 43 leva a leitura a 40 °C: a resistência de isolamento <b>dobra, aproximadamente, a cada queda de 10 °C</b>, então <var>R</var><sub>40</sub> = <var>K</var><sub>t</sub>·<var>R</var><sub>T</sub> com <var>K</var><sub>t</sub> = 0,5<sup>(40 − <var>T</var>)/10</sup>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>O enrolamento de um motor de 380 V marcou 80 MΩ em 1 minuto, com 20 °C. Qual o valor a 40 °C? Em outro ensaio, as leituras foram 450 MΩ em 1 minuto e 1.080 MΩ em 10 minutos: qual o índice de polarização?</p>
+    <ol class="steps">
+      <li><var>K</var><sub>t</sub> = 0,5<sup>(40 − 20)/10</sup> = 0,5² = 0,25, e <var>R</var><sub>40</sub> = 80 × 0,25 = <b>20 MΩ</b>. É maior que o mínimo de 5 MΩ.</li>
+      <li>Índice de polarização: <var>IP</var> = 1.080/450 = <b>2,4</b>.</li>
+    </ol>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Índice de polarização</p>
+    <div class="eq-main"><var>IP</var> = <span class="frac"><span><var>R</var><sub>10 min</sub></span><span><var>R</var><sub>1 min</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>DAR</var> = <span class="frac"><span><var>R</var><sub>60 s</sub></span><span><var>R</var><sub>30 s</sub></span></span></div>
+    <dl>
+      <dt><var>IP</var></dt><dd>índice de polarização (sem unidade): resistência em 10 minutos dividida pela em 1 minuto</dd>
+      <dt><var>DAR</var></dt><dd>razão de absorção dielétrica: leitura de 60 s sobre a de 30 s, um ensaio mais curto</dd>
+      <dt><var>R</var></dt><dd>resistência de isolamento lida no instante indicado, em MΩ</dd>
+    </dl>
+  </div>
+  <p>Pela IEEE 43-2013, o índice de polarização mínimo recomendado é <b>2,0</b> para isolação das classes térmicas B (130 °C), F (155 °C) e H (180 °C), e 1,5 para a classe A (105 °C). Se a leitura de 1 minuto já passar de 5.000 MΩ, o IP pode não indicar o estado da isolação, e vale o valor absoluto. Um IP perto de 1 aponta umidade ou sujeira. Como as duas leituras saem do mesmo ensaio, o IP pouco depende da temperatura <span class="confira">(na prática, e com a ressalva de que um enrolamento muito quente pode distorcer o valor)</span>.</p>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Megôhmetro <b>não é</b> ôhmetro: aplica tensão alta, exige circuito <b>desenergizado</b> e desconectado de eletrônica, e mede a isolação em MΩ ou GΩ. Aplicá-lo com o circuito energizado é perigoso para quem mede e destrói o instrumento.</p>
+  </div>
+
+  <h3>Hipot: o ensaio de tensão aplicada</h3>
+  <p>O <b>hipot</b> (alta-tensão aplicada) é uma fonte de tensão <b>alternada ou contínua</b> que submete a isolação a uma tensão <b>maior que a nominal</b>, por um tempo definido (na NBR 5410, o ensaio de tensão aplicada dura 1 minuto), para verificar se ela <b>suporta</b> sem ruptura ou descarga. Ele mede a <b>corrente de fuga</b> durante o ensaio. É o equipamento da questão 40 de 2023.</p>
+  <p>A diferença para o megôhmetro: o megôhmetro dá um número (a resistência) com tensão moderada e é pouco agressivo; o hipot é um ensaio de <b>aprova ou reprova</b> com tensão mais severa, que pode danificar uma isolação já envelhecida. Por isso a rotina de manutenção costuma medir a resistência de isolamento antes de aplicar o hipot.</p>
+
+  <h3>Terrômetro: a resistência de aterramento</h3>
+  <p>A resistência de um aterramento não se mede com o ôhmetro (a terra é eletrolítica, e a corrente contínua a polarizaria): o <b>terrômetro</b> injeta uma corrente <b>alternada</b> na terra e mede a tensão resultante. No método da <b>queda de potencial</b> (três pontos), usam-se duas hastes auxiliares, em linha com o aterramento sob ensaio <var>E</var>:</p>
+  <figure><svg viewBox="0 0 640 215" role="img" aria-label="Três eletrodos alinhados no solo: o eletrodo sob teste E, o de potencial P a 62 por cento da distância e o de corrente C ao fim da distância d">
+<path class="ax" d="M20,100 H620"/>
+<path class="wire" d="M60,106 V135 M308,106 V135 M460,106 V135"/>
+<path class="guide" d="M60,135 V185 M308,135 V150 M460,135 V185"/>
+<circle class="comp" cx="60" cy="100" r="6"/><circle class="comp" cx="308" cy="100" r="6"/><circle class="comp" cx="460" cy="100" r="6"/>
+<path class="ar ink" d="M60,150 H308" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/><path class="ar ink" d="M60,185 H460" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="20" y="70" class="ts">E (eletrodo sob teste)</text><text x="308" y="70" class="ts" text-anchor="middle">P (potencial)</text><text x="460" y="70" class="ts" text-anchor="middle">C (corrente)</text>
+<text x="184" y="170" class="ts" text-anchor="middle">0,62 · d</text><text x="260" y="206" class="ts" text-anchor="middle">d</text>
+</svg><figcaption>Figura 5. Método da queda de potencial. O terrômetro injeta corrente alternada entre E e C e mede a tensão entre E e P: R = V/I. P fica a cerca de 62% da distância d entre E e C, onde a leitura é pouco sensível à posição.</figcaption></figure>
+  <ul>
+    <li>O eletrodo de corrente C vai bem longe: a posição de P só dá a resistência verdadeira se as "zonas de influência" de E e de C não se sobrepuserem. Uma orientação de fabricante é afastar C pelo menos 8 a 10 vezes a profundidade do aterramento (ou a maior diagonal, se for malha) <span class="confira">(regra de nota de aplicação da AEMC)</span>.</li>
+    <li>Para conferir, repete-se a leitura com P deslocado (a 52% e a 72%): leituras próximas indicam medida válida; se variarem muito, afasta-se C e repete-se.</li>
+    <li>O <b>alicate terrômetro</b> mede o laço aterramento-solo-outros aterramentos sem hastes auxiliares e sem desligar o condutor. Só serve quando há outros aterramentos em paralelo (por exemplo, neutro multiaterrado); numa haste isolada, sem retorno, ele não funciona.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 10</p>
+    <p>Um aterramento é ensaiado com o eletrodo de corrente a 50 m do eletrodo sob teste. A que distância fica o de potencial? Se o terrômetro injeta 20 mA e lê 0,45 V entre E e P, qual a resistência?</p>
+    <ol class="steps">
+      <li>Distância de P: 0,62 × 50 = <b>31 m</b> a partir de E, na direção de C.</li>
+      <li><var>R</var> = <var>V</var>/<var>I</var> = 0,45/0,02 = <b>22,5 Ω</b>.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Retificadores, filtros e fontes de corrente contínua</h2></div>
+  <p class="edital-ref">Edital, item 7.4</p>
+
+  <h3>O que faz um retificador</h3>
+  <p>O <b>retificador</b> converte corrente alternada em corrente contínua (CC), usando diodos (ou tiristores), que conduzem só num sentido. Num diodo de silício, a queda direta é de cerca de 0,7 V. A saída direta de um retificador é uma tensão <b>pulsante</b>, sempre do mesmo sinal, mas não constante: ela tem um valor médio (o "CC") e uma <b>ondulação</b>, ou <i>ripple</i>.</p>
+  <ul>
+    <li><b>Meia onda</b>: um diodo em série com a carga; conduz só nos semiciclos positivos.</li>
+    <li><b>Onda completa com derivação central</b>: transformador com tap central e dois diodos; cada diodo conduz num semiciclo.</li>
+    <li><b>Ponte (de Graetz)</b>: quatro diodos; em cada semiciclo conduzem dois, em diagonal. Não precisa de tap central, mas tem duas quedas de diodo no caminho.</li>
+    <li><b>Trifásico em ponte</b>: seis diodos, saída com 6 pulsos por ciclo da rede; é a base dos retificadores industriais e dos carregadores de maior potência.</li>
+  </ul>
+  <div class="tw"><table>
+    <thead><tr><th>Retificador (carga resistiva, sem filtro, diodos ideais)</th><th>Valor médio</th><th>Valor eficaz</th><th>Frequência da ondulação</th></tr></thead>
+    <tbody>
+      <tr><td>Monofásico de meia onda</td><td><var>V</var><sub>p</sub>/π ≈ 0,318·<var>V</var><sub>p</sub></td><td><var>V</var><sub>p</sub>/2</td><td><var>f</var> (60 Hz)</td></tr>
+      <tr><td>Monofásico de onda completa (tap central ou ponte)</td><td>2<var>V</var><sub>p</sub>/π ≈ 0,637·<var>V</var><sub>p</sub></td><td><var>V</var><sub>p</sub>/√2 ≈ 0,707·<var>V</var><sub>p</sub></td><td>2<var>f</var> (120 Hz)</td></tr>
+      <tr><td>Trifásico em ponte (6 pulsos)</td><td>(3√2/π)·<var>V</var><sub>L</sub> ≈ 1,35·<var>V</var><sub>L</sub></td><td>–</td><td>6<var>f</var> (360 Hz)</td></tr>
+    </tbody>
+  </table></div>
+  <p>Aqui <var>V</var><sub>p</sub> é o <b>pico</b> da tensão alternada de entrada (o pico do secundário do transformador) e <var>V</var><sub>L</sub> é a tensão de linha <b>eficaz</b>. O erro mais comum é aplicar 0,318 ou 0,637 ao valor eficaz, quando eles valem para o <b>pico</b>. Na onda completa, o valor eficaz da saída é igual ao da senoide original, porque a onda retificada tem o mesmo "quadrado". Outras grandezas que se pedem: a tensão inversa de pico (PIV) de cada diodo é <var>V</var><sub>p</sub> na meia onda sem filtro e na ponte, e 2<var>V</var><sub>p</sub> no retificador com tap central (com filtro capacitivo, a meia onda também chega a 2<var>V</var><sub>p</sub>); o fator de ondulação (<i>ripple</i> sem filtro) é de cerca de 1,21 na meia onda e 0,48 na onda completa.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 11</p>
+    <p>O secundário de um transformador entrega 18 V eficazes a um retificador em ponte, sem filtro, com carga resistiva de 12 Ω (diodos ideais). Calcule o pico, o valor médio da tensão e da corrente na carga. Para comparar, qual o valor médio com um retificador de meia onda no mesmo secundário, e o valor eficaz dele?</p>
+    <ol class="steps">
+      <li>Pico: <var>V</var><sub>p</sub> = 18 × √2 ≈ <b>25,46 V</b>.</li>
+      <li>Ponte: <var>V</var><sub>méd</sub> = 2 × 25,46/π ≈ <b>16,2 V</b>, e <var>I</var><sub>méd</sub> = 16,2/12 ≈ <b>1,35 A</b>. O valor eficaz na carga é 18 V, o mesmo do secundário.</li>
+      <li>Meia onda: <var>V</var><sub>méd</sub> = 25,46/π ≈ <b>8,10 V</b>, e <var>V</var><sub>ef</sub> = 25,46/2 ≈ <b>12,7 V</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Filtro capacitivo e ondulação</h3>
+  <p>Um capacitor em paralelo com a carga se carrega no pico da onda e fornece corrente enquanto a tensão retificada cai, nivelando a saída. O que resta é a <b>ondulação</b> (<i>ripple</i>), um dente de serra de amplitude <var>V</var><sub>r</sub> (pico a pico).</p>
+  <figure><svg viewBox="0 0 640 215" role="img" aria-label="Três semiciclos retificados de onda completa em tracejado e, em linha cheia, a tensão com filtro capacitivo, que sobe até o pico, desce de forma quase linear e é recarregada no pico seguinte; a diferença entre o pico e o vale é a ondulação Vr">
+<path class="ax" d="M60,170 H390 M60,170 V20"/>
+<path class="guide" d="M60,40 H375 M190,64.8 H375"/>
+<path class="dash pa" d="M60,170 L65,149.7 L70,129.8 L75,111 L80,93.6 L85,78.1 L90,64.8 L95,54.2 L100,46.4 L105,41.6 L110,40 L115,41.6 L120,46.4 L125,54.2 L130,64.8 L135,78.1 L140,93.6 L145,111 L150,129.8 L155,149.7 L160,170 M160,170 L165,149.7 L170,129.8 L175,111 L180,93.6 L185,78.1 L190,64.8 L195,54.2 L200,46.4 L205,41.6 L210,40 L215,41.6 L220,46.4 L225,54.2 L230,64.8 L235,78.1 L240,93.6 L245,111 L250,129.8 L255,149.7 L260,170 M260,170 L265,149.7 L270,129.8 L275,111 L280,93.6 L285,78.1 L290,64.8 L295,54.2 L300,46.4 L305,41.6 L310,40 L315,41.6 L320,46.4 L325,54.2 L330,64.8 L335,78.1 L340,93.6 L345,111 L350,129.8 L355,149.7 L360,170"/>
+<path class="w pc" d="M60,170 L65,149.7 L70,129.8 L75,111 L80,93.6 L85,78.1 L90,64.8 L95,54.2 L100,46.4 L105,41.6 L110,40 L190,64.8 L195,54.2 L200,46.4 L205,41.6 L210,40 L290,64.8 L295,54.2 L300,46.4 L305,41.6 L310,40 L350,54"/>
+<path class="ar ink" d="M375,40 V64.8" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<path class="ar ink" d="M160,182 H260" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="28" y="44" class="tm">Vp</text><text x="46" y="174" class="tm">0</text><text x="388" y="57" class="tm">Vr</text><text x="210" y="205" class="tm" text-anchor="middle">T/2 = 1/(2f)</text>
+<path class="dash pa" d="M420,50 H452"/><text x="460" y="54" class="ts">retificada, sem filtro</text>
+<path class="w pc" d="M420,80 H452"/><text x="460" y="84" class="ts">com filtro capacitivo</text>
+</svg><figcaption>Figura 6. Retificador de onda completa sem filtro (tracejado) e com filtro capacitivo (linha cheia). O capacitor segura a tensão perto do pico; a descarga, quase linear, dura até o semiciclo seguinte superar a tensão do capacitor. V<sub>r</sub> é a ondulação pico a pico.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Ondulação e tensão média com filtro capacitivo</p>
+    <div class="eq-main"><var>V</var><sub>r</sub> ≈ <span class="frac"><span><var>I</var></span><span><var>f</var><sub>r</sub> · <var>C</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>V</var><sub>CC</sub> ≈ <var>V</var><sub>p,saída</sub> − <span class="frac"><span><var>V</var><sub>r</sub></span><span>2</span></span></div>
+    <dl>
+      <dt><var>V</var><sub>r</sub></dt><dd>ondulação pico a pico, em V</dd>
+      <dt><var>I</var></dt><dd>corrente de carga, em A</dd>
+      <dt><var>f</var><sub>r</sub></dt><dd>frequência da ondulação, em Hz: <var>f</var> na meia onda e 2<var>f</var> na onda completa</dd>
+      <dt><var>C</var></dt><dd>capacitância do filtro, em <b>farads</b> (4.700 µF = 0,0047 F)</dd>
+      <dt><var>V</var><sub>p,saída</sub></dt><dd>pico da tensão retificada, depois das quedas dos diodos: <var>V</var><sub>p</sub> − 0,7 V (meia onda) ou <var>V</var><sub>p</sub> − 1,4 V (ponte)</dd>
+      <dt><var>V</var><sub>CC</sub></dt><dd>tensão média na carga, em V</dd>
+    </dl>
+  </div>
+  <p>É uma aproximação para ondulação pequena, com a descarga tratada como linear e a corrente de carga constante. Ela mostra o essencial: a ondulação <b>cresce com a corrente</b> e <b>cai com a capacitância e com a frequência da ondulação</b>. Dobrar C, ou passar de meia onda para onda completa, divide a ondulação por dois. O diodo só conduz perto do pico, para recarregar o capacitor, e por isso a corrente nele é em <b>pulsos curtos e intensos</b>, bem acima da corrente média.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 12</p>
+    <p>A mesma ponte do exemplo anterior (secundário de 18 V eficazes, 60 Hz), agora com diodos de 0,7 V e filtro de 4.700 µF, alimenta uma carga de 0,5 A. Quais a ondulação e a tensão média? E se o retificador fosse de meia onda, com o mesmo capacitor?</p>
+    <ol class="steps">
+      <li>Pico depois dos diodos: 18 × √2 − 1,4 ≈ <b>24,06 V</b>.</li>
+      <li>Ondulação (onda completa, <var>f</var><sub>r</sub> = 120 Hz): <var>V</var><sub>r</sub> = 0,5/(120 × 0,0047) ≈ <b>0,887 V</b>.</li>
+      <li>Tensão média: <var>V</var><sub>CC</sub> ≈ 24,06 − 0,887/2 ≈ <b>23,6 V</b>.</li>
+      <li>Meia onda (<var>f</var><sub>r</sub> = 60 Hz): <var>V</var><sub>r</sub> = 0,5/(60 × 0,0047) ≈ <b>1,77 V</b>, o dobro.</li>
+    </ol>
+  </div>
+
+  <h3>Retificadores controlados e trifásicos</h3>
+  <p>Trocando diodos por <b>tiristores (SCR)</b>, o disparo é atrasado de um ângulo α dentro do semiciclo, e o valor médio da saída passa a ser <b>ajustável</b>. É assim que se controla a velocidade de motores de corrente contínua e se regula a tensão de carregadores. Para a ponte monofásica totalmente controlada com carga muito indutiva, e para a ponte trifásica totalmente controlada:</p>
+  <div class="eq">
+    <p class="eq-name">Valor médio de retificadores controlados (carga com corrente contínua)</p>
+    <div class="eq-main"><var>V</var><sub>méd</sub> = <span class="frac"><span>2<var>V</var><sub>p</sub></span><span>π</span></span> · cos α &nbsp;&nbsp;&nbsp;&nbsp; <var>V</var><sub>méd</sub> = <span class="frac"><span>3√2</span><span>π</span></span> · <var>V</var><sub>L</sub> · cos α ≈ 1,35 · <var>V</var><sub>L</sub> · cos α</div>
+    <dl>
+      <dt><var>V</var><sub>p</sub></dt><dd>pico da tensão de entrada monofásica, em V</dd>
+      <dt><var>V</var><sub>L</sub></dt><dd>tensão de linha eficaz da entrada trifásica, em V</dd>
+      <dt>α</dt><dd>ângulo de disparo dos tiristores; α = 0° equivale a diodos</dd>
+    </dl>
+  </div>
+  <p>Com α = 0° o retificador controlado dá o mesmo valor que o de diodos; em 90° a média é zero; acima de 90° a ponte funciona como inversor (a energia volta para a rede), se a carga puder fornecê-la. A ponte monofásica <b>semicontrolada</b> (dois tiristores e dois diodos) tem V<sub>méd</sub> = (V<sub>p</sub>/π)·(1 + cos α).</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 13</p>
+    <p>Uma ponte trifásica a diodos é alimentada por 380 V de linha. Qual a tensão média na saída? E se for trocada por uma ponte trifásica totalmente controlada, com α = 60°?</p>
+    <ol class="steps">
+      <li>Diodos: <var>V</var><sub>méd</sub> = (3√2/π) × 380 ≈ 1,35 × 380 ≈ <b>513 V</b>.</li>
+      <li>Controlada, α = 60°: <var>V</var><sub>méd</sub> = 513 × cos 60° = 513 × 0,5 ≈ <b>256,6 V</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Fontes reguladas e carregadores</h3>
+  <p>Uma fonte de corrente contínua tem, em geral, os blocos: transformador (adapta a tensão e isola) → retificador → filtro → <b>regulador</b>, que mantém a tensão de saída constante apesar da variação da rede e da carga. Dois tipos de regulador:</p>
+  <ul>
+    <li><b>Linear</b> (regulador integrado como o 7805, ou o diodo zener em paralelo com a carga e um resistor em série): no regulador em série, um elemento absorve a diferença de tensão e dissipa em calor a potência (<var>V</var><sub>entrada</sub> − <var>V</var><sub>saída</sub>)·<var>I</var>; no zener, o calor fica no resistor e no próprio zener. É simples e silencioso, mas de baixo rendimento quando a diferença é grande.</li>
+    <li><b>Chaveado</b>: um transistor liga e desliga em alta frequência (dezenas de kHz ou mais), e um indutor e um capacitor alisam a saída. Tem alto rendimento e tamanho pequeno, mas gera ruído de alta frequência (interferência eletromagnética).</li>
+  </ul>
+  <p>Um <b>carregador de baterias</b> é um retificador com regulação de tensão e <b>limitação de corrente</b>; a seção seguinte trata dele. Em subestações e plantas industriais, o retificador/carregador alimenta o barramento de corrente contínua (comando, proteção, sinalização) e mantém a bateria carregada: se a rede CA faltar, a bateria assume a carga sem interrupção.</p>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Baterias e carregadores</h2></div>
+  <p class="edital-ref">Edital, item 7.4</p>
+
+  <h3>Tipos de bateria e de célula</h3>
+  <p>A bateria é um conjunto de <b>células</b> eletroquímicas ligadas em série. A tensão nominal da célula depende da química; a <b>capacidade</b> é medida em ampères-hora (Ah): a carga que a célula entrega até a tensão de corte, num regime de descarga declarado.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo</th><th>Tensão nominal da célula</th><th>Eletrólito</th><th>O que lembrar</th></tr></thead>
+    <tbody>
+      <tr><td>Chumbo-ácido ventilada (aberta)</td><td>2 V</td><td>ácido sulfúrico diluído, líquido</td><td>libera gases na carga; pede ventilação, reposição de água e medida de densidade</td></tr>
+      <tr><td>Chumbo-ácido VRLA (regulada por válvula: AGM ou gel)</td><td>2 V</td><td>ácido sulfúrico imobilizado (fibra de vidro ou gel)</td><td>recombina os gases; dispensa reposição de água; a válvula só abre em sobrepressão</td></tr>
+      <tr><td>Níquel-cádmio (Ni-Cd)</td><td>1,2 V</td><td>hidróxido de potássio (alcalino)</td><td>robusta, longa vida, boa em temperaturas extremas; o eletrólito não indica o estado de carga</td></tr>
+      <tr><td>Íon-lítio</td><td>cerca de 3,6 a 3,7 V (3,2 V no LiFePO<sub>4</sub>)</td><td>sal de lítio em solvente orgânico</td><td>leve e compacta; exige um sistema de gerenciamento (BMS) para cada célula</td></tr>
+    </tbody>
+  </table></div>
+  <p>Na chumbo-ácida, a descarga transforma as placas em sulfato de chumbo e consome o ácido, então a <b>densidade do eletrólito cai</b> com a descarga: é como se mede o estado de carga de uma ventilada com o densímetro. Numa bateria deixada descarregada, o sulfato cristaliza (<b>sulfatação</b>) e a capacidade se perde.</p>
+
+  <h3>Banco de baterias: série, paralelo e energia</h3>
+  <p>Num banco, a <b>série</b> soma as <b>tensões</b> e mantém a capacidade (Ah); o <b>paralelo</b> soma as <b>capacidades</b> e mantém a tensão. A energia é o produto da tensão pela capacidade, em watts-hora.</p>
+  <figure><svg viewBox="0 0 640 200" role="img" aria-label="Banco de quatro baterias de 12 volts e 100 ampères-hora: duas fileiras em paralelo, cada uma com duas baterias em série, resultando 24 volts e 200 ampères-hora">
+<path class="wire" d="M60,100 H100 M100,60 V140 M100,60 H140 M220,60 H260 M340,60 H380 M100,140 H140 M220,140 H260 M340,140 H380 M380,60 V140 M380,100 H420"/>
+<rect class="zbox" x="140" y="38" width="80" height="44"/><rect class="zbox" x="260" y="38" width="80" height="44"/><rect class="zbox" x="140" y="118" width="80" height="44"/><rect class="zbox" x="260" y="118" width="80" height="44"/>
+<circle class="comp" cx="55" cy="100" r="5"/><circle class="comp" cx="425" cy="100" r="5"/><circle class="f-ink" cx="100" cy="100" r="3"/><circle class="f-ink" cx="380" cy="100" r="3"/>
+<text x="180" y="56" class="ts" text-anchor="middle">12 V</text><text x="180" y="74" class="tm" text-anchor="middle">100 Ah</text>
+<text x="300" y="56" class="ts" text-anchor="middle">12 V</text><text x="300" y="74" class="tm" text-anchor="middle">100 Ah</text>
+<text x="180" y="136" class="ts" text-anchor="middle">12 V</text><text x="180" y="154" class="tm" text-anchor="middle">100 Ah</text>
+<text x="300" y="136" class="ts" text-anchor="middle">12 V</text><text x="300" y="154" class="tm" text-anchor="middle">100 Ah</text>
+<text x="55" y="86" class="tl" text-anchor="middle">+</text><text x="425" y="86" class="tl" text-anchor="middle">−</text>
+<text x="455" y="96" class="tl">Banco: 24 V</text><text x="455" y="122" class="tl">200 Ah</text>
+</svg><figcaption>Figura 7. Duas fileiras em paralelo, com duas baterias de 12 V e 100 Ah em série em cada uma: a série dá 2 × 12 = 24 V, e o paralelo dá 2 × 100 = 200 Ah. Energia: 24 V × 200 Ah = 4,8 kWh.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 14</p>
+    <p>Quatro baterias de 12 V e 100 Ah são ligadas como na figura 7. Quais a tensão, a capacidade e a energia do banco?</p>
+    <ol class="steps">
+      <li>Série de 2: 12 × 2 = <b>24 V</b>.</li>
+      <li>Paralelo de 2 fileiras: 100 × 2 = <b>200 Ah</b>.</li>
+      <li>Energia: 24 × 200 = <b>4.800 Wh</b> (4,8 kWh).</li>
+    </ol>
+  </div>
+
+  <h3>Capacidade, regime C/10 e autonomia</h3>
+  <p>A capacidade depende do <b>regime de descarga</b>. Uma bateria de "100 Ah (<var>C</var><sub>10</sub>)" entrega 100 Ah se descarregada em 10 horas, isto é, com corrente de <var>C</var>/10 = 10 A (o "regime <var>C</var>/10"). Descarregada mais depressa, entrega <b>menos</b> Ah. Por isso a autonomia não é simplesmente <var>C</var>/<var>I</var> em correntes altas. O <b>efeito Peukert</b> corrige isso com um expoente <var>k</var>, maior que 1 <span class="confira">(para o chumbo-ácido, tipicamente entre 1,1 e 1,3, mas depende do modelo: usa-se o dado do fabricante)</span>:</p>
+  <div class="eq">
+    <p class="eq-name">Autonomia (aproximada) com o efeito Peukert</p>
+    <div class="eq-main"><var>t</var> = <var>H</var> · <span class="frac"><span><var>C</var></span><span><var>I</var> · <var>H</var></span></span><sup><var>k</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; <var>t</var> ≈ <span class="frac"><span><var>C</var></span><span><var>I</var></span></span> (se <var>k</var> = 1)</div>
+    <dl>
+      <dt><var>t</var></dt><dd>tempo de descarga, em horas</dd>
+      <dt><var>H</var></dt><dd>duração do regime em que a capacidade foi declarada, em horas (10 h para <var>C</var><sub>10</sub>)</dd>
+      <dt><var>C</var></dt><dd>capacidade declarada nesse regime, em Ah</dd>
+      <dt><var>I</var></dt><dd>corrente de descarga, em A</dd>
+      <dt><var>k</var></dt><dd>expoente de Peukert, sem unidade (1 = bateria ideal)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 15</p>
+    <p>Uma bateria de 100 Ah no regime de 10 horas alimenta uma carga de 20 A. Qual a autonomia sem a correção e com ela, para k = 1,2?</p>
+    <ol class="steps">
+      <li>Sem correção: 100/20 = <b>5 h</b>.</li>
+      <li>Com Peukert: <var>t</var> = 10 × (100/(20 × 10))<sup>1,2</sup> = 10 × 0,5<sup>1,2</sup> ≈ <b>4,35 h</b>, 13% menos.</li>
+    </ol>
+  </div>
+  <p>Na prática, a autonomia também considera a profundidade de descarga permitida, a tensão final de projeto, a temperatura e o envelhecimento, e se projeta com as tabelas do fabricante.</p>
+
+  <h3>Carregador: corrente constante, tensão constante e flutuação</h3>
+  <p>O carregador é um retificador regulado. Numa recarga, ele passa por fases:</p>
+  <ol>
+    <li><b>Corrente constante</b>: limita a corrente a um valor seguro, enquanto a tensão do banco sobe.</li>
+    <li><b>Tensão constante</b>: atingida a tensão de carga, o carregador a mantém e a corrente cai sozinha, à medida que as células enchem.</li>
+    <li><b>Flutuação</b> (<i>float</i>): uma tensão menor, mantida o tempo todo, que conserva o banco em plena carga e repõe a autodescarga, sem sobrecarregar. É o regime normal de bateria estacionária ligada ao barramento.</li>
+  </ol>
+  <p>A <b>equalização</b> (carga de equalização) é uma carga prolongada, com tensão acima da flutuação, que iguala as células de uma bateria <b>ventilada</b>. Nas VRLA ela em geral não é indicada, porque o eletrólito não pode ser reposto <span class="confira">(siga sempre as instruções do fabricante)</span>. As faixas abaixo são <b>valores típicos de fabricantes</b>, a 25 °C, por célula:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Bateria</th><th>Flutuação (V/célula)</th><th>Carga de reforço ou equalização (V/célula)</th></tr></thead>
+    <tbody>
+      <tr><td>Chumbo-ácido ventilada</td><td>cerca de 2,20 a 2,25 <span class="confira">(varia com a liga das grades)</span></td><td>cerca de 2,33 a 2,40 <span class="confira">(varia com o fabricante)</span></td></tr>
+      <tr><td>Chumbo-ácido VRLA</td><td>2,23 a 2,30 (dependendo do modelo; 2,25 é um valor típico)</td><td>2,30 a 2,35 <span class="confira">(carga controlada, conforme o fabricante)</span>, sem equalização separada</td></tr>
+      <tr><td>Níquel-cádmio</td><td>cerca de 1,40 a 1,45 <span class="confira">(varia com o fabricante e o tipo de célula)</span></td><td>cerca de 1,50 a 1,65 <span class="confira">(idem)</span></td></tr>
+    </tbody>
+  </table></div>
+  <p>O fim de descarga de projeto de uma célula de chumbo-ácido é tipicamente de <b>1,75 V</b>. A tensão ideal de flutuação <b>diminui com a temperatura</b> (a bateria quente aceita carga completa com menos tensão): aplica-se uma <b>compensação de temperatura</b> da ordem de −3 mV por °C por célula, em torno de 25 °C. Os fabricantes de VRLA divulgam coeficientes entre cerca de 2 e 5,5 mV/°C por célula, então o valor do fabricante é o que vale.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 16</p>
+    <p>Um banco VRLA de 60 células flutua em 2,25 V/célula a 25 °C. Qual a tensão do carregador, e qual passa a ser com o banco a 35 °C, com −3 mV/°C por célula?</p>
+    <ol class="steps">
+      <li>A 25 °C: 60 × 2,25 = <b>135,0 V</b>.</li>
+      <li>A 35 °C: a correção é 3 mV × 10 = 30 mV por célula, então 60 × (2,25 − 0,03) = <b>133,2 V</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 17</p>
+    <p>Uma bateria forneceu 60 Ah numa falta de rede. O carregador, limitado a 15 A, vai recarregá-la. Qual o tempo aproximado na fase de corrente constante, supondo que precisam entrar cerca de 15% a mais de carga do que foi retirado?</p>
+    <ol class="steps">
+      <li>Carga a repor: 60 × 1,15 = 69 Ah.</li>
+      <li>Tempo: 69/15 = <b>4,6 h</b>. O fator de 1,15 é uma ordem de grandeza <span class="confira">(10 a 20% de perdas de carga; vale o dado do fabricante)</span>, e a fase final, em corrente decrescente, leva mais tempo.</li>
+    </ol>
+  </div>
+
+  <h3>Manutenção e segurança</h3>
+  <ul>
+    <li><b>Ventilada</b>: nível do eletrólito (repor só com <b>água desmineralizada ou destilada</b>, nunca com ácido, porque perde-se água na eletrólise e o ácido fica), densidade, tensão por célula, temperatura, limpeza e aperto das conexões.</li>
+    <li><b>VRLA</b>: não se repõe água. Verifica-se a tensão de flutuação do banco e de cada monobloco, a temperatura, o estufamento da caixa, o aperto e, quando há medidor, a resistência interna ou a condutância.</li>
+    <li><b>Teste de capacidade</b>: descarga controlada, a corrente constante, até a tensão final. As práticas recomendadas da IEEE para baterias estacionárias (IEEE 450 para ventiladas e IEEE 1188 para VRLA) indicam a substituição quando a capacidade cai abaixo de <b>80%</b> da nominal.</li>
+    <li><b>Hidrogênio</b>: a carga, sobretudo a de equalização, libera hidrogênio, que forma mistura explosiva com o ar a partir de cerca de 4% em volume. A sala de baterias precisa de ventilação, e fumar, chamas e faíscas são proibidos. Descarga de eletricidade estática antes de tocar o banco é boa prática.</li>
+    <li><b>Choque e curto-circuito</b>: um banco é uma fonte de CC que <b>não se desliga</b>; os terminais ficam energizados. Um curto-circuito com uma ferramenta pode ter corrente enorme, derreter metal e projetar ácido. Usam-se ferramentas isoladas, sem anéis nem relógios, e não se apoiam ferramentas sobre o banco.</li>
+    <li><b>Ácido e álcali</b>: óculos ou protetor facial, luvas e avental resistentes a ácido, lava-olhos e água por perto. Derramamento de eletrólito ácido (chumbo) se neutraliza com bicarbonato de sódio; o eletrólito alcalino do Ni-Cd, com um ácido fraco <span class="confira">(por exemplo, ácido bórico ou vinagre, conforme a ficha de segurança do fabricante)</span>. Não se misturam ferramentas e equipamentos de chumbo e de Ni-Cd.</li>
+    <li>Não se misturam, na mesma fileira, baterias de modelos, capacidades ou idades diferentes: a mais fraca limita as outras.</li>
+  </ul>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Banco em série soma <b>tensão</b>; em paralelo soma <b>Ah</b>. Quem confunde as duas respostas erra qualquer questão de dimensionamento. E lembre: os 2 V por célula somam 12 V num monobloco de 6 células, 24 V em 12 células, 48 V em 24 células.</p>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>No-breaks (UPS)</h2></div>
+  <p class="edital-ref">Edital, item 7.4</p>
+
+  <h3>Para que serve e do que é feito</h3>
+  <p>O <b>no-break</b> (UPS, <i>uninterruptible power supply</i>) mantém a alimentação da carga quando a rede falha, por um tempo (a <b>autonomia</b>) dado pela bateria, e, conforme o tipo, também corrige distúrbios da rede. Os blocos básicos:</p>
+  <ul>
+    <li><b>retificador/carregador</b>: converte CA em CC e carrega a bateria;</li>
+    <li><b>bateria</b> (banco), ligada ao barramento de CC;</li>
+    <li><b>inversor</b>: converte CC em CA para a carga;</li>
+    <li><b>chave estática</b> (tiristores) e <b>bypass</b>: um caminho alternativo, direto da rede para a carga;</li>
+    <li><b>bypass manual</b>: uma chave de manutenção, que permite isolar o no-break sem desligar a carga.</li>
+  </ul>
+
+  <h3>Os três tipos (IEC 62040-3)</h3>
+  <p>A norma de desempenho de UPS agrupa as topologias pela dependência da saída em relação à entrada: <b>VFD</b> (tensão e frequência da saída <i>dependentes</i> da rede), <b>VI</b> (tensão independente) e <b>VFI</b> (tensão e frequência independentes).</p>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo</th><th>Como funciona</th><th>Transferência e características</th></tr></thead>
+    <tbody>
+      <tr><td><b>Off-line</b> (<i>standby</i>, VFD)</td><td>Com a rede dentro dos limites, a carga é alimentada <b>direto da rede</b>, só com filtro e supressor; o inversor fica desligado. Na falha, uma chave comuta para o inversor, alimentado pela bateria.</td><td>Há <b>tempo de transferência</b> (alguns milissegundos). Não regula a frequência. O mais simples e barato, para cargas pequenas e menos críticas.</td></tr>
+      <tr><td><b>Line-interactive</b> (interativo, VI)</td><td>Parecido com o off-line, mais um <b>regulador automático de tensão</b> (autotransformador com taps) na entrada. O inversor é reversível: carrega a bateria com a rede e inverte na falta.</td><td>Corrige subtensão e sobretensão <b>sem usar a bateria</b>. Ainda há transferência de poucos milissegundos, e a frequência segue a rede.</td></tr>
+      <tr><td><b>On-line, dupla conversão</b> (VFI)</td><td>A carga é <b>sempre</b> alimentada pelo inversor: rede → retificador → barramento CC (com a bateria) → inversor → carga. Na falta de rede, a bateria alimenta o barramento, e nada muda para a carga.</td><td><b>Transferência zero</b>. Isola a carga dos distúrbios da rede e regula tensão e frequência. Rendimento menor (duas conversões) e custo maior. Indicado para cargas críticas: sistemas de controle, instrumentação, SDCD, data centers.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Existe também a <b>conversão delta on-line</b>, uma variante da dupla conversão que processa só parte da energia para obter rendimento maior <span class="confira">(variante de alguns fabricantes)</span>. A questão 43 de 2023 pedia justamente o tipo que alimenta a carga com a energia da rede, <b>sem tratamento</b>, quando a rede está dentro das condições especificadas: o <b>off-line</b>.</p>
+  <figure><svg viewBox="0 0 700 235" role="img" aria-label="Diagrama de blocos de um no-break on-line: rede, retificador, barramento de corrente contínua com bateria, inversor, chave estática e carga; um caminho de bypass leva a rede direto à chave estática">
+<path class="ar ink" d="M90,118 H130" marker-end="url(#ah-ink)"/><path class="ar ink" d="M230,118 H290" marker-end="url(#ah-ink)"/><path class="ar ink" d="M390,118 H450" marker-end="url(#ah-ink)"/><path class="ar ink" d="M560,118 H610" marker-end="url(#ah-ink)"/>
+<path class="ar pb" d="M50,96 V40 H505 V94" marker-end="url(#ah-pb)"/><path class="wire" d="M260,118 V176"/>
+<rect class="zbox" x="10" y="96" width="80" height="44"/><rect class="zbox" x="130" y="96" width="100" height="44"/><rect class="zbox" x="290" y="96" width="100" height="44"/><rect class="zbox" x="450" y="96" width="110" height="44"/><rect class="zbox" x="610" y="96" width="80" height="44"/><rect class="zbox" x="215" y="176" width="90" height="40"/>
+<circle class="f-ink" cx="260" cy="118" r="3"/>
+<text x="50" y="123" class="ts" text-anchor="middle">Rede CA</text><text x="180" y="123" class="ts" text-anchor="middle">Retificador</text><text x="340" y="123" class="ts" text-anchor="middle">Inversor</text><text x="505" y="123" class="ts" text-anchor="middle">Chave estática</text><text x="650" y="123" class="ts" text-anchor="middle">Carga</text><text x="260" y="201" class="ts" text-anchor="middle">Bateria</text>
+<text x="180" y="158" class="tm" text-anchor="middle">CA → CC</text><text x="340" y="158" class="tm" text-anchor="middle">CC → CA</text><text x="260" y="86" class="tm" text-anchor="middle">barramento CC</text>
+<text x="280" y="32" class="ts" text-anchor="middle">bypass: rede direta à carga</text><text x="505" y="158" class="tm" text-anchor="middle">transfere ao bypass na falha</text>
+</svg><figcaption>Figura 8. No-break on-line de dupla conversão. Em operação normal, a carga recebe do inversor; a bateria fica no barramento de CC. Se o inversor falha ou há sobrecarga, a chave estática transfere a carga para o bypass (a rede), sem interrupção quando o inversor está sincronizado com a rede.</figcaption></figure>
+  <ul>
+    <li><b>Rede normal</b>: o retificador alimenta o inversor e carrega a bateria (em flutuação).</li>
+    <li><b>Falta de rede</b>: a bateria assume o barramento de CC; o inversor continua, e a carga não percebe.</li>
+    <li><b>Falha do inversor, sobrecarga ou curto na carga</b>: a chave estática transfere a carga para o bypass; para isso o inversor se mantém <b>sincronizado</b> com a rede.</li>
+    <li><b>Manutenção</b>: o bypass manual alimenta a carga pela rede enquanto o no-break é isolado.</li>
+  </ul>
+
+  <h3>Dimensionamento: kVA, kW e fator de potência</h3>
+  <p>O no-break tem duas capacidades, que precisam ser respeitadas ao mesmo tempo: a <b>potência aparente</b> <var>S</var> (kVA), limitada pela corrente do inversor, e a <b>potência ativa</b> <var>P</var> (kW), limitada pelo dimensionamento térmico do inversor, do retificador e do barramento CC. Elas se ligam pelo <b>fator de potência de saída</b> do equipamento: <var>P</var><sub>UPS</sub> = <var>S</var><sub>UPS</sub> × FP<sub>saída</sub>. Os valores de FP de saída variam com o modelo; deve-se ler a folha de dados <span class="confira">(valores como 0,8 e 0,9 são comuns, mas não universais)</span>.</p>
+  <div class="eq">
+    <p class="eq-name">Dimensionamento de um no-break</p>
+    <div class="eq-main"><var>S</var><sub>carga</sub> = <span class="frac"><span><var>P</var><sub>carga</sub></span><span>FP<sub>carga</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>S</var><sub>UPS</sub> ≥ <var>S</var><sub>carga</sub> · (1 + <var>m</var>) &nbsp;&nbsp;&nbsp;&nbsp; <var>P</var><sub>carga</sub> ≤ <var>S</var><sub>UPS</sub> · FP<sub>saída</sub></div>
+    <dl>
+      <dt><var>P</var><sub>carga</sub></dt><dd>potência ativa total da carga, em kW</dd>
+      <dt>FP<sub>carga</sub></dt><dd>fator de potência da carga</dd>
+      <dt><var>S</var><sub>carga</sub></dt><dd>potência aparente da carga, em kVA</dd>
+      <dt><var>m</var></dt><dd>margem de reserva (crescimento da carga, partidas); 20% a 30% é comum <span class="confira">(prática de projeto, e não regra de norma)</span></dd>
+      <dt>FP<sub>saída</sub></dt><dd>fator de potência de saída do UPS, da folha de dados</dd>
+    </dl>
+  </div>
+  <p>Cargas não lineares, como fontes chaveadas de computadores, têm corrente distorcida e <b>fator de crista</b> alto; o no-break precisa suportá-lo. Motores e cargas com corrente de partida alta (<i>inrush</i>) pedem folga, e em geral não se ligam a UPS <span class="confira">(prática comum; confira a recomendação do fabricante)</span>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 18</p>
+    <p>Uma carga de 9,6 kW com fator de potência 0,8 será alimentada por um no-break, com 25% de margem. Qual o kVA mínimo? Um no-break de 15 kVA com FP de saída 0,9 atende?</p>
+    <ol class="steps">
+      <li><var>S</var><sub>carga</sub> = 9,6/0,8 = <b>12 kVA</b>.</li>
+      <li>Com a margem: 12 × 1,25 = <b>15 kVA</b>.</li>
+      <li>Verificação da potência ativa: 15 × 0,9 = <b>13,5 kW</b>, maior que os 9,6 kW da carga. Atende nas duas capacidades.</li>
+    </ol>
+  </div>
+
+  <h3>Banco de baterias e autonomia</h3>
+  <p>A bateria do no-break fica no barramento de CC, com tensão de algumas dezenas a centenas de volts. A corrente que o inversor puxa do banco é a potência de carga dividida pelo rendimento do inversor e pela tensão do banco; a capacidade necessária em ampères-hora é essa corrente vezes a autonomia, e depois se aplicam os fatores de projeto (envelhecimento, temperatura, tensão final).</p>
+  <div class="eq">
+    <p class="eq-name">Corrente do banco e capacidade mínima (estimativa)</p>
+    <div class="eq-main"><var>I</var><sub>CC</sub> = <span class="frac"><span><var>P</var></span><span>η · <var>V</var><sub>CC</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>C</var> ≥ <span class="frac"><span><var>I</var><sub>CC</sub> · <var>t</var></span><span><var>f</var></span></span></div>
+    <dl>
+      <dt><var>I</var><sub>CC</sub></dt><dd>corrente tirada do banco, em A</dd>
+      <dt><var>P</var></dt><dd>potência ativa da carga, em W</dd>
+      <dt>η</dt><dd>rendimento do inversor (por exemplo, 0,92)</dd>
+      <dt><var>V</var><sub>CC</sub></dt><dd>tensão do banco, em V</dd>
+      <dt><var>C</var></dt><dd>capacidade do banco, em Ah</dd>
+      <dt><var>t</var></dt><dd>autonomia pedida, em horas</dd>
+      <dt><var>f</var></dt><dd>fator que reúne o envelhecimento e a profundidade de descarga (por exemplo, 0,8 para o fim de vida de 80%)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 19</p>
+    <p>Um no-break alimenta 6 kW por 15 minutos. O banco tem 16 baterias de 12 V (192 V) e o inversor rende 0,92. Qual a capacidade mínima em Ah, sem e com o fator de fim de vida de 80%?</p>
+    <ol class="steps">
+      <li>Corrente do banco: 6.000/(0,92 × 192) ≈ <b>33,97 A</b>.</li>
+      <li>Ampères-hora: 33,97 × 0,25 h ≈ <b>8,5 Ah</b>.</li>
+      <li>Com o fim de vida de 80%: 8,5/0,8 ≈ <b>10,6 Ah</b>. É uma primeira estimativa: a tensão do banco cai na descarga (a corrente sobe) e a capacidade em descargas rápidas é menor; o fabricante dá tabelas de potência por célula para cada autonomia.</li>
+    </ol>
+  </div>
+
+  <h3>Manutenção, harmônicos e segurança</h3>
+  <ul>
+    <li><b>Bateria</b>: é o componente de vida mais curta. O calor a encurta de forma acentuada: a regra prática de que cada 10 °C acima de 25 °C reduz a vida pela metade <span class="confira">(regra geral de baterias de chumbo; confira o dado do fabricante)</span>. Faz-se teste periódico de autonomia, medida de tensão por monobloco e inspeção visual.</li>
+    <li><b>Harmônicos</b>: o retificador de 6 pulsos injeta na rede correntes harmônicas de ordem 5, 7, 11 e 13 (ordens 6<var>k</var> ± 1). Retificadores de 12 pulsos, filtros e retificadores com IGBT (corrigem o fator de potência) reduzem o problema.</li>
+    <li><b>Grupo gerador</b>: o retificador do no-break pode partir de forma gradual (<i>soft-start</i>) para o gerador não ver um degrau de carga.</li>
+    <li><b>Manutenção segura</b>: desligar a rede <b>não</b> desenergiza o no-break. Há bateria alimentando o barramento de CC, capacitores com carga e, às vezes, mais de uma entrada. Segue-se o procedimento do fabricante (rede, bypass e bateria seccionados), espera-se a descarga dos capacitores e verifica-se a <b>ausência de tensão</b> antes de tocar.</li>
+  </ul>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>O no-break de <b>maior número de conversões</b> não é "melhor" em tudo: o on-line protege melhor e transfere sem interrupção, mas tem rendimento menor e custa mais. A questão sempre dá o critério: "sem tempo de transferência" ou "carga crítica" aponta o on-line (dupla conversão); "alimenta com a rede sem tratamento" aponta o off-line; "corrige a tensão sem usar a bateria" aponta o line-interactive.</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Erro máximo (instrumento analógico)</td><td>E<sub>máx</sub> = (classe/100)·FE</td><td>em % do fundo de escala, e não da leitura; erro relativo = E<sub>máx</sub>/L</td></tr>
+      <tr><td>Shunt de amperímetro</td><td>R<sub>sh</sub> = R<sub>m</sub>·I<sub>m</sub>/(I − I<sub>m</sub>)</td><td>o shunt leva só I − I<sub>m</sub></td></tr>
+      <tr><td>Multiplicador de voltímetro</td><td>R<sub>s</sub> = V/I<sub>m</sub> − R<sub>m</sub></td><td>sensibilidade = 1/I<sub>m</sub>, em Ω/V</td></tr>
+      <tr><td>Alicate com N voltas</td><td>I = leitura/N</td><td>fase e neutro abraçados juntos: leitura ≈ 0</td></tr>
+      <tr><td>Senoide no osciloscópio</td><td>V<sub>p</sub> = V<sub>pp</sub>/2; V<sub>ef</sub> = V<sub>p</sub>/√2; f = 1/T</td><td>divisões × escala (V/div, s/div)</td></tr>
+      <tr><td>Ponte de Wheatstone (equilíbrio)</td><td>R<sub>x</sub> = R<sub>3</sub>·R<sub>1</sub>/R<sub>2</sub></td><td>produto cruzado dos lados opostos; independe da fonte</td></tr>
+      <tr><td>Dois wattímetros (carga equilibrada)</td><td>P = W<sub>1</sub> + W<sub>2</sub>; tan φ = √3(W<sub>1</sub> − W<sub>2</sub>)/(W<sub>1</sub> + W<sub>2</sub>)</td><td>circuito trifásico a três fios; W<sub>2</sub> negativo se FP &lt; 0,5</td></tr>
+      <tr><td>Correção de temperatura da isolação</td><td>R<sub>40</sub> = R<sub>T</sub>·0,5<sup>(40 − T)/10</sup></td><td>a resistência dobra a cada −10 °C (IEEE 43)</td></tr>
+      <tr><td>Índice de polarização</td><td>IP = R<sub>10 min</sub>/R<sub>1 min</sub></td><td>mínimo de 2,0 para as classes B, F e H</td></tr>
+      <tr><td>Resistência de aterramento (queda de potencial)</td><td>R = V/I, com P a ≈ 62% de d</td><td>corrente alternada; leituras a 52% e 72% conferem</td></tr>
+      <tr><td>Retificador de meia onda</td><td>V<sub>méd</sub> = V<sub>p</sub>/π; V<sub>ef</sub> = V<sub>p</sub>/2</td><td>ondulação em f (60 Hz)</td></tr>
+      <tr><td>Retificador de onda completa</td><td>V<sub>méd</sub> = 2V<sub>p</sub>/π; V<sub>ef</sub> = V<sub>p</sub>/√2</td><td>ondulação em 2f (120 Hz); a ponte perde 2 quedas de diodo</td></tr>
+      <tr><td>Retificador trifásico em ponte</td><td>V<sub>méd</sub> = 1,35·V<sub>L</sub>·cos α</td><td>V<sub>L</sub> eficaz de linha; ondulação em 6f (360 Hz)</td></tr>
+      <tr><td>Ondulação do filtro capacitivo</td><td>V<sub>r</sub> ≈ I/(f<sub>r</sub>·C); V<sub>CC</sub> ≈ V<sub>p</sub> − V<sub>r</sub>/2</td><td>C em farads; f<sub>r</sub> = 2f na onda completa</td></tr>
+      <tr><td>Banco de baterias</td><td>série: soma V; paralelo: soma Ah</td><td>energia (Wh) = V·Ah</td></tr>
+      <tr><td>Autonomia com Peukert</td><td>t = H·(C/(I·H))<sup>k</sup></td><td>k = 1 dá t = C/I; k vem do fabricante</td></tr>
+      <tr><td>Tensão de flutuação do banco</td><td>V = n·[V<sub>25</sub> − coef.·(T − 25)]</td><td>n células; coef. ≈ 3 mV/°C por célula (VRLA)</td></tr>
+      <tr><td>Dimensionamento do no-break</td><td>S ≥ (P/FP<sub>carga</sub>)·(1 + m) e P ≤ S·FP<sub>saída</sub></td><td>vale o mais restritivo, em kVA e em kW</td></tr>
+      <tr><td>Corrente do banco do no-break</td><td>I<sub>CC</sub> = P/(η·V<sub>CC</sub>)</td><td>C ≥ I<sub>CC</sub>·t/f (f: fim de vida e profundidade de descarga)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, Ênfase 8 (Manutenção – Elétrica), itens 7.1, 7.3 e 7.4 — conferidos na transcrição do edital usada pelo app (bancada/js/apostila/edital.js).</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, Prova 6 – Manutenção – Elétrica (questões 40 e 43), conferido nos recortes da prova, e o gabarito oficial (B e D); usados só para identificar o estilo de cobrança.</li>
+    <li>ABNT NBR 5410:2004, verificação final: tensões de ensaio e resistências mínimas de isolamento (tabela 60: 250 V com 0,25 MΩ, 500 V com 0,5 MΩ e 1.000 V com 1,0 MΩ) e ensaio de tensão aplicada de 1 minuto — conferidos em artigos técnicos que reproduzem a tabela (A3A Engenharia; Fluke Academy), e não no texto da norma.</li>
+    <li>IEEE Std 43-2013, <i>Recommended Practice for Testing Insulation Resistance of Electric Machinery</i>: tensões de ensaio, índice de polarização mínimo (2,0; 1,5 para a classe A), correção de temperatura para 40 °C e restrição do IP acima de 5.000 MΩ <span class="confira">(lidos em resumos públicos da norma — insulationtesting.com e indusmetrics.com —, e não no texto da norma)</span>.</li>
+    <li>Fluke, <i>Understanding Test Tool Safety Specifications</i> e catálogo TTC: categorias de medição CAT I a CAT IV da IEC 61010-1 e exemplos de local.</li>
+    <li>AEMC, <i>Understanding Ground Resistance Testing</i> e nota de aplicação do ensaio por queda de potencial: método dos 62%, leituras a 52%, 62% e 72%, afastamento do eletrodo de corrente e alicate terrômetro.</li>
+    <li>Socomec, <i>UPS and Critical Power Solutions: Technical Guide</i>, e resumos da IEC 62040-3: classificação VFD, VI e VFI, tempos de transferência e rendimento da dupla conversão.</li>
+    <li>Stryten (manual de baterias AGM), Fullriver/Drake Marine (células VRLA) e <i>On temperature compensation for lead acid batteries in float service</i> (INTELEC 1996, DOI 10.1109/intlec.1996.572374): tensões de flutuação e de carga por célula e faixa de compensação de temperatura (2 a 5,5 mV/°C por célula) <span class="confira">(valores de fabricantes; o do modelo instalado é o que vale)</span>.</li>
+    <li>Eagle Eye Power Solutions, <i>Battery Inspection, Maintenance and Testing</i>, e Megger, <i>Batteries are not fit-and-forget assets</i>: resumo das práticas IEEE 450, 1106 e 1188 (inspeções, teste de capacidade, substituição abaixo de 80% da capacidade).</li>
+    <li>Bibliografia de apoio: M. H. Rashid, <i>Eletrônica de Potência</i> (retificadores controlados e trifásicos); A. S. Sedra e K. C. Smith, <i>Microeletrônica</i> (retificadores com filtro capacitivo); W. Bolton, <i>Instrumentação e Controle</i> e A. Helfrick e W. Cooper, <i>Instrumentação Eletrônica Moderna e Técnicas de Medição</i> (galvanômetro, shunt, multiplicador e ponte de Wheatstone) <span class="confira">(indicadas como leitura de apoio; as fórmulas foram conferidas nas fontes de internet acima, e não nestes livros)</span>.</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+
+<script>
+const QUIZ = {
+"b1": [
+{
+"s": "Um voltímetro analógico de classe 2,0 tem fundo de escala de 150 V e indica 60 V. O erro máximo possível nessa leitura, em volts, é de",
+"o": [
+"1,2 V",
+"2,0 V",
+"3,0 V",
+"5,0 V",
+"6,0 V"
+],
+"a": 2,
+"c": "O erro máximo é a classe vezes o fundo de escala: 2,0% × 150 V = 3,0 V, qualquer que seja a leitura nessa escala (3/60 = 5% da leitura). 1,2 V aplica a classe à leitura (2% de 60 V); 2,0 V toma a classe como se fosse volts; 5,0 V é o erro relativo, em porcentagem, tratado como volts; 6,0 V soma o desvio de ±3 V nos dois sentidos."
+},
+{
+"s": "Um voltímetro analógico de classe 1,5 tem escalas de 30 V, 100 V e 300 V. Para medir uma tensão de cerca de 25 V com o menor erro relativo possível, deve-se usar a escala de",
+"o": [
+"300 V, porque a escala maior sempre tem menor erro relativo",
+"100 V, porque deixa folga para eventuais picos, e o erro é de 1,5% da leitura em qualquer escala",
+"qualquer uma, porque a classe é a mesma e o erro é sempre de 1,5% da leitura",
+"100 V, porque o fundo de escala deve ser pelo menos o dobro da leitura",
+"30 V, porque o erro máximo (1,5% de 30 V = 0,45 V) é o menor e o ponteiro fica no fim da escala"
+],
+"a": 4,
+"c": "O erro máximo vale 1,5% do fundo de escala: 0,45 V em 30 V, 1,5 V em 100 V e 4,5 V em 300 V. Para uma leitura de 25 V, o erro relativo é de 1,8%, 6% e 18%, respectivamente. Escolhe-se a menor escala que comporta a leitura. As demais alternativas tratam a classe como porcentagem da leitura ou inventam regras de folga."
+},
+{
+"s": "Um galvanômetro de bobina móvel tem corrente de fundo de escala de 5 mA e resistência de 40 Ω. Para transformá-lo num amperímetro de 0 a 50 mA, deve-se ligar em paralelo um shunt de aproximadamente",
+"o": [
+"4,0 Ω",
+"4,44 Ω",
+"40 Ω",
+"360 Ω",
+"400 Ω"
+],
+"a": 1,
+"c": "O shunt leva só a corrente que o galvanômetro não suporta: 50 − 5 = 45 mA. Com a mesma tensão nos dois (R<sub>m</sub>·I<sub>m</sub> = 40 × 0,005 = 0,2 V), R<sub>sh</sub> = 0,2/0,045 ≈ 4,44 Ω. 4,0 Ω usa os 50 mA no denominador; 40 Ω iguala o shunt a R<sub>m</sub>, o que só dobraria a faixa; 360 Ω é R<sub>m</sub>·(I − I<sub>m</sub>)/I<sub>m</sub>, a razão invertida; 400 Ω multiplica R<sub>m</sub> pela razão I/I<sub>m</sub> em vez de dividir."
+},
+{
+"s": "Um divisor de tensão é formado por R<sub>1</sub> = 60 kΩ e R<sub>2</sub> = 40 kΩ, ligado a uma fonte de 24 V. Um voltímetro com resistência interna de 60 kΩ é ligado em paralelo com R<sub>2</sub>. A leitura do voltímetro é de, aproximadamente,",
+"o": [
+"6,86 V",
+"9,6 V",
+"10,3 V",
+"12,0 V",
+"14,4 V"
+],
+"a": 0,
+"c": "O voltímetro em paralelo com R<sub>2</sub> forma 40 kΩ ∥ 60 kΩ = 24 kΩ, e a tensão passa a 24 × 24/(60 + 24) ≈ 6,86 V. 9,6 V é a tensão sem o voltímetro (24 × 40/100), que supõe instrumento ideal; 10,3 V é a tensão sobre R<sub>1</sub> quando o voltímetro é ligado em paralelo com ele; 12,0 V toma a metade da fonte; 14,4 V é a tensão em R<sub>1</sub> sem o instrumento (24 × 60/100)."
+}
+],
+"b2": [
+{
+"s": "Um técnico enrola um cabo em 5 voltas no núcleo de um alicate amperímetro para medir uma corrente pequena. O alicate indica 45 A. A corrente real no cabo é de",
+"o": [
+"1,8 A",
+"9 A",
+"11,25 A",
+"45 A",
+"225 A"
+],
+"a": 1,
+"c": "O cabo passa 5 vezes pelo núcleo, e o alicate soma as cinco passagens: leitura = N × I. Logo I = 45/5 = 9 A. 1,8 A divide pelo quadrado do número de voltas; 11,25 A divide por 4, contando uma volta a menos; 45 A ignora as voltas; 225 A multiplica a leitura pelas voltas, em vez de dividir."
+},
+{
+"s": "Um técnico abraça, de uma só vez, com um alicate amperímetro, os condutores fase e neutro de um circuito monofásico que alimenta uma carga de 12 A. A leitura esperada é",
+"o": [
+"aproximadamente 0 A (só aparece a corrente de fuga, se houver)",
+"6 A",
+"12 A",
+"17 A",
+"24 A"
+],
+"a": 0,
+"c": "As correntes de ida (fase) e de volta (neutro) têm o mesmo módulo e sentidos opostos; o núcleo do alicate vê a soma vetorial, que é nula, a menos de uma corrente de fuga. É o princípio do alicate de fuga e do DR. 12 A é a leitura com um condutor só; 24 A soma os módulos; 6 A é a média dos dois; 17 A (12√2) soma como se as correntes estivessem a 90°."
+},
+{
+"s": "Num osciloscópio, uma tensão senoidal ocupa 5 divisões de pico a pico, com a escala vertical em 2 V/div e a ponta de prova configurada corretamente. O valor eficaz dessa tensão é, aproximadamente,",
+"o": [
+"3,54 V",
+"5,00 V",
+"7,07 V",
+"10,0 V",
+"14,1 V"
+],
+"a": 0,
+"c": "V<sub>pp</sub> = 5 × 2 = 10 V, V<sub>p</sub> = 5 V e V<sub>ef</sub> = 5/√2 ≈ 3,54 V. 5,00 V é o pico lido como eficaz; 7,07 V divide o pico a pico por √2, sem dividir antes por 2; 10,0 V é o próprio pico a pico; 14,1 V multiplica o pico a pico por √2, em vez de dividir."
+},
+{
+"s": "Um técnico vai medir tensões no barramento de um quadro de distribuição trifásico de 380 V de uma planta industrial. Entre os multímetros abaixo, o adequado quanto à categoria de medição é o",
+"o": [
+"CAT III 600 V",
+"CAT II 1000 V",
+"CAT I 1000 V",
+"CAT II 600 V",
+"sem categoria marcada, mas com entrada para até 1000 V"
+],
+"a": 0,
+"c": "O quadro de distribuição é local de CAT III. O multímetro precisa ter categoria III ou IV e tensão máxima igual ou maior que a do circuito (os 380 V cabem nos 600 V). As outras têm categoria menor (I ou II) ou nenhuma, mesmo com tensão de 1.000 V: a tensão máxima não substitui a categoria."
+}
+],
+"b3": [
+{
+"s": "Uma ponte de Wheatstone tem R<sub>1</sub> = 600 Ω no braço superior direito, R<sub>2</sub> = 150 Ω no inferior direito e R<sub>3</sub> = 220 Ω no inferior esquerdo. Ela está em equilíbrio quando R<sub>x</sub> ocupa o braço superior esquerdo. O valor de R<sub>x</sub> é",
+"o": [
+"55 Ω",
+"220 Ω",
+"409 Ω",
+"880 Ω",
+"970 Ω"
+],
+"a": 3,
+"c": "No equilíbrio, os produtos cruzados (lados opostos) são iguais: R<sub>x</sub>·R<sub>2</sub> = R<sub>3</sub>·R<sub>1</sub>, logo R<sub>x</sub> = 220 × 600/150 = 880 Ω. 55 Ω é R<sub>2</sub>·R<sub>3</sub>/R<sub>1</sub>, com os lados trocados; 409 Ω é R<sub>1</sub>·R<sub>2</sub>/R<sub>3</sub>; 970 Ω soma as três resistências; 220 Ω supõe ponte simétrica, com R<sub>x</sub> = R<sub>3</sub>."
+},
+{
+"s": "Antes de medir com um megôhmetro de 500 V a resistência de isolação de um circuito de iluminação alimentado por quadro, com reatores eletrônicos e módulos de controle ligados, o procedimento correto é",
+"o": [
+"medir com o circuito energizado, para que a isolação seja testada nas condições reais de trabalho",
+"reduzir a tensão do megôhmetro para 12 V, para não danificar os módulos de controle e ainda ler a isolação",
+"apenas abrir o disjuntor do circuito e ligar o megôhmetro, pois os reatores eletrônicos suportam a tensão de ensaio",
+"usar um ôhmetro comum no lugar do megôhmetro, que é mais seguro para a eletrônica e mede a mesma coisa",
+"desenergizar e bloquear o circuito, verificar a ausência de tensão e desconectar ou isolar a eletrônica antes de aplicar a tensão de ensaio"
+],
+"a": 4,
+"c": "O megôhmetro aplica tensão contínua alta: o circuito precisa estar desenergizado, bloqueado e sem tensão, e os equipamentos eletrônicos devem ser desconectados, porque a tensão de ensaio os danifica ou falseia a leitura. Medir energizado é perigoso e destrói o instrumento; 12 V não revelam falhas de isolação; abrir só o disjuntor deixa a eletrônica sob a tensão de ensaio; o ôhmetro comum usa tensão baixa e não mede a isolação."
+},
+{
+"s": "Num ensaio com megôhmetro em um motor de isolação classe F, as leituras de resistência foram 140 MΩ em 30 s, 175 MΩ em 1 min e 280 MΩ em 10 min. O índice de polarização e a avaliação pelo critério da IEEE 43 são",
+"o": [
+"IP = 0,63, que indica isolação em curto-circuito",
+"IP = 1,25 (175/140), abaixo do mínimo de 2,0: reprovado",
+"IP = 2,0 (280/140), que atende ao mínimo de 2,0: aprovado",
+"IP = 1,6 (280/175), abaixo do mínimo de 2,0 para a classe F: reprovado",
+"IP = 1,6 (280/175), acima do mínimo de 1,5: aprovado"
+],
+"a": 3,
+"c": "IP = R<sub>10 min</sub>/R<sub>1 min</sub> = 280/175 = 1,6. Para as classes B, F e H, o mínimo recomendado é 2,0: o motor não passa no critério. IP = 0,63 inverte a razão; 1,25 é a razão de absorção dielétrica (175/140), e não o IP; 2,0 usa a leitura de 30 s no denominador; 1,5 é o mínimo da classe A, e não da F."
+},
+{
+"s": "Num ensaio de aterramento pelo método da queda de potencial, o eletrodo de corrente C foi cravado a 80 m do aterramento sob teste. O eletrodo de potencial P deve ser cravado, a partir do aterramento e na direção de C, a cerca de",
+"o": [
+"30,6 m",
+"40,0 m",
+"49,6 m",
+"62,0 m",
+"64,0 m"
+],
+"a": 2,
+"c": "Pelo método dos 62%, P fica a 0,62 × 80 = 49,6 m do aterramento, onde a leitura é pouco sensível à posição. 30,6 m é 38,2% da distância; 40 m é a metade; 62 m lê a porcentagem como metros; 64 m é 80% da distância."
+}
+],
+"b4": [
+{
+"s": "O secundário de um transformador entrega 24 V eficazes a um retificador de meia onda com diodo ideal e carga resistiva, sem filtro. O valor médio da tensão na carga é, aproximadamente,",
+"o": [
+"7,6 V",
+"10,8 V",
+"15,3 V",
+"21,6 V",
+"33,9 V"
+],
+"a": 1,
+"c": "V<sub>p</sub> = 24√2 ≈ 33,9 V; na meia onda, V<sub>méd</sub> = V<sub>p</sub>/π ≈ 10,8 V. 7,6 V aplica 0,318 ao valor eficaz; 15,3 V aplica 0,637 ao eficaz; 21,6 V é o valor médio da onda completa (2V<sub>p</sub>/π); 33,9 V é o pico."
+},
+{
+"s": "Uma ponte trifásica de seis diodos é alimentada por uma rede de 60 Hz. A frequência da ondulação (<i>ripple</i>) da tensão retificada, sem filtro, é de",
+"o": [
+"60 Hz",
+"120 Hz",
+"180 Hz",
+"360 Hz",
+"720 Hz"
+],
+"a": 3,
+"c": "Cada ciclo da rede produz 6 pulsos na saída da ponte trifásica: 6 × 60 = 360 Hz. 60 Hz é a frequência da rede; 120 Hz é a ondulação da ponte monofásica; 180 Hz é a do retificador trifásico de meia onda (3 pulsos); 720 Hz seria a de uma ponte de 12 pulsos."
+},
+{
+"s": "Um retificador em ponte monofásico (60 Hz) alimenta uma carga de 2 A com um filtro capacitivo de 10.000 µF. A ondulação pico a pico, pela aproximação V<sub>r</sub> = I/(f<sub>r</sub>·C), é de, aproximadamente,",
+"o": [
+"0,83 V",
+"1,67 V",
+"2,40 V",
+"3,33 V",
+"16,7 V"
+],
+"a": 1,
+"c": "Na ponte, a frequência da ondulação é 120 Hz: V<sub>r</sub> = 2/(120 × 0,01) ≈ 1,67 V. 0,83 V divide o resultado por dois (confunde pico a pico com semiamplitude); 2,40 V multiplica I·f·C em vez de dividir; 3,33 V usa 60 Hz, como se fosse meia onda; 16,7 V usa 1.000 µF no lugar de 10.000 µF."
+},
+{
+"s": "Um regulador linear recebe 24 V e entrega 9 V a uma carga de 0,4 A. A potência dissipada em calor no regulador é de",
+"o": [
+"3,6 W",
+"6,0 W",
+"9,6 W",
+"13,2 W",
+"15,0 W"
+],
+"a": 1,
+"c": "O elemento em série absorve a diferença de tensão: (24 − 9) × 0,4 = 6,0 W. 3,6 W é a potência útil na carga (9 × 0,4); 9,6 W é a potência de entrada (24 × 0,4); 13,2 W soma as tensões em vez de subtrair; 15,0 W toma a queda de tensão (15 V) como se fosse potência."
+}
+],
+"b5": [
+{
+"s": "Um banco de 48 V e 300 Ah deve ser montado com baterias de 12 V e 150 Ah. O número de baterias necessário é",
+"o": [
+"2",
+"4",
+"6",
+"8",
+"16"
+],
+"a": 3,
+"c": "A tensão pede 48/12 = 4 baterias em série por fileira; a capacidade pede 300/150 = 2 fileiras em paralelo. Total: 4 × 2 = 8 baterias. 2 considera só o paralelo; 4, só a série; 6 soma 4 + 2 em vez de multiplicar; 16 monta quatro fileiras, em vez de duas."
+},
+{
+"s": "Uma bateria de 150 Ah (regime de 10 h) alimenta uma carga de 30 A. Com expoente de Peukert k = 1,3, a autonomia aproximada é de",
+"o": [
+"3,85 h",
+"4,06 h",
+"5,00 h",
+"5,87 h",
+"6,50 h"
+],
+"a": 1,
+"c": "t = 10 × (150/(30 × 10))<sup>1,3</sup> = 10 × 0,5<sup>1,3</sup> ≈ 4,06 h. 3,85 h divide 5 h por k, em vez de aplicar o expoente à razão; 5,00 h é C/I, sem correção; 5,87 h usa o expoente 1/k, o que daria uma autonomia maior que a ideal; 6,50 h multiplica 5 h por k."
+},
+{
+"s": "Um banco VRLA tem 12 células (24 V nominais). Com flutuação em 2,25 V por célula, a tensão ajustada no carregador, a 25 °C, é de",
+"o": [
+"21,0 V",
+"24,0 V",
+"27,0 V",
+"28,2 V",
+"28,8 V"
+],
+"a": 2,
+"c": "12 × 2,25 = 27,0 V. 21,0 V é o fim de descarga (12 × 1,75); 24,0 V é a tensão nominal (12 × 2); 28,2 V (12 × 2,35) e 28,8 V (12 × 2,40) são tensões de carga de reforço (ou de equalização, em bateria ventilada), acima da flutuação."
+},
+{
+"s": "Em relação à segurança numa sala de baterias de chumbo-ácido ventiladas, é correto afirmar:",
+"o": [
+"o nível do eletrólito deve ser reposto com ácido sulfúrico diluído, porque a água se perde na carga",
+"retirado o disjuntor do carregador, os terminais do banco ficam sem tensão e podem ser tocados sem proteção",
+"ferramentas comuns podem ser apoiadas sobre o banco, porque 2 V por célula é uma tensão segura",
+"um derramamento de eletrólito deve ser neutralizado com ácido fraco, o mesmo usado nas baterias de níquel-cádmio",
+"a carga libera hidrogênio, que forma mistura explosiva com o ar; por isso se exige ventilação e se proíbem chamas e faíscas"
+],
+"a": 4,
+"c": "A carga (sobretudo a de equalização) libera hidrogênio, explosivo no ar a partir de cerca de 4%: a sala pede ventilação e proíbe chamas e faíscas. A reposição é só com água desmineralizada ou destilada, porque o ácido não evapora; o banco é uma fonte que não se desliga pelo disjuntor do carregador; as células somam tensão, e um curto com a ferramenta é muito perigoso; o ácido derramado se neutraliza com bicarbonato de sódio, e o ácido fraco é para o álcali do níquel-cádmio."
+}
+],
+"b6": [
+{
+"s": "Uma sala de controle com sistema digital de controle distribuído exige que a carga não sofra transferência na falta de rede e que a frequência da saída seja independente da rede. O tipo de no-break indicado é o",
+"o": [
+"off-line (standby)",
+"line-interactive",
+"on-line de dupla conversão",
+"estabilizador de tensão com bateria",
+"grupo gerador a diesel com partida automática"
+],
+"a": 2,
+"c": "Só o on-line de dupla conversão alimenta a carga sempre pelo inversor, com transferência zero, e regula tensão e frequência independentemente da rede. O off-line alimenta a carga com a rede e transfere em alguns milissegundos; o line-interactive corrige a tensão, mas a frequência segue a rede e ainda há transferência; o estabilizador com bateria tem as mesmas limitações; o grupo gerador leva dezenas de segundos para assumir e não é um no-break."
+},
+{
+"s": "Uma carga de 18 kW tem fator de potência 0,9. A potência aparente mínima do no-break, sem margem de reserva, é de",
+"o": [
+"16,2 kVA",
+"18,0 kVA",
+"20,0 kVA",
+"22,5 kVA",
+"25,0 kVA"
+],
+"a": 2,
+"c": "S = P/FP = 18/0,9 = 20 kVA. 16,2 kVA multiplica por 0,9 em vez de dividir; 18,0 kVA iguala kVA a kW; 22,5 kVA divide por 0,8, um fator de potência que não é o do enunciado; 25,0 kVA já aplica 25% de margem (20 × 1,25), que o enunciado exclui."
+},
+{
+"s": "Um no-break com banco de 192 V e 40 Ah alimenta uma carga de 5 kW. Com rendimento do inversor de 0,9 e descarga total da capacidade (sem outros fatores), a autonomia aproximada é de",
+"o": [
+"83 min",
+"92 min",
+"98 min",
+"102 min",
+"480 min"
+],
+"a": 0,
+"c": "Energia entregue pelo inversor: 40 × 192 × 0,9 = 6.912 Wh; 6.912/5.000 ≈ 1,38 h ≈ 83 min. 92 min esquece o rendimento; 98 min lê 1,38 h como 1 h 38 min; 102 min divide por 0,9 em vez de multiplicar; 480 min divide 40 Ah por 5 kW, sem considerar a tensão."
+},
+{
+"s": "Um no-break on-line, em operação normal, sofre uma falha no inversor. O comportamento esperado do equipamento é",
+"o": [
+"desligar a saída, porque o on-line não tem caminho alternativo para a carga",
+"passar a alimentar a carga pela bateria, ligada diretamente à saída",
+"acionar o bypass manual, que é comandado pela chave estática",
+"ligar a carga ao retificador, que fornece a tensão de saída em corrente contínua",
+"transferir a carga para o bypass pela chave estática, sem interrupção se o inversor estava sincronizado com a rede"
+],
+"a": 4,
+"c": "A chave estática transfere a carga para o bypass (a rede); para isso o inversor se mantém sincronizado com a rede, e a transferência é sem interrupção. O on-line tem o bypass justamente para isso; a bateria alimenta o inversor, e não a saída; o bypass manual é uma chave de manutenção, acionada pelo operador; a carga é de corrente alternada e não pode ser ligada ao retificador."
+}
+]
+};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+
+
+</script>
+</body>
+</html>

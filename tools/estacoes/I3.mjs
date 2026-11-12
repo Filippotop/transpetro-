@@ -1,0 +1,100 @@
+/* Estação I3: medidas elétricas, retificadores, baterias e no-breaks (itens 7.1, 7.3 e 7.4 do Anexo IV).
+   Aprofundamento escrito para o app (fontes/medidas-retificadores-baterias-nobreaks.html), no formato das apostilas do
+   estudante; aqui ficam os metadados, o resumo, os cartões, o V ou F e as contas. As questões da aba Questões são os
+   exercícios do fim de cada seção mais as de tools/banco/I3.mjs (extra), com a explicação de cada alternativa.
+   Gerar: node tools/estacao.mjs fontes/medidas-retificadores-baterias-nobreaks.html I3 */
+export default {
+  fonte: 'fontes/medidas-retificadores-baterias-nobreaks.html',
+  meta: {
+    id: 'I3', vol: 'EL', line: 'I',
+    title: 'Medidas, retificadores, baterias e no-breaks',
+    itens: '7.1, 7.3, 7.4', faixa: 'B', peso2023: 3,
+    note: 'Em 2023 caíram o equipamento do ensaio de tensão aplicada (40, o hipot) e o tipo de no-break que alimenta a carga com a rede sem tratamento (43, o off-line). A 60 (joule e quilowatt-hora) é ensinada na M2. O peso de 3 é o do item 7 inteiro.',
+  },
+  renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
+  labs: {},
+  trocas: [],
+  resumo: [
+    ['Erro e classe', 'E<sub>máx</sub> = classe% × fundo de escala, e não da leitura. Use a menor escala que comporta a leitura.'],
+    ['Shunt e multiplicador', 'R<sub>sh</sub> = R<sub>m</sub>I<sub>m</sub>/(I − I<sub>m</sub>); R<sub>s</sub> = V/I<sub>m</sub> − R<sub>m</sub>. Amperímetro em série; voltímetro em paralelo.'],
+    ['Isolação e terra', 'Megôhmetro: CC alta, desenergizado; IP = R<sub>10</sub>/R<sub>1</sub> ≥ 2. Hipot: tensão aplicada. Terrômetro: P a 62%.'],
+    ['Retificadores', 'Meia onda: V<sub>p</sub>/π. Onda completa: 2V<sub>p</sub>/π, ondulação em 2f. Filtro: V<sub>r</sub> ≈ I/(f<sub>r</sub>C).'],
+    ['Baterias', 'Série soma V; paralelo soma Ah. Flutuação VRLA ≈ 2,25 V/célula. Troca abaixo de 80% da capacidade.'],
+    ['No-breaks', 'Off-line: rede direta. Interativo: AVR. Dupla conversão: inversor sempre, transferência zero.'],
+  ],
+  cards: [
+    ['Voltímetro analógico de classe 1,5 e fundo de escala de 100 V: qual o erro máximo?', '1,5% de 100 V = 1,5 V em qualquer ponto da escala (e não 1,5% da leitura).'],
+    ['Por que usar a menor escala que comporta a leitura?', 'O erro absoluto é fixo (classe × fundo de escala); uma escala menor reduz o erro relativo.'],
+    ['Como se calcula o shunt de um galvanômetro (I<sub>m</sub>, R<sub>m</sub>) para uma faixa I?', 'R<sub>sh</sub> = R<sub>m</sub>·I<sub>m</sub>/(I − I<sub>m</sub>): o shunt leva só a corrente que sobra.'],
+    ['Como se ligam amperímetro e voltímetro, e como devem ser suas impedâncias?', 'Amperímetro em série, de impedância baixíssima; voltímetro em paralelo, de impedância alta. Amperímetro em paralelo é curto.'],
+    ['Alicate abraçando fase e neutro (ou as três fases equilibradas): que leitura?', 'Aproximadamente zero, porque as correntes se anulam. O alicate de fuga usa isso para ler só a corrente que escapa.'],
+    ['Cabo com N voltas no alicate: qual a corrente real?', 'A leitura dividida por N.'],
+    ['Como se obtêm V<sub>ef</sub> e f de uma senoide no osciloscópio?', 'V<sub>p</sub> = V<sub>pp</sub>/2, V<sub>ef</sub> = V<sub>p</sub>/√2 e f = 1/T, com divisões vezes a escala.'],
+    ['O que diz a categoria de medição (CAT)?', 'Quanto mais perto da fonte, maior a CAT. Tomada: II. Quadro de distribuição: III. Entrada de serviço: IV.'],
+    ['Qual a condição de equilíbrio da ponte de Wheatstone?', 'R<sub>x</sub>·R<sub>2</sub> = R<sub>3</sub>·R<sub>1</sub> (lados opostos); a corrente no galvanômetro é nula, e a fonte não influi.'],
+    ['Que instrumento mede a resistência de isolação, e em que condição?', 'O megôhmetro (CC alta, em MΩ ou GΩ), com o circuito desenergizado e a eletrônica desconectada.'],
+    ['Como se calcula o índice de polarização, e qual o mínimo?', 'IP = R<sub>10 min</sub>/R<sub>1 min</sub>; mínimo de 2,0 para as classes B, F e H (IEEE 43), e 1,5 para a classe A.'],
+    ['O que é o hipot (questão 40 de 2023)?', 'O ensaio de tensão aplicada: fonte CA ou CC acima da nominal, que mede a corrente de fuga e verifica se a isolação suporta.'],
+    ['Como o terrômetro mede o aterramento pela queda de potencial?', 'Injeta corrente alternada entre E e C e mede a tensão entre E e P, posto a cerca de 62% da distância.'],
+    ['Valor médio e frequência da ondulação: meia onda, onda completa e ponte trifásica?', 'Meia onda: V<sub>p</sub>/π, em f. Onda completa: 2V<sub>p</sub>/π, em 2f. Ponte trifásica: 1,35·V<sub>L</sub>, em 6f.'],
+    ['Como a ondulação do filtro capacitivo depende de I, f e C?', 'V<sub>r</sub> ≈ I/(f<sub>r</sub>·C): cresce com a corrente e cai com a frequência da ondulação e com a capacitância.'],
+    ['Baterias em série e em paralelo: o que soma?', 'Série soma as tensões (Ah iguais); paralelo soma os Ah (tensão igual). Energia = V × Ah.'],
+    ['Flutuação, equalização e compensação de temperatura?', 'Flutuação mantém a carga plena (VRLA ≈ 2,25 V/célula); equalização iguala as ventiladas; com calor, a tensão cai cerca de 3 mV/°C por célula.'],
+    ['Quais os tipos de no-break e a diferença entre eles?', 'Off-line: rede direta, com transferência. Line-interactive: AVR corrige a tensão. On-line: inversor sempre, transferência zero.'],
+    ['Que cuidados de segurança a sala de baterias exige?', 'Ventilação e nenhuma chama (hidrogênio explosivo); banco não se desliga; EPI e ferramentas isoladas; bicarbonato no ácido.'],
+  ],
+  vf: [
+    ['O erro máximo de um voltímetro analógico de classe 1,0 é de 1% da leitura, em qualquer ponto da escala.', false, 'É 1% do <b>fundo de escala</b>. Em volts, o erro máximo é o mesmo em toda a escala, e o erro relativo cresce quando a leitura é pequena.'],
+    ['O voltímetro ideal tem resistência interna infinita, e o amperímetro ideal, resistência nula.', true, 'Por isso o voltímetro vai em paralelo (não deve desviar corrente) e o amperímetro em série (não deve queimar tensão).'],
+    ['Abraçando fase e neutro de um circuito monofásico, o alicate amperímetro indica o dobro da corrente da carga.', false, 'Indica <b>aproximadamente zero</b>: as correntes de ida e de volta se anulam, e só aparece a corrente de fuga. É o princípio do alicate de fuga e do DR.'],
+    ['No ensaio com megôhmetro, a resistência medida sobe com o tempo quando a isolação está seca e limpa.', true, 'As correntes de carga e de absorção diminuem, e a leitura cresce. É o que o índice de polarização mede.'],
+    ['O megôhmetro pode ser usado com o circuito energizado, desde que a tensão de ensaio seja baixa.', false, 'O ensaio exige o circuito <b>desenergizado</b> e a eletrônica desconectada. Energizado, é perigoso para quem mede e destrói o instrumento.'],
+    ['O ensaio de tensão aplicada (hipot) submete a isolação a uma tensão acima da nominal e mede a corrente de fuga.', true, 'É o equipamento da questão 40 de 2023. Verifica se a isolação suporta a tensão, e é mais severo que o megôhmetro.'],
+    ['O terrômetro injeta corrente contínua na terra para evitar a polarização do solo.', false, 'Injeta corrente <b>alternada</b>; a contínua polarizaria o solo (eletrolítico) e falsearia a medida.'],
+    ['Numa ponte de Wheatstone equilibrada, a tensão da fonte não influi no valor calculado de R<sub>x</sub>.', true, 'R<sub>x</sub> = R<sub>3</sub>·R<sub>1</sub>/R<sub>2</sub> só depende dos resistores; o galvanômetro só precisa indicar zero.'],
+    ['Num retificador de onda completa, o valor médio vale 0,637 do pico e a ondulação ocorre no dobro da frequência da rede.', true, 'V<sub>méd</sub> = 2V<sub>p</sub>/π ≈ 0,637·V<sub>p</sub>, e a ondulação ocorre em 120 Hz numa rede de 60 Hz.'],
+    ['O valor médio da tensão de um retificador de onda completa é 0,637 vezes o valor eficaz da entrada.', false, 'O fator 0,637 vale para o valor de <b>pico</b>. Em função do eficaz, V<sub>méd</sub> = 2√2/π · V<sub>ef</sub> ≈ 0,9·V<sub>ef</sub>.'],
+    ['Dobrar a capacitância do filtro de um retificador reduz a ondulação à metade, mantidas a corrente e a frequência.', true, 'V<sub>r</sub> ≈ I/(f<sub>r</sub>·C): a ondulação é inversamente proporcional a C.'],
+    ['Duas baterias de 12 V e 100 Ah ligadas em paralelo fornecem 24 V e 100 Ah.', false, 'Em paralelo a tensão se mantém e a capacidade soma: <b>12 V e 200 Ah</b>. Em série seriam 24 V e 100 Ah.'],
+    ['No no-break off-line, a carga é alimentada pela rede sem tratamento enquanto ela está dentro dos limites, e há um pequeno tempo de transferência na falta.', true, 'Foi o tipo pedido na questão 43 de 2023. O inversor só entra em operação quando a rede falha.'],
+    ['No no-break on-line de dupla conversão, o inversor só entra em operação depois da falta de rede.', false, 'No on-line, a carga é <b>sempre</b> alimentada pelo inversor, com ou sem rede; por isso a transferência é nula.'],
+  ],
+  contas: [
+    /* seção 1 */
+    ['0.015*300', '4,5 V', 'Exemplo resolvido 1'], ['4.5/120*100', '3,75%', 'Exemplo resolvido 1'], ['0.015*150', '2,25 V', 'Exemplo resolvido 1'],
+    ['2.25/120*100', '1,88%', 'Exemplo resolvido 1'], ['0.005*230+3*0.1', '1,45 V', 'Exemplo resolvido 1'],
+    ['50*0.001/(0.1-0.001)', '0,505 Ω', 'Exemplo resolvido 2'], ['0.05/0.1', '0,5 Ω', 'Exemplo resolvido 2'], ['50/0.001-50', '49.950 Ω', 'Exemplo resolvido 2'],
+    ['20*50/(100+50)', '6,67 V', 'Exemplo resolvido 3'], ['1/(1/100+1/10000)', '99,01 kΩ', 'Exemplo resolvido 3'], ['20*99.01/(100+99.01)', '9,95 V', 'Exemplo resolvido 3'],
+    /* seção 2 */
+    ['10*1.11', '11,1 V', 'Exemplo resolvido 4'], ['24/4', '6 A', 'Exemplo resolvido 5'],
+    ['4*2', '8 V', 'Exemplo resolvido 6'], ['4/Math.sqrt(2)', '2,83 V', 'Exemplo resolvido 6'], ['4*0.5', '2 ms', 'Exemplo resolvido 6'], ['1/0.002', '500 Hz', 'Exemplo resolvido 6'],
+    ['2400+1200', '3.600 W', 'Exemplo resolvido 7'], ['Math.sqrt(3)*(2400-1200)/3600', '0,577', 'Exemplo resolvido 7'], ['Math.cos(30*Math.PI/180)', '0,866', 'Exemplo resolvido 7'],
+    /* seção 3 */
+    ['340*1000/250', '1.360 Ω', 'Exemplo resolvido 8'], ['10*(340/1740-250/1250)', '−0,046 V', 'Exemplo resolvido 8'],
+    ['80*0.5**((40-20)/10)', '20 MΩ', 'Exemplo resolvido 9'], ['1080/450', '2,4', 'Exemplo resolvido 9'],
+    ['0.62*50', '31 m', 'Exemplo resolvido 10'], ['0.45/0.02', '22,5 Ω', 'Exemplo resolvido 10'],
+    /* seção 4 */
+    ['18*Math.sqrt(2)', '25,46 V', 'Exemplo resolvido 11'], ['2*18*Math.sqrt(2)/Math.PI', '16,2 V', 'Exemplo resolvido 11'], ['2*18*Math.sqrt(2)/Math.PI/12', '1,35 A', 'Exemplo resolvido 11'],
+    ['18*Math.sqrt(2)/Math.PI', '8,10 V', 'Exemplo resolvido 11'], ['18*Math.sqrt(2)/2', '12,7 V', 'Exemplo resolvido 11'],
+    ['18*Math.sqrt(2)-1.4', '24,06 V', 'Exemplo resolvido 12'], ['0.5/(120*0.0047)', '0,887 V', 'Exemplo resolvido 12'], ['18*Math.sqrt(2)-1.4-0.5/(120*0.0047)/2', '23,6 V', 'Exemplo resolvido 12'],
+    ['0.5/(60*0.0047)', '1,77 V', 'Exemplo resolvido 12'],
+    ['3*Math.sqrt(2)/Math.PI*380', '513 V', 'Exemplo resolvido 13'], ['3*Math.sqrt(2)/Math.PI*380*Math.cos(Math.PI/3)', '256,6 V', 'Exemplo resolvido 13'],
+    /* seção 5 */
+    ['12*2', '24 V', 'Exemplo resolvido 14'], ['100*2', '200 Ah', 'Exemplo resolvido 14'], ['24*200', '4.800 Wh', 'Exemplo resolvido 14'],
+    ['100/20', '5 h', 'Exemplo resolvido 15'], ['10*(100/(20*10))**1.2', '4,35 h', 'Exemplo resolvido 15'],
+    ['60*2.25', '135,0 V', 'Exemplo resolvido 16'], ['60*(2.25-0.003*10)', '133,2 V', 'Exemplo resolvido 16'],
+    ['60*1.15/15', '4,6 h', 'Exemplo resolvido 17'],
+    /* seção 6 */
+    ['9.6/0.8', '12 kVA', 'Exemplo resolvido 18'], ['12*1.25', '15 kVA', 'Exemplo resolvido 18'], ['15*0.9', '13,5 kW', 'Exemplo resolvido 18'],
+    ['6000/(0.92*192)', '33,97 A', 'Exemplo resolvido 19'], ['33.97*0.25', '8,5 Ah', 'Exemplo resolvido 19'], ['8.5/0.8', '10,6 Ah', 'Exemplo resolvido 19'],
+    /* exercícios */
+    ['0.02*150', '3,0 V', 'Exercícios de fixação da seção 1'], ['0.015*30', '0,45 V', 'Exercícios de fixação da seção 1'],
+    ['40*0.005/(0.05-0.005)', '4,44 Ω', 'Exercícios de fixação da seção 1'], ['24*(40*60/100)/(60+40*60/100)', '6,86 V', 'Exercícios de fixação da seção 1'],
+    ['45/5', '9 A', 'Exercícios de fixação da seção 2'], ['5*2/2/Math.sqrt(2)', '3,54 V', 'Exercícios de fixação da seção 2'],
+    ['220*600/150', '880 Ω', 'Exercícios de fixação da seção 3'], ['280/175', '1,6', 'Exercícios de fixação da seção 3'], ['0.62*80', '49,6 m', 'Exercícios de fixação da seção 3'],
+    ['24*Math.sqrt(2)/Math.PI', '10,8 V', 'Exercícios de fixação da seção 4'], ['6*60', '360 Hz', 'Exercícios de fixação da seção 4'],
+    ['2/(120*0.01)', '1,67 V', 'Exercícios de fixação da seção 4'], ['(24-9)*0.4', '6,0 W', 'Exercícios de fixação da seção 4'],
+    ['(48/12)*(300/150)', '8 baterias', 'Exercícios de fixação da seção 5'], ['10*(150/(30*10))**1.3', '4,06 h', 'Exercícios de fixação da seção 5'], ['12*2.25', '27,0 V', 'Exercícios de fixação da seção 5'],
+    ['18/0.9', '20 kVA', 'Exercícios de fixação da seção 6'], ['40*192*0.9/5000*60', '83 min', 'Exercícios de fixação da seção 6'],
+  ],
+};

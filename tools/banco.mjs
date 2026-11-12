@@ -47,7 +47,7 @@ const SCTX = vm.createContext({ window: { DATA: { modules: [], cards: [], vf: []
 const ESTACOES = ['E1', 'E2', 'E3', 'M1', 'M2', 'I1'];
 /* Estações escritas para o app (sem apostila do estudante): os exercícios do fim de cada seção e as questões extras
    entram na aba Questões com a revisão de tools/banco/<id>.mjs (q: por "bN:i"; extra: só da aba Questões). */
-const NOVAS = ['M3', 'A2', 'N1', 'X1', 'X2', 'X3'];
+const NOVAS = ['M3', 'A1', 'A2', 'I3', 'N1', 'X1', 'X2', 'X3'];
 for (const id of [...ESTACOES, ...NOVAS]) vm.runInContext(read(`data/estacoes/${id}.js`), SCTX);
 vm.runInContext(read('data/embreve.js'), SCTX);
 const MODS = Object.fromEntries(SCTX.window.DATA.modules.map(m => [m.id, m]));

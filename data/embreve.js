@@ -9,8 +9,6 @@
   };
   [
     stub('I2', 'I', 'Média tensão e SPDA', '8.2, 8.4', 'A', 6, 'Redes aéreas de 1,0 a 17,5 kV e proteção contra descargas atmosféricas; o peso de 6 é o do item 8 inteiro, dividido com a I1.'),
-    stub('I3', 'I', 'Medidas, retificadores, baterias e no-breaks', '7.1, 7.3, 7.4', 'B', 3, 'Instrumentos, megômetro, retificadores, baterias e tipos de no-break (questões 40, 43 e 60 de 2023 no item 7; a 60, de unidades do SI, é ensinada na M2).'),
-    stub('A1', 'A', 'Eletrônica analógica e digital', '9.1, 9.2', 'A', 6, 'Diodos, transistores, portas lógicas e diagramas lógicos; o peso de 6 é o do item 9 inteiro, dividido com a A2.'),
   ].forEach(function (m) {
     var i = D.modules.findIndex(function (x) { return x.id === m.id; });
     if (i < 0) D.modules.push(m);
