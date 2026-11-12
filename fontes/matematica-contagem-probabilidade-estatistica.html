@@ -871,6 +871,77 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
 
   <h3>Histograma: dados em classes</h3>
   <p>No histograma, os dados vêm agrupados em <b>classes</b> (faixas, como "de 2.000 a 3.000, exclusive o 3.000"). Cada barra é a frequência de uma classe. Para "menos que um valor", some as classes <b>abaixo</b> dele; para "pelo menos um valor", as classes dele para cima. Em leitura de classes, o erro típico é somar o lado errado.</p>
+  <h3>Como ler histograma, polígono, ogiva, setores e linhas</h3>
+  <p>O edital pede a representação tabular e gráfica. A mesma tabela de frequências pode virar vários desenhos, e cada um tem a sua leitura. Na figura 5, os tempos de reparo de 40 intervenções estão em classes de 10 minutos. Escrevemos [10, 20) para "de 10 a 20, sem o 20".</p>
+  <div class="tw"><table>
+    <thead><tr><th>Gráfico</th><th>O que mostra</th><th>Como ler</th></tr></thead>
+    <tbody>
+      <tr><td>Histograma</td><td>frequência de cada classe (dados medidos, como tempo ou massa)</td><td>Barras <b>juntas</b>, porque as classes se emendam. Com classes de larguras iguais, a <b>altura</b> é proporcional à frequência; com larguras diferentes, vale a <b>área</b> da barra. Some as barras das classes pedidas.</td></tr>
+      <tr><td>Polígono de frequência</td><td>a mesma informação do histograma, em linha</td><td>Liga os <b>pontos médios</b> do topo das barras (ponto médio = (limite inferior + limite superior) ÷ 2) e fecha no zero, nas classes vazias dos extremos. Mostra a forma da distribuição.</td></tr>
+      <tr><td>Ogiva</td><td>frequência <b>acumulada</b> ("no máximo")</td><td>Um ponto sobre o <b>limite superior</b> de cada classe, na altura da acumulada até ali. Nunca desce (fica reta numa classe vazia) e termina em <i>N</i> (ou em 100%). A frequência de uma classe é a <b>diferença</b> entre duas alturas seguidas.</td></tr>
+      <tr><td>Setores</td><td>partes de um todo</td><td>Ângulo = (<i>f</i> ÷ <i>N</i>) × 360°. A área do setor é proporcional à frequência.</td></tr>
+      <tr><td>Linhas</td><td>evolução no tempo</td><td>Pontos em ordem cronológica, ligados por segmentos. Veja se sobe ou desce e calcule a variação dividindo pelo <b>valor de partida</b>. Usado sobretudo para a evolução no tempo.</td></tr>
+    </tbody>
+  </table></div>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Histograma com cinco classes de 10 minutos, de 0 a 50, com frequências 4, 10, 14, 8 e 4, e o polígono de frequência ligando os pontos médios das barras">
+<text x="100" y="16" class="tm" text-anchor="start">intervenções</text>
+<line x1="100" y1="250" x2="580" y2="250" class="ax"/>
+<text x="90" y="255.0" class="tm" text-anchor="end">0</text>
+<line x1="100" y1="183.33" x2="580" y2="183.33" class="guide"/>
+<text x="90" y="188.33" class="tm" text-anchor="end">5</text>
+<line x1="100" y1="116.67" x2="580" y2="116.67" class="guide"/>
+<text x="90" y="121.67" class="tm" text-anchor="end">10</text>
+<line x1="100" y1="50.0" x2="580" y2="50.0" class="guide"/>
+<text x="90" y="55.0" class="tm" text-anchor="end">15</text>
+<line x1="100" y1="30" x2="100" y2="250" class="ax"/>
+<rect x="100" y="196.67" width="96" height="53.33" class="band pc"/>
+<text x="148.0" y="232.67" class="tl" text-anchor="middle">4</text>
+<rect x="196" y="116.67" width="96" height="133.33" class="band pc"/>
+<text x="244.0" y="152.67" class="tl" text-anchor="middle">10</text>
+<rect x="292" y="63.33" width="96" height="186.67" class="band pc"/>
+<text x="340.0" y="99.33" class="tl" text-anchor="middle">14</text>
+<rect x="388" y="143.33" width="96" height="106.67" class="band pc"/>
+<text x="436.0" y="179.33" class="tl" text-anchor="middle">8</text>
+<rect x="484" y="196.67" width="96" height="53.33" class="band pc"/>
+<text x="532.0" y="232.67" class="tl" text-anchor="middle">4</text>
+<text x="100" y="274" class="tm" text-anchor="middle">0</text>
+<text x="196" y="274" class="tm" text-anchor="middle">10</text>
+<text x="292" y="274" class="tm" text-anchor="middle">20</text>
+<text x="388" y="274" class="tm" text-anchor="middle">30</text>
+<text x="484" y="274" class="tm" text-anchor="middle">40</text>
+<text x="580" y="274" class="tm" text-anchor="middle">50</text>
+<text x="340.0" y="294" class="tm" text-anchor="middle">tempo de reparo (min)</text>
+<polyline points="52.0,250 148.0,196.67 244.0,116.67 340.0,63.33 436.0,143.33 532.0,196.67 628.0,250" class="w pa"/>
+<circle cx="148.0" cy="196.67" r="5" class="f-pa"/>
+<circle cx="244.0" cy="116.67" r="5" class="f-pa"/>
+<circle cx="340.0" cy="63.33" r="5" class="f-pa"/>
+<circle cx="436.0" cy="143.33" r="5" class="f-pa"/>
+<circle cx="532.0" cy="196.67" r="5" class="f-pa"/>
+</svg><figcaption>Figura 5. Histograma e polígono de frequência dos tempos de reparo de 40 intervenções, em classes de 10 minutos. As barras são juntas; o polígono liga os pontos médios dos topos das barras (5, 15, 25, 35 e 45) e fecha no zero.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Leitura passo a passo 1: histograma e polígono</p>
+    <p>Pela figura 5, qual a porcentagem das intervenções que levaram 30 minutos ou mais?</p>
+    <ol class="steps">
+      <li>Total: 4 + 10 + 14 + 8 + 4 = <b>40</b> intervenções.</li>
+      <li>"30 minutos ou mais" são as duas últimas barras: 8 + 4 = <b>12</b>.</li>
+      <li>12 ÷ 40 = 0,30, isto é, <b>30%</b>. (As três primeiras barras somam 28, que são as de menos de 30 minutos.)</li>
+      <li>Ponto médio da classe [10, 20): (10 + 20) ÷ 2 = <b>15</b>.</li>
+    </ol>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Limite superior da classe (min)</th><th>10</th><th>20</th><th>30</th><th>40</th><th>50</th></tr></thead>
+    <tbody><tr><td>Acumulada (altura da ogiva)</td><td>4</td><td>14</td><td>28</td><td>36</td><td>40</td></tr></tbody>
+  </table></div>
+  <div class="box ex">
+    <p class="box-title">Leitura passo a passo 2: ogiva e mediana</p>
+    <p>Com as alturas da ogiva acima, em que classe está a mediana e quantas intervenções levaram de 20 a menos de 30 minutos?</p>
+    <ol class="steps">
+      <li>A mediana é o valor da posição <i>N</i> ÷ 2 = 40 ÷ 2 = <b>20</b>.</li>
+      <li>A acumulada é 14 até 20 min (ainda abaixo de 20) e 28 até 30 min (já acima). A mediana está na classe <b>[20, 30)</b>.</li>
+      <li>Intervenções de 20 a menos de 30 min: 28 − 14 = <b>14</b> (a diferença entre duas alturas seguidas).</li>
+      <li>Se a banca pedir um valor, e não a classe, supondo os dados espalhados por igual dentro da classe: 20 + (20 − 14) ÷ (28 − 14) × 10 ≈ <b>24,3 min</b> <span class="confira">(estimativa por interpolação linear; a prova costuma pedir a classe)</span>.</li>
+    </ol>
+  </div>
   <div class="box trap">
     <p class="box-title">Pegadinha clássica</p>
     <p>Dar o ângulo do setor como 20° só porque o setor é 20% (o ângulo é 0,20 × 360° = 72°); trocar "no máximo" por "pelo menos"; e dividir por um subtotal (só uma classe) em vez de pelo total <i>N</i>.</p>
@@ -985,10 +1056,10 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
 <text x="500" y="300" class="tm" text-anchor="middle">50</text>
 <line x1="590" y1="276" x2="590" y2="282" class="ax"/>
 <text x="590" y="300" class="tm" text-anchor="middle">60</text>
-</svg><figcaption>Figura 5. Os conjuntos A (10, 12, 14, 16, 18) e B (10, 12, 14, 16, 58). A mediana é 14 nos dois, e a média passa de 14 para 22.</figcaption></figure>
+</svg><figcaption>Figura 6. Os conjuntos A (10, 12, 14, 16, 18) e B (10, 12, 14, 16, 58). A mediana é 14 nos dois, e a média passa de 14 para 22.</figcaption></figure>
   <div class="box ex">
     <p class="box-title">Exemplo resolvido 26</p>
-    <p>O conjunto A tem os valores 10, 12, 14, 16 e 18. O conjunto B é igual, mas o 18 virou 58. Compare média e mediana (figura 5).</p>
+    <p>O conjunto A tem os valores 10, 12, 14, 16 e 18. O conjunto B é igual, mas o 18 virou 58. Compare média e mediana (figura 6).</p>
     <ol class="steps">
       <li>Conjunto A: média (10 + 12 + 14 + 16 + 18)/5 = <b>14</b>; mediana (o terceiro) = 14.</li>
       <li>Conjunto B: média (10 + 12 + 14 + 16 + 58)/5 = 110/5 = <b>22</b>; mediana (o terceiro) continua <b>14</b>.</li>
@@ -1010,7 +1081,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
   <p class="edital-ref">Edital, Mat 7</p>
 
   <h3>Dispersão: quão espalhados estão os dados</h3>
-  <p>Dois grupos podem ter a mesma média e serem muito diferentes: um com todos os valores perto dela, outro com valores muito longe (figura 6). As medidas de <b>dispersão</b> dizem isso com um número. A mais usada é o <b>desvio padrão</b>.</p>
+  <p>Dois grupos podem ter a mesma média e serem muito diferentes: um com todos os valores perto dela, outro com valores muito longe (figura 7). As medidas de <b>dispersão</b> dizem isso com um número. A mais usada é o <b>desvio padrão</b>.</p>
   <figure><svg viewBox="0 0 640 264" role="img" aria-label="Dois grupos de cinco valores com média 50: o grupo A fica entre 48 e 52 e o grupo B entre 30 e 70">
 <line x1="320" y1="34" x2="320" y2="214" class="guide"/>
 <text x="320" y="22" class="ts" text-anchor="middle">média 50 nos dois grupos</text>
@@ -1041,7 +1112,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
 <text x="500" y="252" class="tm" text-anchor="middle">70</text>
 <line x1="590" y1="228" x2="590" y2="234" class="ax"/>
 <text x="590" y="252" class="tm" text-anchor="middle">80</text>
-</svg><figcaption>Figura 6. Dois grupos de cinco valores com a mesma média, 50. O grupo A (48 a 52) tem desvio padrão √2 ≈ 1,41; o grupo B (30 a 70) tem √200 ≈ 14,1.</figcaption></figure>
+</svg><figcaption>Figura 7. Dois grupos de cinco valores com a mesma média, 50. O grupo A (48 a 52) tem desvio padrão √2 ≈ 1,41; o grupo B (30 a 70) tem √200 ≈ 14,1.</figcaption></figure>
   <div class="box conceito">
     <p class="box-title">Método: variância e desvio padrão em cinco passos</p>
     <ol class="steps">
@@ -1113,6 +1184,28 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
     <p>Parar na variância (esquecer a raiz), somar os desvios <b>sem elevar ao quadrado</b> (a soma é sempre zero), dividir pelo número de linhas da tabela em vez do total de dados, e achar que somar R$ 500,00 aos salários aumenta o desvio padrão.</p>
   </div>
 
+  <h3>Amplitude e variância com dados em classes</h3>
+  <p>A <b>amplitude</b> é a medida de dispersão mais simples: <i>A</i> = maior valor − menor valor, na unidade dos dados. Só os extremos entram, e a frequência não conta. Não a confunda com a amplitude (largura) de uma classe, que é o limite superior menos o inferior.</p>
+  <div class="box ex">
+    <p class="box-title">Leitura passo a passo 3: amplitude</p>
+    <p>Num lote, 6 peças têm 2 defeitos, 9 têm 4, 3 têm 7 e 2 têm 12. Qual a amplitude do número de defeitos?</p>
+    <ol class="steps">
+      <li>Maior valor: 12. Menor valor: 2.</li>
+      <li>Amplitude: 12 − 2 = <b>10 defeitos</b>. As frequências (6, 9, 3 e 2) não entram.</li>
+    </ol>
+  </div>
+  <p>Quando os dados vêm em <b>classes</b>, usa-se o <b>ponto médio</b> de cada classe como se fosse o valor de todos os dados dela. Dali em diante, a conta é a da tabela de frequências: média ponderada e Σ<i>f</i>(<i>x</i> − média)² ÷ Σ<i>f</i>. O resultado é aproximado, porque o ponto médio substitui os valores reais.</p>
+  <div class="box ex">
+    <p class="box-title">Leitura passo a passo 4: variância por classes</p>
+    <p>Com as classes da figura 5 (pontos médios 5, 15, 25, 35 e 45; frequências 4, 10, 14, 8 e 4), qual a variância dos tempos?</p>
+    <ol class="steps">
+      <li>Média: (5 × 4 + 15 × 10 + 25 × 14 + 35 × 8 + 45 × 4) ÷ 40 = 980 ÷ 40 = <b>24,5</b>.</li>
+      <li>Desvios ao quadrado vezes a frequência: 4 × 380,25 = 1.521; 10 × 90,25 = 902,5; 14 × 0,25 = 3,5; 8 × 110,25 = 882; 4 × 420,25 = 1.681.</li>
+      <li>Soma: 1.521 + 902,5 + 3,5 + 882 + 1.681 = <b>4.990</b>.</li>
+      <li>Variância: 4.990 ÷ 40 = <b>124,75</b> min<sup>2</sup>. O desvio padrão é a raiz: ≈ 11,2 min.</li>
+    </ol>
+  </div>
+
   <div class="quiz" data-set="b8"></div>
 </section>
 
@@ -1151,6 +1244,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
     <li>W. T. N. da Silveira, <a href="https://professorwaltertadeu.mat.br/ProfWalterTadeuArranjosCombinacao.pdf"><i>Arranjos, Combinações e Princípio da Casa dos Pombos</i></a> (lista de exercícios): problemas de arranjo, combinação, anagramas e grupos com condições, usados para o tipo de problema <span class="confira">(a lista abriu e foi lida; só traz enunciados, e as fórmulas desta estação não foram conferidas nela)</span>.</li>
     <li>W. O. Bussab e P. A. Morettin, <a href="https://professores.uff.br/jutriavaldes/wp-content/uploads/sites/196/2019/08/Book_EstatBas-Morettin-Bussab.pdf"><i>Estatística Básica</i></a> (Saraiva): definição de moda, mediana e média aritmética, com o caso de número par de dados <span class="confira">(lido no trecho mostrado pela busca; do texto integral só abriram a apresentação e o sumário, e a definição de variância não foi lida)</span>.</li>
     <li>P. A. Barbetta, A. C. Bornia e M. M. Reis, <i>Estatística para cursos de engenharia e informática</i> (Atlas, 2010): o desvio padrão é a raiz quadrada positiva da variância e tem a unidade dos dados <span class="confira">(lido no trecho mostrado pela busca; o arquivo não foi aberto)</span>.</li>
+    <li>Histograma, polígono de frequência, ogiva, gráfico de linhas e amplitude: definições do ensino médio e de cursos de estatística descritiva <span class="confira">(não foram conferidas numa fonte aberta nesta redação; os números foram recalculados por programa)</span>.</li>
     <li>As fórmulas de contagem, probabilidade e variância deste texto seguem o conteúdo padrão do ensino médio <span class="confira">(não foram conferidas linha a linha numa fonte aberta nesta redação; os exemplos e exercícios foram recalculados à mão e por programa)</span>.</li>
   </ul>
   <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>

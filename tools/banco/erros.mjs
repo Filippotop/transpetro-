@@ -326,5 +326,25 @@ export default {
   sentidoOposto: { n: "Antônimo no lugar do sinônimo", d: "Escolheu uma palavra de sentido contrário ao da palavra destacada no contexto.", t: 'oposto' },
   sentidoContexto: { n: "Sentido fora do contexto", d: "Escolheu uma palavra que repete outro termo do texto ou que exagera a intensidade da palavra destacada.", t: 'exagero' },
   polissemia: { n: "Sentido errado de palavra polissêmica", d: "Tomou outro dos sentidos da palavra (ferramenta, posto militar, acidente geográfico) sem checar o contexto.", t: 'detalhe' },
-  denotConot: { n: "Literal × figurado", d: "Tomou por literal (denotativo) o que é figurado (conotativo), ou confundiu metáfora com ironia.", t: 'detalhe' }
+  denotConot: { n: "Literal × figurado", d: "Tomou por literal (denotativo) o que é figurado (conotativo), ou confundiu metáfora com ironia.", t: 'detalhe' },
+  /* ---- tipos novos (P1 extras e estação C1) ---- */
+  sujOu: { n: 'Verbo no plural com “ou” de exclusão', d: 'Pôs no plural o verbo de um sujeito composto ligado por “ou” que indica exclusão (só um faz ou é); na exclusão o verbo fica no singular.', t: 'formula' },
+  rcDescarga: { n: "Carga e descarga trocadas", d: "Usou a fórmula da descarga (e^(−t/τ)) na carga, ou a da carga na descarga: na carga a grandeza sobe como 1 − e^(−t/τ).", t: 'formula' },
+  regimeTau: { n: "Percentual do τ mal usado", d: "Tratou 1τ como o fim do transitório (100%) ou usou 50% ou outro percentual: 1τ dá 63,2% na carga, e o regime só vem em 5τ.", t: 'detalhe' },
+  tauCalc: { n: "Constante de tempo mal calculada", d: "Errou o τ ou o tempo em unidades de τ: prefixo de C ou de L, produto no lugar do quociente, ou o tempo usado sem dividir por τ.", t: 'formula' },
+  capAssoc: { n: "Associação de capacitores trocada", d: "Tratou capacitores em série como em paralelo (somou as capacitâncias), ou o contrário, ou ignorou um dos capacitores.", t: 'formula' },
+  semMeio: { n: "Esqueceu o ½ da energia", d: "Esqueceu o fator ½ da energia armazenada (½·C·V² ou ½·L·I²).", t: 'formula' },
+  coulombR: { n: "Distância mal usada em Coulomb", d: "Esqueceu o quadrado da distância, usou outra distância ou a elevou a outra potência na lei de Coulomb ou no campo elétrico.", t: 'formula' },
+  campoPot: { n: "Campo e potencial trocados", d: "Confundiu o campo elétrico (kQ/r², em N/C) com o potencial (kQ/r, em V) ou com E·d: o campo leva r², o potencial não.", t: 'formula' },
+  cosAng: { n: "Cosseno do ângulo do fluxo", d: "No fluxo elétrico, esqueceu o cos θ ou usou seno ou cosseno ao quadrado: o ângulo é o do campo com a normal à superfície.", t: 'formula' },
+  fechamento12: { n: "Fechamento do motor de 12 terminais", d: "Errou o fechamento do motor de 12 terminais: paralelo é 220 V por fase e série é 440 V; triângulo dá rede igual à fase e estrela dá fase × √3; os 760 V são só de partida.", t: 'detalhe' },
+  capPartida: { n: "Função do capacitor do motor monofásico", d: "Atribuiu ao capacitor de partida outra função (corrigir o fator de potência, limitar corrente, retificar, inverter o giro): ele defasa a corrente do auxiliar para criar o campo girante.", t: 'detalhe' },
+  tcFator: { n: "Classe 5P20 mal lida", d: "Leu errado a classe do TC de proteção: o 5 é o erro composto em % e o 20 é o fator limite de exatidão, que multiplica a corrente nominal primária.", t: 'formula' },
+  sensorTipo: { n: "Sensor associado ao princípio errado", d: "Associou o sensor a outro princípio físico: termopar (Seebeck), PT100 (resistência da platina), extensômetro (resistência com a deformação), LVDT (núcleo móvel e dois secundários) ou piezoelétrico (carga).", t: 'detalhe' },
+  rtdCoef: { n: "Coeficiente do PT100 mal usado", d: "Na conta do RTD, esqueceu o R0 no denominador, usou a resistência medida no lugar de R0 ou errou a casa decimal de α = 0,00385.", t: 'formula' },
+  karnLeitura: { n: "Variável do grupo mal lida no Karnaugh", d: "Leu o grupo ao contrário: manteve as variáveis que mudam, não negou a que vale 0 no grupo ou trocou uma variável por outra.", t: 'formula' },
+  karnGrupo: { n: "Agrupamento do Karnaugh incorreto", d: "Agrupou células que valem 0, deixou 1 sem cobrir, esqueceu que as bordas se tocam ou fez um grupo menor que o possível.", t: 'detalhe' },
+  starterFuncao: { n: "Função do starter ou do reator", d: "Atribuiu ao starter outra função (limitar a corrente, corrigir o fator de potência, gerar alta frequência): ele fecha para pré-aquecer e abre para gerar o pico de tensão.", t: 'detalhe' },
+  fvAssoc: { n: "Associação de módulos fotovoltaicos", d: "Errou o arranjo: série soma tensões e paralelo soma correntes; contou módulos a mais ou a menos, ou usou só um string.", t: 'formula' },
+  fvPotencia: { n: "Potência do módulo com Voc × Isc", d: "Calculou a potência do módulo com a tensão de circuito aberto e a corrente de curto-circuito, que nunca ocorrem juntas; a potência é Vmp × Imp.", t: 'formula' }
 };

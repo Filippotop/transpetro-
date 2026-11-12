@@ -1076,6 +1076,88 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
     <p>A questão 12 da prova de 2023 dava um preço inicial, um preço final e o número de meses, e pedia a <b>expressão</b> da taxa mensal k%, sem calcular. As alternativas erradas trocavam o expoente 1/t por t, usavam − 1 no lugar de − 100, somavam 0,01 ou misturavam a forma decimal com a percentual. Quando a resposta é uma expressão, monte a fórmula passo a passo e compare com as alternativas pedaço por pedaço: o expoente, o que é subtraído e se há o fator 100.</p>
   </div>
 
+  <h3>Achar o tempo, a taxa e a taxa equivalente</h3>
+  <p>O edital pede o cálculo do montante, do <b>tempo</b>, da taxa e do juro. O tempo fica no expoente, e para tirá-lo de lá há dois caminhos: o logaritmo (a banca dá <b>log 2 = 0,30</b>, <b>log 3 = 0,48</b> e <b>log 5 = 0,70</b> no enunciado) ou a tentativa em uma tabela de (1 + i)<sup>n</sup>.</p>
+  <div class="eq">
+    <p class="eq-name">Tempo nos juros compostos</p>
+    <div class="eq-main"><var>t</var> = <span class="frac"><span>log (<var>M</var>/<var>C</var>)</span><span>log (1 + <var>i</var>)</span></span></div>
+    <dl>
+      <dt><var>t</var></dt><dd>número de períodos, na mesma unidade da taxa</dd>
+      <dt><var>M</var>/<var>C</var></dt><dd>fator total de crescimento (montante dividido pelo capital)</dd>
+      <dt>1 + <var>i</var></dt><dd>fator de um período</dd>
+    </dl>
+  </div>
+  <p>Ela vem de (1 + i)<sup>t</sup> = M/C: aplicando log dos dois lados, o expoente desce (log a<sup>k</sup> = k · log a) e fica t · log(1 + i) = log(M/C). Para achar o log do fator, escreva-o como produto de 2, 3 e 5 e use log 10 = 1.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 29</p>
+    <p>Um capital rende 20% ao ano, a juros compostos. Em quantos anos, aproximadamente, ele triplica? Dados: log 2 = 0,30; log 3 = 0,48; log 5 = 0,70.</p>
+    <ol class="steps">
+      <li>Triplicar é M = 3C, então (1,2)<sup>t</sup> = 3.</li>
+      <li>1,2 = 12/10 = 2<sup>2</sup> · 3/10. Logo log 1,2 = 2 · 0,30 + 0,48 − 1 = 0,08.</li>
+      <li>t · 0,08 = log 3 = 0,48, então t = 0,48 ÷ 0,08 = <b>6 anos</b>.</li>
+      <li>Conferência: 1,2<sup>6</sup> ≈ 2,986, quase 3. O resultado é aproximado porque os logaritmos do enunciado são arredondados.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 30</p>
+    <p>R$ 1.000,00 rendem 5% ao mês, a juros compostos. Depois de quantos meses o montante passa de R$ 1.300,00? (Sem logaritmo: tabela.)</p>
+    <div class="tw"><table>
+      <thead><tr><th>n (meses)</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+      <tbody><tr><td>1,05<sup>n</sup></td><td>1,0500</td><td>1,1025</td><td>1,1576</td><td>1,2155</td><td>1,2763</td><td>1,3401</td></tr></tbody>
+    </table></div>
+    <ol class="steps">
+      <li>Em 5 meses: 1.000 × 1,2763 = R$ 1.276,28, ainda abaixo de 1.300.</li>
+      <li>Em 6 meses: 1.000 × 1,3401 = R$ 1.340,10, já acima.</li>
+      <li>Resposta: <b>6 meses</b>. Quando as alternativas são poucas, também vale testar cada uma.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>No tempo, o erro típico é dividir sem usar logaritmo (M/C ÷ i) ou esquecer o log do fator: 0,48 ÷ 1,2 não dá 6. E nos juros <b>simples</b> o tempo sai direto de J = C · i · t, isto é, t = J ÷ (C · i); só nos compostos entra o logaritmo.</p>
+  </div>
+
+  <p>Para a <b>taxa</b>, o caminho já foi mostrado no exemplo 28 (raiz de índice t). Sem calculadora, a raiz sai por tentativa: teste números como 1,05; 1,10; 1,20 elevados a t até bater com M/C.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 31</p>
+    <p>R$ 2.000,00 viraram R$ 2.662,00 em 3 anos, a juros compostos. Qual a taxa anual?</p>
+    <ol class="steps">
+      <li>M/C = 2.662 ÷ 2.000 = 1,331.</li>
+      <li>Qual fator elevado ao cubo dá 1,331? Teste 1,1: 1,1<sup>3</sup> = 1,331.</li>
+      <li>1 + i = 1,1, então i = 0,1: <b>10% ao ano</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Taxa proporcional × taxa equivalente</h3>
+  <p>Mudar a taxa de unidade (de mês para ano, por exemplo) tem regra diferente em cada regime:</p>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>Juros simples: taxa proporcional</th><th>Juros compostos: taxa equivalente</th></tr></thead>
+    <tbody>
+      <tr><td>Ideia</td><td>mesma razão entre taxa e prazo</td><td>mesmo montante no mesmo prazo</td></tr>
+      <tr><td>De mês para ano</td><td><var>i</var><sub>a</sub> = 12 · <var>i</var><sub>m</sub></td><td>1 + <var>i</var><sub>a</sub> = (1 + <var>i</var><sub>m</sub>)<sup>12</sup></td></tr>
+      <tr><td>De ano para semestre</td><td><var>i</var><sub>s</sub> = <var>i</var><sub>a</sub> ÷ 2</td><td>1 + <var>i</var><sub>s</sub> = (1 + <var>i</var><sub>a</sub>)<sup>1/2</sup></td></tr>
+    </tbody>
+  </table></div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 32</p>
+    <p>A taxa é de 1% ao mês. Qual é a taxa anual proporcional (juros simples) e qual é a equivalente (juros compostos)?</p>
+    <ol class="steps">
+      <li>Proporcional: 12 × 1% = <b>12% ao ano</b>.</li>
+      <li>Equivalente: 1 + i<sub>a</sub> = 1,01<sup>12</sup> ≈ 1,1268, isto é, <b>cerca de 12,68% ao ano</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 33</p>
+    <p>A taxa é de 44% ao ano. Qual é a taxa semestral proporcional e qual é a equivalente?</p>
+    <ol class="steps">
+      <li>Proporcional: 44% ÷ 2 = <b>22% ao semestre</b>.</li>
+      <li>Equivalente: 1 + i<sub>s</sub> = (1,44)<sup>1/2</sup> = 1,2, isto é, <b>20% ao semestre</b>. Confira: 1,2<sup>2</sup> = 1,44.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Quando o prazo está em meses e a taxa em anos</p>
+    <p>Taxa e tempo precisam estar na mesma unidade. Com prazo de 24 meses e taxa ao ano, passe o prazo para 2 anos e use t = 2. Se o prazo não for um número inteiro de anos, passe a <b>taxa</b> para a unidade do prazo pela taxa equivalente, e não pela divisão simples <span class="confira">(com prazo fracionário, o enunciado costuma dizer a convenção; leia antes de calcular)</span>.</p>
+  </div>
+
   <div class="quiz" data-set="b8"></div>
 </section>
 
@@ -1113,6 +1195,7 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
     <li>C. Vieira (coord.), <a href="https://www.udesc.br/arquivos/ceplan/id_cpmenu/463/Apostila_Completa_2024_v2_17086306377595_463.pdf"><i>Projeto SABERMAT – Matemática Básica</i></a> (UDESC/CEPLAN, 2024): conjuntos numéricos, regras de sinais, potenciação e operações com frações <span class="confira">(conferido pelo sumário e pelo início do texto; o restante da apostila não foi relido)</span>.</li>
     <li>R. F. M. da Costa, <a href="https://www.cead.ufv.br/site/wp-content/uploads/2023/10/tad011-matematica-financeira.pdf"><i>Matemática Financeira</i></a> (Universidade Federal de Viçosa, CEAD, curso técnico em Administração): regimes de capitalização simples e composta <span class="confira">(só o sumário e os trechos mostrados pela busca foram lidos; o texto integral não abriu)</span>.</li>
     <li>R. J. Medeiros Junior, <i>Matemática Financeira</i> (Instituto Federal do Paraná, Rede e-Tec Brasil, 2012): J = C·i·t, M = C·(1 + i)<sup>n</sup>, taxa em decimal e taxa e prazo na mesma unidade <span class="confira">(lido no trecho mostrado pela busca; o servidor recusou o acesso direto ao arquivo)</span>.</li>
+    <li>Taxa equivalente × taxa proporcional e tempo por logaritmo: trechos mostrados pela busca de <i>Taxa Equivalente, Efetiva e Real</i> (Pró Educacional) e de uma resolução comentada de vestibular nacional de 2019 (log 2 = 0,3; log 1,05 = 0,02) <span class="confira">(só os trechos da busca foram lidos; as páginas completas não foram abertas, e a conferência principal foi feita por recálculo das contas)</span>.</li>
     <li>Bibliografia de apoio, sem consulta direta nesta redação: G. Iezzi e outros, <i>Fundamentos de Matemática Elementar</i>, volumes 1 e 11 (Atual); L. R. Dante, <i>Matemática: contexto e aplicações</i> (Ática).</li>
   </ul>
   <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
