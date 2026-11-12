@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contagem, probabilidade e estatística — Transpetro 2026, Matemática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+.band{fill-opacity:.25;stroke-width:2}.band.pa{fill:var(--pa)}.band.pb{fill:var(--pb)}.band.pc{fill:var(--pc)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no edital</small></a></li>
+    <li><a href="#b1">1. Princípio fundamental da contagem<small>Mat 5</small></a></li>
+    <li><a href="#b2">2. Fatorial e permutação<small>Mat 5</small></a></li>
+    <li><a href="#b3">3. Arranjo e combinação<small>Mat 5</small></a></li>
+    <li><a href="#b4">4. Probabilidade em espaços equiprováveis<small>Mat 6</small></a></li>
+    <li><a href="#b5">5. Probabilidade: "e", "ou", complementar e sem reposição<small>Mat 6</small></a></li>
+    <li><a href="#b6">6. Tabelas e gráficos<small>Mat 7</small></a></li>
+    <li><a href="#b7">7. Média, mediana e moda<small>Mat 7</small></a></li>
+    <li><a href="#b8">8. Variância e desvio padrão<small>Mat 7</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Contagem, probabilidade e estatística</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), prova de Matemática do nível médio. Princípio da contagem, permutação, arranjo e combinação, probabilidade, tabelas e gráficos, média, mediana, moda, variância e desvio padrão, em passos curtos, com um exemplo resolvido depois de cada regra e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>A prova tem <b>10 questões de Matemática</b>, e quem zera Matemática ou faz menos de 50% do bloco está eliminado. O conteúdo de Matemática do edital tem dez itens. Esta estação cobre três deles, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>Mat 5</b> Análise combinatória: princípio fundamental da contagem; permutação; arranjo e combinação;</li>
+    <li><b>Mat 6</b> Probabilidade básica: probabilidade em espaços equiprováveis;</li>
+    <li><b>Mat 7</b> Estatística básica: representação tabular e gráfica; medidas de tendência central e de dispersão.</li>
+  </ul>
+  <p>Números, proporções e juros (Mat 1, 2 e 8) ficam na estação <b>X1</b>; funções, equações e geometria (Mat 3, 4, 9 e 10), na <b>X2</b>.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (nível médio), duas das dez questões de Matemática foram da parte de estatística, e as duas giravam em torno do <b>desvio padrão</b>:</p>
+    <ul>
+      <li>a 13: uma tabela com o número de funcionários e o valor do bônus de cada grupo (10 funcionários, três valores). A banca não pedia o número, e sim a <b>expressão</b> do desvio padrão: cada desvio ao quadrado vezes quantos funcionários têm aquele bônus, somado, dividido por 10 e com raiz (seção 8);</li>
+      <li>a 15: cinco turmas de 60 notas, e a pergunta era em qual delas o desvio padrão é <b>zero</b>. Zero só acontece quando todos os valores são iguais (seção 8).</li>
+    </ul>
+    <p>O gabarito oficial das duas é E. Isso é um <b>padrão observado</b> numa prova só, não garantia de repetição. Mas mostra o estilo: contexto de trabalho ou de escola, números pequenos, nenhuma conta longa, e a resposta sai de uma ideia aplicada com cuidado. Contagem e probabilidade não caíram em 2023; como estão no edital, a estação ensina o básico delas também. Em cada exercício, o comentário mostra a conta errada que leva a cada alternativa. Os exemplos e exercícios têm números próprios, e não são questões oficiais.</p>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Como estudar esta estação</p>
+    <p>Uma seção por vez. Em cada uma: leia a regra, refaça o exemplo resolvido no papel <b>sem olhar a solução</b> e só então faça os quatro exercícios. Errou? Leia qual foi o erro que levou à sua alternativa: ele costuma se repetir. <span class="confira">Na prova não há calculadora</span>: faça todas as contas à mão, com números pequenos.</p>
+  </div>
+</section>
+
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Princípio fundamental da contagem</h2></div>
+  <p class="edital-ref">Edital, Mat 5</p>
+
+  <h3>Etapas, uma depois da outra</h3>
+  <p>Contar "de quantas maneiras" algo pode ser feito, sem listar uma por uma, é o assunto desta estação. A regra de base é uma só:</p>
+  <p>Se uma escolha é feita em <b>etapas seguidas</b>, e cada etapa tem um número de opções que não depende do que foi escolhido nas outras, o total é o <b>produto</b> das opções de cada etapa.</p>
+  <div class="eq">
+    <p class="eq-name">Princípio fundamental da contagem</p>
+    <div class="eq-main"><var>N</var> = <var>n</var><sub>1</sub> · <var>n</var><sub>2</sub> · … · <var>n</var><sub><var>k</var></sub></div>
+    <dl>
+      <dt><var>N</var></dt><dd>número total de resultados possíveis, sem unidade</dd>
+      <dt><var>n</var><sub>1</sub>, <var>n</var><sub>2</sub>, …</dt><dd>número de opções de cada etapa, já descontadas as restrições; sem unidade</dd>
+      <dt><var>k</var></dt><dd>número de etapas</dd>
+    </dl>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Método: contar em quatro passos</p>
+    <ol class="steps">
+      <li><b>Divida em etapas.</b> O que preciso decidir, uma coisa de cada vez?</li>
+      <li><b>Comece pela etapa que tem restrição</b> (o número deve ser par, a letra não pode repetir…).</li>
+      <li><b>Conte as opções de cada etapa</b>, já tirando o que as etapas anteriores usaram.</li>
+      <li><b>Multiplique.</b></li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Um conjunto de partida é montado com 1 contator, escolhido entre 2 modelos (C1 e C2), e 1 relé térmico, escolhido entre 3 modelos (R1, R2 e R3). Quantos conjuntos diferentes é possível montar?</p>
+    <ol class="steps">
+      <li>Duas etapas: escolher o contator e escolher o relé.</li>
+      <li>Etapa 1: 2 opções. Etapa 2: 3 opções, qualquer que seja o contator.</li>
+      <li>Total: 2 × 3 = <b>6</b> conjuntos. A figura 1 mostra os 6 caminhos.</li>
+    </ol>
+  </div>
+  <figure><svg viewBox="0 0 640 290" role="img" aria-label="Diagrama de árvore: dois modelos de contator e, para cada um, três modelos de relé, formando seis conjuntos">
+<text x="290" y="16" class="tm" text-anchor="middle">1ª etapa: contator</text>
+<text x="470" y="16" class="tm" text-anchor="middle">2ª etapa: relé</text>
+<line x1="90" y1="150" x2="290" y2="75" class="wire"/>
+<line x1="290" y1="75" x2="470" y2="30" class="wire"/>
+<line x1="290" y1="75" x2="470" y2="75" class="wire"/>
+<line x1="290" y1="75" x2="470" y2="120" class="wire"/>
+<line x1="90" y1="150" x2="290" y2="225" class="wire"/>
+<line x1="290" y1="225" x2="470" y2="180" class="wire"/>
+<line x1="290" y1="225" x2="470" y2="225" class="wire"/>
+<line x1="290" y1="225" x2="470" y2="270" class="wire"/>
+<circle cx="90" cy="150" r="7" class="comp"/>
+<text x="90" y="182" class="ts" text-anchor="middle">início</text>
+<circle cx="290" cy="75" r="7" class="comp"/>
+<text x="262" y="58" class="tl" text-anchor="end">C1</text>
+<circle cx="290" cy="225" r="7" class="comp"/>
+<text x="262" y="252" class="tl" text-anchor="end">C2</text>
+<circle cx="470" cy="30" r="6" class="comp"/>
+<text x="488" y="35" class="ts">C1 + R1</text>
+<circle cx="470" cy="75" r="6" class="comp"/>
+<text x="488" y="80" class="ts">C1 + R2</text>
+<circle cx="470" cy="120" r="6" class="comp"/>
+<text x="488" y="125" class="ts">C1 + R3</text>
+<circle cx="470" cy="180" r="6" class="comp"/>
+<text x="488" y="185" class="ts">C2 + R1</text>
+<circle cx="470" cy="225" r="6" class="comp"/>
+<text x="488" y="230" class="ts">C2 + R2</text>
+<circle cx="470" cy="270" r="6" class="comp"/>
+<text x="488" y="275" class="ts">C2 + R3</text>
+<text x="600" y="150" class="tl" text-anchor="middle">= 6</text>
+</svg><figcaption>Figura 1. Diagrama de árvore do exemplo resolvido 1: 2 opções de contator na primeira etapa e 3 de relé na segunda dão 2 × 3 = 6 caminhos.</figcaption></figure>
+
+  <h3>Com repetição e sem repetição</h3>
+  <p>Leia o enunciado procurando as palavras "diferentes", "distintos" ou "sem repetir": elas tiram uma opção a cada etapa. Sem essas palavras, em geral <b>pode repetir</b> (confira se o contexto permite), e o número de opções é o mesmo em todas as etapas.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Uma senha tem 3 dígitos, escolhidos entre os algarismos 1, 2, 3 e 4. Quantas senhas existem (a) podendo repetir dígitos e (b) com dígitos todos diferentes?</p>
+    <ol class="steps">
+      <li>(a) Cada dígito tem 4 opções: 4 × 4 × 4 = <b>64</b>.</li>
+      <li>(b) O primeiro tem 4 opções, o segundo 3 (um já foi usado) e o terceiro 2: 4 × 3 × 2 = <b>24</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Restrição primeiro</h3>
+  <p>Quando uma etapa tem uma condição, <b>conte-a antes das outras</b>. Se deixar para o fim, você não sabe quantas opções sobraram. Outro caso comum: um número de 3 algarismos não pode começar por zero, então o primeiro algarismo tem 9 opções (1 a 9), e os outros dois têm 10: 9 × 10 × 10 = 900.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Com os algarismos 1, 2, 3, 4, 5, 6 e 7, sem repetir algarismo, quantos números <b>pares</b> de 3 algarismos podem ser formados?</p>
+    <ol class="steps">
+      <li>A restrição é "par", que depende do último algarismo. Comece por ele.</li>
+      <li>Unidade: só 2, 4 ou 6, ou seja, 3 opções.</li>
+      <li>Centena: sobram 6 algarismos (7 menos o que foi para a unidade): 6 opções.</li>
+      <li>Dezena: sobram 5 opções.</li>
+      <li>Total: 3 × 6 × 5 = <b>90</b> números.</li>
+    </ol>
+  </div>
+
+  <h3>"E" multiplica, "ou" soma</h3>
+  <ul>
+    <li><b>E</b> (uma etapa e depois a outra): multiplique.</li>
+    <li><b>OU</b> (uma coisa <b>ou</b> outra, que não acontecem juntas): <b>some</b> as quantidades de cada alternativa.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Para chegar à casa de máquinas há 4 escadas ou 3 elevadores. De quantas maneiras uma pessoa pode subir? E subir e descer, escolhendo livremente na subida e na descida?</p>
+    <ol class="steps">
+      <li>Subir: escada <b>ou</b> elevador, que se excluem: 4 + 3 = <b>7</b> maneiras.</li>
+      <li>Subir <b>e</b> descer: 7 opções na subida, 7 na descida: 7 × 7 = <b>49</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Somar onde devia multiplicar (10 + 9 + 8 em vez de 10 × 9 × 8) e esquecer a restrição ("diferentes", "par"). O teste final: <b>cada etapa depende da anterior só pelo que foi usado</b>? Então multiplique, descontando o que foi usado.</p>
+  </div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Fatorial e permutação</h2></div>
+  <p class="edital-ref">Edital, Mat 5</p>
+
+  <h3>Fatorial: um atalho para o produto</h3>
+  <p>Ordenar <b>todos</b> os elementos de um grupo é o caso mais comum de contagem em etapas: o primeiro lugar tem <i>n</i> opções, o segundo tem <i>n</i> − 1, e assim até 1. Esse produto tem nome: fatorial.</p>
+  <div class="eq">
+    <p class="eq-name">Fatorial</p>
+    <div class="eq-main"><var>n</var>! = <var>n</var> · (<var>n</var> − 1) · (<var>n</var> − 2) · … · 2 · 1 &nbsp;&nbsp;&nbsp;&nbsp; 0! = 1 &nbsp;&nbsp;&nbsp;&nbsp; 1! = 1</div>
+    <dl>
+      <dt><var>n</var></dt><dd>número natural; sem unidade</dd>
+      <dt>0! = 1</dt><dd>é uma convenção que faz as fórmulas funcionarem; não é zero</dd>
+    </dl>
+  </div>
+  <p>Decore os primeiros: 3! = 6; 4! = 24; 5! = 120; 6! = 720; 7! = 5.040. Eles crescem muito rápido, por isso em prova quase sempre há um <b>cancelamento</b>: escreva o fatorial maior só até o ponto em que aparece o menor, e corte.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Quatro contatores diferentes serão alinhados, um ao lado do outro, em um painel. Quantas ordens são possíveis?</p>
+    <ol class="steps">
+      <li>Primeira posição: 4 opções. Segunda: 3. Terceira: 2. Quarta: 1.</li>
+      <li>4 × 3 × 2 × 1 = <b>24</b>, que é 4!. A figura 2 mostra as quatro posições.</li>
+    </ol>
+  </div>
+  <figure><svg viewBox="0 0 640 190" role="img" aria-label="Quatro caixas em fila com 4, 3, 2 e 1 opções, cujo produto é 24">
+<rect x="20" y="30" width="120" height="70" rx="8" class="zbox"/>
+<text x="80" y="78" class="tl" text-anchor="middle">4</text>
+<text x="80" y="124" class="tm" text-anchor="middle">1ª posição</text>
+<text x="160" y="78" class="tl" text-anchor="middle">×</text>
+<rect x="180" y="30" width="120" height="70" rx="8" class="zbox"/>
+<text x="240" y="78" class="tl" text-anchor="middle">3</text>
+<text x="240" y="124" class="tm" text-anchor="middle">2ª posição</text>
+<text x="320" y="78" class="tl" text-anchor="middle">×</text>
+<rect x="340" y="30" width="120" height="70" rx="8" class="zbox"/>
+<text x="400" y="78" class="tl" text-anchor="middle">2</text>
+<text x="400" y="124" class="tm" text-anchor="middle">3ª posição</text>
+<text x="480" y="78" class="tl" text-anchor="middle">×</text>
+<rect x="500" y="30" width="120" height="70" rx="8" class="zbox"/>
+<text x="560" y="78" class="tl" text-anchor="middle">1</text>
+<text x="560" y="124" class="tm" text-anchor="middle">4ª posição</text>
+<text x="320" y="170" class="tl" text-anchor="middle">4 × 3 × 2 × 1 = 24 = 4!</text>
+</svg><figcaption>Figura 2. Quatro contatores em quatro posições: 4 opções para a primeira, 3 para a segunda, 2 para a terceira e 1 para a última.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Calcule 6!/4! e 7!/(5! · 2!).</p>
+    <ol class="steps">
+      <li>6!/4! = (6 · 5 · 4!)/4!: corte o 4!. Sobra 6 × 5 = <b>30</b>.</li>
+      <li>7!/(5! · 2!) = (7 · 6 · 5!)/(5! · 2): corte o 5!. Sobra (7 × 6)/2 = <b>21</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Permutação simples</h3>
+  <p>Permutar é trocar a ordem. Com <i>n</i> elementos todos diferentes, o número de ordens possíveis é <i>n</i>!.</p>
+  <div class="eq">
+    <p class="eq-name">Permutação simples</p>
+    <div class="eq-main"><var>P</var><sub><var>n</var></sub> = <var>n</var>!</div>
+    <dl>
+      <dt><var>P</var><sub><var>n</var></sub></dt><dd>número de maneiras de ordenar todos os elementos; sem unidade</dd>
+      <dt><var>n</var></dt><dd>número de elementos, todos diferentes</dd>
+    </dl>
+  </div>
+
+  <h3>Permutação com elementos repetidos</h3>
+  <p>Se alguns elementos são iguais, trocá-los entre si não gera ordem nova. Divida por um fatorial para cada grupo de iguais.</p>
+  <div class="eq">
+    <p class="eq-name">Permutação com repetição</p>
+    <div class="eq-main"><var>P</var> = <span class="frac"><span><var>n</var>!</span><span><var>a</var>! · <var>b</var>! · …</span></span></div>
+    <dl>
+      <dt><var>n</var></dt><dd>número total de elementos</dd>
+      <dt><var>a</var>, <var>b</var>, …</dt><dd>quantas vezes cada elemento repetido aparece (letra que aparece 1 vez não entra)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Quantos anagramas (palavras, com ou sem sentido, feitas com as mesmas letras) tem a palavra MOTOR?</p>
+    <ol class="steps">
+      <li>5 letras, e o O aparece 2 vezes. As demais (M, T, R) aparecem 1 vez.</li>
+      <li>P = 5!/2! = 120/2 = <b>60</b> anagramas.</li>
+    </ol>
+  </div>
+
+  <h3>Elementos que ficam juntos: faça um bloco</h3>
+  <p>Se duas pessoas (ou duas letras) devem ficar <b>juntas</b>, trate-as como <b>um só elemento</b>, o bloco, e permute. Depois multiplique pelas ordens possíveis <b>dentro</b> do bloco.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Quatro eletricistas, A, B, C e D, formam uma fila, e A e B devem ficar lado a lado, em qualquer ordem entre eles. Quantas filas são possíveis?</p>
+    <ol class="steps">
+      <li>O bloco (A e B) conta como 1 elemento. Com C e D, são 3 elementos: 3! = 6 filas.</li>
+      <li>Dentro do bloco: AB ou BA, 2! = 2 ordens.</li>
+      <li>Total: 6 × 2 = <b>12</b> filas.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Esquecer a ordem dentro do bloco (daria 6, e não 12), esquecer de dividir pelas repetições (MOTOR não tem 120 anagramas) e confundir fatorial com quadrado (5! = 120, e não 25). Em cancelamentos, 9!/7! = 9 · 8 = 72: o produto vai do maior número até o primeiro que <b>não</b> foi cortado.</p>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Arranjo e combinação</h2></div>
+  <p class="edital-ref">Edital, Mat 5</p>
+
+  <h3>A pergunta que decide tudo: a ordem importa?</h3>
+  <p>Escolher <i>p</i> elementos entre <i>n</i> pode ser de dois tipos. Antes de qualquer conta, troque mentalmente dois dos escolhidos de lugar e pergunte: <b>o resultado mudou?</b></p>
+  <ul>
+    <li><b>Mudou</b> (primeiro e segundo colocados, chefe e adjunto, senha, fila): <b>arranjo</b>.</li>
+    <li><b>Não mudou</b> (comissão, equipe, grupo, dupla, aperto de mão): <b>combinação</b>.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Arranjo e combinação</p>
+    <div class="eq-main"><var>A</var>(<var>n</var>, <var>p</var>) = <span class="frac"><span><var>n</var>!</span><span>(<var>n</var> − <var>p</var>)!</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>C</var>(<var>n</var>, <var>p</var>) = <span class="frac"><span><var>n</var>!</span><span><var>p</var>! · (<var>n</var> − <var>p</var>)!</span></span></div>
+    <dl>
+      <dt><var>n</var></dt><dd>número de elementos disponíveis; sem unidade</dd>
+      <dt><var>p</var></dt><dd>número de elementos escolhidos (<i>p</i> ≤ <i>n</i>)</dd>
+      <dt><var>A</var>(<var>n</var>, <var>p</var>)</dt><dd>arranjo: escolhas em que a ordem importa</dd>
+      <dt><var>C</var>(<var>n</var>, <var>p</var>)</dt><dd>combinação: escolhas em que a ordem não importa</dd>
+    </dl>
+  </div>
+  <p>Na prática, <b>não use a fórmula inteira</b>. Pelo princípio da contagem, o arranjo é o produto de <i>p</i> fatores decrescentes a partir de <i>n</i>: A(7, 3) = 7 · 6 · 5. A combinação é esse mesmo produto dividido por <i>p</i>!, porque cada grupo foi contado <i>p</i>! vezes em ordens diferentes:</p>
+  <div class="box conceito">
+    <p class="box-title">Método: arranjo e combinação sem a fórmula inteira</p>
+    <ol class="steps">
+      <li><b>Arranjo:</b> <i>p</i> fatores, começando em <i>n</i> e descendo de um em um.</li>
+      <li><b>Combinação:</b> o mesmo produto, dividido por <i>p</i>!. Ou seja, A(<i>n</i>, <i>p</i>) = C(<i>n</i>, <i>p</i>) · <i>p</i>!.</li>
+      <li><b>Atalho:</b> C(<i>n</i>, <i>p</i>) = C(<i>n</i>, <i>n</i> − <i>p</i>). Escolher quem entra é o mesmo que escolher quem fica de fora; use o menor dos dois.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>Seis candidatos disputam duas vagas. Quantos resultados existem (a) se as vagas são de chefe e adjunto, e (b) se as duas vagas são iguais?</p>
+    <ol class="steps">
+      <li>(a) A ordem importa (quem é chefe muda o resultado). Arranjo: 6 × 5 = <b>30</b>.</li>
+      <li>(b) A ordem não importa. Cada dupla apareceu 2 vezes (AB e BA): 30 ÷ 2 = <b>15</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 10</p>
+    <p>Calcule C(5, 3).</p>
+    <ol class="steps">
+      <li>Numerador, 3 fatores a partir de 5: 5 × 4 × 3 = 60.</li>
+      <li>Denominador, 3! = 6.</li>
+      <li>C(5, 3) = 60/6 = <b>10</b>.</li>
+      <li>Conferência pelo atalho: C(5, 2) = (5 × 4)/2 = <b>10</b>, o mesmo valor.</li>
+    </ol>
+  </div>
+
+  <h3>Grupos com condições: multiplique as combinações</h3>
+  <p>Quando o grupo tem partes de tipos diferentes, escolha cada parte com uma combinação e <b>multiplique</b> (é o princípio da contagem, uma etapa por tipo). Para "<b>pelo menos um</b>", use o total menos o caso proibido.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 11</p>
+    <p>Há 7 eletricistas e 3 auxiliares. Quantas comissões de 3 pessoas têm 2 eletricistas e 1 auxiliar?</p>
+    <ol class="steps">
+      <li>Eletricistas: C(7, 2) = (7 × 6)/2 = 21.</li>
+      <li>Auxiliar: C(3, 1) = 3.</li>
+      <li>As duas escolhas são etapas seguidas: 21 × 3 = <b>63</b> comissões.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 12</p>
+    <p>De 7 pessoas (3 mulheres e 4 homens), forma-se um grupo de 3. Em quantos grupos há pelo menos uma mulher?</p>
+    <ol class="steps">
+      <li>Todos os grupos de 3: C(7, 3) = (7 × 6 × 5)/6 = 35.</li>
+      <li>Grupos sem nenhuma mulher (só homens): C(4, 3) = (4 × 3 × 2)/6 = 4.</li>
+      <li>Pelo menos uma mulher: 35 − 4 = <b>31</b> grupos.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Usar arranjo para comissão (conta a ordem que não existe) e esquecer o "exatamente" do enunciado. Se o resultado de uma combinação der <b>maior</b> que o do arranjo com os mesmos números, a conta está errada: A = C · <i>p</i>!, então A ≥ C sempre.</p>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Probabilidade em espaços equiprováveis</h2></div>
+  <p class="edital-ref">Edital, Mat 6</p>
+
+  <h3>Casos favoráveis sobre casos possíveis</h3>
+  <p>O <b>espaço amostral</b> é o conjunto de todos os resultados possíveis de um experimento. Ele é <b>equiprovável</b> quando todos os resultados têm a mesma chance (dado honesto, sorteio justo). Nesse caso, a probabilidade de um <b>evento</b> (o que se quer que aconteça) é uma divisão, e a contagem das seções 1 a 3 serve para achar cada número.</p>
+  <div class="eq">
+    <p class="eq-name">Probabilidade num espaço equiprovável</p>
+    <div class="eq-main"><var>P</var>(<var>A</var>) = <span class="frac"><span><var>n</var>(<var>A</var>)</span><span><var>n</var>(Ω)</span></span></div>
+    <dl>
+      <dt><var>P</var>(<var>A</var>)</dt><dd>probabilidade do evento <i>A</i>, entre 0 e 1 (ou entre 0% e 100%)</dd>
+      <dt><var>n</var>(<var>A</var>)</dt><dd>número de casos <b>favoráveis</b> (os que realizam o evento)</dd>
+      <dt><var>n</var>(Ω)</dt><dd>número de casos <b>possíveis</b> (todo o espaço amostral)</dd>
+    </dl>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Método: três passos</p>
+    <ol class="steps">
+      <li><b>Conte os casos possíveis</b> (todos, equiprováveis).</li>
+      <li><b>Conte os favoráveis</b> (os que atendem ao pedido).</li>
+      <li><b>Divida</b> favoráveis por possíveis e, se pedirem porcentagem, multiplique por 100.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 13</p>
+    <p>Em um lote de 20 relés, 3 são defeituosos. Um relé é sorteado ao acaso. Qual a probabilidade de ele ser defeituoso? E de ser bom?</p>
+    <ol class="steps">
+      <li>Casos possíveis: 20. Favoráveis (defeituosos): 3.</li>
+      <li>P(defeituoso) = 3/20 = <b>0,15</b> = 15%.</li>
+      <li>Bons: 20 − 3 = 17. P(bom) = 17/20 = 0,85 = <b>85%</b>. As duas somam 100%.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Probabilidade é favoráveis sobre <b>todos</b> os casos, e não favoráveis sobre os desfavoráveis (isso é a razão de chances, <i>odds</i>: 3 para 17 não é 15%). <span class="confira">Em enunciado, "chance" costuma significar probabilidade; leia o que se pede</span>. Também não leia "3 defeituosos" como "3%": é a contagem, e só vira porcentagem depois de dividir pelo total.</p>
+  </div>
+
+  <h3>Dois dados: 36 resultados, e não 11</h3>
+  <p>Ao lançar dois dados, a soma vai de 2 a 12, mas as 11 somas <b>não</b> são equiprováveis (a soma 7 tem mais jeitos que a 2). O que é equiprovável são os <b>pares ordenados</b> (dado 1, dado 2): pelo princípio da contagem, 6 × 6 = 36. Para a probabilidade de uma soma, conte os pares que a formam.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 14</p>
+    <p>Dois dados honestos são lançados. Qual a probabilidade de a soma ser 9?</p>
+    <ol class="steps">
+      <li>Casos possíveis: 6 × 6 = 36.</li>
+      <li>Pares com soma 9: (3, 6), (4, 5), (5, 4) e (6, 3). São 4. O par (4, 5) é diferente de (5, 4).</li>
+      <li>P = 4/36 = 1/9 ≈ <b>11,1%</b>.</li>
+    </ol>
+  </div>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Tabela de 6 por 6 com as somas dos dois dados; os quatro pares de soma 9 estão em destaque">
+<text x="210" y="16" class="tm" text-anchor="middle">dado 1</text>
+<text x="110" y="36" class="tm" text-anchor="middle">1</text>
+<text x="80" y="69" class="tm" text-anchor="end">1</text>
+<text x="150" y="36" class="tm" text-anchor="middle">2</text>
+<text x="80" y="109" class="tm" text-anchor="end">2</text>
+<text x="190" y="36" class="tm" text-anchor="middle">3</text>
+<text x="80" y="149" class="tm" text-anchor="end">3</text>
+<text x="230" y="36" class="tm" text-anchor="middle">4</text>
+<text x="80" y="189" class="tm" text-anchor="end">4</text>
+<text x="270" y="36" class="tm" text-anchor="middle">5</text>
+<text x="80" y="229" class="tm" text-anchor="end">5</text>
+<text x="310" y="36" class="tm" text-anchor="middle">6</text>
+<text x="80" y="269" class="tm" text-anchor="end">6</text>
+<text x="26" y="169" class="tm" text-anchor="middle">dado 2</text>
+<rect x="90" y="44" width="40" height="40" class="fl"/>
+<text x="110" y="69" class="ts" text-anchor="middle">2</text>
+<rect x="90" y="84" width="40" height="40" class="fl"/>
+<text x="110" y="109" class="ts" text-anchor="middle">3</text>
+<rect x="90" y="124" width="40" height="40" class="fl"/>
+<text x="110" y="149" class="ts" text-anchor="middle">4</text>
+<rect x="90" y="164" width="40" height="40" class="fl"/>
+<text x="110" y="189" class="ts" text-anchor="middle">5</text>
+<rect x="90" y="204" width="40" height="40" class="fl"/>
+<text x="110" y="229" class="ts" text-anchor="middle">6</text>
+<rect x="90" y="244" width="40" height="40" class="fl"/>
+<text x="110" y="269" class="ts" text-anchor="middle">7</text>
+<rect x="130" y="44" width="40" height="40" class="fl"/>
+<text x="150" y="69" class="ts" text-anchor="middle">3</text>
+<rect x="130" y="84" width="40" height="40" class="fl"/>
+<text x="150" y="109" class="ts" text-anchor="middle">4</text>
+<rect x="130" y="124" width="40" height="40" class="fl"/>
+<text x="150" y="149" class="ts" text-anchor="middle">5</text>
+<rect x="130" y="164" width="40" height="40" class="fl"/>
+<text x="150" y="189" class="ts" text-anchor="middle">6</text>
+<rect x="130" y="204" width="40" height="40" class="fl"/>
+<text x="150" y="229" class="ts" text-anchor="middle">7</text>
+<rect x="130" y="244" width="40" height="40" class="fl"/>
+<text x="150" y="269" class="ts" text-anchor="middle">8</text>
+<rect x="170" y="44" width="40" height="40" class="fl"/>
+<text x="190" y="69" class="ts" text-anchor="middle">4</text>
+<rect x="170" y="84" width="40" height="40" class="fl"/>
+<text x="190" y="109" class="ts" text-anchor="middle">5</text>
+<rect x="170" y="124" width="40" height="40" class="fl"/>
+<text x="190" y="149" class="ts" text-anchor="middle">6</text>
+<rect x="170" y="164" width="40" height="40" class="fl"/>
+<text x="190" y="189" class="ts" text-anchor="middle">7</text>
+<rect x="170" y="204" width="40" height="40" class="fl"/>
+<text x="190" y="229" class="ts" text-anchor="middle">8</text>
+<rect x="170" y="244" width="40" height="40" class="band pc"/>
+<text x="190" y="269" class="tl" text-anchor="middle">9</text>
+<rect x="210" y="44" width="40" height="40" class="fl"/>
+<text x="230" y="69" class="ts" text-anchor="middle">5</text>
+<rect x="210" y="84" width="40" height="40" class="fl"/>
+<text x="230" y="109" class="ts" text-anchor="middle">6</text>
+<rect x="210" y="124" width="40" height="40" class="fl"/>
+<text x="230" y="149" class="ts" text-anchor="middle">7</text>
+<rect x="210" y="164" width="40" height="40" class="fl"/>
+<text x="230" y="189" class="ts" text-anchor="middle">8</text>
+<rect x="210" y="204" width="40" height="40" class="band pc"/>
+<text x="230" y="229" class="tl" text-anchor="middle">9</text>
+<rect x="210" y="244" width="40" height="40" class="fl"/>
+<text x="230" y="269" class="ts" text-anchor="middle">10</text>
+<rect x="250" y="44" width="40" height="40" class="fl"/>
+<text x="270" y="69" class="ts" text-anchor="middle">6</text>
+<rect x="250" y="84" width="40" height="40" class="fl"/>
+<text x="270" y="109" class="ts" text-anchor="middle">7</text>
+<rect x="250" y="124" width="40" height="40" class="fl"/>
+<text x="270" y="149" class="ts" text-anchor="middle">8</text>
+<rect x="250" y="164" width="40" height="40" class="band pc"/>
+<text x="270" y="189" class="tl" text-anchor="middle">9</text>
+<rect x="250" y="204" width="40" height="40" class="fl"/>
+<text x="270" y="229" class="ts" text-anchor="middle">10</text>
+<rect x="250" y="244" width="40" height="40" class="fl"/>
+<text x="270" y="269" class="ts" text-anchor="middle">11</text>
+<rect x="290" y="44" width="40" height="40" class="fl"/>
+<text x="310" y="69" class="ts" text-anchor="middle">7</text>
+<rect x="290" y="84" width="40" height="40" class="fl"/>
+<text x="310" y="109" class="ts" text-anchor="middle">8</text>
+<rect x="290" y="124" width="40" height="40" class="band pc"/>
+<text x="310" y="149" class="tl" text-anchor="middle">9</text>
+<rect x="290" y="164" width="40" height="40" class="fl"/>
+<text x="310" y="189" class="ts" text-anchor="middle">10</text>
+<rect x="290" y="204" width="40" height="40" class="fl"/>
+<text x="310" y="229" class="ts" text-anchor="middle">11</text>
+<rect x="290" y="244" width="40" height="40" class="fl"/>
+<text x="310" y="269" class="ts" text-anchor="middle">12</text>
+<text x="360" y="80" class="ts">Cada quadrado mostra a soma</text>
+<text x="360" y="104" class="ts">do par (dado 1, dado 2).</text>
+<text x="360" y="150" class="tl">Em destaque, a soma 9:</text>
+<text x="360" y="178" class="ts">(3, 6), (4, 5), (5, 4) e (6, 3).</text>
+<text x="360" y="224" class="tl">4 de 36 pares: 4/36 ≈ 11,1%.</text>
+</svg><figcaption>Figura 3. Os 36 resultados de dois dados (exemplo resolvido 14). Os 4 pares de soma 9 estão em destaque; a soma 7, por exemplo, aparece em 6 quadrados, e a soma 2, em um só.</figcaption></figure>
+
+  <h3>Evento "A ou B": não conte duas vezes</h3>
+  <p>Quando o evento é "A <b>ou</b> B" e os dois podem acontecer juntos, os casos em comum entraram duas vezes na soma: desconte uma vez. É a regra do "ou" com <b>interseção</b>.</p>
+  <div class="eq">
+    <p class="eq-name">União de dois eventos</p>
+    <div class="eq-main"><var>n</var>(<var>A</var> ou <var>B</var>) = <var>n</var>(<var>A</var>) + <var>n</var>(<var>B</var>) − <var>n</var>(<var>A</var> e <var>B</var>)</div>
+    <dl>
+      <dt><var>n</var>(<var>A</var> e <var>B</var>)</dt><dd>casos em que os dois eventos ocorrem ao mesmo tempo (a interseção)</dd>
+      <dt>eventos excludentes</dt><dd>se não podem ocorrer juntos, <i>n</i>(<i>A</i> e <i>B</i>) = 0 e basta somar</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 15</p>
+    <p>Um número inteiro de 1 a 20 é sorteado. Qual a probabilidade de ele ser múltiplo de 3 ou de 5?</p>
+    <ol class="steps">
+      <li>Múltiplos de 3: 3, 6, 9, 12, 15 e 18, ou seja, 6 números.</li>
+      <li>Múltiplos de 5: 5, 10, 15 e 20, ou seja, 4 números.</li>
+      <li>O 15 está nos dois: foi contado duas vezes. Favoráveis: 6 + 4 − 1 = <b>9</b>.</li>
+      <li>P = 9/20 = 0,45 = <b>45%</b>.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Probabilidade: "e", "ou", complementar e sem reposição</h2></div>
+  <p class="edital-ref">Edital, Mat 6</p>
+
+  <h3>Eventos independentes: "e" multiplica</h3>
+  <p>Dois eventos são <b>independentes</b> quando um não muda a probabilidade do outro (dois sensores separados, dois lançamentos). A probabilidade de os dois acontecerem é o produto.</p>
+  <div class="eq">
+    <p class="eq-name">Eventos independentes</p>
+    <div class="eq-main"><var>P</var>(<var>A</var> e <var>B</var>) = <var>P</var>(<var>A</var>) · <var>P</var>(<var>B</var>)</div>
+    <dl>
+      <dt><var>P</var>(<var>A</var>), <var>P</var>(<var>B</var>)</dt><dd>probabilidades de cada evento, em decimal (30% = 0,30)</dd>
+      <dt>"e"</dt><dd>os dois ocorrem; multiplique. Com "ou" entre eventos excludentes, some</dd>
+    </dl>
+  </div>
+
+  <h3>Complementar: "pelo menos um" é 1 menos "nenhum"</h3>
+  <p>O evento contrário de A tem probabilidade 1 − P(A). Isso poupa muito trabalho em "<b>pelo menos um</b>": em vez de somar todos os casos com 1, 2, 3… ocorrências, calcule o único caso que falta, o de nenhuma ocorrência, e subtraia de 1.</p>
+  <div class="eq">
+    <p class="eq-name">Evento complementar</p>
+    <div class="eq-main"><var>P</var>(pelo menos um) = 1 − <var>P</var>(nenhum)</div>
+    <dl>
+      <dt><var>P</var>(nenhum)</dt><dd>probabilidade de o evento não ocorrer em nenhuma das tentativas (em tentativas independentes, o produto dos "não")</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 16</p>
+    <p>Duas bombas independentes falham, em um mesmo ensaio, com probabilidades de 30% e de 20%. Qual a probabilidade de (a) as duas falharem e (b) pelo menos uma falhar?</p>
+    <ol class="steps">
+      <li>(a) "E": 0,30 × 0,20 = 0,06 = <b>6%</b>.</li>
+      <li>(b) Nenhuma falhar: (1 − 0,30) × (1 − 0,20) = 0,70 × 0,80 = 0,56.</li>
+      <li>Pelo menos uma: 1 − 0,56 = 0,44 = <b>44%</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 17</p>
+    <p>Um técnico faz 3 vistorias independentes, e cada uma detecta a falha com probabilidade de 20%. Qual a probabilidade de a falha ser detectada em pelo menos uma?</p>
+    <ol class="steps">
+      <li>Não detectar numa vistoria: 1 − 0,20 = 0,80.</li>
+      <li>Não detectar em nenhuma das três: 0,80 × 0,80 × 0,80 = 0,512.</li>
+      <li>Detectar em pelo menos uma: 1 − 0,512 = 0,488 = <b>48,8%</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Sem reposição: o total diminui</h3>
+  <p>Quando se retira um elemento e ele <b>não volta</b>, o total de casos possíveis cai em 1 (e os favoráveis também, se o retirado era favorável). A segunda probabilidade, portanto, depende da primeira.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 18</p>
+    <p>Uma caixa tem 5 fichas verdes e 3 azuis. Duas são retiradas, uma depois da outra, sem reposição. Qual a probabilidade de (a) as duas serem verdes e (b) serem de cores diferentes? E (c) de as duas serem verdes se a primeira voltasse à caixa?</p>
+    <ol class="steps">
+      <li>(a) Primeira verde: 5/8. Sobram 7 fichas, 4 verdes: 4/7. Produto: 5/8 × 4/7 = 20/56 ≈ 0,357 = <b>35,7%</b>.</li>
+      <li>(b) Verde e depois azul: 5/8 × 3/7. Azul e depois verde: 3/8 × 5/7, o mesmo valor. Somando as duas ordens: 2 × 5/8 × 3/7 = 30/56 ≈ 0,536 = <b>53,6%</b>.</li>
+      <li>(c) Com reposição, o total não muda: 5/8 × 5/8 ≈ 0,39 = <b>39,1%</b>, maior que o da letra (a).</li>
+    </ol>
+  </div>
+
+  <h3>Probabilidade com combinações</h3>
+  <p>Se o sorteio escolhe um <b>grupo</b>, e a ordem dentro dele não importa, conte favoráveis e possíveis com combinações: P = C(favoráveis)/C(total). Com tipos diferentes no grupo, multiplique as combinações de cada tipo no numerador.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 19</p>
+    <p>Seis pessoas, 4 homens e 2 mulheres, são candidatas, e 2 são sorteadas. Qual a probabilidade de as duas sorteadas serem as mulheres?</p>
+    <ol class="steps">
+      <li>Casos possíveis: C(6, 2) = (6 × 5)/2 = 15.</li>
+      <li>Favorável: só 1 grupo, o das duas mulheres: C(2, 2) = 1.</li>
+      <li>P = 1/15 ≈ 0,067 = <b>6,7%</b>. Pelo caminho sem reposição: 2/6 × 1/5 = 1/15, o mesmo resultado.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Somar probabilidades de eventos em sequência (30% + 20% = 50%: errado, a conta certa é 30% × 20% = 6%); esquecer de reduzir o total numa retirada sem reposição; e parar em "nenhum" quando o pedido era "pelo menos um" (não esqueça o 1 −).</p>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Tabelas e gráficos</h2></div>
+  <p class="edital-ref">Edital, Mat 7</p>
+
+  <h3>Tabela de frequências</h3>
+  <p>Organizar dados é contá-los. A <b>frequência absoluta</b> é quantas vezes cada valor aparece. A <b>relativa</b> é essa contagem dividida pelo total (em %). A <b>acumulada</b> soma as frequências até aquela linha, e responde a "quantos têm <i>no máximo</i> tanto".</p>
+  <div class="eq">
+    <p class="eq-name">Frequência relativa</p>
+    <div class="eq-main"><var>f</var><sub>rel</sub> = <span class="frac"><span><var>f</var></span><span><var>N</var></span></span> × 100%</div>
+    <dl>
+      <dt><var>f</var></dt><dd>frequência absoluta: quantas vezes o valor (ou a classe) aparece</dd>
+      <dt><var>N</var></dt><dd>total de dados, que é a soma de todas as frequências absolutas</dd>
+      <dt>conferência</dt><dd>as frequências relativas somam 100%</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 20</p>
+    <p>Em 30 turnos, o número de falhas registradas por turno foi: 0 falha em 12 turnos, 1 falha em 9, 2 falhas em 6 e 3 falhas em 3. Monte as frequências relativa e acumulada.</p>
+    <ol class="steps">
+      <li>Total: 12 + 9 + 6 + 3 = 30 turnos.</li>
+      <li>Relativas: 12/30 = <b>40%</b>; 9/30 = <b>30%</b>; 6/30 = <b>20%</b>; 3/30 = <b>10%</b>. Soma: 100%.</li>
+      <li>Acumuladas: 12; 12 + 9 = <b>21</b>; 21 + 6 = 27; 27 + 3 = 30.</li>
+      <li>Leitura: "no máximo 1 falha" são 21 turnos; "pelo menos 2 falhas" são 6 + 3 = 9 turnos.</li>
+    </ol>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Falhas por turno</th><th>Turnos (absoluta)</th><th>Relativa</th><th>Acumulada</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>12</td><td>40%</td><td>12</td></tr>
+      <tr><td>1</td><td>9</td><td>30%</td><td>21</td></tr>
+      <tr><td>2</td><td>6</td><td>20%</td><td>27</td></tr>
+      <tr><td>3</td><td>3</td><td>10%</td><td>30</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Gráfico de setores: o ângulo é a fração do círculo</h3>
+  <p>Num gráfico de setores ("pizza"), o círculo inteiro tem 360° e vale o total. O ângulo de cada setor é a frequência relativa <b>vezes 360°</b>. Não confunda grau com porcentagem nem com frequência.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 21</p>
+    <p>Um mês teve 160 ordens de serviço: 80 preventivas, 56 corretivas e 24 preditivas. Qual o ângulo de cada setor?</p>
+    <ol class="steps">
+      <li>Preventivas: 80/160 = 1/2; 1/2 de 360° = <b>180°</b>.</li>
+      <li>Corretivas: 56/160 = 0,35; 0,35 × 360° = <b>126°</b>.</li>
+      <li>Preditivas: 24/160 = 0,15; 0,15 × 360° = <b>54°</b>.</li>
+      <li>Conferência: 180° + 126° + 54° = <b>360°</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Gráfico de barras: leia a escala</h3>
+  <p>Em barras, a <b>altura</b> mostra o valor. Leia os valores no eixo (ou sobre a barra) e só depois calcule. Duas armadilhas: o eixo que <b>não começa no zero</b> faz uma pequena diferença parecer enorme, e comparar "quanto cresceu" exige dividir pelo valor <b>de partida</b>, não pelo de chegada.</p>
+  <figure><svg viewBox="0 0 640 290" role="img" aria-label="Gráfico de barras da produção mensal: janeiro 40, fevereiro 55, março 50 e abril 65 peças">
+<text x="70" y="16" class="tm" text-anchor="start">peças por mês</text>
+<line x1="70" y1="250" x2="610" y2="250" class="ax"/>
+<text x="60" y="255" class="tm" text-anchor="end">0</text>
+<line x1="70" y1="200" x2="610" y2="200" class="guide"/>
+<text x="60" y="205" class="tm" text-anchor="end">20</text>
+<line x1="70" y1="150" x2="610" y2="150" class="guide"/>
+<text x="60" y="155" class="tm" text-anchor="end">40</text>
+<line x1="70" y1="100" x2="610" y2="100" class="guide"/>
+<text x="60" y="105" class="tm" text-anchor="end">60</text>
+<line x1="70" y1="50" x2="610" y2="50" class="guide"/>
+<text x="60" y="55" class="tm" text-anchor="end">80</text>
+<line x1="70" y1="30" x2="70" y2="250" class="ax"/>
+<rect x="110" y="150" width="70" height="100" class="band pc"/>
+<text x="145" y="142" class="tl" text-anchor="middle">40</text>
+<text x="145" y="274" class="ts" text-anchor="middle">jan</text>
+<rect x="240" y="112.5" width="70" height="137.5" class="band pc"/>
+<text x="275" y="104.5" class="tl" text-anchor="middle">55</text>
+<text x="275" y="274" class="ts" text-anchor="middle">fev</text>
+<rect x="370" y="125" width="70" height="125" class="band pc"/>
+<text x="405" y="117" class="tl" text-anchor="middle">50</text>
+<text x="405" y="274" class="ts" text-anchor="middle">mar</text>
+<rect x="500" y="87.5" width="70" height="162.5" class="band pc"/>
+<text x="535" y="79.5" class="tl" text-anchor="middle">65</text>
+<text x="535" y="274" class="ts" text-anchor="middle">abr</text>
+</svg><figcaption>Figura 4. Produção mensal de uma oficina, em peças: janeiro 40, fevereiro 55, março 50 e abril 65. O eixo começa no zero.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 22</p>
+    <p>Pelo gráfico da figura 4, qual foi o maior aumento percentual de um mês para o seguinte?</p>
+    <ol class="steps">
+      <li>De janeiro (40) para fevereiro (55): aumento de 15; 15/40 = 0,375 = <b>37,5%</b>.</li>
+      <li>De fevereiro (55) para março (50): queda. Não conta.</li>
+      <li>De março (50) para abril (65): aumento de 15; 15/50 = 0,30 = <b>30%</b>.</li>
+      <li>Os dois aumentos são de 15 peças, mas o maior em porcentagem é o de fevereiro: 37,5%, porque partiu de uma base menor.</li>
+    </ol>
+  </div>
+
+  <h3>Histograma: dados em classes</h3>
+  <p>No histograma, os dados vêm agrupados em <b>classes</b> (faixas, como "de 2.000 a 3.000, exclusive o 3.000"). Cada barra é a frequência de uma classe. Para "menos que um valor", some as classes <b>abaixo</b> dele; para "pelo menos um valor", as classes dele para cima. Em leitura de classes, o erro típico é somar o lado errado.</p>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Dar o ângulo do setor como 20° só porque o setor é 20% (o ângulo é 0,20 × 360° = 72°); trocar "no máximo" por "pelo menos"; e dividir por um subtotal (só uma classe) em vez de pelo total <i>N</i>.</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 7 ============ -->
+<section id="b7" class="block">
+  <div class="block-head"><span class="block-num">7</span><h2>Média, mediana e moda</h2></div>
+  <p class="edital-ref">Edital, Mat 7</p>
+
+  <h3>Três respostas para "qual é o valor típico?"</h3>
+  <ul>
+    <li><b>Média</b>: a soma dos valores dividida pelo número de valores. É o valor que cada um teria se todos fossem iguais.</li>
+    <li><b>Mediana</b>: o valor do <b>meio</b> dos dados <b>em ordem</b>. Com número ímpar de dados, é o central; com número par, é a média dos dois centrais.</li>
+    <li><b>Moda</b>: o valor que <b>mais se repete</b>. Pode haver duas ou mais (bimodal, multimodal) ou nenhuma, se nada se repete.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Média aritmética</p>
+    <div class="eq-main"><var>x&#772;</var> = <span class="frac"><span><var>x</var><sub>1</sub> + <var>x</var><sub>2</sub> + … + <var>x</var><sub><var>n</var></sub></span><span><var>n</var></span></span></div>
+    <dl>
+      <dt><var>x</var><sub><var>i</var></sub></dt><dd>cada um dos dados, na unidade do problema (R$, min, A…)</dd>
+      <dt><var>n</var></dt><dd>número de dados</dd>
+      <dt>resultado</dt><dd>a média tem a mesma unidade dos dados</dd>
+    </dl>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Método para a mediana: ordene primeiro</p>
+    <ol class="steps">
+      <li><b>Ordene</b> os dados do menor para o maior. Sem isso, a conta não vale.</li>
+      <li><b>Conte</b> quantos são. Ímpar: o do meio. Par: os <b>dois</b> do meio.</li>
+      <li>No caso par, tire a <b>média</b> dos dois centrais.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 23</p>
+    <p>Os tempos de cinco reparos, em minutos, foram 20, 35, 25, 40 e 30. Calcule a média e a mediana. Depois some um sexto reparo, de 90 minutos, e refaça.</p>
+    <ol class="steps">
+      <li>Média: (20 + 35 + 25 + 40 + 30)/5 = 150/5 = <b>30</b> min.</li>
+      <li>Ordem: 20, 25, 30, 35, 40. Cinco dados: o do meio é o terceiro, <b>30</b> min.</li>
+      <li>Com o sexto valor: soma 240, e 240/6 = <b>40</b> min.</li>
+      <li>Ordem: 20, 25, 30, 35, 40, 90. Seis dados: os centrais são 30 e 35, e a mediana é (30 + 35)/2 = <b>32,5</b> min.</li>
+    </ol>
+  </div>
+
+  <h3>Média ponderada e tabela de frequências</h3>
+  <p>Quando os valores têm <b>pesos</b> (notas com pesos diferentes) ou <b>frequências</b> (cada valor aparece várias vezes), multiplique cada valor pelo seu peso, some, e divida pela <b>soma dos pesos</b>, e não pelo número de linhas.</p>
+  <div class="eq">
+    <p class="eq-name">Média ponderada</p>
+    <div class="eq-main"><var>x&#772;</var> = <span class="frac"><span><var>f</var><sub>1</sub>·<var>x</var><sub>1</sub> + <var>f</var><sub>2</sub>·<var>x</var><sub>2</sub> + …</span><span><var>f</var><sub>1</sub> + <var>f</var><sub>2</sub> + …</span></span></div>
+    <dl>
+      <dt><var>x</var><sub><var>i</var></sub></dt><dd>cada valor (ou cada nota)</dd>
+      <dt><var>f</var><sub><var>i</var></sub></dt><dd>frequência do valor (quantas vezes aparece) ou peso da nota; sem unidade</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 24</p>
+    <p>Em 20 turnos, o atraso na liberação de uma máquina foi de 1 hora em 4 turnos, 2 horas em 8, 3 horas em 6 e 4 horas em 2. Calcule a média, a mediana e a moda do atraso.</p>
+    <ol class="steps">
+      <li>Soma dos atrasos: 4 × 1 + 8 × 2 + 6 × 3 + 2 × 4 = <b>46</b> horas.</li>
+      <li>Média: 46/20 = <b>2,3</b> horas. Não é (1 + 2 + 3 + 4)/4 = 2,5: faltaria ponderar.</li>
+      <li>Moda: a linha de maior frequência, 8 turnos: <b>2</b> horas.</li>
+      <li>Mediana: com 20 dados, os centrais são o 10º e o 11º. Acumuladas: 4 turnos até 1 hora e 12 até 2 horas, então ambos valem 2. Mediana: <b>2</b> horas.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 25</p>
+    <p>Uma nota final é a média ponderada de três avaliações: 8,0 com peso 2, 6,0 com peso 3 e 7,0 com peso 5. Qual a nota final?</p>
+    <ol class="steps">
+      <li>Soma dos produtos: 8 × 2 + 6 × 3 + 7 × 5 = 16 + 18 + 35 = 69.</li>
+      <li>Soma dos pesos: 2 + 3 + 5 = 10.</li>
+      <li>Nota final: 69/10 = <b>6,9</b>. A média simples, (8 + 6 + 7)/3 = 7, ignoraria os pesos.</li>
+    </ol>
+  </div>
+
+  <h3>Qual usar? O efeito de um valor extremo</h3>
+  <p>A <b>média usa todos os valores</b>, então um valor muito fora da fila a puxa. A <b>mediana</b> só olha a posição, e quase não se mexe. A moda só olha a repetição. Por isso, num grupo com um salário altíssimo, a mediana descreve melhor o "salário típico" do que a média.</p>
+  <figure><svg viewBox="0 0 640 312" role="img" aria-label="Reta numérica com os conjuntos A e B; no B, o valor 58 puxa a média para 22 e a mediana fica em 14">
+<text x="50" y="36" class="tm">Conjunto A</text>
+<text x="50" y="156" class="tm">Conjunto B</text>
+<circle cx="140" cy="80" r="6" class="f-pc"/>
+<circle cx="158" cy="80" r="6" class="f-pc"/>
+<circle cx="176" cy="80" r="6" class="f-pc"/>
+<circle cx="194" cy="80" r="6" class="f-pc"/>
+<circle cx="212" cy="80" r="6" class="f-pc"/>
+<circle cx="140" cy="200" r="6" class="f-pc"/>
+<circle cx="158" cy="200" r="6" class="f-pc"/>
+<circle cx="176" cy="200" r="6" class="f-pc"/>
+<circle cx="194" cy="200" r="6" class="f-pc"/>
+<circle cx="572" cy="200" r="6" class="f-pc"/>
+<line x1="176" y1="54" x2="176" y2="106" class="w pa"/>
+<text x="176" y="128" class="ts" text-anchor="middle">média = mediana = 14</text>
+<line x1="176" y1="174" x2="176" y2="226" class="w pb"/>
+<text x="176" y="166" class="ts" text-anchor="middle">mediana 14</text>
+<line x1="248" y1="174" x2="248" y2="226" class="w pa"/>
+<text x="248" y="248" class="ts" text-anchor="middle">média 22</text>
+<line x1="50" y1="276" x2="590" y2="276" class="ax"/>
+<line x1="50" y1="276" x2="50" y2="282" class="ax"/>
+<text x="50" y="300" class="tm" text-anchor="middle">0</text>
+<line x1="140" y1="276" x2="140" y2="282" class="ax"/>
+<text x="140" y="300" class="tm" text-anchor="middle">10</text>
+<line x1="230" y1="276" x2="230" y2="282" class="ax"/>
+<text x="230" y="300" class="tm" text-anchor="middle">20</text>
+<line x1="320" y1="276" x2="320" y2="282" class="ax"/>
+<text x="320" y="300" class="tm" text-anchor="middle">30</text>
+<line x1="410" y1="276" x2="410" y2="282" class="ax"/>
+<text x="410" y="300" class="tm" text-anchor="middle">40</text>
+<line x1="500" y1="276" x2="500" y2="282" class="ax"/>
+<text x="500" y="300" class="tm" text-anchor="middle">50</text>
+<line x1="590" y1="276" x2="590" y2="282" class="ax"/>
+<text x="590" y="300" class="tm" text-anchor="middle">60</text>
+</svg><figcaption>Figura 5. Os conjuntos A (10, 12, 14, 16, 18) e B (10, 12, 14, 16, 58). A mediana é 14 nos dois, e a média passa de 14 para 22.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 26</p>
+    <p>O conjunto A tem os valores 10, 12, 14, 16 e 18. O conjunto B é igual, mas o 18 virou 58. Compare média e mediana (figura 5).</p>
+    <ol class="steps">
+      <li>Conjunto A: média (10 + 12 + 14 + 16 + 18)/5 = <b>14</b>; mediana (o terceiro) = 14.</li>
+      <li>Conjunto B: média (10 + 12 + 14 + 16 + 58)/5 = 110/5 = <b>22</b>; mediana (o terceiro) continua <b>14</b>.</li>
+      <li>Um valor mudou, e a média subiu 8 unidades; a mediana não saiu do lugar.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Achar a mediana <b>sem ordenar</b> os dados; com número par de dados, pegar só um dos centrais; dividir pelo número de linhas da tabela em vez da soma das frequências; e trocar os nomes (a média nem sempre é um dos valores, a moda é sempre um valor que aparece).</p>
+  </div>
+
+  <div class="quiz" data-set="b7"></div>
+</section>
+
+
+<!-- ============ SEÇÃO 8 ============ -->
+<section id="b8" class="block">
+  <div class="block-head"><span class="block-num">8</span><h2>Variância e desvio padrão</h2></div>
+  <p class="edital-ref">Edital, Mat 7</p>
+
+  <h3>Dispersão: quão espalhados estão os dados</h3>
+  <p>Dois grupos podem ter a mesma média e serem muito diferentes: um com todos os valores perto dela, outro com valores muito longe (figura 6). As medidas de <b>dispersão</b> dizem isso com um número. A mais usada é o <b>desvio padrão</b>.</p>
+  <figure><svg viewBox="0 0 640 264" role="img" aria-label="Dois grupos de cinco valores com média 50: o grupo A fica entre 48 e 52 e o grupo B entre 30 e 70">
+<line x1="320" y1="34" x2="320" y2="214" class="guide"/>
+<text x="320" y="22" class="ts" text-anchor="middle">média 50 nos dois grupos</text>
+<text x="50" y="62" class="tm">Grupo A</text>
+<text x="50" y="152" class="tm">Grupo B</text>
+<circle cx="302" cy="96" r="4.5" class="f-pa"/>
+<circle cx="311" cy="96" r="4.5" class="f-pa"/>
+<circle cx="320" cy="96" r="4.5" class="f-pa"/>
+<circle cx="329" cy="96" r="4.5" class="f-pa"/>
+<circle cx="338" cy="96" r="4.5" class="f-pa"/>
+<circle cx="140" cy="186" r="5" class="f-pc"/>
+<circle cx="230" cy="186" r="5" class="f-pc"/>
+<circle cx="320" cy="186" r="5" class="f-pc"/>
+<circle cx="410" cy="186" r="5" class="f-pc"/>
+<circle cx="500" cy="186" r="5" class="f-pc"/>
+<line x1="50" y1="228" x2="590" y2="228" class="ax"/>
+<line x1="50" y1="228" x2="50" y2="234" class="ax"/>
+<text x="50" y="252" class="tm" text-anchor="middle">20</text>
+<line x1="140" y1="228" x2="140" y2="234" class="ax"/>
+<text x="140" y="252" class="tm" text-anchor="middle">30</text>
+<line x1="230" y1="228" x2="230" y2="234" class="ax"/>
+<text x="230" y="252" class="tm" text-anchor="middle">40</text>
+<line x1="320" y1="228" x2="320" y2="234" class="ax"/>
+<text x="320" y="252" class="tm" text-anchor="middle">50</text>
+<line x1="410" y1="228" x2="410" y2="234" class="ax"/>
+<text x="410" y="252" class="tm" text-anchor="middle">60</text>
+<line x1="500" y1="228" x2="500" y2="234" class="ax"/>
+<text x="500" y="252" class="tm" text-anchor="middle">70</text>
+<line x1="590" y1="228" x2="590" y2="234" class="ax"/>
+<text x="590" y="252" class="tm" text-anchor="middle">80</text>
+</svg><figcaption>Figura 6. Dois grupos de cinco valores com a mesma média, 50. O grupo A (48 a 52) tem desvio padrão √2 ≈ 1,41; o grupo B (30 a 70) tem √200 ≈ 14,1.</figcaption></figure>
+  <div class="box conceito">
+    <p class="box-title">Método: variância e desvio padrão em cinco passos</p>
+    <ol class="steps">
+      <li><b>Média</b> dos dados.</li>
+      <li><b>Desvio</b> de cada dado: dado menos a média (pode ser negativo).</li>
+      <li><b>Eleve cada desvio ao quadrado</b> (assim os negativos não cancelam os positivos).</li>
+      <li><b>Variância</b>: a média desses quadrados (some e divida pelo número de dados).</li>
+      <li><b>Desvio padrão</b>: a <b>raiz quadrada</b> da variância, de volta à unidade dos dados.</li>
+    </ol>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Variância e desvio padrão</p>
+    <div class="eq-main"><var>σ</var><sup>2</sup> = <span class="frac"><span>Σ <var>f</var><sub><var>i</var></sub> · (<var>x</var><sub><var>i</var></sub> − <var>x&#772;</var>)<sup>2</sup></span><span>Σ <var>f</var><sub><var>i</var></sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>σ</var> = √<var>σ</var><sup>2</sup></div>
+    <dl>
+      <dt><var>σ</var><sup>2</sup></dt><dd>variância; sua unidade é a unidade dos dados ao quadrado (min², R$²)</dd>
+      <dt><var>σ</var></dt><dd>desvio padrão; tem a mesma unidade dos dados</dd>
+      <dt><var>x</var><sub><var>i</var></sub></dt><dd>cada valor distinto</dd>
+      <dt><var>f</var><sub><var>i</var></sub></dt><dd>frequência do valor (quantas vezes aparece); sem lista com repetidos, <i>f</i> = 1</dd>
+      <dt><var>x&#772;</var></dt><dd>média dos dados, na unidade dos dados</dd>
+      <dt>Σ <var>f</var><sub><var>i</var></sub></dt><dd>número total de dados, <i>N</i></dd>
+    </dl>
+  </div>
+  <p>Esta estação divide pelo <b>número total de dados</b> (<i>N</i>), como a prova de 2023 fez na questão 13 (dividiu por 10, o total de funcionários). Use <i>N</i> − 1 só quando o enunciado disser "amostra" ou der a fórmula com <i>N</i> − 1; sem isso, divida por <i>N</i>, como a Cesgranrio fez na questão 13 de 2023 (o grupo era todo o conjunto de funcionários). <span class="confira">Não encontrei questão da banca com N − 1; se o enunciado indicar o divisor, siga o enunciado</span>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 27</p>
+    <p>Calcule a variância e o desvio padrão dos oito valores: 2, 4, 4, 4, 5, 5, 7 e 9.</p>
+    <ol class="steps">
+      <li>Média: (2 + 4 + 4 + 4 + 5 + 5 + 7 + 9)/8 = 40/8 = <b>5</b>.</li>
+      <li>Desvios: −3, −1, −1, −1, 0, 0, 2 e 4.</li>
+      <li>Quadrados: 9, 1, 1, 1, 0, 0, 4 e 16. Soma: <b>32</b>.</li>
+      <li>Variância: 32/8 = <b>4</b>.</li>
+      <li>Desvio padrão: √4 = <b>2</b>.</li>
+      <li>Conferência pela outra forma, média dos quadrados menos o quadrado da média: (4 + 16 + 16 + 16 + 25 + 25 + 49 + 81)/8 − 5² = 232/8 − 25 = 29 − 25 = <b>4</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Em tabela de frequências (o caso da questão 13 de 2023)</h3>
+  <p>Quando cada valor aparece várias vezes, não repita a conta: multiplique cada quadrado do desvio pela <b>frequência</b> do valor, some, e divida pelo total de dados.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 28</p>
+    <p>O tempo de parada de uma máquina, em horas, em 10 ocorrências: 1 hora em 2 ocorrências, 2 horas em 4, 3 horas em 3 e 4 horas em 1. Calcule o desvio padrão.</p>
+    <ol class="steps">
+      <li>Média: (2 × 1 + 4 × 2 + 3 × 3 + 1 × 4)/10 = 23/10 = <b>2,3</b> horas.</li>
+      <li>Quadrados dos desvios vezes a frequência: 2 × (1 − 2,3)² = 2 × 1,69 = 3,38; 4 × (2 − 2,3)² = 4 × 0,09 = 0,36; 3 × (3 − 2,3)² = 3 × 0,49 = 1,47; 1 × (4 − 2,3)² = 2,89.</li>
+      <li>Soma: 3,38 + 0,36 + 1,47 + 2,89 = <b>8,1</b>.</li>
+      <li>Variância: 8,1/10 = <b>0,81</b> h².</li>
+      <li>Desvio padrão: √0,81 = <b>0,9</b> hora.</li>
+    </ol>
+  </div>
+
+  <h3>Quando o desvio padrão é zero</h3>
+  <p>O desvio padrão é zero <b>se e somente se todos os valores são iguais</b>: cada desvio é zero e a soma dos quadrados também. Não depende de a média ser alta ou baixa. Um grupo de 60 notas iguais a 5 tem desvio padrão 0; um grupo com metade das notas 0 e metade 10 tem a mesma média, 5, e o <b>maior</b> desvio possível para notas de 0 a 10 (5), porque todos estão a 5 pontos da média. É esse o raciocínio da questão 15 de 2023.</p>
+
+  <h3>O que acontece com o desvio padrão se os dados mudam</h3>
+  <ul>
+    <li><b>Somar uma constante</b> a todos os dados <b>não muda</b> o desvio padrão (a média sobe junto, e os desvios ficam iguais).</li>
+    <li><b>Multiplicar</b> todos os dados por <i>k</i> multiplica o desvio padrão por |<i>k</i>| (e a variância por <i>k</i><sup>2</sup>).</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 29</p>
+    <p>Os salários de um grupo de técnicos têm desvio padrão de R$ 200,00. Em dois cenários, qual seria o novo desvio padrão? (a) Todos recebem um acréscimo fixo de R$ 500,00. (b) Todos têm reajuste de 20%.</p>
+    <ol class="steps">
+      <li>(a) Somar a mesma quantia a todos não muda o espalhamento: <b>R$ 200,00</b>.</li>
+      <li>(b) Reajuste de 20% é multiplicar por 1,20: 200 × 1,20 = <b>R$ 240,00</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Parar na variância (esquecer a raiz), somar os desvios <b>sem elevar ao quadrado</b> (a soma é sempre zero), dividir pelo número de linhas da tabela em vez do total de dados, e achar que somar R$ 500,00 aos salários aumenta o desvio padrão.</p>
+  </div>
+
+  <div class="quiz" data-set="b8"></div>
+</section>
+
+
+<!-- ============ FORMULARIO ============ -->
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Princípio fundamental da contagem</td><td><i>N</i> = <i>n</i><sub>1</sub> · <i>n</i><sub>2</sub> · … · <i>n</i><sub><i>k</i></sub></td><td>etapas seguidas multiplicam; alternativas que se excluem somam; comece pela restrição</td></tr>
+      <tr><td>Fatorial</td><td><i>n</i>! = <i>n</i> · (<i>n</i> − 1) · … · 2 · 1; 0! = 1</td><td>3! = 6; 4! = 24; 5! = 120; 6! = 720; corte o fatorial menor: 9!/7! = 9 · 8</td></tr>
+      <tr><td>Permutação simples</td><td><i>P</i><sub><i>n</i></sub> = <i>n</i>!</td><td>ordenar todos os elementos diferentes</td></tr>
+      <tr><td>Permutação com repetição</td><td><i>P</i> = <i>n</i>!/(<i>a</i>! · <i>b</i>! · …)</td><td><i>a</i>, <i>b</i>: quantas vezes cada elemento repetido aparece; MOTOR = 5!/2!</td></tr>
+      <tr><td>Arranjo</td><td><i>A</i>(<i>n</i>, <i>p</i>) = <i>n</i>!/(<i>n</i> − <i>p</i>)!</td><td>a ordem importa: <i>p</i> fatores a partir de <i>n</i>, descendo de um em um</td></tr>
+      <tr><td>Combinação</td><td><i>C</i>(<i>n</i>, <i>p</i>) = <i>n</i>!/(<i>p</i>! · (<i>n</i> − <i>p</i>)!)</td><td>a ordem não importa; <i>C</i>(<i>n</i>, <i>p</i>) = <i>C</i>(<i>n</i>, <i>n</i> − <i>p</i>); <i>A</i> = <i>C</i> · <i>p</i>!</td></tr>
+      <tr><td>Probabilidade</td><td><i>P</i>(<i>A</i>) = <i>n</i>(<i>A</i>)/<i>n</i>(Ω)</td><td>casos favoráveis sobre casos possíveis, equiprováveis; entre 0 e 1</td></tr>
+      <tr><td>Evento complementar</td><td><i>P</i>(não <i>A</i>) = 1 − <i>P</i>(<i>A</i>)</td><td>"pelo menos um" = 1 − <i>P</i>(nenhum)</td></tr>
+      <tr><td>União de eventos</td><td><i>P</i>(<i>A</i> ou <i>B</i>) = <i>P</i>(<i>A</i>) + <i>P</i>(<i>B</i>) − <i>P</i>(<i>A</i> e <i>B</i>)</td><td>excludentes: sem o último termo</td></tr>
+      <tr><td>Eventos independentes</td><td><i>P</i>(<i>A</i> e <i>B</i>) = <i>P</i>(<i>A</i>) · <i>P</i>(<i>B</i>)</td><td>sem reposição, o total diminui a cada retirada</td></tr>
+      <tr><td>Média aritmética</td><td><i>x&#772;</i> = (<i>x</i><sub>1</sub> + … + <i>x</i><sub><i>n</i></sub>)/<i>n</i></td><td>mesma unidade dos dados; um valor extremo a puxa</td></tr>
+      <tr><td>Média ponderada</td><td><i>x&#772;</i> = Σ <i>f</i>·<i>x</i>/Σ <i>f</i></td><td><i>f</i>: frequência ou peso; divida pela soma dos pesos, e não pelo número de linhas</td></tr>
+      <tr><td>Mediana e moda</td><td>mediana: valor central dos dados ordenados; moda: valor mais frequente</td><td>número par de dados: média dos dois centrais</td></tr>
+      <tr><td>Variância</td><td><i>σ</i><sup>2</sup> = Σ <i>f</i>·(<i>x</i> − <i>x&#772;</i>)<sup>2</sup>/Σ <i>f</i></td><td>unidade ao quadrado; aqui, dividida pelo total de dados</td></tr>
+      <tr><td>Desvio padrão</td><td><i>σ</i> = √<i>σ</i><sup>2</sup></td><td>mesma unidade dos dados; zero só se todos iguais; somar constante não muda; × <i>k</i> multiplica por |<i>k</i>|</td></tr>
+      <tr><td>Setor de um gráfico</td><td>ângulo = (<i>f</i>/<i>N</i>) · 360°</td><td>a soma dos ângulos é 360°</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, conteúdo de Matemática, itens 5, 6 e 7 — conferidos na transcrição do edital usada pelo app (data/biblioteca.js).</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, nível médio (questões 13 e 15 de Matemática), conferido nos recortes da prova, e o gabarito oficial (E e E), conforme o arquivo de gabarito do app; usados só para identificar o estilo de cobrança.</li>
+    <li>W. T. N. da Silveira, <a href="https://professorwaltertadeu.mat.br/ProfWalterTadeuArranjosCombinacao.pdf"><i>Arranjos, Combinações e Princípio da Casa dos Pombos</i></a> (lista de exercícios): problemas de arranjo, combinação, anagramas e grupos com condições, usados para o tipo de problema <span class="confira">(a lista abriu e foi lida; só traz enunciados, e as fórmulas desta estação não foram conferidas nela)</span>.</li>
+    <li>W. O. Bussab e P. A. Morettin, <a href="https://professores.uff.br/jutriavaldes/wp-content/uploads/sites/196/2019/08/Book_EstatBas-Morettin-Bussab.pdf"><i>Estatística Básica</i></a> (Saraiva): definição de moda, mediana e média aritmética, com o caso de número par de dados <span class="confira">(lido no trecho mostrado pela busca; do texto integral só abriram a apresentação e o sumário, e a definição de variância não foi lida)</span>.</li>
+    <li>P. A. Barbetta, A. C. Bornia e M. M. Reis, <i>Estatística para cursos de engenharia e informática</i> (Atlas, 2010): o desvio padrão é a raiz quadrada positiva da variância e tem a unidade dos dados <span class="confira">(lido no trecho mostrado pela busca; o arquivo não foi aberto)</span>.</li>
+    <li>As fórmulas de contagem, probabilidade e variância deste texto seguem o conteúdo padrão do ensino médio <span class="confira">(não foram conferidas linha a linha numa fonte aberta nesta redação; os exemplos e exercícios foram recalculados à mão e por programa)</span>.</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+
+<script>
+const QUIZ = {
+b1:[
+ {"s":"O cadeado de um armário de ferramentas abre com uma senha de 3 algarismos, de 0 a 9, todos diferentes entre si. O número de senhas distintas possíveis é","o":["27","90","720","1.000","3.628.800"],"a":2,"c":"Três etapas, uma por algarismo: 10 opções para o primeiro, 9 para o segundo (um já foi usado) e 8 para o terceiro. 10 × 9 × 8 = 720. Os outros resultados vêm de erros: 27 soma as opções (10 + 9 + 8); as etapas são seguidas, e então se multiplica. 90 multiplica só as duas primeiras etapas (10 × 9); falta a terceira escolha. 1.000 permite repetir algarismo (10 × 10 × 10); o enunciado pede todos diferentes. 3.628.800 calcula 10!, a ordem de todos os 10 algarismos; são escolhidos só 3."},
+ {"s":"Com os algarismos 1, 2, 3, 4, 5 e 6, sem repetir algarismo, quantos números ímpares de três algarismos podem ser formados?","o":["12","60","75","120","216"],"a":1,"c":"Comece pela restrição: a unidade só pode ser 1, 3 ou 5 (3 opções). Centena: sobram 5 algarismos. Dezena: sobram 4. 3 × 5 × 4 = 60. Os outros resultados vêm de erros: 12 soma as opções das etapas (3 + 5 + 4). 75 3 × 5 × 5 não desconta o algarismo da centena na escolha da dezena. 120 6 × 5 × 4 ignora que o número deve ser ímpar. 216 6 × 6 × 6 ignora as duas condições: ímpar e sem repetir algarismo."},
+ {"s":"De um porto A a um porto B, uma equipe de manutenção pode seguir por 3 rodovias ou por 2 balsas, e a escolha é livre na ida e na volta (o meio de transporte pode se repetir). O número de maneiras de fazer a viagem de ida e volta é","o":["5","6","10","20","25"],"a":4,"c":"Cada sentido tem 3 + 2 = 5 maneiras (rodovia ou balsa, que se excluem: somam). Ida e volta são etapas seguidas: 5 × 5 = 25. Os outros resultados vêm de erros: 5 conta só a ida (3 + 2); falta a volta. 6 multiplica 3 por 2, mas rodovia e balsa são alternativas que se excluem, e então se somam. 10 soma ida e volta (5 + 5); as duas viagens são etapas seguidas e se multiplicam. 20 5 × 4 tira da volta o meio usado na ida; o enunciado permite repetir."},
+ {"s":"Uma placa de identificação de equipamentos tem duas letras diferentes, escolhidas entre as 26 do alfabeto, seguidas de dois algarismos diferentes, de 0 a 9. O número de placas distintas é","o":["58.500","60.840","65.000","67.600","468.000"],"a":0,"c":"Quatro etapas: 26 letras para a primeira, 25 para a segunda, 10 algarismos para o terceiro e 9 para o quarto. 26 × 25 × 10 × 9 = 58.500. Os outros resultados vêm de erros: 60.840 26 × 26 × 10 × 9 permite repetir a letra, mas o enunciado pede letras diferentes. 65.000 26 × 25 × 10 × 10 permite repetir o algarismo, mas o enunciado pede algarismos diferentes. 67.600 26 × 26 × 10 × 10 ignora as duas restrições. 468.000 26 × 25 × 10 × 9 × 8 inclui um terceiro algarismo, que a placa não tem."}
+],
+b2:[
+ {"s":"Cinco painéis elétricos diferentes serão inspecionados, um por dia, em qualquer ordem, de segunda a sexta-feira. O número de ordens diferentes em que a inspeção pode ser feita é","o":["15","24","25","120","3.125"],"a":3,"c":"Permutação de 5 elementos diferentes: 5! = 5 × 4 × 3 × 2 × 1 = 120. Os outros resultados vêm de erros: 15 soma 5 + 4 + 3 + 2 + 1 em vez de multiplicar. 24 calcula 4!, como se um dos painéis já tivesse dia certo. 25 toma 5! como 5 × 5. 3.125 calcula 5<sup>5</sup>, permitindo repetir o painel; cada painel é inspecionado uma vez só."},
+ {"s":"O número de anagramas distintos da palavra RESISTOR é","o":["10.080","20.160","40.320","80.640","161.280"],"a":0,"c":"A palavra tem 8 letras, com R duas vezes e S duas vezes. P = 8!/(2! · 2!) = 40.320/4 = 10.080. Os outros resultados vêm de erros: 20.160 8!/2! divide só pela repetição de uma das letras; o R e o S se repetem. 40.320 8! ignora as letras repetidas. 80.640 8! × 2! multiplica pela repetição, em vez de dividir. 161.280 8! × 2! × 2! multiplica pelas duas repetições, em vez de dividir."},
+ {"s":"Cinco eletricistas, Ana, Bia, Caio, Davi e Eva, vão posar para uma foto, lado a lado, e Ana e Bia querem ficar juntas, em qualquer ordem entre elas. O número de maneiras de organizar o grupo é","o":["12","24","48","120","240"],"a":2,"c":"O bloco Ana-Bia conta como um elemento, e com os outros três são 4 elementos: 4! = 24. Dentro do bloco, 2! = 2 ordens. 24 × 2 = 48. Os outros resultados vêm de erros: 12 4!/2 divide pelo 2! do bloco, como se fossem letras repetidas; a troca interna multiplica. 24 esquece a ordem dentro do bloco (Ana-Bia ou Bia-Ana). 120 5! ignora que Ana e Bia devem ficar juntas. 240 5! × 2! aplica a troca interna ao total de 5 elementos, sem formar o bloco."},
+ {"s":"O valor de 9!/7! é","o":["2","17","56","63","72"],"a":4,"c":"9!/7! = (9 × 8 × 7!)/7! = 9 × 8 = 72. Os outros resultados vêm de erros: 2 subtrai os números (9 − 7); o fatorial é produto, e não diferença. 17 soma os dois fatores que sobram (9 + 8) em vez de multiplicar. 56 8 × 7 começa o produto um fator abaixo; o primeiro fator que sobra é o 9. 63 9 × 7 pula o fator 8."}
+],
+b3:[
+ {"s":"Oito técnicos estão disponíveis, e três deles serão escolhidos para formar uma equipe de comissionamento, sem funções distintas dentro da equipe. O número de maneiras de formar a equipe é","o":["11","56","168","336","512"],"a":1,"c":"A ordem não importa: combinação. C(8, 3) = (8 × 7 × 6)/3! = 336/6 = 56. Os outros resultados vêm de erros: 11 soma 8 + 3. 168 divide o arranjo por 2 (336/2), e não por 3! = 6. 336 é o arranjo A(8, 3); conta cada equipe 6 vezes, uma por ordem dos três técnicos. 512 calcula 8<sup>3</sup>, permitindo repetir o técnico."},
+ {"s":"Entre sete eletricistas, três serão escalados para uma parada programada, cada um com uma função diferente: supervisor, operador e auxiliar. O número de escalas distintas é","o":["10","21","35","210","343"],"a":3,"c":"A função diferente faz a ordem importar: arranjo. A(7, 3) = 7 × 6 × 5 = 210. Os outros resultados vêm de erros: 10 soma 7 + 3. 21 multiplica 7 por 3, em vez de usar três fatores decrescentes a partir de 7. 35 é a combinação C(7, 3); ignora que as funções distinguem os escalados. 343 calcula 7<sup>3</sup>, permitindo que o mesmo eletricista receba duas funções."},
+ {"s":"Uma equipe tem 5 eletricistas e 4 auxiliares. Deseja-se formar uma comissão de 4 pessoas com exatamente 2 auxiliares. O número de comissões possíveis é","o":["60","120","126","240","3.024"],"a":0,"c":"Duas escolhas em etapas seguidas, sem ordem: C(5, 2) = 10 eletricistas e C(4, 2) = 6 auxiliares. 10 × 6 = 60. Os outros resultados vêm de erros: 120 usa o arranjo A(5, 2) = 20 para os eletricistas (20 × 6); numa comissão a ordem não importa. 126 é C(9, 4): escolhe 4 entre as 9 pessoas e ignora que devem ser exatamente 2 auxiliares. 240 usa arranjo nos dois grupos (20 × 12). 3.024 é o arranjo A(9, 4): conta a ordem e ignora a condição dos auxiliares."},
+ {"s":"Em uma reunião, 8 pessoas se cumprimentam, e cada par de pessoas dá um único aperto de mão. O número de apertos de mão é","o":["7","16","28","56","64"],"a":2,"c":"Cada aperto envolve um par, e AB é o mesmo aperto que BA: combinação. C(8, 2) = (8 × 7)/2 = 28. Os outros resultados vêm de erros: 7 conta os apertos de uma pessoa só; falta multiplicar por 8 e dividir por 2. 16 multiplica 8 por 2, em vez de usar o produto 8 × 7 dividido por 2. 56 é o arranjo A(8, 2); conta cada aperto duas vezes (de A para B e de B para A). 64 calcula 8<sup>2</sup>, incluindo pares da pessoa com ela mesma."}
+],
+b4:[
+ {"s":"Um lote tem 50 lâmpadas, das quais 8 são defeituosas. Uma lâmpada é sorteada ao acaso. A probabilidade de ela ser boa é de","o":["8%","16%","19%","42%","84%"],"a":4,"c":"Lâmpadas boas: 50 − 8 = 42. P = 42/50 = 0,84 = 84%. Os outros resultados vêm de erros: 8% lê o número de defeituosas, 8, como se fosse 8%. 16% é a probabilidade de a lâmpada ser defeituosa (8/50); a pergunta é sobre ser boa. 19% 8/42 divide defeituosas por boas, em vez de dividir pelo total de 50. 42% lê o número de lâmpadas boas, 42, como se fosse 42%."},
+ {"s":"Dois dados comuns e honestos, de seis faces, são lançados ao mesmo tempo. A probabilidade de a soma dos pontos ser 7 é, aproximadamente,","o":["8,3%","9,1%","16,7%","19,4%","50%"],"a":2,"c":"Casos possíveis: 6 × 6 = 36. Pares com soma 7: (1, 6), (2, 5), (3, 4), (4, 3), (5, 2) e (6, 1), ou seja, 6. P = 6/36 ≈ 16,7%. Os outros resultados vêm de erros: 8,3% 3/36 conta só (1, 6), (2, 5) e (3, 4), sem os pares invertidos; (1, 6) e (6, 1) são resultados diferentes. 9,1% 1/11 toma as 11 somas possíveis (de 2 a 12) como igualmente prováveis; os equiprováveis são os 36 pares. 19,4% 7/36 usa o valor da soma, 7, como número de casos favoráveis; são 6. 50% raciocina que a soma \"dá 7 ou não dá\", dois resultados que não são equiprováveis."},
+ {"s":"Uma pesquisa de satisfação recebeu 80 questionários: 20 de empregados que nunca usaram o novo sistema de ordens de serviço, 36 de quem usou e aprovou e 24 de quem usou e reprovou. Um questionário é sorteado ao acaso. A probabilidade de ele ser de quem usou e aprovou é de","o":["36%","45%","55%","60%","81,8%"],"a":1,"c":"Casos possíveis: 80. Favoráveis: 36. P = 36/80 = 0,45 = 45%. Os outros resultados vêm de erros: 36% lê o número de questionários, 36, como se fosse 36%. 55% é a probabilidade de o questionário não ser de quem aprovou (44/80). 60% 36/60 divide só pelos que usaram o sistema; o sorteio é entre os 80. 81,8% 36/44 divide aprovações por não aprovações, em vez de pelo total."},
+ {"s":"Um número inteiro de 1 a 25 é sorteado ao acaso, todos com a mesma chance. A probabilidade de ele ser múltiplo de 2 ou de 5 é de","o":["8%","20%","48%","60%","68%"],"a":3,"c":"Múltiplos de 2: 12 números. Múltiplos de 5: 5 números. Os múltiplos dos dois (10 e 20) foram contados duas vezes: 12 + 5 − 2 = 15. P = 15/25 = 60%. Os outros resultados vêm de erros: 8% 2/25 conta só os múltiplos de 2 e de 5 ao mesmo tempo (10 e 20); o pedido é \"ou\". 20% 5/25 conta só os múltiplos de 5. 48% 12/25 conta só os múltiplos de 2. 68% 17/25 soma 12 + 5 sem descontar os 2 múltiplos comuns."}
+],
+b5:[
+ {"s":"Em uma instalação, dois sensores independentes têm, em um mesmo ensaio, probabilidades de falha de 10% e de 20%. A probabilidade de os dois falharem nesse ensaio é de","o":["2%","18%","28%","30%","72%"],"a":0,"c":"Eventos independentes, \"e\": 0,10 × 0,20 = 0,02 = 2%. Os outros resultados vêm de erros: 18% 0,90 × 0,20 é a probabilidade de só o segundo falhar (o primeiro funciona). 28% 1 − 0,90 × 0,80 é a probabilidade de pelo menos um falhar. 30% soma as probabilidades (10% + 20%); \"os dois\" pede o produto. 72% 0,90 × 0,80 é a probabilidade de nenhum falhar."},
+ {"s":"Uma caixa tem 10 fusíveis, dos quais 4 estão queimados. Dois fusíveis são retirados ao acaso, um depois do outro, sem reposição. A probabilidade de pelo menos um deles estar queimado é, aproximadamente,","o":["13,3%","33,3%","36%","64%","66,7%"],"a":4,"c":"Pelo menos um = 1 − nenhum. Nenhum queimado: 6/10 × 5/9 = 30/90 ≈ 0,333. Então 1 − 0,333 ≈ 0,667 = 66,7%. Os outros resultados vêm de erros: 13,3% 4/10 × 3/9 é a probabilidade de os dois estarem queimados. 33,3% 6/10 × 5/9 é a probabilidade de nenhum estar queimado; falta o 1 −. 36% 0,6 × 0,6 mantém 10 fusíveis na segunda retirada (com reposição); e ainda falta o 1 −. 64% 1 − 0,6 × 0,6 mantém 10 fusíveis na segunda retirada; sem reposição, sobram 9, com 5 bons."},
+ {"s":"Dez técnicos, 6 homens e 4 mulheres, são candidatos a um treinamento com 3 vagas, e 3 deles são sorteados. A probabilidade de que exatamente 2 dos sorteados sejam mulheres é de","o":["3,3%","10%","28,8%","30%","40%"],"a":3,"c":"Casos possíveis: C(10, 3) = 120. Favoráveis: C(4, 2) × C(6, 1) = 6 × 6 = 36. P = 36/120 = 0,30 = 30%. Os outros resultados vêm de erros: 3,3% 4/120 é a probabilidade de as três sorteadas serem mulheres (C(4, 3)/C(10, 3)). 10% 4/10 × 3/9 × 6/8 é a probabilidade de uma ordem só (mulher, mulher, homem); são 3 ordens possíveis. 28,8% 3 × 0,4 × 0,4 × 0,6 mantém 10 pessoas em cada sorteio (com reposição); sem reposição, o total cai. 40% 4/10 é só a probabilidade de a primeira pessoa sorteada ser mulher."},
+ {"s":"Três máquinas independentes de uma linha têm, cada uma, 5% de probabilidade de parar durante um turno. A probabilidade de que pelo menos uma delas pare no turno é, aproximadamente,","o":["0,0125%","14,3%","15%","85,7%","99,99%"],"a":1,"c":"Pelo menos uma = 1 − nenhuma. Nenhuma para: 0,95 × 0,95 × 0,95 ≈ 0,857. Então 1 − 0,857 ≈ 0,143 = 14,3%. Os outros resultados vêm de erros: 0,0125% 0,05<sup>3</sup> é a probabilidade de as três pararem. 15% soma 5% + 5% + 5%; nos eventos independentes, não se soma, e a soma ainda superestima. 85,7% 0,95<sup>3</sup> é a probabilidade de nenhuma parar. 99,99% 1 − 0,05<sup>3</sup> é a probabilidade de pelo menos uma <b>não</b> parar."}
+],
+b6:[
+ {"s":"Em um gráfico de setores, as 200 ordens de serviço de um mês foram distribuídas em: elétrica, 80; mecânica, 50; instrumentação, 40; e civil, 30. O ângulo central do setor da instrumentação é de","o":["20°","40°","72°","90°","144°"],"a":2,"c":"40/200 = 0,20, e 0,20 × 360° = 72°. Os outros resultados vêm de erros: 20° usa a porcentagem, 20%, como se fosse o ângulo. 40° usa a frequência, 40, como se fosse o ângulo. 90° divide o círculo em 4 setores iguais (360°/4), sem olhar as frequências. 144° é o ângulo do setor da elétrica (80/200 × 360°)."},
+ {"s":"Em 50 medições de tensão numa subestação, 10 ficaram abaixo da faixa permitida, 34 ficaram dentro dela e 6 ficaram acima. A frequência relativa, em porcentagem, das medições acima da faixa é de","o":["12%","17,6%","20%","32%","68%"],"a":0,"c":"Frequência relativa = 6/50 = 0,12 = 12%. Os outros resultados vêm de erros: 17,6% 6/34 divide pelos valores da faixa; o total é 50. 20% 10/50 é a frequência relativa das medições abaixo da faixa. 32% 16/50 junta as medições abaixo e acima da faixa. 68% 34/50 é a frequência relativa das medições dentro da faixa."},
+ {"s":"A tabela mostra o número de falhas registradas em 40 turnos: 0 falha em 12 turnos, 1 falha em 15, 2 falhas em 9 e 3 falhas em 4. O número de turnos com no máximo 1 falha é","o":["15","27","28","40","45"],"a":1,"c":"No máximo 1 falha: 0 falha ou 1 falha, ou seja, 12 + 15 = 27 turnos (frequência acumulada). Os outros resultados vêm de erros: 15 é só a linha de 1 falha; \"no máximo 1\" inclui também os turnos sem falha. 28 15 + 9 + 4 conta \"pelo menos 1 falha\", o lado errado. 40 é o total de turnos. 45 é o total de falhas (15 + 2 × 9 + 3 × 4), e não o de turnos."},
+ {"s":"Os salários de 40 empregados foram agrupados em classes: de R$ 2.000,00 a R$ 3.000,00 (exclusive), 12 empregados; de R$ 3.000,00 a R$ 4.000,00 (exclusive), 20 empregados; e de R$ 4.000,00 a R$ 5.000,00 (exclusive), 8 empregados. A porcentagem de empregados com salário menor que R$ 4.000,00 é de","o":["20%","30%","50%","70%","80%"],"a":4,"c":"Menor que 4.000: as duas primeiras classes, 12 + 20 = 32 empregados. 32/40 = 0,80 = 80%. Os outros resultados vêm de erros: 20% 8/40 é só a classe de 4.000 em diante, o lado oposto do pedido. 30% 12/40 é só a primeira classe. 50% 20/40 é só a segunda classe; falta somar a primeira. 70% 28/40 soma as duas classes de cima (20 + 8), as de salário igual ou maior que 3.000."}
+],
+b7:[
+ {"s":"Em 20 turnos, o número de paradas não programadas foi: 0 parada em 5 turnos, 1 parada em 8 turnos, 2 paradas em 5 turnos e 3 paradas em 2 turnos. O número médio de paradas por turno é","o":["0,9","1,0","1,2","1,5","6,0"],"a":2,"c":"Total de paradas: 0 × 5 + 1 × 8 + 2 × 5 + 3 × 2 = 24. Média: 24/20 = 1,2. Os outros resultados vêm de erros: 0,9 (8 + 10)/20 deixa de fora a linha das 3 paradas (6). 1,0 é a mediana (e também a moda); a pergunta é a média. 1,5 (0 + 1 + 2 + 3)/4 trata as 4 linhas como 4 dados, sem ponderar pelas frequências. 6,0 24/4 divide pelo número de linhas da tabela, em vez do total de 20 turnos."},
+ {"s":"Os tempos, em minutos, de oito reparos foram, nesta ordem de registro: 12, 45, 18, 30, 25, 18, 60 e 22. A mediana desses tempos, em minutos, é","o":["22","23,5","25","27,5","28,75"],"a":1,"c":"Em ordem: 12, 18, 18, 22, 25, 30, 45, 60. Com oito dados, os centrais são o 4º e o 5º, 22 e 25, e a mediana é (22 + 25)/2 = 23,5. Os outros resultados vêm de erros: 22 toma só o 4º valor ordenado; com número par de dados, a mediana é a média dos dois centrais. 25 toma só o 5º valor ordenado, sem a média com o 4º. 27,5 (30 + 25)/2 é a média do 4º e do 5º valores na ordem de registro; falta ordenar. 28,75 230/8 é a média dos tempos; a pergunta é a mediana."},
+ {"s":"Os salários de cinco técnicos são R$ 3.000,00, R$ 3.000,00, R$ 3.200,00, R$ 3.400,00 e R$ 12.400,00. O salário médio desse grupo é","o":["R$ 2.480,00","R$ 3.000,00","R$ 3.150,00","R$ 3.200,00","R$ 5.000,00"],"a":4,"c":"Soma: 3.000 + 3.000 + 3.200 + 3.400 + 12.400 = 25.000. Média: 25.000/5 = R$ 5.000,00. Os outros resultados vêm de erros: R$ 2.480,00 12.400/5 divide só o último salário; faltam os outros quatro na soma. R$ 3.000,00 é a moda (o valor que mais se repete). R$ 3.150,00 12.600/4 é a média sem o maior salário, que também faz parte do grupo. R$ 3.200,00 é a mediana (o valor central)."},
+ {"s":"Em um processo seletivo interno, a nota final é a média ponderada de três avaliações: prova técnica, peso 5; entrevista, peso 3; análise de currículo, peso 2. Um candidato obteve 9,0 na prova técnica, 7,0 na entrevista e 5,0 no currículo. Sua nota final é","o":["4,0","6,4","7,0","7,6","25,3"],"a":3,"c":"Soma dos produtos: 9 × 5 + 7 × 3 + 5 × 2 = 45 + 21 + 10 = 76. Soma dos pesos: 5 + 3 + 2 = 10. Nota: 76/10 = 7,6. Os outros resultados vêm de erros: 4,0 (9 + 7 × 3 + 5 × 2)/10 esquece de multiplicar a primeira nota pelo peso 5. 6,4 9 × 2 + 7 × 3 + 5 × 5, dividido por 10, troca os pesos da prova técnica e do currículo. 7,0 (9 + 7 + 5)/3 ignora os pesos. 25,3 76/3 divide pelo número de notas, em vez da soma dos pesos (10)."}
+],
+b8:[
+ {"s":"As quatro medições de um resistor-padrão deram, todas, 4,7 kΩ. O desvio padrão dessas quatro medições, em kΩ, é","o":["0","2,17","4,7","18,8","22,09"],"a":0,"c":"Todos os valores são iguais à média, 4,7. Todos os desvios são zero, então a variância e o desvio padrão são 0. Os outros resultados vêm de erros: 2,17 é √4,7, a raiz do valor medido, e não a raiz da variância. 4,7 dá a média (ou o valor medido) como desvio padrão. 18,8 é a soma das quatro medições (4 × 4,7), que nada tem a ver com dispersão. 22,09 é 4,7<sup>2</sup>: eleva o valor ao quadrado sem subtrair a média."},
+ {"s":"As correntes medidas em cinco ensaios foram 8 A, 10 A, 12 A, 14 A e 16 A. Considerando os cinco valores como o conjunto todo (divisão por 5), o valor mais próximo do desvio padrão, em ampères, é (considere √2 ≈ 1,414)","o":["0","1,6","2,4","2,83","8"],"a":3,"c":"Média: 12. Desvios: −4, −2, 0, 2 e 4. Quadrados: 16, 4, 0, 4 e 16, soma 40. Variância: 40/5 = 8. Desvio padrão: √8 ≈ 2,83. Os outros resultados vêm de erros: 0 soma os desvios sem elevar ao quadrado: −4 − 2 + 0 + 2 + 4 = 0. 1,6 8/5 divide a variância por 5 uma segunda vez. 2,4 12/5 é o desvio médio (média dos módulos dos desvios), e não o desvio padrão. 8 é a variância; falta tirar a raiz quadrada."},
+ {"s":"A tabela mostra as horas extras de 10 eletricistas em um mês: 4 horas, 2 eletricistas; 5 horas, 5 eletricistas; 9 horas, 3 eletricistas. O desvio padrão das horas extras, com divisão por 10, em horas, é","o":["0,4","1,8","2,0","2,2","4,0"],"a":2,"c":"Média: (2 × 4 + 5 × 5 + 3 × 9)/10 = 60/10 = 6. Soma dos quadrados dos desvios vezes as frequências: 2 × (4 − 6)² + 5 × (5 − 6)² + 3 × (9 − 6)² = 8 + 5 + 27 = 40. Variância: 40/10 = 4. Desvio padrão: √4 = 2. Os outros resultados vêm de erros: 0,4 4/10 divide a variância por 10 uma segunda vez. 1,8 é o desvio médio, (2 × 2 + 5 × 1 + 3 × 3)/10, e não o desvio padrão. 2,2 trata as três linhas como três dados, sem pesar pelas frequências: √(14/3) ≈ 2,16. 4,0 é a variância; falta tirar a raiz quadrada."},
+ {"s":"Os salários de um grupo de técnicos têm desvio padrão de R$ 200,00. Cada salário é multiplicado por 1,10 (reajuste de 10%) e depois acrescido de R$ 100,00. O novo desvio padrão é de","o":["R$ 200,00","R$ 220,00","R$ 300,00","R$ 320,00","R$ 2.200,00"],"a":1,"c":"Somar R$ 100,00 a todos não muda o desvio padrão; multiplicar por 1,10 o multiplica por 1,10. Novo desvio padrão: 200 × 1,10 = R$ 220,00. Os outros resultados vêm de erros: R$ 200,00 supõe que o reajuste de 10% não muda o desvio padrão; multiplicar os dados por k multiplica o desvio padrão por k. R$ 300,00 soma os R$ 100,00 ao desvio padrão e ignora o reajuste de 10%. R$ 320,00 200 × 1,10 + 100 soma a constante ao desvio padrão; a soma de uma constante não o altera. R$ 2.200,00 200 × 11 usa 11 no lugar de 1,10."}
+]
+};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+</script>
+</body>
+</html>

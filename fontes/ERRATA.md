@@ -261,6 +261,18 @@ Fontes: UEL, UDESC (SABERMAT) e UFV (CEAD), abertas só no sumário e nas primei
 
 Revisão independente de 2026-11-11 (Fable, só leitura; 207 contas, 32 questões e distratores refeitos sem erro de gabarito): corrigidos (1) explicação do distrator `x1-taxa` ("taxa simples aproximada" estava errada); (2) alternativa "0,024 m" da questão de escala, que na verdade é 0,024 cm; (3) lacuna didática: o método de comparar potências agora inclui igualar a base, que a questão 11 de 2023 exige junto com o expoente; (4) notação de p na fórmula do fator multiplicativo, unificada com a teoria (forma decimal); (5) glossário (dízima periódica simples, razão inversa), resumo, V ou F de taxa equivalente e o texto sobre a questão 12 de 2023.
 
+## X2 · Funções, equações e geometria (`fontes/matematica-funcoes-equacoes-geometria.html`, escrita para o app)
+
+Onda 3 (2026-11-12). Mat 3, 4, 9 e 10; sem apostila do estudante; **nenhuma fonte foi corrigida**. 152 contas em `contas`; 32 questões com `conta` (`tools/banco/X2.mjs`). Fontes realmente abertas: UEL (equação do 2º grau, logaritmos e exponencial, só o início) e, pela revisão, Brasil Escola (ângulos notáveis), Colégio CEMP e Revisa Goiás (relações métricas) e Mundo Educação (cone). Pitágoras, áreas, prisma, cilindro, pirâmide e esfera ficaram sem página aberta e seguem com `confira` na seção Fontes.
+
+Revisão independente de 2026-11-12 (duas passadas, ambas rotuladas `claude-sonnet-5-5`, **não Opus**, apesar de a configuração pedir Opus; sem erro de conta ou de gabarito): corrigidos o texto do distrator de `x2-expo` (descrevia o exponencial como se fosse o linear), símbolos `g` e `d` em `x2-cone`, o resumo (esfera; "base positiva"), duas explicações do banco e as promessas de cobertura da questão 16 (regra de três inversa, está na X1) e da 18 (resto da divisão, sem exercício aqui). Não corrigido: `secoes` do banco mapeia b1, b4 e b5 só a Mat 3 e b3 só a Mat 4, embora cada seção trate dos dois; a Biblioteca não tem fórmula de Pitágoras, logaritmo nem áreas e volumes além do cone.
+
+## X3 · Contagem, probabilidade e estatística (`fontes/matematica-contagem-probabilidade-estatistica.html`, escrita para o app)
+
+Onda 3 (2026-11-12). Mat 5, 6 e 7; **nenhuma fonte foi corrigida**. 110 contas; 32 questões (`tools/banco/X3.mjs`). Fontes abertas só parcialmente (Silveira, Bussab e Morettin, Barbetta), todas com `confira`. A questão 13 de 2023 dividiu a variância por N (10); a estação ensina N e diz que N − 1 só vale se o enunciado disser "amostra".
+
+Revisão independente de 2026-11-12 (duas passadas em Sonnet, sem erro de conta): corrigidos o distrator de `x3-comb` (a nota "só vale para p = 2" era falsa), o uso de "chance" como favoráveis ÷ desfavoráveis (agora "razão de chances", com `confira` de que em enunciado costuma ser sinônimo de probabilidade), a dica de √2 em `b8:1`, a regra da variância, "Na prova não há calculadora" (`confira`: não achei no edital) e a moda multimodal. Não incluído: histograma com classes de larguras diferentes, polígono de frequência e ogiva.
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão

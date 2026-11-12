@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Funções, equações e geometria — Transpetro 2026, Matemática</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no edital</small></a></li>
+    <li><a href="#b1">1. Funções e equações do 1º grau<small>Mat 3 e 4</small></a></li>
+    <li><a href="#b2">2. Sistemas de equações lineares<small>Mat 4</small></a></li>
+    <li><a href="#b3">3. Equação e função do 2º grau<small>Mat 3 e 4</small></a></li>
+    <li><a href="#b4">4. Função e equação exponencial<small>Mat 3 e 4</small></a></li>
+    <li><a href="#b5">5. Logaritmos: função e equação<small>Mat 3 e 4</small></a></li>
+    <li><a href="#b6">6. Trigonometria<small>Mat 3</small></a></li>
+    <li><a href="#b7">7. Geometria plana<small>Mat 9</small></a></li>
+    <li><a href="#b8">8. Geometria espacial<small>Mat 10</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Funções, equações e geometria</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), prova de Matemática do nível médio. Funções do 1º e do 2º grau, exponenciais, logaritmos e trigonometria; equações e sistemas lineares; triângulo retângulo, perímetros e áreas; volumes e áreas dos sólidos. Em passos curtos, com um exemplo resolvido depois de cada regra e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>A prova tem <b>10 questões de Matemática</b>, e quem zera Matemática ou faz menos de 50% do bloco está eliminado. O conteúdo de Matemática do edital tem dez itens. Esta estação cobre quatro deles, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>Mat 3</b> Relações, funções: polinomiais, exponenciais, logarítmicas e trigonométricas;</li>
+    <li><b>Mat 4</b> Equações: do 1º grau, do 2º grau, exponenciais, logarítmicas e sistemas de equações lineares;</li>
+    <li><b>Mat 9</b> Geometria plana: relações métricas no triângulo retângulo; perímetros e áreas;</li>
+    <li><b>Mat 10</b> Geometria espacial: áreas e volumes.</li>
+  </ul>
+  <p>Números, proporções e juros (Mat 1, 2 e 8) ficam na estação <b>X1</b>; contagem, probabilidade e estatística (Mat 5 a 7), na <b>X3</b>.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (nível médio), quatro das dez questões de Matemática pediam as ferramentas desta estação, todas com contas curtas e sem calculadora:</p>
+    <ul>
+      <li>a 16: dois trajetos do mesmo percurso, com velocidades diferentes e uma diferença de tempo; o tempo da primeira viagem sai de uma <b>equação do 1º grau</b> (a distância é a mesma nas duas viagens), e não só de proporção (a regra de três inversa está na estação X1; esta estação não traz exemplo desse tipo);</li>
+      <li>a 18: o total de pontos de um jogador em três partidas, com a segunda e a terceira descritas em função da primeira; a pergunta final era o <b>resto de uma divisão</b>. Primeiro monta-se uma equação do 1º grau a partir do texto (seção 1); o passo final, o resto da divisão, não tem exercício nesta estação;</li>
+      <li>a 19: um triângulo retângulo com a hipotenusa e um cateto dados, e a pergunta era a <b>área</b>. O outro cateto sai de Pitágoras, e depois vem base vezes altura dividido por 2 (seção 7);</li>
+      <li>a 20: duas compras de dois produtos, com os preços iguais nos dois dias, e o valor de uma terceira compra: um <b>sistema linear 2 × 2</b>, que também cede a um atalho de soma e subtração das compras (seção 2).</li>
+    </ul>
+    <p>Gabarito oficial: B, B, D e D, respectivamente. É um padrão observado numa prova só, não garantia de repetição, e nenhuma dessas quatro pedia logaritmo, função exponencial ou trigonometria. Mas esses temas estão no edital (Mat 3 e Mat 4), e as seções 4 a 6 cobrem esse risco. As alternativas erradas costumam ser os resultados dos erros mais comuns; por isso, em cada exercício daqui, o comentário mostra a conta errada que leva a cada alternativa. Os exemplos e exercícios têm números próprios.</p>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Como estudar esta estação</p>
+    <p>Uma seção por vez. Em cada uma: leia a regra, refaça o exemplo resolvido no papel <b>sem olhar a solução</b> e só então faça os quatro exercícios. Errou? Leia qual foi o erro que levou à sua alternativa: ele costuma se repetir. Se a Matemática for o seu ponto fraco, comece pelas seções 1, 2 e 7: são as de maior retorno (equação do 1º grau, sistema, área e Pitágoras). Na prova não há calculadora: faça as contas à mão.</p>
+  </div>
+</section>
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Funções e equações do 1º grau</h2></div>
+  <p class="edital-ref">Edital, Mat 3 e Mat 4</p>
+
+  <h3>O que é uma função</h3>
+  <p>Uma <b>função</b> é uma regra que, para cada valor de <var>x</var>, dá <b>um único</b> valor de <var>y</var>, escrito <var>f</var>(<var>x</var>). O conjunto dos <var>x</var> permitidos é o <b>domínio</b>; o conjunto dos valores de <var>y</var> que saem é a <b>imagem</b>. Quase toda conta de prova começa por <b>calcular o valor de uma função num ponto</b>.</p>
+  <div class="box conceito">
+    <p class="box-title">Método: calcular f(a)</p>
+    <ol class="steps">
+      <li><b>Troque</b> todo <var>x</var> da fórmula por <var>a</var>, entre parênteses.</li>
+      <li><b>Faça a conta</b> na ordem de sempre: parênteses, potências, × e ÷, + e −.</li>
+    </ol>
+  </div>
+
+  <h3>A função do 1º grau (função afim)</h3>
+  <p>É a função cujo gráfico é uma <b>reta</b>. Ela tem sempre o mesmo jeito: uma parte que cresce com <var>x</var> e uma parte fixa.</p>
+  <div class="eq">
+    <p class="eq-name">Função do 1º grau e sua raiz</p>
+    <div class="eq-main"><var>f</var>(<var>x</var>) = <var>a</var>·<var>x</var> + <var>b</var> &nbsp;&nbsp;&nbsp;&nbsp; raiz: <var>x</var> = <span class="frac"><span>−<var>b</var></span><span><var>a</var></span></span></div>
+    <dl>
+      <dt><var>x</var></dt><dd>variável de entrada (horas, metros, peças…); a unidade é a da grandeza</dd>
+      <dt><var>f</var>(<var>x</var>)</dt><dd>valor que sai (reais, volts, quilos…)</dd>
+      <dt><var>a</var></dt><dd>coeficiente angular (a taxa): quanto <var>f</var> muda para cada 1 de <var>x</var>; unidade: (unidade de <var>f</var>) por (unidade de <var>x</var>), como R$ por hora; <var>a</var> ≠ 0</dd>
+      <dt><var>b</var></dt><dd>coeficiente linear (a parte fixa): o valor de <var>f</var> quando <var>x</var> = 0; é onde a reta corta o eixo <var>y</var></dd>
+      <dt>raiz</dt><dd>o <var>x</var> em que <var>f</var>(<var>x</var>) = 0, isto é, onde a reta corta o eixo <var>x</var></dd>
+    </dl>
+  </div>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Gráfico da reta f(x) = 2x − 3, que corta o eixo y em −3 e o eixo x em 1,5">
+<line x1="60" y1="160" x2="440" y2="160" class="ax"/><line x1="120" y1="20" x2="120" y2="285" class="ax"/>
+<path d="M90 272 L225 146 L360 20" class="w pc"/>
+<circle cx="120" cy="244" r="5" class="f-pa"/><circle cx="210" cy="160" r="5" class="f-pb"/>
+<text x="108" y="236" class="ts" text-anchor="end">b = −3</text>
+<text x="222" y="182" class="ts">raiz: x = 1,5</text>
+<path d="M270 104 L330 104 L330 48" class="guide"/>
+<text x="300" y="122" class="tm" text-anchor="middle">1</text><text x="338" y="81" class="tm">2</text>
+<text x="470" y="60" class="tl">f(x) = 2x − 3</text>
+<text x="470" y="100" class="ts">a = 2: y sobe 2 para</text><text x="470" y="120" class="ts">cada 1 em x</text>
+<text x="470" y="160" class="ts">b = −3: onde a reta</text><text x="470" y="180" class="ts">corta o eixo y</text>
+<text x="470" y="220" class="ts">raiz: onde f(x) = 0</text>
+</svg><figcaption>Figura 1. A reta de f(x) = 2x − 3. Com a = 2 &gt; 0 ela sobe; b = −3 é o ponto em que corta o eixo y; a raiz, 1,5, é onde corta o eixo x.</figcaption></figure>
+  <ul>
+    <li><var>a</var> &gt; 0: a reta <b>sobe</b> (função crescente). <var>a</var> &lt; 0: a reta <b>desce</b> (decrescente).</li>
+    <li>Raiz: resolva <var>a</var>·<var>x</var> + <var>b</var> = 0, que dá <var>x</var> = −<var>b</var>/<var>a</var>.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Seja <var>f</var>(<var>x</var>) = 3<var>x</var> − 12. Calcule <var>f</var>(5) e a raiz de <var>f</var>.</p>
+    <ol class="steps">
+      <li>Troque <var>x</var> por 5: <var>f</var>(5) = 3·5 − 12 = 15 − 12 = <b>3</b>. Esse é o valor da função em 5.</li>
+      <li>A raiz é o <var>x</var> que dá <var>f</var>(<var>x</var>) = 0: 3<var>x</var> − 12 = 0, logo 3<var>x</var> = 12 e <var>x</var> = 12 ÷ 3 = <b>4</b>.</li>
+      <li>Conferindo: <var>f</var>(4) = 3·4 − 12 = 0.</li>
+    </ol>
+  </div>
+
+  <h3>Achar a função com dois pontos</h3>
+  <p>Se você conhece dois pontos da reta, o <b>coeficiente angular</b> é a variação de <var>y</var> dividida pela variação de <var>x</var>. Depois, o ponto dado diz quem é o <var>b</var>.</p>
+  <div class="eq">
+    <p class="eq-name">Coeficiente angular por dois pontos</p>
+    <div class="eq-main"><var>a</var> = <span class="frac"><span><var>y</var><sub>2</sub> − <var>y</var><sub>1</sub></span><span><var>x</var><sub>2</sub> − <var>x</var><sub>1</sub></span></span></div>
+    <dl>
+      <dt>(<var>x</var><sub>1</sub>; <var>y</var><sub>1</sub>), (<var>x</var><sub>2</sub>; <var>y</var><sub>2</sub>)</dt><dd>dois pontos da reta, com <var>x</var><sub>1</sub> ≠ <var>x</var><sub>2</sub></dd>
+      <dt><var>a</var></dt><dd>taxa de variação, na unidade de <var>y</var> por unidade de <var>x</var></dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Uma oficina cobra uma taxa fixa de visita mais um valor por hora. Duas horas de serviço custam R$ 90,00 e cinco horas custam R$ 144,00. Escreva <var>C</var>(<var>x</var>) e calcule <var>C</var>(8).</p>
+    <ol class="steps">
+      <li>Taxa por hora: <var>a</var> = (144 − 90) ÷ (5 − 2) = 54 ÷ 3 = <b>18</b> reais por hora.</li>
+      <li>Parte fixa: em <var>C</var>(2) = 90, temos 18·2 + <var>b</var> = 90, então <var>b</var> = 90 − 36 = <b>54</b> reais.</li>
+      <li>Logo <var>C</var>(<var>x</var>) = 18<var>x</var> + 54.</li>
+      <li>Para 8 horas: <var>C</var>(8) = 18·8 + 54 = 144 + 54 = <b>198</b> reais.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Não trate uma função do 1º grau como <b>proporcional</b>. Se 2 horas custam R$ 90,00, 8 horas <b>não</b> custam 4 × 90 = R$ 360,00: a taxa fixa de R$ 54,00 não se repete a cada hora. A proporção só vale quando <var>b</var> = 0.</p>
+  </div>
+
+  <h3>Equação do 1º grau</h3>
+  <p>Uma equação do 1º grau tem a incógnita <var>x</var> sem potência. Resolver é <b>deixar o x sozinho</b>, fazendo a <b>mesma operação nos dois lados</b>. Passar um termo para o outro lado é somar ou subtrair o oposto dele: por isso o <b>sinal troca</b>.</p>
+  <div class="box conceito">
+    <p class="box-title">Método em quatro passos</p>
+    <ol class="steps">
+      <li><b>Abra os parênteses</b>, distribuindo o número e o sinal de fora por todos os termos de dentro: −2(<var>x</var> − 5) = −2<var>x</var> + 10.</li>
+      <li><b>Junte</b> os termos com <var>x</var> de um lado e os números do outro (o sinal troca ao atravessar o =).</li>
+      <li><b>Divida</b> pelo número que multiplica <var>x</var> (sinal incluso).</li>
+      <li><b>Confira</b> trocando o valor encontrado na equação original.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Resolva 3(<var>x</var> − 4) + 2 = 5<var>x</var> − 18.</p>
+    <ol class="steps">
+      <li>Abra o parêntese: 3<var>x</var> − 12 + 2 = 5<var>x</var> − 18, isto é, 3<var>x</var> − 10 = 5<var>x</var> − 18.</li>
+      <li>Termos em <var>x</var> à direita, números à esquerda: −10 + 18 = 5<var>x</var> − 3<var>x</var>, ou seja, 8 = 2<var>x</var>.</li>
+      <li>Divida por 2: <var>x</var> = 8 ÷ 2 = <b>4</b>.</li>
+      <li>Conferindo: à esquerda, 3·(4 − 4) + 2 = 2; à direita, 5·4 − 18 = 2. Os dois lados dão 2.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>Sinal de menos na frente do parêntese</b> troca o sinal de <b>todos</b> os termos de dentro: −(<var>x</var> − 3) = −<var>x</var> + 3, e não −<var>x</var> − 3. E, ao passar um número para o outro lado, o sinal troca: <var>x</var> + 7 = 10 vira <var>x</var> = 10 − 7.</p>
+  </div>
+
+  <h3>Do texto para a equação</h3>
+  <p>Nos problemas de texto, a incógnita é <b>o que a pergunta pede</b>. Escreva as outras quantidades em função dela e monte a soma que o texto dá.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Em três dias, um técnico instalou 1.300 m de cabo. No segundo dia instalou 80 m a mais que no primeiro e, no terceiro, metade do que instalou no segundo. Quanto instalou no primeiro dia?</p>
+    <ol class="steps">
+      <li>Seja <var>x</var> o primeiro dia. O segundo é <var>x</var> + 80, e o terceiro é (<var>x</var> + 80)/2.</li>
+      <li>A soma dos três é 1.300: <var>x</var> + (<var>x</var> + 80) + (<var>x</var> + 80)/2 = 1.300.</li>
+      <li>Multiplique tudo por 2 para tirar a fração: 2<var>x</var> + 2<var>x</var> + 160 + <var>x</var> + 80 = 2.600, isto é, 5<var>x</var> + 240 = 2.600.</li>
+      <li>5<var>x</var> = 2.600 − 240 = 2.360, logo <var>x</var> = 2.360 ÷ 5 = <b>472</b> m.</li>
+      <li>Conferindo: 472 + 552 + 276 = 1.300 (o segundo dia foi 472 + 80 = 552, e o terceiro, 552 ÷ 2 = 276).</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Sistemas de equações lineares</h2></div>
+  <p class="edital-ref">Edital, Mat 4</p>
+
+  <h3>O que é um sistema</h3>
+  <p>Um <b>sistema linear 2 × 2</b> são duas equações do 1º grau com as <b>mesmas duas incógnitas</b>, <var>x</var> e <var>y</var>. A solução é o par (<var>x</var>; <var>y</var>) que serve nas duas ao mesmo tempo. Cada equação é uma reta; a solução é o ponto onde as retas se cruzam.</p>
+  <figure><svg viewBox="0 0 640 280" role="img" aria-label="Duas retas, x + y = 6 e x − y = 2, que se cruzam no ponto (4; 2)">
+<line x1="60" y1="250" x2="470" y2="250" class="ax"/><line x1="60" y1="20" x2="60" y2="250" class="ax"/>
+<path d="M60 70 L360 250" class="w pa"/><path d="M160 250 L460 70" class="w pc"/>
+<circle cx="260" cy="190" r="6" class="f-ink"/>
+<text x="76" y="58" class="ts fa">x + y = 6</text><text x="340" y="58" class="ts fc">x − y = 2</text>
+<text x="292" y="194" class="ts">(4; 2)</text>
+<text x="500" y="70" class="tl">Retas que se</text><text x="500" y="92" class="tl">cruzam</text>
+<text x="500" y="130" class="ts">1 ponto em comum:</text><text x="500" y="150" class="ts">uma só solução</text>
+<text x="500" y="190" class="ts">Paralelas: nenhuma</text><text x="500" y="230" class="ts">Iguais: infinitas</text>
+</svg><figcaption>Figura 2. As retas x + y = 6 e x − y = 2 se cruzam no ponto (4; 2): é a única solução do sistema (4 + 2 = 6 e 4 − 2 = 2).</figcaption></figure>
+  <ul>
+    <li>Retas que <b>se cruzam</b>: uma solução (sistema possível e determinado).</li>
+    <li>Retas <b>paralelas</b>: nenhuma solução (impossível).</li>
+    <li>Retas <b>iguais</b> (uma equação é múltipla da outra): infinitas soluções (possível e indeterminado).</li>
+  </ul>
+
+  <h3>Método da substituição</h3>
+  <div class="box conceito">
+    <p class="box-title">Método em quatro passos</p>
+    <ol class="steps">
+      <li><b>Isole</b> uma incógnita na equação mais simples (a que tem coeficiente 1, de preferência).</li>
+      <li><b>Substitua</b> na outra equação, que passa a ter uma incógnita só.</li>
+      <li><b>Resolva</b> essa equação do 1º grau.</li>
+      <li><b>Volte</b> à expressão isolada para achar a outra incógnita e <b>confira</b> nas duas equações.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Dois conectores e três terminais custam R$ 31,00. Um conector e um terminal custam R$ 12,00. Qual o preço de cada peça?</p>
+    <ol class="steps">
+      <li>Seja <var>c</var> o conector e <var>t</var> o terminal: 2<var>c</var> + 3<var>t</var> = 31 e <var>c</var> + <var>t</var> = 12.</li>
+      <li>Isole <var>c</var> na segunda: <var>c</var> = 12 − <var>t</var>.</li>
+      <li>Substitua na primeira: 2(12 − <var>t</var>) + 3<var>t</var> = 31, isto é, 24 − 2<var>t</var> + 3<var>t</var> = 31, logo 24 + <var>t</var> = 31 e <var>t</var> = <b>7</b>.</li>
+      <li>Volte: <var>c</var> = 12 − 7 = <b>5</b>. O conector custa R$ 5,00 e o terminal, R$ 7,00.</li>
+      <li>Conferindo na primeira: 2·5 + 3·7 = 10 + 21 = 31.</li>
+    </ol>
+  </div>
+
+  <h3>Método da adição</h3>
+  <p>Quando os coeficientes de uma incógnita são <b>opostos</b> (3 e −3, por exemplo), basta <b>somar as duas equações</b>: essa incógnita some. Se não são opostos, multiplique uma das equações (ou as duas) por um número, <b>todos os termos dela</b>, para igualar os coeficientes.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>Resolva 3<var>x</var> + 2<var>y</var> = 34 e 5<var>x</var> − 2<var>y</var> = 30.</p>
+    <ol class="steps">
+      <li>Os coeficientes de <var>y</var> já são opostos (2 e −2). Some as equações: 8<var>x</var> = 64.</li>
+      <li><var>x</var> = 64 ÷ 8 = <b>8</b>.</li>
+      <li>Em 3<var>x</var> + 2<var>y</var> = 34: 24 + 2<var>y</var> = 34, então 2<var>y</var> = 10 e <var>y</var> = <b>5</b>.</li>
+      <li>Conferindo na segunda: 5·8 − 2·5 = 40 − 10 = 30.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Resolva 2<var>x</var> + 3<var>y</var> = 19 e 3<var>x</var> + 2<var>y</var> = 21.</p>
+    <ol class="steps">
+      <li>Para igualar os coeficientes de <var>x</var>, multiplique a primeira por 3 e a segunda por 2: 6<var>x</var> + 9<var>y</var> = 57 e 6<var>x</var> + 4<var>y</var> = 42.</li>
+      <li>Subtraia uma da outra (cuidado com o sinal de todos os termos): 5<var>y</var> = 57 − 42 = 15, logo <var>y</var> = <b>3</b>.</li>
+      <li>Em 2<var>x</var> + 3<var>y</var> = 19: 2<var>x</var> + 9 = 19, então <var>x</var> = 10 ÷ 2 = <b>5</b>.</li>
+      <li>Conferindo na segunda: 3·5 + 2·3 = 15 + 6 = 21.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Três erros mandam o sistema para o lixo: <b>(1)</b> multiplicar só um termo da equação, em vez de todos; <b>(2)</b> subtrair sem trocar o sinal de <b>todos</b> os termos da segunda equação; <b>(3)</b> achar <var>x</var> e <b>parar</b>, quando a pergunta era <var>y</var> ou uma soma como <var>x</var> + <var>y</var>. Releia a pergunta antes de marcar.</p>
+  </div>
+
+  <h3>Atalho: perguntou uma combinação, talvez nem precise resolver</h3>
+  <p>Em problemas de compras é comum perguntar o preço de uma <b>combinação nova</b>. Antes de resolver, tente <b>somar ou subtrair as compras</b> até aparecer a combinação pedida.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Um metro de cabo A e um de cabo B custam R$ 18,00 juntos. Três metros de A e dois de B custam R$ 47,00. Quanto custam 4 m de A e 3 m de B?</p>
+    <ol class="steps">
+      <li>Compras: <var>A</var> + <var>B</var> = 18 e 3<var>A</var> + 2<var>B</var> = 47.</li>
+      <li>A combinação pedida é 4<var>A</var> + 3<var>B</var>. Note que 4<var>A</var> + 3<var>B</var> = (3<var>A</var> + 2<var>B</var>) + (<var>A</var> + <var>B</var>).</li>
+      <li>Então custa 47 + 18 = <b>R$ 65,00</b>, sem precisar saber o preço de cada cabo.</li>
+      <li>Conferindo por resolução: <var>A</var> = 11 e <var>B</var> = 7 (11 + 7 = 18 e 33 + 14 = 47), e 4·11 + 3·7 = 44 + 21 = 65.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Equação e função do 2º grau</h2></div>
+  <p class="edital-ref">Edital, Mat 3 e Mat 4</p>
+
+  <h3>A fórmula de Bhaskara</h3>
+  <p>Uma equação do 2º grau é a que tem <var>x</var>² como maior potência. Escrita na forma geral, ela tem <b>três coeficientes</b>, e quase tudo nesta seção sai deles.</p>
+  <div class="eq">
+    <p class="eq-name">Equação do 2º grau e suas raízes</p>
+    <div class="eq-main"><var>a</var>·<var>x</var>² + <var>b</var>·<var>x</var> + <var>c</var> = 0 &nbsp;&nbsp;&nbsp;&nbsp; Δ = <var>b</var>² − 4·<var>a</var>·<var>c</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>x</var> = <span class="frac"><span>−<var>b</var> ± √Δ</span><span>2·<var>a</var></span></span></div>
+    <dl>
+      <dt><var>a</var></dt><dd>número que multiplica <var>x</var>²; nunca é zero</dd>
+      <dt><var>b</var></dt><dd>número que multiplica <var>x</var>, com o sinal dele</dd>
+      <dt><var>c</var></dt><dd>número sozinho (termo independente), com o sinal dele</dd>
+      <dt>Δ</dt><dd>discriminante (lê-se "delta"); diz quantas raízes reais existem</dd>
+      <dt>±</dt><dd>significa duas contas: uma com + e outra com −</dd>
+    </dl>
+  </div>
+  <ul>
+    <li>Δ &gt; 0: <b>duas</b> raízes reais diferentes. Δ = 0: <b>uma</b> raiz (raiz dupla). Δ &lt; 0: <b>nenhuma</b> raiz real.</li>
+    <li>O sinal de <var>b</var> entra com o sinal trocado (−<var>b</var>), e o <b>2<var>a</var></b> divide a expressão <b>inteira</b>.</li>
+  </ul>
+  <div class="box conceito">
+    <p class="box-title">Método para resolver ax² + bx + c = 0</p>
+    <ol class="steps">
+      <li><b>Arrume</b> a equação com tudo de um lado e zero do outro, e leia <var>a</var>, <var>b</var> e <var>c</var> com os sinais.</li>
+      <li><b>Calcule Δ</b> = <var>b</var>² − 4<var>ac</var>. Se <var>b</var> for negativo, (−7)² = +49.</li>
+      <li><b>Calcule as raízes</b> com (−<var>b</var> ± √Δ) ÷ (2<var>a</var>): uma conta com + e outra com −.</li>
+      <li><b>Confira</b>: a soma das raízes deve ser −<var>b</var>/<var>a</var> e o produto, <var>c</var>/<var>a</var>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>Resolva <var>x</var>² − 7<var>x</var> + 10 = 0.</p>
+    <ol class="steps">
+      <li>Coeficientes: <var>a</var> = 1, <var>b</var> = −7 e <var>c</var> = 10.</li>
+      <li>Δ = (−7)² − 4·1·10 = 49 − 40 = <b>9</b>. Como Δ &gt; 0, há duas raízes reais.</li>
+      <li><var>x</var> = (7 ± 3) ÷ 2: <var>x</var>′ = (7 + 3) ÷ 2 = <b>5</b> e <var>x</var>″ = (7 − 3) ÷ 2 = <b>2</b>.</li>
+      <li>Conferindo: a soma 5 + 2 = 7 é −<var>b</var>/<var>a</var> e o produto 5·2 = 10 é <var>c</var>/<var>a</var>.</li>
+    </ol>
+    <p>E <var>x</var>² + 2<var>x</var> + 5 = 0? Δ = 2² − 4·1·5 = 4 − 20 = −16. Como Δ &lt; 0, a equação <b>não tem raiz real</b>.</p>
+  </div>
+
+  <h3>Equações incompletas: sem Bhaskara</h3>
+  <p>Se faltar <var>b</var> ou <var>c</var>, há atalhos mais rápidos e seguros.</p>
+  <ul>
+    <li><var>b</var> = 0 (<var>a</var>·<var>x</var>² + <var>c</var> = 0): isole <var>x</var>² e tire a raiz, com os dois sinais.</li>
+    <li><var>c</var> = 0 (<var>a</var>·<var>x</var>² + <var>b</var>·<var>x</var> = 0): ponha <var>x</var> em evidência; as raízes são 0 e −<var>b</var>/<var>a</var>.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 10</p>
+    <p>Resolva 3<var>x</var>² − 48 = 0 e <var>x</var>² − 6<var>x</var> = 0.</p>
+    <ol class="steps">
+      <li>3<var>x</var>² = 48, então <var>x</var>² = 16 e <var>x</var> = <b>4</b> ou <var>x</var> = <b>−4</b> (os dois valores elevados ao quadrado dão 16).</li>
+      <li><var>x</var>² − 6<var>x</var> = <var>x</var>(<var>x</var> − 6) = 0. Um produto é zero quando um fator é zero: <var>x</var> = <b>0</b> ou <var>x</var> − 6 = 0, isto é, <var>x</var> = <b>6</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 11</p>
+    <p>Dois números somam 11 e o produto deles é 24. Quais são?</p>
+    <ol class="steps">
+      <li>Eles são as raízes de <var>x</var>² − 11<var>x</var> + 24 = 0 (soma = −<var>b</var>/<var>a</var> = 11 e produto = <var>c</var>/<var>a</var> = 24).</li>
+      <li>Δ = 121 − 96 = 25 e <var>x</var> = (11 ± 5) ÷ 2, isto é, <b>8</b> e <b>3</b>.</li>
+      <li>Conferindo: 8 + 3 = 11 e 8·3 = 24.</li>
+    </ol>
+  </div>
+
+  <h3>A função do 2º grau e a parábola</h3>
+  <p>A função <var>f</var>(<var>x</var>) = <var>a</var>·<var>x</var>² + <var>b</var>·<var>x</var> + <var>c</var> tem como gráfico uma <b>parábola</b>. As raízes da equação são os pontos em que ela corta o eixo <var>x</var>; o ponto <var>c</var> é onde corta o eixo <var>y</var>; o <b>vértice</b> é o ponto mais alto ou mais baixo.</p>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="Parábola y = x² − 6x + 5, com boca para cima, raízes 1 e 5 e vértice no ponto (3; −4)">
+<line x1="40" y1="120" x2="440" y2="120" class="ax"/><line x1="60" y1="10" x2="60" y2="215" class="ax"/>
+<line x1="240" y1="32" x2="240" y2="200" class="guide"/>
+<path d="M60 20 L70 39.4 L80 57.8 L90 75 L100 91.1 L110 106.1 L120 120 L130 132.8 L140 144.4 L150 155 L160 164.4 L170 172.8 L180 180 L190 186.1 L200 191.1 L210 195 L220 197.8 L230 199.4 L240 200 L250 199.4 L260 197.8 L270 195 L280 191.1 L290 186.1 L300 180 L310 172.8 L320 164.4 L330 155 L340 144.4 L350 132.8 L360 120 L370 106.1 L380 91.1 L390 75 L400 57.8 L410 39.4 L420 20" class="w pc"/>
+<circle cx="120" cy="120" r="5" class="f-pb"/><circle cx="360" cy="120" r="5" class="f-pb"/><circle cx="240" cy="200" r="5" class="f-pa"/>
+<text x="112" y="142" class="ts" text-anchor="end">x′ = 1</text><text x="368" y="142" class="ts">x″ = 5</text>
+<text x="240" y="222" class="ts" text-anchor="middle">vértice (3; −4)</text>
+<text x="240" y="24" class="tm" text-anchor="middle">eixo: x = 3</text>
+<text x="74" y="16" class="tm">c = 5</text>
+<text x="470" y="60" class="tl">y = x² − 6x + 5</text>
+<text x="470" y="100" class="ts">a = 1 &gt; 0: boca</text><text x="470" y="120" class="ts">para cima</text>
+<text x="470" y="160" class="ts">Δ = 16 &gt; 0:</text><text x="470" y="180" class="ts">duas raízes</text>
+</svg><figcaption>Figura 3. A parábola de y = x² − 6x + 5. Com a = 1 &gt; 0, a boca é para cima e o vértice (3; −4) é o ponto mais baixo. As raízes, 1 e 5, são simétricas em torno do eixo x = 3.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Vértice da parábola</p>
+    <div class="eq-main"><var>x</var><sub>v</sub> = <span class="frac"><span>−<var>b</var></span><span>2·<var>a</var></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>y</var><sub>v</sub> = <span class="frac"><span>−Δ</span><span>4·<var>a</var></span></span></div>
+    <dl>
+      <dt><var>x</var><sub>v</sub></dt><dd>posição do vértice no eixo <var>x</var> (a "quantidade" que dá o máximo ou o mínimo)</dd>
+      <dt><var>y</var><sub>v</sub></dt><dd>valor máximo (se <var>a</var> &lt; 0) ou mínimo (se <var>a</var> &gt; 0) da função, na unidade de <var>y</var></dd>
+      <dt><var>a</var></dt><dd><var>a</var> &gt; 0: boca para cima (mínimo); <var>a</var> &lt; 0: boca para baixo (máximo)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 12</p>
+    <p>O lucro de uma oficina, em milhares de reais, é <var>L</var>(<var>x</var>) = −<var>x</var>² + 14<var>x</var> − 24, em que <var>x</var> é a quantidade, em centenas de peças vendidas. Quantas peças dão o lucro máximo e qual é esse lucro?</p>
+    <ol class="steps">
+      <li><var>a</var> = −1 &lt; 0: a parábola tem boca para baixo e, portanto, um <b>máximo</b> no vértice.</li>
+      <li><var>x</var><sub>v</sub> = −14 ÷ (2·(−1)) = −14 ÷ (−2) = <b>7</b>, isto é, 700 peças.</li>
+      <li>Lucro máximo: <var>L</var>(7) = −7² + 14·7 − 24 = −49 + 98 − 24 = <b>25</b>, isto é, R$ 25 mil.</li>
+      <li>Conferindo por <var>y</var><sub>v</sub> = −Δ/(4<var>a</var>): Δ = 196 − 96 = 100, e −100 ÷ (−4) = 25.</li>
+      <li>As raízes (2 e 12, de Δ = 100) mostram onde o lucro é zero; o máximo fica no meio delas, em 7.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>(1)</b> Com <var>b</var> negativo, <var>b</var>² é positivo: (−7)² = 49, e não −49. <b>(2)</b> Em −<var>b</var>, o sinal troca: se <var>b</var> = −7, então −<var>b</var> = 7. <b>(3)</b> O denominador é 2<var>a</var>, e não <var>a</var>. <b>(4)</b> <var>x</var><sub>v</sub> é a posição; o <b>valor</b> máximo ou mínimo é <var>y</var><sub>v</sub> = <var>f</var>(<var>x</var><sub>v</sub>).</p>
+  </div>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Função e equação exponencial</h2></div>
+  <p class="edital-ref">Edital, Mat 3 e Mat 4</p>
+
+  <h3>Potências: as regras que você vai usar</h3>
+  <p>Numa função exponencial, o <b>x está no expoente</b>. Para trabalhar com ela, bastam poucas regras de potência (a estação X1 trata do básico).</p>
+  <div class="eq">
+    <p class="eq-name">Regras das potências (base positiva)</p>
+    <div class="eq-main"><var>b</var><sup><var>m</var></sup>·<var>b</var><sup><var>n</var></sup> = <var>b</var><sup><var>m</var>+<var>n</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; (<var>b</var><sup><var>m</var></sup>)<sup><var>n</var></sup> = <var>b</var><sup><var>m</var>·<var>n</var></sup> &nbsp;&nbsp;&nbsp;&nbsp; <var>b</var><sup>−<var>n</var></sup> = <span class="frac"><span>1</span><span><var>b</var><sup><var>n</var></sup></span></span></div>
+    <dl>
+      <dt><var>b</var></dt><dd>base, o número que se multiplica por ele mesmo</dd>
+      <dt><var>m</var>, <var>n</var></dt><dd>expoentes (quantas vezes a base aparece)</dd>
+      <dt>produto</dt><dd>mesma base: <b>some</b> os expoentes (2³·2² = 2⁵, e não 4⁵)</dd>
+      <dt>potência de potência</dt><dd><b>multiplique</b> os expoentes: (2²)³ = 2⁶</dd>
+    </dl>
+  </div>
+
+  <h3>A função exponencial</h3>
+  <p>A função exponencial é <var>f</var>(<var>x</var>) = <var>a</var>·<var>b</var><sup><var>x</var></sup>, com base <var>b</var> &gt; 0 e <var>b</var> ≠ 1. Ela descreve o que cresce ou cai <b>por porcentagem a cada período</b>.</p>
+  <figure><svg viewBox="0 0 640 260" role="img" aria-label="Gráficos de 2 elevado a x, que cresce, e de (1/2) elevado a x, que decresce; os dois passam por (0; 1) e ficam acima do eixo x">
+<line x1="20" y1="240" x2="470" y2="240" class="ax"/><line x1="240" y1="8" x2="240" y2="245" class="ax"/>
+<path d="M30 236.5 L40.5 236.1 L51 235.7 L61.5 235.2 L72 234.7 L82.5 234.1 L93 233.5 L103.5 232.8 L114 232 L124.5 231.1 L135 230.1 L145.5 229 L156 227.8 L166.5 226.5 L177 225 L187.5 223.4 L198 221.5 L208.5 219.5 L219 217.3 L229.5 214.8 L240 212 L250.5 208.9 L261 205.5 L271.5 201.8 L282 197.6 L292.5 192.9 L303 187.8 L313.5 182 L324 175.7 L334.5 168.6 L345 160.8 L355.5 152.1 L366 142.5 L376.5 131.8 L387 120 L397.5 106.8 L408 92.2 L418.5 76 L429 58.1 L439.5 38.1 L450 16" class="w pc"/><path d="M30 16 L40.5 38.1 L51 58.1 L61.5 76 L72 92.2 L82.5 106.8 L93 120 L103.5 131.8 L114 142.5 L124.5 152.1 L135 160.8 L145.5 168.6 L156 175.7 L166.5 182 L177 187.8 L187.5 192.9 L198 197.6 L208.5 201.8 L219 205.5 L229.5 208.9 L240 212 L250.5 214.8 L261 217.3 L271.5 219.5 L282 221.5 L292.5 223.4 L303 225 L313.5 226.5 L324 227.8 L334.5 229 L345 230.1 L355.5 231.1 L366 232 L376.5 232.8 L387 233.5 L397.5 234.1 L408 234.7 L418.5 235.2 L429 235.7 L439.5 236.1 L450 236.5" class="w pa"/>
+<circle cx="240" cy="212" r="5" class="f-ink"/>
+<line x1="476" y1="60" x2="506" y2="60" class="w pc"/><text x="514" y="65" class="ts">b = 2: cresce</text>
+<line x1="476" y1="95" x2="506" y2="95" class="w pa"/><text x="514" y="100" class="ts">b = 1/2: decresce</text>
+<text x="476" y="150" class="ts">Passam por (0; 1)</text><text x="476" y="185" class="ts">Sempre acima do</text><text x="476" y="205" class="ts">eixo x (y &gt; 0)</text>
+</svg><figcaption>Figura 4. Duas exponenciais: 2<sup>x</sup> (base maior que 1) cresce sempre mais depressa; (1/2)<sup>x</sup> (base entre 0 e 1) decresce. As duas passam por (0; 1) e nunca tocam o eixo x.</figcaption></figure>
+  <ul>
+    <li><var>b</var> &gt; 1: a função <b>cresce</b>. 0 &lt; <var>b</var> &lt; 1: a função <b>decresce</b>.</li>
+    <li>O valor <var>b</var><sup><var>x</var></sup> é sempre <b>positivo</b>: nunca é zero nem negativo.</li>
+    <li>Para <var>x</var> = 0, <var>f</var>(0) = <var>a</var>: o valor inicial.</li>
+    <li>Variação de <var>p</var>% por período: <var>b</var> = 1 + <var>p</var>/100 (alta) ou <var>b</var> = 1 − <var>p</var>/100 (queda). Alta de 20% é 1,20; queda de 10% é 0,90.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 13</p>
+    <p>Um equipamento vale R$ 50.000,00 e perde 10% do valor a cada ano. Quanto vale depois de 3 anos?</p>
+    <ol class="steps">
+      <li>Queda de 10% por ano: o fator é 1 − 0,10 = 0,90. A função é <var>V</var>(<var>t</var>) = 50.000·0,9<sup><var>t</var></sup>.</li>
+      <li>Potência: 0,9³ = 0,9·0,9·0,9 = 0,81·0,9 = <b>0,729</b>.</li>
+      <li><var>V</var>(3) = 50.000·0,729 = <b>R$ 36.450,00</b>.</li>
+      <li>Repare: a perda em reais cai a cada ano, porque os 10% incidem sobre o valor que restou. Não é perder R$ 5.000,00 por ano (isso daria R$ 35.000,00).</li>
+    </ol>
+  </div>
+
+  <h3>Equação exponencial: iguale as bases</h3>
+  <div class="box conceito">
+    <p class="box-title">Método em três passos</p>
+    <ol class="steps">
+      <li><b>Escreva os dois lados como potência da mesma base</b> (2, 3, 5, 10…). Fatore: 8 = 2³, 32 = 2⁵, 27 = 3³, 1/9 = 3<sup>−2</sup>.</li>
+      <li><b>Iguale os expoentes</b>: se <var>b</var><sup><var>m</var></sup> = <var>b</var><sup><var>n</var></sup>, então <var>m</var> = <var>n</var>.</li>
+      <li><b>Resolva</b> a equação do 1º grau que sobrou e confira.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 14</p>
+    <p>Resolva 2<sup><var>x</var>+1</sup> = 32 e 9<sup><var>x</var></sup> = 27.</p>
+    <ol class="steps">
+      <li>32 = 2⁵, então 2<sup><var>x</var>+1</sup> = 2⁵. Iguale os expoentes: <var>x</var> + 1 = 5, logo <var>x</var> = <b>4</b>.</li>
+      <li>9 = 3² e 27 = 3³. Então (3²)<sup><var>x</var></sup> = 3³, isto é, 3<sup>2<var>x</var></sup> = 3³. Iguale: 2<var>x</var> = 3 e <var>x</var> = 3 ÷ 2 = <b>1,5</b>.</li>
+      <li>Conferindo: 9<sup>1,5</sup> = 3<sup>3</sup> = 27.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 15</p>
+    <p>Resolva 4<sup><var>x</var></sup> − 6·2<sup><var>x</var></sup> + 8 = 0.</p>
+    <ol class="steps">
+      <li>Como 4<sup><var>x</var></sup> = (2<sup><var>x</var></sup>)², faça <var>y</var> = 2<sup><var>x</var></sup>. A equação vira <var>y</var>² − 6<var>y</var> + 8 = 0, do 2º grau.</li>
+      <li>Δ = 36 − 32 = 4 e <var>y</var> = (6 ± 2) ÷ 2, isto é, <var>y</var> = 4 ou <var>y</var> = 2.</li>
+      <li>Volte para <var>x</var>: 2<sup><var>x</var></sup> = 4 dá <var>x</var> = <b>2</b>; 2<sup><var>x</var></sup> = 2 dá <var>x</var> = <b>1</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>(1)</b> Somam-se os expoentes ao <b>multiplicar</b> potências de mesma base: 2³·2² = 2⁵ (= 32), e não 4⁵. <b>(2)</b> (2<sup><var>x</var></sup>)² = 2<sup>2<var>x</var></sup>, e não 2<sup><var>x</var>²</sup>. <b>(3)</b> 2<sup><var>x</var></sup> = −4 <b>não tem solução</b>, porque potência de base positiva nunca é negativa. <b>(4)</b> No problema de dois valores de <var>y</var>, volte sempre para <var>x</var>.</p>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>Logaritmos: função e equação</h2></div>
+  <p class="edital-ref">Edital, Mat 3 e Mat 4</p>
+
+  <h3>O que é um logaritmo</h3>
+  <p>O logaritmo responde a uma pergunta: <b>"a que expoente devo elevar a base para chegar neste número?"</b>. É o caminho de volta da exponencial.</p>
+  <div class="eq">
+    <p class="eq-name">Definição de logaritmo</p>
+    <div class="eq-main">log<sub><var>b</var></sub> <var>a</var> = <var>x</var> &nbsp;&nbsp;⟺&nbsp;&nbsp; <var>b</var><sup><var>x</var></sup> = <var>a</var></div>
+    <dl>
+      <dt><var>b</var></dt><dd>base do logaritmo; <var>b</var> &gt; 0 e <var>b</var> ≠ 1. Sem base escrita (log 1000), a base é 10</dd>
+      <dt><var>a</var></dt><dd>logaritmando, o número cujo logaritmo se quer; <var>a</var> &gt; 0 (não existe log de zero nem de negativo)</dd>
+      <dt><var>x</var></dt><dd>o logaritmo: o expoente. Pode ser negativo, zero ou fracionário</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 16</p>
+    <p>Calcule log<sub>2</sub> 32, log<sub>3</sub> (1/9) e log 1.000.</p>
+    <ol class="steps">
+      <li>log<sub>2</sub> 32 = <var>x</var> quer dizer 2<sup><var>x</var></sup> = 32. Como 2⁵ = 32, o logaritmo é <b>5</b>.</li>
+      <li>log<sub>3</sub> (1/9) = <var>x</var> quer dizer 3<sup><var>x</var></sup> = 1/9. Como 3<sup>−2</sup> = 1/9, o logaritmo é <b>−2</b>.</li>
+      <li>log 1.000 tem base 10: 10<sup><var>x</var></sup> = 1.000 e 10³ = 1.000, então o logaritmo é <b>3</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Propriedades: o que o logaritmo faz com as contas</h3>
+  <div class="eq">
+    <p class="eq-name">Propriedades dos logaritmos (mesma base)</p>
+    <div class="eq-main">log(<var>a</var>·<var>c</var>) = log <var>a</var> + log <var>c</var> &nbsp;&nbsp;&nbsp;&nbsp; log(<var>a</var>/<var>c</var>) = log <var>a</var> − log <var>c</var> &nbsp;&nbsp;&nbsp;&nbsp; log <var>a</var><sup><var>k</var></sup> = <var>k</var>·log <var>a</var></div>
+    <dl>
+      <dt><var>a</var>, <var>c</var></dt><dd>números positivos</dd>
+      <dt><var>k</var></dt><dd>qualquer número real (o expoente "desce" e multiplica)</dd>
+      <dt>produto</dt><dd>vira <b>soma</b> de logaritmos; quociente vira <b>diferença</b>; potência vira <b>multiplicação</b></dd>
+      <dt>valores fixos</dt><dd>log<sub><var>b</var></sub> 1 = 0 e log<sub><var>b</var></sub> <var>b</var> = 1</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Mudança de base</p>
+    <div class="eq-main">log<sub><var>b</var></sub> <var>a</var> = <span class="frac"><span>log <var>a</var></span><span>log <var>b</var></span></span></div>
+    <dl>
+      <dt>log</dt><dd>logaritmo numa base nova qualquer (a mesma no numerador e no denominador); na prova costuma ser a base 10</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 17</p>
+    <p>Dados log 2 = 0,30 e log 3 = 0,48, calcule log 12 e log 5. Lembre-se de que log 10 = 1.</p>
+    <ol class="steps">
+      <li>Fatore: 12 = 2²·3. Então log 12 = 2·log 2 + log 3 = 2·0,30 + 0,48 = 0,60 + 0,48 = <b>1,08</b>.</li>
+      <li>Escreva 5 = 10 ÷ 2. Então log 5 = log 10 − log 2 = 1 − 0,30 = <b>0,70</b>.</li>
+    </ol>
+    <p>Mudança de base, um exemplo curto: log<sub>4</sub> 8 = log<sub>2</sub> 8 ÷ log<sub>2</sub> 4 = 3 ÷ 2 = <b>1,5</b>.</p>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>log(a + c) não é log a + log c.</b> A soma de logaritmos é o logaritmo do <b>produto</b>. E log a ÷ log c <b>não é</b> log(a/c): o quociente de logaritmos é a mudança de base, e a diferença é que dá o logaritmo do quociente.</p>
+  </div>
+
+  <h3>Equação logarítmica: volte para a exponencial</h3>
+  <div class="box conceito">
+    <p class="box-title">Método em três passos</p>
+    <ol class="steps">
+      <li><b>Isole o logaritmo</b> de um lado.</li>
+      <li><b>Use a definição</b>: log<sub><var>b</var></sub> (expressão) = <var>k</var> vira expressão = <var>b</var><sup><var>k</var></sup>.</li>
+      <li><b>Resolva e verifique a condição de existência</b>: o que está dentro do logaritmo precisa ser positivo. Descarte a solução que não serve.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 18</p>
+    <p>Resolva log<sub>3</sub> (2<var>x</var> − 1) = 2.</p>
+    <ol class="steps">
+      <li>Pela definição: 2<var>x</var> − 1 = 3² = 9.</li>
+      <li>2<var>x</var> = 10, logo <var>x</var> = <b>5</b>.</li>
+      <li>Condição de existência: 2·5 − 1 = 9, que é positivo. A solução serve.</li>
+    </ol>
+  </div>
+
+  <h3>A função logarítmica</h3>
+  <p><var>f</var>(<var>x</var>) = log<sub><var>b</var></sub> <var>x</var> é a "volta" de <var>b</var><sup><var>x</var></sup>. Ela só existe para <var>x</var> &gt; 0, passa por (1; 0) e, com <var>b</var> &gt; 1, cresce devagar.</p>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="Gráfico de log na base 2 de x, que passa por (1; 0), (2; 1), (4; 2) e (8; 3) e só existe para x positivo">
+<line x1="40" y1="140" x2="470" y2="140" class="ax"/><line x1="60" y1="10" x2="60" y2="225" class="ax"/>
+<path d="M71.3 220 L77.4 194.7 L83.6 177.2 L89.8 163.8 L96 152.9 L102.2 143.7 L108.4 135.8 L114.6 128.9 L120.8 122.7 L126.9 117.1 L133.1 112 L139.3 107.3 L145.5 103 L151.7 98.9 L157.9 95.2 L164.1 91.6 L170.3 88.3 L176.4 85.1 L182.6 82.1 L188.8 79.3 L195 76.6 L201.2 74 L207.4 71.5 L213.6 69.2 L219.8 66.9 L225.9 64.7 L232.1 62.6 L238.3 60.5 L244.5 58.6 L250.7 56.7 L256.9 54.8 L263.1 53 L269.3 51.3 L275.4 49.6 L281.6 48 L287.8 46.4 L294 44.9 L300.2 43.4 L306.4 41.9 L312.6 40.5 L318.8 39.1 L324.9 37.7 L331.1 36.4 L337.3 35.1 L343.5 33.8 L349.7 32.5 L355.9 31.3 L362.1 30.1 L368.3 29 L374.4 27.8 L380.6 26.7 L386.8 25.6 L393 24.5 L399.2 23.4 L405.4 22.4 L411.6 21.4 L417.8 20.4 L423.9 19.4 L430.1 18.4 L436.3 17.4 L442.5 16.5" class="w pc"/>
+<circle cx="105" cy="140" r="5" class="f-pa"/>
+<circle cx="150" cy="100" r="5" class="f-pa"/>
+<circle cx="240" cy="60" r="5" class="f-pa"/>
+<circle cx="420" cy="20" r="5" class="f-pa"/>
+<text x="113" y="160" class="ts">(1; 0)</text><text x="160" y="122" class="ts">(2; 1)</text>
+<text x="250" y="82" class="ts">(4; 2)</text><text x="428" y="42" class="ts">(8; 3)</text>
+<text x="500" y="60" class="tl">y = log₂ x</text>
+<text x="500" y="100" class="ts">só existe para</text><text x="500" y="120" class="ts">x &gt; 0</text>
+<text x="500" y="160" class="ts">base 2 &gt; 1:</text><text x="500" y="180" class="ts">cresce</text>
+</svg><figcaption>Figura 5. O gráfico de log na base 2: passa por (1; 0), (2; 1), (4; 2) e (8; 3). Cada vez que x dobra, o valor sobe só 1. Perto de x = 0 a curva despenca; o eixo y nunca é tocado.</figcaption></figure>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 19</p>
+    <p>Um capital rende 20% ao ano, a juros compostos. Em quanto tempo ele dobra? Use log 2 = 0,30, log 3 = 0,48 e log 10 = 1.</p>
+    <ol class="steps">
+      <li>Fator anual 1,2. Dobrar: 1,2<sup><var>t</var></sup> = 2.</li>
+      <li>Aplique log nos dois lados: <var>t</var>·log 1,2 = log 2, logo <var>t</var> = log 2 ÷ log 1,2.</li>
+      <li>log 1,2 = log (12/10) = log 12 − log 10 = 1,08 − 1 = <b>0,08</b> (o valor de log 12 vem do exemplo 17).</li>
+      <li><var>t</var> = 0,30 ÷ 0,08 = <b>3,75 anos</b>, aproximadamente 3 anos e 9 meses.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>Trigonometria: triângulo retângulo e funções periódicas</h2></div>
+  <p class="edital-ref">Edital, Mat 3</p>
+
+  <h3>Seno, cosseno e tangente</h3>
+  <p>Num triângulo retângulo, escolha um dos dois ângulos agudos, o θ (lê-se "teta"). Em relação a ele, os lados têm nomes: a <b>hipotenusa</b> (o maior, oposto ao ângulo reto), o <b>cateto oposto</b> (o que fica "de frente" para θ) e o <b>cateto adjacente</b> (o que encosta em θ, além da hipotenusa).</p>
+  <figure><svg viewBox="0 0 640 280" role="img" aria-label="Triângulo retângulo com o ângulo θ no vértice da esquerda, a hipotenusa inclinada, o cateto oposto na vertical e o cateto adjacente na base">
+<path d="M50,220 L300,220 L300,50 Z" class="w pc"/>
+<path d="M86 220 A36 36 0 0 0 79.8 199.8" class="arc"/>
+<path d="M286 220 L286 206 L300 206" class="arc"/>
+<text x="106" y="212" class="ts">θ</text>
+<text x="160" y="100" class="ts" text-anchor="end">hipotenusa</text>
+<text x="312" y="140" class="ts">cateto oposto a θ</text>
+<text x="175" y="252" class="ts" text-anchor="middle">cateto adjacente a θ</text>
+<text x="440" y="70" class="ts">sen θ = oposto ÷ hip.</text>
+<text x="440" y="110" class="ts">cos θ = adjacente ÷ hip.</text>
+<text x="440" y="150" class="ts">tg θ = oposto ÷ adjacente</text>
+</svg><figcaption>Figura 6. Os lados do triângulo retângulo em relação ao ângulo θ. O oposto e o adjacente trocam de lugar se você olhar para o outro ângulo agudo.</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Razões trigonométricas no triângulo retângulo</p>
+    <div class="eq-main">sen θ = <span class="frac"><span>oposto</span><span>hipotenusa</span></span> &nbsp;&nbsp;&nbsp;&nbsp; cos θ = <span class="frac"><span>adjacente</span><span>hipotenusa</span></span> &nbsp;&nbsp;&nbsp;&nbsp; tg θ = <span class="frac"><span>oposto</span><span>adjacente</span></span></div>
+    <dl>
+      <dt>θ</dt><dd>ângulo agudo escolhido, em graus (ou radianos)</dd>
+      <dt>oposto, adjacente, hipotenusa</dt><dd>medidas dos lados, todas na mesma unidade (metros, por exemplo); as razões não têm unidade</dd>
+      <dt>sen² θ + cos² θ = 1</dt><dd>vale para qualquer θ; e tg θ = sen θ ÷ cos θ</dd>
+    </dl>
+  </div>
+  <p>Truque para lembrar: <b>SOH-CAH-TOA</b>. <b>S</b>eno = <b>O</b>posto sobre <b>H</b>ipotenusa; <b>C</b>osseno = <b>A</b>djacente sobre <b>H</b>ipotenusa; <b>T</b>angente = <b>O</b>posto sobre <b>A</b>djacente.</p>
+  <h3>Os ângulos notáveis</h3>
+  <p>Três ângulos aparecem em quase todo problema, e seus valores valem a pena decorar: a tabela evita contas. Se o enunciado trouxer os valores, use os dele.</p>
+  <div class="tw"><table>
+    <thead><tr><th>θ</th><th>em radianos</th><th>sen θ</th><th>cos θ</th><th>tg θ</th></tr></thead>
+    <tbody>
+      <tr><td>30°</td><td>π/6</td><td>1/2</td><td>√3/2</td><td>√3/3</td></tr>
+      <tr><td>45°</td><td>π/4</td><td>√2/2</td><td>√2/2</td><td>1</td></tr>
+      <tr><td>60°</td><td>π/3</td><td>√3/2</td><td>1/2</td><td>√3</td></tr>
+    </tbody>
+  </table></div>
+  <p>Aproximações úteis, quando a prova pedir número decimal: √2 ≈ 1,41 e √3 ≈ 1,73. Para trocar graus por radianos, lembre que <b>180° = π rad</b>: 90° = π/2 e 360° = 2π.</p>
+  <div class="box conceito">
+    <p class="box-title">Método para um problema de triângulo retângulo</p>
+    <ol class="steps">
+      <li><b>Desenhe</b> o triângulo e marque o ângulo dado.</li>
+      <li><b>Nomeie</b> os lados em relação a esse ângulo: o que você tem e o que procura.</li>
+      <li><b>Escolha a razão</b> que liga esses dois lados (SOH-CAH-TOA) e monte a equação.</li>
+      <li><b>Resolva</b>. Confira: a hipotenusa é sempre o maior lado.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 20</p>
+    <p>Uma escada de 6 m de comprimento, apoiada numa parede, forma 60° com o chão. A que altura da parede ela chega? Use sen 60° = √3/2 e √3 = 1,73.</p>
+    <ol class="steps">
+      <li>A escada é a hipotenusa (6 m). A altura é o cateto <b>oposto</b> ao ângulo de 60° (que está no chão).</li>
+      <li>Oposto e hipotenusa: seno. sen 60° = altura ÷ 6.</li>
+      <li>Altura = 6·sen 60° = 6·1,73/2 = 6·0,865 = <b>5,19 m</b>.</li>
+      <li>Conferindo: 5,19 &lt; 6, como deve ser (cateto menor que hipotenusa).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 21</p>
+    <p>A sombra de um poste no chão mede 15 m quando os raios de sol formam 30° com o chão. Qual a altura do poste? Use tg 30° = √3/3 e √3 = 1,73.</p>
+    <ol class="steps">
+      <li>A sombra é o cateto <b>adjacente</b> a 30° (15 m); a altura é o cateto <b>oposto</b>.</li>
+      <li>Oposto e adjacente: tangente. tg 30° = altura ÷ 15.</li>
+      <li>Altura = 15·√3/3 = 5·√3 = 5·1,73 = <b>8,65 m</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 22</p>
+    <p>Em um triângulo retângulo, o ângulo agudo θ tem sen θ = 0,8. Quanto valem cos θ e tg θ?</p>
+    <ol class="steps">
+      <li>Use sen² θ + cos² θ = 1: 0,64 + cos² θ = 1, logo cos² θ = 1 − 0,64 = 0,36.</li>
+      <li>Como θ é agudo, cos θ é positivo: cos θ = √0,36 = <b>0,6</b>.</li>
+      <li>tg θ = sen θ ÷ cos θ = 0,8 ÷ 0,6 = <b>1,33</b> (é 4/3).</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>(1)</b> "Oposto" e "adjacente" dependem do ângulo escolhido: troque o ângulo e eles se invertem. <b>(2)</b> Seno e cosseno de um ângulo agudo ficam entre 0 e 1; se a conta deu um seno maior que 1, a razão está invertida. <b>(3)</b> Para achar a <b>hipotenusa</b> a partir de um cateto, <b>divida</b> pelo seno ou cosseno; multiplicar daria um valor menor que o cateto.</p>
+  </div>
+
+  <h3>Funções seno e cosseno: ondas</h3>
+  <p>Fora do triângulo, seno e cosseno são <b>funções periódicas</b>: repetem os valores a cada volta de 2π (360°). Seus valores ficam sempre entre −1 e 1. Tensão e corrente alternadas, a temperatura ao longo do dia e as marés têm esse formato.</p>
+  <div class="eq">
+    <p class="eq-name">Função seno deslocada e esticada</p>
+    <div class="eq-main"><var>f</var>(<var>t</var>) = <var>A</var> + <var>B</var>·sen(<var>k</var>·<var>t</var>) &nbsp;&nbsp;&nbsp;&nbsp; período = <span class="frac"><span>2π</span><span><var>k</var></span></span></div>
+    <dl>
+      <dt><var>A</var></dt><dd>valor central da oscilação (na unidade de <var>f</var>)</dd>
+      <dt><var>B</var></dt><dd>amplitude: quanto <var>f</var> sobe e desce em torno de <var>A</var>; <var>B</var> &gt; 0</dd>
+      <dt><var>k</var></dt><dd>fator dentro do seno, em radianos por unidade de <var>t</var>; quanto maior <var>k</var>, mais rápida a onda</dd>
+      <dt>máximo e mínimo</dt><dd><var>A</var> + <var>B</var> e <var>A</var> − <var>B</var>, porque o seno vai de −1 a 1</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 23</p>
+    <p>A temperatura, em °C, de um galpão varia como <var>T</var>(<var>t</var>) = 20 + 5·sen(π<var>t</var>/6), com <var>t</var> em horas. Dê a temperatura máxima, a mínima e o período.</p>
+    <ol class="steps">
+      <li>Máxima: o seno vale no máximo 1, então <var>T</var> = 20 + 5·1 = <b>25 °C</b>.</li>
+      <li>Mínima: o seno vale no mínimo −1, então <var>T</var> = 20 − 5 = <b>15 °C</b>.</li>
+      <li>Aqui <var>k</var> = π/6. Período = 2π ÷ (π/6) = 2π·6/π = <b>12 horas</b>.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<!-- ============ SEÇÃO 7 ============ -->
+<section id="b7" class="block">
+  <div class="block-head"><span class="block-num">7</span><h2>Geometria plana: triângulo retângulo, perímetros e áreas</h2></div>
+  <p class="edital-ref">Edital, Mat 9</p>
+
+  <h3>O teorema de Pitágoras</h3>
+  <p>Em todo triângulo retângulo, o quadrado da <b>hipotenusa</b> é igual à soma dos quadrados dos <b>catetos</b>. A hipotenusa é sempre o maior lado e fica oposta ao ângulo reto.</p>
+  <div class="eq">
+    <p class="eq-name">Teorema de Pitágoras</p>
+    <div class="eq-main"><var>a</var>² = <var>b</var>² + <var>c</var>²</div>
+    <dl>
+      <dt><var>a</var></dt><dd>hipotenusa, o lado maior, oposto ao ângulo reto; na unidade de comprimento do problema</dd>
+      <dt><var>b</var>, <var>c</var></dt><dd>catetos, os lados que formam o ângulo reto, na mesma unidade</dd>
+    </dl>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Método</p>
+    <ol class="steps">
+      <li><b>Identifique a hipotenusa</b> (o maior lado, oposto ao ângulo reto).</li>
+      <li>Procurando a <b>hipotenusa</b>: <b>some</b> os quadrados dos catetos e tire a raiz. Procurando um <b>cateto</b>: <b>subtraia</b> do quadrado da hipotenusa o quadrado do outro cateto e tire a raiz.</li>
+      <li>Confira se a hipotenusa deu maior que os catetos. Reconheça os trios prontos: 3-4-5, 5-12-13, 8-15-17, 7-24-25 e os seus múltiplos (6-8-10, 9-12-15, 10-24-26…).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 24</p>
+    <p>Calcule a hipotenusa de um triângulo de catetos 9 cm e 12 cm; depois, o outro cateto de um triângulo com hipotenusa 26 cm e um cateto de 10 cm.</p>
+    <ol class="steps">
+      <li>Hipotenusa: <var>a</var>² = 9² + 12² = 81 + 144 = 225, então <var>a</var> = √225 = <b>15 cm</b> (é o trio 3-4-5 multiplicado por 3).</li>
+      <li>Cateto: 26² = 10² + <var>c</var>², então <var>c</var>² = 676 − 100 = 576 e <var>c</var> = √576 = <b>24 cm</b> (é o trio 5-12-13 multiplicado por 2).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 25</p>
+    <p>Um triângulo ABC é retângulo em A, com hipotenusa BC = 17 cm e cateto AB = 15 cm. Qual a área do triângulo?</p>
+    <ol class="steps">
+      <li>Outro cateto: 17² = 15² + AC², então AC² = 289 − 225 = 64 e AC = <b>8 cm</b>.</li>
+      <li>Os catetos são perpendiculares: um deles é a base e o outro, a altura. Área = 15·8 ÷ 2 = <b>60 cm²</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Relações métricas no triângulo retângulo</h3>
+  <p>Baixe a <b>altura</b> <var>h</var> do ângulo reto até a hipotenusa. Ela divide a hipotenusa em dois pedaços, <var>m</var> e <var>n</var> (as projeções dos catetos sobre a hipotenusa), e forma dois triângulos menores, semelhantes ao grande.</p>
+  <figure><svg viewBox="0 0 640 290" role="img" aria-label="Triângulo retângulo com a hipotenusa na base, a altura h relativa à hipotenusa e as projeções m e n dos catetos sobre a hipotenusa">
+<path d="M80 230 L480 230 L224 38 Z" class="w pc"/>
+<line x1="224" y1="38" x2="224" y2="230" class="dash pa"/>
+<path d="M215.6 49.2 L226.8 57.6 L235.2 46.4" class="arc"/><path d="M224 216 L238 216 L238 230" class="arc"/>
+<text x="152" y="254" class="ts" text-anchor="middle">m = 3,6</text><text x="352" y="254" class="ts" text-anchor="middle">n = 6,4</text>
+<text x="280" y="282" class="ts" text-anchor="middle">hipotenusa a = 10</text>
+<text x="236" y="150" class="ts fa">h = 4,8</text>
+<text x="134" y="126" class="ts" text-anchor="end">c = 6</text><text x="372" y="126" class="ts">b = 8</text>
+<text x="530" y="90" class="ts">h² = m · n</text><text x="530" y="125" class="ts">c² = a · m</text><text x="530" y="160" class="ts">b² = a · n</text><text x="530" y="195" class="ts">b · c = a · h</text>
+</svg><figcaption>Figura 7. Triângulo de catetos 6 e 8 e hipotenusa 10. A altura h = 4,8 divide a hipotenusa em m = 3,6 (ao lado do cateto 6) e n = 6,4 (ao lado do cateto 8).</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Relações métricas</p>
+    <div class="eq-main"><var>h</var>² = <var>m</var>·<var>n</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>c</var>² = <var>a</var>·<var>m</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>b</var>² = <var>a</var>·<var>n</var> &nbsp;&nbsp;&nbsp;&nbsp; <var>b</var>·<var>c</var> = <var>a</var>·<var>h</var></div>
+    <dl>
+      <dt><var>a</var></dt><dd>hipotenusa, igual a <var>m</var> + <var>n</var></dd>
+      <dt><var>b</var>, <var>c</var></dt><dd>catetos; <var>m</var> é a projeção de <var>c</var> e <var>n</var> é a de <var>b</var></dd>
+      <dt><var>h</var></dt><dd>altura relativa à hipotenusa</dd>
+      <dt><var>m</var>, <var>n</var></dt><dd>pedaços da hipotenusa; <var>m</var> + <var>n</var> = <var>a</var></dd>
+    </dl>
+  </div>
+  <p>Em cada relação, <b>um quadrado é igual ao produto de duas medidas</b>. A última, <var>b</var>·<var>c</var> = <var>a</var>·<var>h</var>, mostra que o produto dos catetos é igual ao produto da hipotenusa pela altura: duas maneiras de escrever o dobro da área.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 26</p>
+    <p>Num triângulo retângulo de catetos <var>c</var> = 6 e <var>b</var> = 8, calcule a hipotenusa, a altura relativa a ela e as projeções <var>m</var> e <var>n</var>.</p>
+    <ol class="steps">
+      <li>Hipotenusa: <var>a</var> = √(36 + 64) = √100 = <b>10</b>.</li>
+      <li>Altura, por <var>b</var>·<var>c</var> = <var>a</var>·<var>h</var>: 8·6 = 10·<var>h</var>, então <var>h</var> = 48 ÷ 10 = <b>4,8</b>.</li>
+      <li>Projeções: <var>c</var>² = <var>a</var>·<var>m</var> dá 36 = 10<var>m</var>, logo <var>m</var> = <b>3,6</b>; <var>b</var>² = <var>a</var>·<var>n</var> dá 64 = 10<var>n</var>, logo <var>n</var> = <b>6,4</b>.</li>
+      <li>Conferindo: <var>m</var> + <var>n</var> = 3,6 + 6,4 = 10 e <var>h</var>² = <var>m</var>·<var>n</var> = 3,6·6,4 = 23,04 = 4,8².</li>
+    </ol>
+  </div>
+
+  <h3>Perímetros e áreas das figuras planas</h3>
+  <p><b>Perímetro</b> é o <b>comprimento do contorno</b> (soma dos lados): mede-se em metros, centímetros. <b>Área</b> é a <b>superfície</b>: mede-se em m², cm². O perímetro serve para cercas, rodapés e molduras; a área, para pisos, pinturas e chapas.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Figura</th><th>Área</th><th>Quem é cada letra</th></tr></thead>
+    <tbody>
+      <tr><td>Quadrado</td><td><var>A</var> = <var>l</var>²</td><td><var>l</var>: lado; perímetro 4<var>l</var></td></tr>
+      <tr><td>Retângulo</td><td><var>A</var> = <var>b</var>·<var>h</var></td><td><var>b</var>: base; <var>h</var>: altura; perímetro 2(<var>b</var> + <var>h</var>)</td></tr>
+      <tr><td>Paralelogramo</td><td><var>A</var> = <var>b</var>·<var>h</var></td><td><var>h</var>: altura (perpendicular à base), e não o lado inclinado</td></tr>
+      <tr><td>Triângulo</td><td><var>A</var> = <var>b</var>·<var>h</var> ÷ 2</td><td><var>h</var>: altura relativa à base <var>b</var></td></tr>
+      <tr><td>Trapézio</td><td><var>A</var> = (<var>B</var> + <var>b</var>)·<var>h</var> ÷ 2</td><td><var>B</var>, <var>b</var>: bases paralelas; <var>h</var>: altura entre elas</td></tr>
+      <tr><td>Losango</td><td><var>A</var> = <var>D</var>·<var>d</var> ÷ 2</td><td><var>D</var>, <var>d</var>: as duas diagonais</td></tr>
+      <tr><td>Círculo</td><td><var>A</var> = π·<var>r</var>²</td><td><var>r</var>: raio (metade do diâmetro); circunferência 2π<var>r</var></td></tr>
+    </tbody>
+  </table></div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 27</p>
+    <p>Uma sala retangular mede 7,5 m por 4 m. Calcule a área do piso e o perímetro, para comprar o rodapé.</p>
+    <ol class="steps">
+      <li>Área: 7,5·4 = <b>30 m²</b>.</li>
+      <li>Perímetro: 2·(7,5 + 4) = 2·11,5 = <b>23 m</b> de contorno.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 28</p>
+    <p>Um terreno em forma de trapézio tem bases de 12 m e 8 m e altura de 5 m. Qual a área? E uma laje circular de 5 m de raio (π = 3,14): área e comprimento da borda?</p>
+    <ol class="steps">
+      <li>Trapézio: <var>A</var> = (12 + 8)·5 ÷ 2 = 20·5 ÷ 2 = <b>50 m²</b>.</li>
+      <li>Círculo: <var>A</var> = π·<var>r</var>² = 3,14·5² = 3,14·25 = <b>78,5 m²</b>.</li>
+      <li>Borda: 2π<var>r</var> = 2·3,14·5 = <b>31,4 m</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>(1)</b> Não esqueça o <b>÷ 2</b> do triângulo e do trapézio. <b>(2)</b> A altura é <b>perpendicular</b> à base, não é o lado inclinado. <b>(3)</b> O raio é <b>metade</b> do diâmetro; erre isso e a área do círculo erra por um fator 4. <b>(4)</b> Converta antes de calcular: 1 m² = 10.000 cm² (e não 100). <b>(5)</b> Ao procurar um cateto, a conta é uma <b>subtração</b>.</p>
+  </div>
+
+  <div class="quiz" data-set="b7"></div>
+</section>
+
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Função do 1º grau</td><td><var>f</var>(<var>x</var>) = <var>a</var>·<var>x</var> + <var>b</var></td><td><var>a</var>: taxa (inclinação); <var>b</var>: valor em <var>x</var> = 0; raiz <var>x</var> = −<var>b</var>/<var>a</var></td></tr>
+      <tr><td>Coeficiente angular por dois pontos</td><td><var>a</var> = (<var>y</var><sub>2</sub> − <var>y</var><sub>1</sub>)/(<var>x</var><sub>2</sub> − <var>x</var><sub>1</sub>)</td><td>depois ache <var>b</var> com um dos pontos; a função do 1º grau não é proporcional se <var>b</var> ≠ 0</td></tr>
+      <tr><td>Sistema 2 × 2</td><td>substituição ou adição</td><td>corte uma incógnita, ache a outra e volte; confira nas duas equações; veja se a pergunta é uma combinação</td></tr>
+      <tr><td>Equação do 2º grau</td><td>Δ = <var>b</var>² − 4<var>ac</var>; <var>x</var> = (−<var>b</var> ± √Δ)/(2<var>a</var>)</td><td>Δ &gt; 0: duas raízes; Δ = 0: uma; Δ &lt; 0: nenhuma real</td></tr>
+      <tr><td>Soma e produto das raízes</td><td><var>S</var> = −<var>b</var>/<var>a</var>; <var>P</var> = <var>c</var>/<var>a</var></td><td>serve para conferir as raízes e para achar dois números por soma e produto</td></tr>
+      <tr><td>Vértice da parábola</td><td><var>x</var><sub>v</sub> = −<var>b</var>/(2<var>a</var>); <var>y</var><sub>v</sub> = −Δ/(4<var>a</var>)</td><td><var>a</var> &lt; 0: <var>y</var><sub>v</sub> é o máximo; <var>a</var> &gt; 0: é o mínimo</td></tr>
+      <tr><td>Regras das potências</td><td><var>b</var><sup><var>m</var></sup>·<var>b</var><sup><var>n</var></sup> = <var>b</var><sup><var>m</var>+<var>n</var></sup>; (<var>b</var><sup><var>m</var></sup>)<sup><var>n</var></sup> = <var>b</var><sup><var>m</var>·<var>n</var></sup></td><td><var>b</var><sup>−<var>n</var></sup> = 1/<var>b</var><sup><var>n</var></sup>; mesma base: some os expoentes ao multiplicar</td></tr>
+      <tr><td>Função exponencial</td><td><var>f</var>(<var>x</var>) = <var>a</var>·<var>b</var><sup><var>x</var></sup></td><td><var>b</var> &gt; 1 cresce; 0 &lt; <var>b</var> &lt; 1 decresce; <var>b</var> = 1 ± <var>p</var>/100; nunca dá zero nem negativo</td></tr>
+      <tr><td>Equação exponencial</td><td><var>b</var><sup><var>m</var></sup> = <var>b</var><sup><var>n</var></sup> ⟺ <var>m</var> = <var>n</var></td><td>escreva os dois lados na mesma base (8 = 2³, 27 = 3³) e iguale os expoentes</td></tr>
+      <tr><td>Definição de logaritmo</td><td>log<sub><var>b</var></sub> <var>a</var> = <var>x</var> ⟺ <var>b</var><sup><var>x</var></sup> = <var>a</var></td><td><var>a</var> &gt; 0, <var>b</var> &gt; 0 e <var>b</var> ≠ 1; sem base escrita, é 10</td></tr>
+      <tr><td>Propriedades do logaritmo</td><td>log(<var>ac</var>) = log <var>a</var> + log <var>c</var>; log(<var>a</var>/<var>c</var>) = log <var>a</var> − log <var>c</var>; log <var>a</var><sup><var>k</var></sup> = <var>k</var>·log <var>a</var></td><td>log(<var>a</var> + <var>c</var>) não é log <var>a</var> + log <var>c</var>; mudança de base: log<sub><var>b</var></sub> <var>a</var> = log <var>a</var>/log <var>b</var></td></tr>
+      <tr><td>Razões trigonométricas</td><td>sen θ = oposto/hipotenusa; cos θ = adjacente/hipotenusa; tg θ = oposto/adjacente</td><td>SOH-CAH-TOA; sen² θ + cos² θ = 1; notáveis: 30°, 45°, 60°</td></tr>
+      <tr><td>Função seno</td><td><var>f</var>(<var>t</var>) = <var>A</var> + <var>B</var>·sen(<var>k</var>·<var>t</var>)</td><td>período 2π/<var>k</var>; máximo <var>A</var> + <var>B</var>; mínimo <var>A</var> − <var>B</var>; 180° = π rad</td></tr>
+      <tr><td>Teorema de Pitágoras</td><td><var>a</var>² = <var>b</var>² + <var>c</var>²</td><td><var>a</var> é a hipotenusa; para achar um cateto, subtraia; trios 3-4-5, 5-12-13, 8-15-17</td></tr>
+      <tr><td>Relações métricas</td><td><var>h</var>² = <var>m</var>·<var>n</var>; <var>c</var>² = <var>a</var>·<var>m</var>; <var>b</var>² = <var>a</var>·<var>n</var>; <var>b</var>·<var>c</var> = <var>a</var>·<var>h</var></td><td><var>h</var>: altura relativa à hipotenusa; <var>m</var> + <var>n</var> = <var>a</var></td></tr>
+      <tr><td>Áreas planas</td><td>triângulo <var>bh</var>/2; trapézio (<var>B</var> + <var>b</var>)<var>h</var>/2; losango <var>Dd</var>/2; círculo π<var>r</var>²</td><td>retângulo <var>bh</var>; perímetro: soma dos lados; circunferência 2π<var>r</var>; 1 m² = 10.000 cm²</td></tr>
+      <tr><td>Volumes</td><td>prisma e cilindro <var>A</var><sub>b</sub>·<var>h</var>; cone e pirâmide <var>A</var><sub>b</sub>·<var>h</var>/3; esfera 4π<var>r</var>³/3</td><td>1 m³ = 1.000 L; raio é metade do diâmetro</td></tr>
+      <tr><td>Áreas de sólidos</td><td>cilindro lateral 2π<var>rh</var>; cone lateral π<var>rg</var>; esfera 4π<var>r</var>²</td><td><var>g</var>² = <var>r</var>² + <var>h</var>²; paralelepípedo: 2(<var>cl</var> + <var>ch</var> + <var>lh</var>)</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, conteúdo de Matemática, itens 3, 4, 9 e 10 — conferidos na transcrição do edital usada pelo app (data/biblioteca.js).</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, nível médio (questões 16, 18, 19 e 20 de Matemática), conferido no texto do PDF da prova, e o gabarito oficial (B, B, D e D); usados só para identificar o estilo de cobrança.</li>
+    <li>U. Sodré e A. F. Barbieri, <a href="https://www.uel.br/projetos/matessencial/basico/fundamental/equac2g.html"><i>Matemática Essencial – Equações do segundo grau</i></a> (Universidade Estadual de Londrina): forma ax² + bx + c = 0 com a ≠ 0, discriminante Δ = b² − 4ac, fórmula de Bhaskara e a dedução por completamento de quadrados <span class="confira">(lidos o início e a dedução; as seções de equações incompletas, fracionárias e biquadradas não foram relidas)</span>.</li>
+    <li>U. Sodré, <a href="https://www.uel.br/projetos/matessencial/basico/medio/logaritmos.html"><i>Matemática Essencial – Logaritmos</i></a> (UEL): propriedades do produto, do quociente e da potência, ln 1 = 0, exemplo de comparação 2·ln 3 e 3·ln 2 <span class="confira">(a página trata o logaritmo natural; a extensão para uma base qualquer e a mudança de base seguem os livros-texto, e o resto da página não foi relido)</span>.</li>
+    <li>S. F. L. Toffoli e U. Sodré, <a href="https://www.uel.br/projetos/matessencial/basico/medio/exponenciais.html"><i>Matemática Essencial – Funções exponenciais</i></a> (UEL): a exponencial como inversa do logaritmo, domínio real e imagem positiva <span class="confira">(lido só o início; a página trata a exponencial natural de base e)</span>.</li>
+    <li><a href="https://brasilescola.uol.com.br/matematica/esfera.htm">Brasil Escola, <i>Esfera: elementos, área da superfície, volume</i></a>: a página abriu, mas as fórmulas aparecem como imagens e não vieram no texto <span class="confira">(V = 4πr³/3 e A = 4πr² foram confirmadas só indiretamente: o exercício da página com volume de 7.234,56 cm³ e π = 3,14 dá r = 12 cm com essa fórmula; o gabarito da página não foi lido)</span>.</li>
+    <li>Triângulo retângulo (Pitágoras e relações métricas), razões trigonométricas, áreas planas, volumes de prisma, cilindro, cone e pirâmide, sistemas lineares e funções do 1º grau: <span class="confira">sem página aberta para estes temas nesta redação; as fórmulas são as dos livros-texto, e cada exemplo foi recalculado.</span></li>
+    <li>Bibliografia de apoio, sem consulta direta nesta redação: G. Iezzi e outros, <i>Fundamentos de Matemática Elementar</i>, volumes 1 a 4, 9 e 10 (Atual); L. R. Dante, <i>Matemática: contexto e aplicações</i> (Ática).</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+
+</main>
+</div>
+
+<!-- ============ SEÇÃO 8 ============ -->
+<section id="b8" class="block">
+  <div class="block-head"><span class="block-num">8</span><h2>Geometria espacial: áreas e volumes</h2></div>
+  <p class="edital-ref">Edital, Mat 10</p>
+
+  <h3>Volume é "base vezes altura"; a ponta divide por 3</h3>
+  <p><b>Volume</b> é o espaço que o sólido ocupa (m³, cm³, litros). <b>Área da superfície</b> é a "pele" do sólido, a soma das áreas de todas as faces (m², cm²). Quase tudo se reduz a duas ideias:</p>
+  <ul>
+    <li>Sólidos de <b>seção constante</b> (prisma, paralelepípedo, cilindro): <b>V = área da base × altura</b>.</li>
+    <li>Sólidos que <b>terminam em ponta</b> (pirâmide, cone): <b>V = (área da base × altura) ÷ 3</b>.</li>
+  </ul>
+  <figure><svg viewBox="0 0 640 280" role="img" aria-label="Um cilindro de raio r e altura h, um cone de raio r, altura h e geratriz g e uma esfera de raio r">
+<ellipse cx="110" cy="70" rx="60" ry="22" class="w pc"/>
+<path d="M50 70 L50 210 M170 70 L170 210" class="w pc"/>
+<path d="M50 210 A60 22 0 0 0 170 210" class="w pc"/><path d="M50 210 A60 22 0 0 1 170 210" class="dash pc"/>
+<line x1="110" y1="70" x2="170" y2="70" class="ar ink"/><text x="180" y="66" class="ts">r</text>
+<line x1="215" y1="70" x2="215" y2="210" class="ar ink"/><text x="225" y="145" class="ts">h</text>
+<path d="M330 210 L400 40 L470 210" class="w pc"/>
+<path d="M330 210 A70 20 0 0 0 470 210" class="w pc"/><path d="M330 210 A70 20 0 0 1 470 210" class="dash pc"/>
+<line x1="400" y1="40" x2="400" y2="210" class="dash ink"/><text x="408" y="130" class="ts">h</text>
+<line x1="400" y1="210" x2="470" y2="210" class="ar ink"/><text x="478" y="214" class="ts">r</text>
+<text x="458" y="118" class="ts">g</text>
+<circle cx="570" cy="125" r="50" class="w pc"/>
+<path d="M520 125 A50 14 0 0 0 620 125" class="w pc"/><path d="M520 125 A50 14 0 0 1 620 125" class="dash pc"/>
+<line x1="570" y1="125" x2="620" y2="125" class="ar ink"/><text x="627" y="129" class="ts">r</text>
+<text x="110" y="262" class="tl" text-anchor="middle">Cilindro</text><text x="400" y="262" class="tl" text-anchor="middle">Cone</text><text x="570" y="262" class="tl" text-anchor="middle">Esfera</text>
+</svg><figcaption>Figura 8. Cilindro (raio r e altura h), cone (raio r, altura h e geratriz g, a "linha inclinada" da lateral) e esfera (raio r).</figcaption></figure>
+  <div class="eq">
+    <p class="eq-name">Volumes</p>
+    <div class="eq-main">Prisma e cilindro: <var>V</var> = <var>A</var><sub>b</sub>·<var>h</var> &nbsp;&nbsp;&nbsp;&nbsp; Pirâmide e cone: <var>V</var> = <var>A</var><sub>b</sub>·<var>h</var> ÷ 3 &nbsp;&nbsp;&nbsp;&nbsp; Esfera: <var>V</var> = 4π<var>r</var>³ ÷ 3</div>
+    <dl>
+      <dt><var>V</var></dt><dd>volume, em m³ (ou cm³, L)</dd>
+      <dt><var>A</var><sub>b</sub></dt><dd>área da base: <var>c</var>·<var>l</var> num paralelepípedo, π<var>r</var>² num cilindro ou cone</dd>
+      <dt><var>h</var></dt><dd>altura, perpendicular à base (não é a geratriz do cone)</dd>
+      <dt><var>r</var></dt><dd>raio (metade do diâmetro), na mesma unidade da altura</dd>
+    </dl>
+  </div>
+  <div class="eq">
+    <p class="eq-name">Áreas</p>
+    <div class="eq-main">Paralelepípedo: <var>A</var> = 2(<var>cl</var> + <var>ch</var> + <var>lh</var>) &nbsp;&nbsp;&nbsp;&nbsp; Cilindro: <var>A</var><sub>lat</sub> = 2π<var>rh</var> &nbsp;&nbsp;&nbsp;&nbsp; Cone: <var>A</var><sub>lat</sub> = π<var>rg</var> &nbsp;&nbsp;&nbsp;&nbsp; Esfera: <var>A</var> = 4π<var>r</var>²</div>
+    <dl>
+      <dt><var>c</var>, <var>l</var>, <var>h</var></dt><dd>comprimento, largura e altura da caixa, na mesma unidade</dd>
+      <dt><var>A</var><sub>lat</sub></dt><dd>área lateral (sem as bases); some π<var>r</var>² de cada base para a área total (cilindro: 2π<var>r</var>(<var>r</var> + <var>h</var>))</dd>
+      <dt><var>g</var></dt><dd>geratriz do cone: <var>g</var>² = <var>r</var>² + <var>h</var>² (Pitágoras)</dd>
+    </dl>
+  </div>
+  <div class="box conceito">
+    <p class="box-title">Método</p>
+    <ol class="steps">
+      <li><b>Identifique o sólido</b> e as medidas: raio ou diâmetro? altura ou geratriz?</li>
+      <li><b>Ponha tudo na mesma unidade</b> antes de calcular.</li>
+      <li><b>Escolha a fórmula</b>: volume (base × altura, ÷ 3 se terminar em ponta) ou área.</li>
+      <li><b>Converta o resultado</b> se a pergunta pedir litros: 1 m³ = 1.000 L (e 1 L = 1 dm³; 1 m³ = 1.000.000 cm³).</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 29</p>
+    <p>Uma caixa-d'água em forma de paralelepípedo mede 3 m de comprimento, 2 m de largura e 1,5 m de altura. Qual a capacidade, em litros, e qual a área total da superfície (paredes, fundo e tampa)?</p>
+    <ol class="steps">
+      <li>Volume: 3·2·1,5 = <b>9 m³</b>.</li>
+      <li>Em litros: 9·1.000 = <b>9.000 L</b>.</li>
+      <li>Área total: 2·(3·2 + 3·1,5 + 2·1,5) = 2·(6 + 4,5 + 3) = 2·13,5 = <b>27 m²</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 30</p>
+    <p>Um tanque cilíndrico tem raio de 1 m e altura de 3 m. Usando π = 3,14, calcule o volume em litros, a área lateral e a área total.</p>
+    <ol class="steps">
+      <li>Base: π<var>r</var>² = 3,14·1² = 3,14 m². Volume = 3,14·3 = <b>9,42 m³</b>, isto é, <b>9.420 L</b>.</li>
+      <li>Área lateral: 2π<var>rh</var> = 2·3,14·1·3 = <b>18,84 m²</b> (é o retângulo de comprimento 2π<var>r</var> e altura <var>h</var> que se obtém ao abrir o cilindro).</li>
+      <li>Área total: lateral + duas bases = 18,84 + 2·3,14 = 18,84 + 6,28 = <b>25,12 m²</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 31</p>
+    <p>Um cone tem 6 cm de raio e 8 cm de altura. Com π = 3,14, calcule a geratriz, o volume e a área lateral.</p>
+    <ol class="steps">
+      <li>Geratriz: <var>g</var>² = 6² + 8² = 36 + 64 = 100, logo <var>g</var> = <b>10 cm</b>.</li>
+      <li>Volume: <var>V</var> = π<var>r</var>²<var>h</var> ÷ 3 = 3,14·36·8 ÷ 3 = 904,32 ÷ 3 = <b>301,44 cm³</b>.</li>
+      <li>Área lateral: π<var>rg</var> = 3,14·6·10 = <b>188,4 cm²</b>. Repare que a geratriz entra na área lateral, e a altura, no volume.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 32</p>
+    <p>Uma pirâmide tem base quadrada de 6 m de lado e 4 m de altura. Um tanque esférico tem raio de 3 m (π = 3,14). Calcule o volume da pirâmide e o da esfera; depois, a área de uma esfera de raio 5 m.</p>
+    <ol class="steps">
+      <li>Pirâmide: base = 6·6 = 36 m²; <var>V</var> = 36·4 ÷ 3 = 144 ÷ 3 = <b>48 m³</b>.</li>
+      <li>Esfera: <var>V</var> = 4·3,14·3³ ÷ 3 = 4·3,14·27 ÷ 3 = 339,12 ÷ 3 = <b>113,04 m³</b>.</li>
+      <li>Área da esfera de raio 5: 4π<var>r</var>² = 4·3,14·25 = <b>314 m²</b>.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p><b>(1)</b> O enunciado dá o <b>diâmetro</b> e a fórmula pede o <b>raio</b>: divida por 2. <b>(2)</b> Cone e pirâmide levam <b>÷ 3</b>; cilindro e prisma, não. <b>(3)</b> No cone, a altura <var>h</var> vai no volume e a geratriz <var>g</var> vai na área lateral. <b>(4)</b> Litros não saem de m³ sem multiplicar por 1.000. <b>(5)</b> Volume (de três medidas) e área (de duas) são coisas diferentes: confira a unidade do resultado.</p>
+  </div>
+
+  <div class="quiz" data-set="b8"></div>
+</section>
+
+<script>
+const QUIZ = {"b1":[{"s":"O custo C, em reais, de uma manutenção em um quadro de comando é dado por C(x) = 40x + 120, em que x é o número de horas de serviço. Um serviço custou R$ 440,00. O número de horas trabalhadas foi","o":["3 horas","8 horas","11 horas","14 horas","320 horas"],"a":1,"c":"Custo = 40x + 120. Então 440 = 40x + 120; 40x = 440 − 120 = 320; x = 320 ÷ 40 = 8 horas. As outras alternativas vêm de erros comuns: 3 horas é o número de horas que a taxa fixa pagaria (120 ÷ 40), e não o tempo de serviço; 11 horas divide o custo total por 40 sem descontar a taxa fixa de R$ 120,00; 14 horas soma a taxa fixa de R$ 120,00 em vez de subtraí-la; 320 horas para em 440 − 120 = 320 e esquece de dividir por 40."},{"s":"Uma função f(x) = ax + b passa pelos pontos (2; 30) e (6; 50). O valor de f(10) é","o":["190","150","100","80","70"],"a":4,"c":"a = (50 − 30)/(6 − 2) = 20/4 = 5. Em f(2) = 30: 5 · 2 + b = 30, logo b = 20. Então f(10) = 5 · 10 + 20 = 70. As outras alternativas vêm de erros comuns: 190 toma a = 50 − 30 = 20 sem dividir por 6 − 2 (e então b = 30 − 20·2 = −10); 150 trata f como proporcional a x (30 por 2 unidades, logo 30 · 10 ÷ 2) e ignora o termo b; 100 usa b = 50, que é o valor de f(6), e não o de f(0); 80 usa b = 30, que é o valor de f(2), e não o de f(0)."},{"s":"O valor de x que satisfaz a equação 4(x − 3) − 2(x − 5) = 3x − 7 é","o":["−15","−5","5","9","14"],"a":2,"c":"Distribua: 4x − 12 − 2x + 10 = 3x − 7, isto é, 2x − 2 = 3x − 7. Termos em x de um lado, números do outro: −2 + 7 = 3x − 2x, logo x = 5. Conferindo: 4 · 2 − 2 · 0 = 8 e 3 · 5 − 7 = 8. As outras alternativas vêm de erros comuns: −15 não distribui o sinal de menos em −2(x − 5): fica 4x − 12 − 2x − 10 = 3x − 7 e dá x = −15; −5 chega a −x = −5 e responde −5, sem inverter o sinal dos dois lados; 9 troca o sinal do 2 ao passá-lo para o outro lado (2x − 3x = −7 − 2); 14 distribui o 4 só no x (4x − 3), sem multiplicar o −3."},{"s":"Em três dias, uma equipe instalou 1.140 m de eletroduto. No segundo dia instalou 60 m a mais que no primeiro e, no terceiro dia, metade do que instalou no segundo. No primeiro dia, a equipe instalou","o":["380 m","420 m","432 m","480 m","540 m"],"a":1,"c":"Seja x o primeiro dia. O segundo é x + 60, e o terceiro, (x + 60)/2. Soma: x + (x + 60) + (x + 60)/2 = 1.140. Multiplicando tudo por 2: 2x + 2x + 120 + x + 60 = 2.280; 5x = 2.100; x = 420 m. Conferindo: 420 + 480 + 240 = 1.140. As outras alternativas vêm de erros comuns: 380 m divide o total por 3, como se os três dias fossem iguais; 432 m toma o terceiro dia como metade do primeiro (x + x + 60 + x/2 = 1.140); 480 m é o que se instalou no segundo dia (420 + 60); 540 m esquece o terceiro dia (x + x + 60 = 1.140)."}],"b2":[{"s":"Um eletricista pagou R$ 55,00 por 2 disjuntores e 3 tomadas; outro pagou R$ 23,00 por 1 disjuntor e 1 tomada, dos mesmos tipos. O preço de um disjuntor é","o":["R$ 32,00","R$ 27,50","R$ 23,00","R$ 18,33","R$ 14,00"],"a":4,"c":"Sendo d o disjuntor e t a tomada: d + t = 23, logo d = 23 − t. Em 2d + 3t = 55: 2(23 − t) + 3t = 55; 46 + t = 55; t = 9. Então d = 23 − 9 = R$ 14,00. Conferindo: 2 · 14 + 3 · 9 = 55. As outras alternativas vêm de erros comuns: R$ 32,00 subtrai as duas compras (55 − 23) sem eliminar uma incógnita; R$ 27,50 divide 55 por 2 e ignora as tomadas; R$ 23,00 é o preço de um disjuntor mais uma tomada; R$ 18,33 divide 55 por 3 e ignora os disjuntores."},{"s":"Os preços por hora de um eletricista (x) e de um auxiliar (y), em reais, satisfazem o sistema 4x + 3y = 400 e 2x − 3y = 20. O valor de x + y, em reais por hora, é","o":["R$ 40,00","R$ 70,00","R$ 110,00","R$ 140,00","R$ 2.800,00"],"a":2,"c":"Somando as duas equações, o termo em y desaparece: 6x = 420, logo x = 70. Em 4x + 3y = 400: 280 + 3y = 400; 3y = 120; y = 40. Então x + y = 70 + 40 = 110. Conferindo na segunda: 2 · 70 − 3 · 40 = 20. As outras alternativas vêm de erros comuns: R$ 40,00 é só o valor de y; a pergunta é x + y; R$ 70,00 é só o valor de x; a pergunta é x + y; R$ 140,00 dobra o valor de x (2 · 70), sem calcular y; R$ 2.800,00 multiplica x por y (70 · 40) em vez de somar."},{"s":"1 m de cabo A e 1 m de cabo B custam, juntos, R$ 14,00. 3 m de A e 2 m de B custam R$ 33,00. Quanto custam 2 m de A e 1 m de B?","o":["R$ 47,00","R$ 33,00","R$ 28,00","R$ 23,00","R$ 19,00"],"a":4,"c":"Subtraia a primeira compra da segunda: (3A + 2B) − (A + B) = 33 − 14, isto é, 2A + B = 19. Conferindo: A = 5 e B = 9 satisfazem as duas compras (5 + 9 = 14 e 15 + 18 = 33), e 2 · 5 + 9 = 19. As outras alternativas vêm de erros comuns: R$ 47,00 soma as duas compras; R$ 33,00 é o preço da segunda compra (3 m de A e 2 m de B); R$ 28,00 dobra o preço do par A + B (2 · 14), sem separar A de B; R$ 23,00 troca os preços: usa A = 9 e B = 5 (2 · 9 + 5)."},{"s":"O sistema formado por 2x + ky = 7 e 6x + 9y = 21 tem infinitas soluções. O valor de k é","o":["3","4,5","6","7","9"],"a":0,"c":"Infinitas soluções: uma equação é múltipla da outra. A segunda, 6x + 9y = 21, é o triplo da primeira quando 6 = 3 · 2, 21 = 3 · 7 e 9 = 3k. Logo k = 9 ÷ 3 = 3. As outras alternativas vêm de erros comuns: 4,5 divide 9 por 2, em vez de dividir pelo fator 3 que liga as equações; 6 copia o coeficiente de x da segunda equação; 7 copia o termo independente da primeira equação; 9 copia o coeficiente de y da segunda equação, sem dividir por 3."}],"b3":[{"s":"A maior raiz da equação x² − 9x + 14 = 0 é","o":["−2","2","7","9","14"],"a":2,"c":"a = 1, b = −9 e c = 14. Δ = (−9)² − 4 · 1 · 14 = 81 − 56 = 25. x = (9 ± 5)/2, isto é, x = 7 ou x = 2. A maior é 7. Conferindo: 7 + 2 = 9 e 7 · 2 = 14. As outras alternativas vêm de erros comuns: −2 usa b = −9 no lugar de −b: (−9 + 5)/2 = −2; 2 é a menor raiz; a pergunta é a maior; 9 é a soma das raízes (−b/a), e não uma raiz; 14 é o produto das raízes (c/a), e não uma raiz."},{"s":"O lucro L de uma oficina, em milhares de reais, é dado por L(x) = −x² + 16x − 39, em que x é o número de contratos fechados no mês. O lucro máximo possível, em milhares de reais, é","o":["R$ 25 mil","R$ 39 mil","R$ 64 mil","R$ 100 mil","R$ 153 mil"],"a":0,"c":"Como a = −1 &lt; 0, o gráfico tem um máximo, no vértice. x<sub>v</sub> = −b/(2a) = −16/(−2) = 8. O lucro nesse ponto é L(8) = −8² + 16 · 8 − 39 = −64 + 128 − 39 = 25. Conferindo por −Δ/(4a): Δ = 256 − 156 = 100 e −100/(−4) = 25. As outras alternativas vêm de erros comuns: R$ 39 mil é o termo independente, isto é, o prejuízo com nenhum contrato (L(0) = −39); R$ 64 mil é x<sub>v</sub>² = 8², um número sem relação com o lucro máximo; R$ 100 mil é o discriminante Δ = 256 − 156, sem dividir por −4a; R$ 153 mil calcula 8² com sinal positivo em L(8): +64 + 128 − 39."},{"s":"O comprimento de uma sala retangular excede a largura em 3 m, e a área é de 40 m². O perímetro da sala, em metros, é","o":["13 m","16 m","26 m","32 m","40 m"],"a":2,"c":"Largura x e comprimento x + 3: x(x + 3) = 40; x² + 3x − 40 = 0. Δ = 9 + 160 = 169; x = (−3 ± 13)/2, isto é, x = 5 ou x = −8. A largura é positiva: x = 5 e o comprimento é 8. Perímetro = 2 · (5 + 8) = 26 m. As outras alternativas vêm de erros comuns: 13 m é o semiperímetro (5 + 8); falta dobrar; 16 m é só o dobro do comprimento; 32 m trata a sala como um quadrado de lado 8; 40 m é a área da sala, e não o perímetro."},{"s":"Para que a equação x² − 6x + k = 0 tenha uma única raiz real, o valor de k deve ser","o":["3","9","12","18","36"],"a":1,"c":"Uma única raiz real: Δ = 0. Δ = (−6)² − 4 · 1 · k = 36 − 4k = 0, logo k = 9. Conferindo: x² − 6x + 9 = (x − 3)², cuja única raiz é x = 3. As outras alternativas vêm de erros comuns: 3 é a metade de b (e a raiz que resulta), mas não vem da condição Δ = 0; 12 calcula 36 ÷ 3, sem usar o 4 de 4ac; 18 resolve 36 − 2k = 0, como se 4ac fosse 2k; 36 é b²; esquece de subtrair 4 · 1 · k e de igualar a zero."}],"b4":[{"s":"O valor V de um gerador, em reais, depois de t anos de uso é dado por V(t) = 60.000 · 0,9<sup>t</sup>. Depois de 2 anos, o valor do gerador é","o":["R$ 108.000,00","R$ 72.600,00","R$ 60.000,00","R$ 54.000,00","R$ 48.600,00"],"a":4,"c":"Substitua t = 2: 0,9² = 0,81. V(2) = 60.000 · 0,81 = R$ 48.600,00. As outras alternativas vêm de erros comuns: R$ 108.000,00 multiplica a base pelo expoente (0,9 · 2) em vez de elevar; R$ 72.600,00 usa o fator 1,1 (alta de 10%) no lugar de 0,9; R$ 60.000,00 ignora o expoente: V(2) igual ao valor inicial; R$ 54.000,00 calcula só 1 ano (0,9<sup>1</sup>); o expoente é 2."},{"s":"O valor de x que torna verdadeira a igualdade 2<sup>x + 3</sup> = 64 é","o":["3","6","9","29","61"],"a":0,"c":"64 = 2<sup>6</sup>, então 2<sup>x + 3</sup> = 2<sup>6</sup>. Com bases iguais, os expoentes são iguais: x + 3 = 6, logo x = 3. Conferindo: 2<sup>6</sup> = 64. As outras alternativas vêm de erros comuns: 6 esquece o 3 do expoente e responde o expoente de 64; 9 soma 3 em vez de subtrair: x = 6 + 3; 29 divide 64 por 2 e subtrai 3, em vez de escrever 64 como potência de 2; 61 iguala o expoente ao próprio 64 (x + 3 = 64)."},{"s":"A solução da equação 4<sup>x</sup> = 32 é","o":["x = 1,25","x = 2,5","x = 5","x = 8","x = 28"],"a":1,"c":"4 = 2² e 32 = 2<sup>5</sup>. Então (2²)<sup>x</sup> = 2<sup>5</sup>, isto é, 2<sup>2x</sup> = 2<sup>5</sup>. Igualando os expoentes: 2x = 5, logo x = 2,5. As outras alternativas vêm de erros comuns: x = 1,25 divide o expoente 5 por 4 (a base), e não por 2 (o expoente de 4 = 2<sup>2</sup>); x = 5 iguala x ao expoente de 32 sem mudar a base: 4<sup>5</sup> não é 32; x = 8 divide 32 por 4, como se a equação fosse 4x = 32; x = 28 subtrai 4 de 32, como se a equação fosse x + 4 = 32."},{"s":"A soma das soluções reais da equação 4<sup>x</sup> − 5 · 2<sup>x</sup> + 4 = 0 é","o":["0","1","2","4","5"],"a":2,"c":"Como 4<sup>x</sup> = (2<sup>x</sup>)², faça y = 2<sup>x</sup>: y² − 5y + 4 = 0. Δ = 25 − 16 = 9 e y = (5 ± 3)/2, isto é, y = 4 ou y = 1. Voltando: 2<sup>x</sup> = 4 dá x = 2; 2<sup>x</sup> = 1 dá x = 0. A soma é 2 + 0 = 2. As outras alternativas vêm de erros comuns: 0 fica só com a solução x = 0 e esquece x = 2; 1 para em y = 1, o menor valor de y; 4 para em y = 4, o maior valor de y; 5 soma os valores de y (1 + 4), sem voltar a x = log<sub>2</sub> y."}],"b5":[{"s":"O valor de log<sub>3</sub> 81 é","o":["243","78","27","4","3"],"a":3,"c":"log<sub>3</sub> 81 = x significa 3<sup>x</sup> = 81. Como 3<sup>4</sup> = 81, x = 4. As outras alternativas vêm de erros comuns: 243 multiplica o logaritmando pela base; 78 subtrai a base do logaritmando; 27 divide o logaritmando pela base; 3 repete a base do logaritmo."},{"s":"Dados log 2 = 0,30 e log 3 = 0,48, o valor de log 18 é","o":["0,29","0,78","1,26","1,74","2,78"],"a":2,"c":"Fatore: 18 = 2 · 3². Então log 18 = log 2 + 2 · log 3 = 0,30 + 2 · 0,48 = 0,30 + 0,96 = 1,26. As outras alternativas vêm de erros comuns: 0,29 multiplica os logaritmos (0,30 · 0,96) em vez de somá-los; 0,78 esquece que o 3 aparece ao quadrado (18 = 2 · 3²) e soma log 2 com log 3; 1,74 fatora 18 como 2 · 3³ (0,30 + 3 · 0,48); 2,78 soma o expoente 2 como parcela (0,30 + 2 + 0,48), em vez de multiplicar log 3 por 2."},{"s":"A solução da equação log<sub>2</sub>(x + 4) = 5 é","o":["x = 1","x = 6","x = 21","x = 28","x = 32"],"a":3,"c":"log<sub>2</sub>(x + 4) = 5 significa 2<sup>5</sup> = x + 4. Então 32 = x + 4 e x = 28. Condição de existência: x + 4 = 32 &gt; 0, que vale. As outras alternativas vêm de erros comuns: x = 1 iguala o logaritmando ao valor do logaritmo (x + 4 = 5); x = 6 multiplica a base pelo resultado (x + 4 = 2 · 5 = 10); x = 21 troca base e expoente (x + 4 = 5<sup>2</sup> = 25); x = 32 para em 2<sup>5</sup> = 32 e esquece de subtrair 4."},{"s":"Um capital rende 20% ao ano, a juros compostos. Use log 2 = 0,30, log 3 = 0,48 e log 10 = 1. Para o capital triplicar, são necessários, aproximadamente,","o":["6 anos","2,5 anos","2,4 anos","1,6 anos","0,44 anos"],"a":0,"c":"Triplicar com fator 1,2 ao ano: 1,2<sup>t</sup> = 3, logo t = log 3 ÷ log 1,2. Como 1,2 = 12/10, log 1,2 = log 12 − log 10 = (2 · 0,30 + 0,48) − 1 = 1,08 − 1 = 0,08. Então t = 0,48 ÷ 0,08 = 6 anos. As outras alternativas vêm de erros comuns: 2,5 anos divide 3 por 1,2, em vez de usar logaritmos; 2,4 anos usa 0,20, a taxa, no lugar de log 1,2; 1,6 anos usa log 2 = 0,30 como se fosse log 1,2; 0,44 anos usa log 12 = 1,08 como se fosse log 1,2."}],"b6":[{"s":"Uma rampa de 10 m de comprimento forma um ângulo de 30° com o piso horizontal. Dados sen 30° = 1/2, cos 30° = √3/2 e tg 30° = √3/3 (use √3 = 1,73), a altura que a rampa atinge é","o":["20 m","17,3 m","8,65 m","5,77 m","5 m"],"a":4,"c":"A altura é o cateto oposto ao ângulo de 30°, e a rampa é a hipotenusa: sen 30° = altura ÷ 10. Altura = 10 · 1/2 = 5 m. As outras alternativas vêm de erros comuns: 20 m divide 10 por sen 30°, como se a rampa fosse o cateto oposto; 17,3 m multiplica 10 por √3, sem dividir por 2; 8,65 m usa o cosseno (10 · √3/2): calcula o cateto adjacente, o comprimento na horizontal; 5,77 m usa a tangente (10 · √3/3), que liga o cateto oposto ao adjacente, e não à hipotenusa."},{"s":"Um poste vertical de 6 m é sustentado por um cabo esticado do seu topo até o solo, formando 30° com o solo. Dados sen 30° = 1/2, cos 30° = √3/2 e tg 30° = √3/3 (use √3 = 1,73), o comprimento do cabo é","o":["12 m","10,4 m","6,94 m","6 m","3 m"],"a":0,"c":"O poste é o cateto oposto ao ângulo de 30°, e o cabo é a hipotenusa: sen 30° = 6 ÷ cabo. Então cabo = 6 ÷ 1/2 = 12 m. As outras alternativas vêm de erros comuns: 10,4 m usa a tangente (6 ÷ √3/3): obtém a distância do pé do poste até onde o cabo toca o solo, e não o cabo; 6,94 m usa o cosseno (6 ÷ √3/2): relaciona o cateto adjacente, e não o oposto, à hipotenusa; 6 m toma o cabo igual ao poste, como se o ângulo fosse de 90°; 3 m multiplica 6 por sen 30° em vez de dividir: a hipotenusa é maior que o cateto."},{"s":"A temperatura T, em °C, de uma sala de painéis varia ao longo do dia segundo T(t) = 25 + 6 · sen(πt/12), em que t é o tempo em horas. O período dessa variação, em horas, é","o":["31","24","12","6,28","6"],"a":1,"c":"O período de sen(kt) é 2π ÷ k. Aqui k = π/12, e então o período é 2π ÷ (π/12) = 2π · 12/π = 24 horas. As outras alternativas vêm de erros comuns: 31 é a temperatura máxima (25 + 6), e não o período; 12 lê o 12 do denominador como se fosse o período; 6,28 é o período de sen t, sem considerar o fator π/12 dentro do seno; 6 é a amplitude da oscilação (o fator 6 antes do seno), e não o período."},{"s":"Em um triângulo retângulo, o ângulo agudo θ tem sen θ = 0,6. Então tg θ é igual a","o":["1,50","1,33","0,80","0,75","0,60"],"a":3,"c":"Use sen² θ + cos² θ = 1: 0,36 + cos² θ = 1; cos² θ = 0,64; cos θ = 0,8 (θ é agudo). Então tg θ = sen θ ÷ cos θ = 0,6 ÷ 0,8 = 0,75. As outras alternativas vêm de erros comuns: 1,50 calcula cos θ como 1 − 0,6 = 0,4, em vez de usar sen² + cos² = 1, e divide 0,6 ÷ 0,4; 1,33 inverte a razão: cos θ ÷ sen θ (a cotangente); 0,80 é o cosseno de θ, e não a tangente; 0,60 repete o valor do seno."}],"b7":[{"s":"Um triângulo ABC é retângulo em A. A hipotenusa BC mede 25 cm e o cateto AB mede 7 cm. A área do triângulo, em cm², é","o":["175 cm²","168 cm²","90,87 cm²","87,5 cm²","84 cm²"],"a":4,"c":"Pitágoras: 25² = 7² + AC², então AC² = 625 − 49 = 576 e AC = 24. Os catetos são perpendiculares: um é a altura do outro. Área = 7 · 24 ÷ 2 = 84 cm². As outras alternativas vêm de erros comuns: 175 cm² multiplica hipotenusa por cateto, sem dividir por 2; 168 cm² esquece de dividir por 2 (7 · 24); 90,87 cm² soma os quadrados (625 + 49) para achar o outro cateto, em vez de subtrair; 87,5 cm² usa a hipotenusa como base (25 · 7 ÷ 2); a base e a altura são os catetos."},{"s":"Em um triângulo retângulo, a altura relativa à hipotenusa mede 12 cm e divide a hipotenusa em dois segmentos. Um deles mede 9 cm. O outro segmento mede, em cm,","o":["135","108","21","16","3"],"a":3,"c":"Relação métrica: h² = m · n. Então 12² = 9 · n, 144 = 9n e n = 16 cm. As outras alternativas vêm de erros comuns: 135 subtrai 9 de 12² (144 − 9) em vez de dividir 144 por 9; 108 multiplica a altura pelo segmento (12 · 9), em vez de usar h² = m · n; 21 soma as medidas (12 + 9); 3 subtrai as medidas (12 − 9), sem usar h² = m · n."},{"s":"Uma chapa circular de aço tem 10 cm de raio e um furo circular central de 6 cm de diâmetro. Com π = 3,14, a área da chapa, em cm², é","o":["304,58","285,74","200,96","153,86","91"],"a":1,"c":"Área = área do disco − área do furo. O furo tem diâmetro 6 e, portanto, raio 3. A = π(10² − 3²) = 3,14 · (100 − 9) = 3,14 · 91 = 285,74 cm². As outras alternativas vêm de erros comuns: 304,58 esquece de elevar o raio do furo ao quadrado (100 − 3); 200,96 usa o diâmetro 6 como raio do furo (100 − 36); 153,86 subtrai os raios antes de elevar ao quadrado: π(10 − 3)²; 91 esquece de multiplicar por π."},{"s":"O piso de uma sala retangular de 6 m por 4,5 m será coberto com placas quadradas de 50 cm de lado, sem sobras. O número de placas necessário é","o":["21","42","54","108","1.080"],"a":3,"c":"Área da sala: 6 · 4,5 = 27 m². Área de uma placa: 0,5 · 0,5 = 0,25 m². Número de placas: 27 ÷ 0,25 = 108. Outro caminho: 6 ÷ 0,5 = 12 placas num lado e 4,5 ÷ 0,5 = 9 no outro; 12 · 9 = 108. As outras alternativas vêm de erros comuns: 21 soma as placas dos dois lados (12 + 9), como se fosse uma fileira em volta da sala; 42 conta as placas ao longo do perímetro da sala; 54 divide a área pela medida do lado da placa (0,5), e não pela área dela (0,25); 1.080 usa 0,025 m² como área da placa (errou ao elevar 0,5 ao quadrado)."}],"b8":[{"s":"Um reservatório em forma de paralelepípedo mede 2,5 m de comprimento, 1,2 m de largura e 0,8 m de altura. Sabendo que 1 m³ = 1.000 litros, a capacidade do reservatório, em litros, é","o":["2.400 L","3.000 L","4.500 L","11.920 L","24.000 L"],"a":0,"c":"V = comprimento · largura · altura = 2,5 · 1,2 · 0,8 = 2,4 m³. Como 1 m³ = 1.000 L, o volume em litros é 2,4 · 1.000 = 2.400 L. As outras alternativas vêm de erros comuns: 3.000 L usa só a área da base (2,5 · 1,2 = 3 m²) e esquece a altura; 4.500 L soma as arestas (2,5 + 1,2 + 0,8 = 4,5) em vez de multiplicá-las; 11.920 L calcula a área total (11,92 m²) e a converte como se fosse volume; 24.000 L converte com 1 m³ = 10.000 L."},{"s":"Um tanque cilíndrico tem 3 m de diâmetro e 4 m de altura. Usando π = 3,14, o volume do tanque, em m³, é","o":["7,07 m³","9,42 m³","18,84 m³","28,26 m³","113,04 m³"],"a":3,"c":"O raio é metade do diâmetro: 3 ÷ 2 = 1,5 m. V = πr²h = 3,14 · 1,5² · 4 = 3,14 · 2,25 · 4 = 28,26 m³. As outras alternativas vêm de erros comuns: 7,07 m³ calcula só a área da base (πr²) e esquece a altura; 9,42 m³ divide por 3, que é a fórmula do cone, e não a do cilindro; 18,84 m³ esquece de elevar o raio ao quadrado (π · r · h); 113,04 m³ usa o diâmetro 3 como raio (3,14 · 3² · 4)."},{"s":"Uma pilha de brita tem a forma de um cone de 3 m de raio e 4 m de altura. Com π = 3,14, o volume da pilha, em m³, é","o":["12 m³","37,68 m³","47,1 m³","113,04 m³","141,3 m³"],"a":1,"c":"V = (1/3) · π · r² · h = (1/3) · 3,14 · 3² · 4 = 3,14 · 36 ÷ 3 = 113,04 ÷ 3 = 37,68 m³. A geratriz (5 m) só entra na área lateral. As outras alternativas vêm de erros comuns: 12 m³ esquece de multiplicar por π; 47,1 m³ usa a geratriz 5 no lugar da altura 4; 113,04 m³ esquece o fator 1/3 do cone; 141,3 m³ usa a geratriz no lugar da altura e esquece o fator 1/3."},{"s":"A superfície externa de um tanque esférico de 6 m de raio será pintada. Com π = 3,14 e área da esfera A = 4πr², a área a ser pintada, em m², é","o":["75,36 m²","113,04 m²","226,08 m²","452,16 m²","904,32 m²"],"a":3,"c":"A = 4πr² = 4 · 3,14 · 6² = 4 · 3,14 · 36 = 452,16 m². As outras alternativas vêm de erros comuns: 75,36 m² esquece de elevar o raio ao quadrado (4 · π · r); 113,04 m² usa a área do círculo máximo (πr²), sem o fator 4; 226,08 m² usa 2πr², que é só uma parte da fórmula; 904,32 m² calcula o volume da esfera (4πr³/3), e não a área da superfície."}]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+</script>
+</body>
+</html>

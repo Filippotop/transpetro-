@@ -1,5 +1,5 @@
 /* Elétrica de Ouro: Plano de 10/11 a 28/11/2026 (DATA.plan). A prova é em 29/11.
-   Ordem: estações prontas pelo peso na prova de 2023 (DATA.mapa2023: E3 8, I1 5, E1 4, M2 4, A2 4, N1 4, X1 4, E2 3, M3 2, M1 0), prova de
+   Ordem: estações prontas pelo peso na prova de 2023 (DATA.mapa2023: E3 8, I1 5, E1 4, M2 4, A2 4, N1 4, X1 4, X2 4, E2 3, M3 2, X3 2, M1 0), prova de
    2023 inteira no primeiro sábado, depois o que ainda não tem estação (eletrônica,
    Matemática e Português fora do app) e a segunda passada pelos erros.
    Tarefa: {k, a, t}. k = mod (estação a), game (jogo a), bib (aba a), sim (foco a), prova ('t23:PME'), provares, erros,
@@ -19,10 +19,10 @@
     dia('15', 'dom', 'Corrigir a prova de 2023', [T('provares', 't23', 'Resultado da prova de 2023: veja o corte por bloco e abra cada questão errada'), T('erros', null, 'Caderno de erros: escreva a regra de cada erro em uma frase'), T('painel', null, 'Painel: compare o acerto por item do edital com a marca da prova de 2023')]),
     dia('16', 'seg', 'Automação, CLP e controle (4 questões em 2023)', [M('A2'), T('game', 'formula', 'Arena: Qual é a fórmula?'), O(MAT + 'funções e geometria plana: triângulo retângulo, perímetros e áreas (Mat 3 e 9)')]),
     dia('17', 'ter', 'Segurança, NR-10 e manutenção (4 questões em 2023)', [M('N1'), T('bib', 'nr10', 'Biblioteca: NR-10 lado a lado (leia o texto em vigor, de 2019, e as pegadinhas)'), T('game', 'nr10', 'Arena: Ordene a NR-10, até acertar as duas sequências sem errar'), O('Português fora do app: interpretação de texto de uma prova da Cesgranrio')]),
-    dia('18', 'qua', 'Matemática: números, proporções e juros (4 questões em 2023)', [M('X1'), T('novos', null, 'Treino: 10 questões de números novos'), O(MAT + 'funções e geometria plana: triângulo retângulo, perímetros e áreas (Mat 3 e 9)')]),
+    dia('18', 'qua', 'Matemática: números, proporções, juros, funções e geometria (8 questões em 2023)', [M('X1'), M('X2'), T('novos', null, 'Treino: 10 questões de números novos')]),
     dia('19', 'qui', 'CA, fasores e impedância (3 questões em 2023)', [M('E2'), T('game', 'unid', 'Arena: Grandeza e unidade'), O('Português fora do app: interpretação de texto de uma prova da Cesgranrio')]),
-    dia('20', 'sex', 'Motores e simbologia (2 questões de motores em 2023)', [M('M3'), M('M1'), T('bancada', null, 'Bancada: uma ordem de serviço de motor ou de comando'), O('Eletrônica analógica e digital e diagramas lógicos (9.1 e 9.2): estação A1, se já estiver no app; se não, pela sua apostila')]),
-    dia('21', 'sáb', 'Simulado e correção', [T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas'), T('erros', null, 'Caderno de erros: a regra de cada erro do simulado'), O(MAT + 'análise combinatória, probabilidade e estatística (Mat 5, 6 e 7)')]),
+    dia('20', 'sex', 'Motores, contagem e simbologia', [M('M3'), M('X3'), M('M1'), T('bancada', null, 'Bancada: uma ordem de serviço de motor ou de comando')]),
+    dia('21', 'sáb', 'Simulado e correção', [T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas'), T('erros', null, 'Caderno de erros: a regra de cada erro do simulado'), O(MAT + 'só as questões de Matemática que você errou até aqui')]),
     dia('22', 'dom', 'Refazer o que errou', [T('refazer', null, 'Treino: refazer os erros'), T('game', 'cards', 'Arena: cartões de véspera vencidos'), O('Medidas elétricas e instrumentos (item 7) e redes de 1,0 a 17,5 kV e SPDA (8.2 e 8.4) pela sua apostila: ainda sem estação no app')]),
     dia('23', 'seg', 'Segunda passada: seus pontos fracos', [T('painel', null, 'Painel: abra as estações de "Reabra primeiro" e releia só o que errou'), T('sim', 'fracos', 'Simulado de 20 questões, foco em pontos fracos'), T('provares', 't23', 'Provas: reveja as questões de Matemática e de Português da prova de 2023 que você errou')]),
     dia('24', 'ter', 'Contas com números novos', [T('novos', null, 'Treino: 15 questões de números novos, todas as estações'), T('game', 'formula', 'Arena: Qual é a fórmula?'), O('Automação (A2) e eletrônica (item 9): revisão pela estação A2 e, para a eletrônica, pela estação A1, se já estiver no app, ou pela apostila')]),

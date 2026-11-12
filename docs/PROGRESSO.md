@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-11. T1–T6, M3 e A2 concluídas e revisadas. **N1 (segurança, NR-10 e manutenção) e X1 (Matemática: números, proporções e juros) integradas e revisadas**; Plano reordenado (17/11 N1, 18/11 X1). Próximas: X2 e X3 (Matemática), depois A1, I3 e I2 se couberem.
+Última atualização: 2026-11-12. T1–T6, M3, A2, N1, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus). Matemática completa (X1–X3). Faltam A1, I3 e I2 (pesos 2, 2 e 2 em 2023).
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
