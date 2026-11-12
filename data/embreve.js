@@ -8,7 +8,6 @@
       html: '', resumo: [], formulas: [], qs: [], contas: [], emBreve: true };
   };
   [
-    stub('I2', 'I', 'Média tensão e SPDA', '8.2, 8.4', 'A', 6, 'Redes aéreas de 1,0 a 17,5 kV e proteção contra descargas atmosféricas; o peso de 6 é o do item 8 inteiro, dividido com a I1.'),
   ].forEach(function (m) {
     var i = D.modules.findIndex(function (x) { return x.id === m.id; });
     if (i < 0) D.modules.push(m);

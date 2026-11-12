@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Média tensão de 1,0 a 17,5 kV e SPDA — Transpetro 2026, Manutenção Elétrica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F5; --grid:#E4E8EB; --card:#FFFFFF; --ink:#1B2430; --mut:#5A6572; --rule:#CBD2D8;
+  --pa:#B83227; --pb:#A86A12; --pc:#2462A6;
+  --pa-bg:#F8E9E7; --pb-bg:#F7EEDD; --pc-bg:#E6EEF8; --ok:#1E7A46; --ok-bg:#E3F2E8; --bad:#B83227;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+    --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+    --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#13181E; --grid:#1C232B; --card:#1A2129; --ink:#E4E8EC; --mut:#9AA5B1; --rule:#34404C;
+  --pa:#EE6E60; --pb:#E2A845; --pc:#6AA6EC;
+  --pa-bg:#3A2220; --pb-bg:#372C18; --pc-bg:#1B2B40; --ok:#5CC98A; --ok-bg:#16301F; --bad:#EE6E60;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.075rem;line-height:1.68;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-attachment:fixed}
+img,svg{max-width:100%}
+a{color:var(--pc)}
+:focus-visible{outline:3px solid var(--pc);outline-offset:2px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:0 24px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding:32px 0;font-family:var(--sans);font-size:.95rem;max-height:100vh;overflow:auto}
+nav.toc p{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:b}
+nav.toc li{margin:0}
+nav.toc a{display:block;padding:6px 10px;border-left:3px solid var(--rule);color:var(--ink);text-decoration:none;line-height:1.3}
+nav.toc a:hover{border-left-color:var(--pc);background:var(--card)}
+nav.toc a small{display:block;color:var(--mut);font-size:.82rem}
+main{min-width:0;padding-bottom:80px}
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  nav.toc{position:static;max-height:none;padding:16px 0 0}
+}
+
+/* hero */
+header.hero{padding:44px 0 8px}
+.hero h1{font-family:var(--sans);font-weight:700;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;max-width:16ch}
+.hero .lede{font-size:1.15rem;color:var(--mut);max-width:62ch;margin:0}
+.hero-wave{display:block;width:100%;height:auto;margin:26px 0 6px}
+.hero-legend{display:flex;gap:18px;font-family:var(--sans);font-size:.92rem;color:var(--mut)}
+.hero-legend span::before{content:"";display:inline-block;width:18px;height:4px;margin-right:6px;vertical-align:middle;background:currentColor}
+.hero-legend .a{color:var(--pa)}.hero-legend .b{color:var(--pb)}.hero-legend .c{color:var(--pc)}
+
+/* text */
+section.block{padding-top:36px;margin-top:36px;border-top:2px solid var(--ink)}
+.block-head{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.block-num{font-family:var(--sans);font-weight:700;font-size:3rem;line-height:1;color:var(--pc)}
+h2{font-family:var(--sans);font-weight:700;font-size:1.9rem;line-height:1.15;margin:0}
+.edital-ref{font-family:var(--sans);font-size:.92rem;color:var(--mut);margin:6px 0 18px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.3rem;margin:34px 0 8px}
+p,ul,ol{max-width:70ch}
+main li{margin:.25em 0}
+var{font-style:italic}
+sub,sup{font-size:.72em;line-height:0}
+.sans{font-family:var(--sans)}
+
+/* equation */
+.eq{background:var(--card);border:1px solid var(--rule);border-left:4px solid var(--ink);padding:16px 20px;margin:18px 0;max-width:70ch}
+.eq-main{font-size:1.32rem;text-align:center;padding:4px 0 12px;overflow-x:auto;white-space:nowrap}
+.eq-name{font-family:var(--sans);font-weight:600;font-size:.95rem;color:var(--mut);margin:0 0 4px}
+.eq dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;margin:0;border-top:1px dashed var(--rule);padding-top:10px;font-size:.98rem}
+.eq dt{font-weight:600;text-align:right;white-space:nowrap}
+.eq dd{margin:0;color:var(--ink)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span:last-child{border-top:1.5px solid currentColor;padding-top:1px}
+
+/* boxes */
+.box{padding:16px 20px;margin:20px 0;max-width:70ch;border:1px solid var(--rule);background:var(--card)}
+.box > :first-child{margin-top:0}.box > :last-child{margin-bottom:0}
+.box-title{font-family:var(--sans);font-weight:700;font-size:1rem;margin:0 0 6px}
+.ex{border-top:4px solid var(--pc)} .ex .box-title{color:var(--pc)}
+.trap{border-top:4px solid var(--pa);background:var(--pa-bg)} .trap .box-title{color:var(--pa)}
+.cesg{border-top:4px solid var(--pb);background:var(--pb-bg)} .cesg .box-title{color:var(--pb)}
+.alert{border:2px solid var(--pa);background:var(--pa-bg)}
+.steps{margin:.3em 0;padding-left:1.3em}
+
+figure{margin:24px 0;max-width:720px}
+figure svg{display:block;width:100%;height:auto;background:var(--card);border:1px solid var(--rule);padding:8px}
+figure.narrow{max-width:470px}
+figcaption{font-family:var(--sans);font-size:.93rem;color:var(--mut);margin-top:8px;max-width:70ch}
+
+/* svg classes */
+.ax{stroke:var(--mut);stroke-width:1.2;fill:none}
+.w{fill:none;stroke-width:2.6;stroke-linejoin:round}
+.ink{stroke:var(--ink)}.pa{stroke:var(--pa)}.pb{stroke:var(--pb)}.pc{stroke:var(--pc)}.mut{stroke:var(--mut)}
+.pa-s{stroke:var(--pa)!important}.pb-s{stroke:var(--pb)!important}.pc-s{stroke:var(--pc)!important}
+.ar{stroke-width:1.8;fill:none}.thick{stroke-width:2.8}
+.guide{stroke:var(--mut);stroke-width:1;stroke-dasharray:3 4;fill:none}
+.dash{stroke-width:1.8;stroke-dasharray:7 5;fill:none}
+.dash-s{stroke-dasharray:7 5}
+.arc{fill:none;stroke:var(--ink);stroke-width:1.4}
+.wire{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.comp{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.zbox{fill:var(--card);stroke:var(--ink);stroke-width:2}
+.f-ink{fill:var(--ink)}.f-mut{fill:var(--mut)}.f-pa{fill:var(--pa)}.f-pb{fill:var(--pb)}.f-pc{fill:var(--pc)}
+svg text{font-family:var(--sans);fill:var(--ink)}
+.tl{font-size:17px;font-weight:600}.ts{font-size:14px;font-weight:500}.tm{font-size:13px;fill:var(--mut)}
+.fa{fill:var(--pa)}.fb{fill:var(--pb)}.fc{fill:var(--pc)}
+.sub{font-size:.72em}
+
+/* tables */
+.tw{overflow-x:auto;margin:18px 0;max-width:100%}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.98rem;background:var(--card);min-width:520px}
+th,td{border:1px solid var(--rule);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--pc-bg);font-weight:600}
+
+/* quiz */
+.quiz{margin:30px 0 0;padding:22px 22px 10px;background:var(--card);border:2px solid var(--ink);max-width:74ch}
+.quiz-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:6px}
+.quiz-head h3{margin:0;font-size:1.25rem}
+.score{font-family:var(--sans);color:var(--mut);font-size:.95rem}
+.q{padding:18px 0;border-bottom:1px dashed var(--rule)}
+.q:last-of-type{border-bottom:0}
+.stem{margin:0 0 10px}
+.stem b.n{font-family:var(--sans);margin-right:6px}
+.opts{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.opts button{all:unset;box-sizing:border-box;display:flex;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-family:var(--serif);font-size:1rem;line-height:1.45;color:var(--ink)}
+.opts button:hover:not([disabled]){border-color:var(--pc)}
+.opts button:focus-visible{outline:3px solid var(--pc);outline-offset:1px}
+.opts button .l{font-family:var(--sans);font-weight:700;min-width:1.6em}
+.opts button[disabled]{cursor:default}
+.opts button.right{border-color:var(--ok);background:var(--ok-bg)}
+.opts button.wrong{border-color:var(--bad);background:var(--pa-bg);text-decoration:line-through;text-decoration-color:var(--bad)}
+.fbk{margin-top:12px;padding:12px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);font-size:.99rem}
+.fbk.no{border-left-color:var(--bad);background:var(--pa-bg)}
+.fbk strong{font-family:var(--sans)}
+.qtools{display:flex;gap:10px;margin:14px 0 8px}
+.btn{font-family:var(--sans);font-size:.95rem;font-weight:600;padding:8px 14px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.link-btn{all:unset;cursor:pointer;font-family:var(--sans);font-size:.9rem;color:var(--pc);text-decoration:underline;margin-top:8px;display:inline-block}
+
+/* widgets */
+.lab{background:var(--card);border:2px solid var(--pc);padding:18px 20px;margin:24px 0;max-width:74ch}
+.lab h4{font-family:var(--sans);font-size:1.1rem;margin:0 0 4px}
+.lab p.hint{margin:0 0 12px;color:var(--mut);font-size:.95rem}
+.ctrl{display:grid;grid-template-columns:130px 1fr 90px;gap:8px 12px;align-items:center;font-family:var(--sans);font-size:.95rem}
+.ctrl input[type=range]{width:100%;accent-color:var(--pc)}
+.ctrl output{font-weight:600;text-align:right}
+.lab-out{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px;font-family:var(--sans)}
+.lab-out div{border:1px solid var(--rule);padding:8px 10px;background:var(--paper)}
+.lab-out span{display:block;color:var(--mut);font-size:.85rem}
+.lab-out b{font-size:1.15rem}
+.lab svg{display:block;width:100%;height:auto;margin-top:12px}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;font-family:var(--sans);font-size:.95rem}
+.calc label{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+.calc input,.calc select{font:inherit;padding:7px 9px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr 70px}.ctrl label{grid-column:1/-1}}
+
+.sources li{font-size:.97rem}
+footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
+
+.fl{fill:none;stroke:var(--ink);stroke-width:1.5}
+.tinv{fill:#fff}
+.cond{fill:var(--card);stroke:var(--ink);stroke-width:2.2}
+.xmark{stroke:var(--pc);stroke-width:3;fill:none}
+.xm2{stroke:var(--mut);stroke-width:1.5;fill:none}
+.coil{fill:none;stroke:var(--pb);stroke-width:2.4}
+.core{fill:var(--pb-bg);stroke:var(--ink);stroke-width:2}
+.wind{stroke-width:3.2;fill:none}
+.ring{fill:none;stroke:var(--pb);stroke-width:7}
+.grid{stroke:var(--grid);stroke-width:1}
+.confira{background:var(--pb-bg);border-bottom:2px dotted var(--pb)}
+.confira::after{content:" (confira)";font-family:var(--sans);font-size:.75em;color:var(--pb)}
+.conceito{border-top:4px solid var(--ok);background:var(--ok-bg)} .conceito .box-title{color:var(--ok)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="ah-ink" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-ink"/></marker>
+<marker id="ah-mut" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-mut"/></marker>
+<marker id="ah-pa" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pa"/></marker>
+<marker id="ah-pb" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pb"/></marker>
+<marker id="ah-pc" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="f-pc"/></marker>
+</defs></svg>
+
+<div class="shell">
+<nav class="toc" aria-label="Sumário">
+  <p>Sumário, na ordem do edital</p>
+  <ol>
+    <li><a href="#antes">Antes de começar<small>Onde o tema está no Anexo IV</small></a></li>
+    <li><a href="#b1">1. Rede aérea de média tensão: classes de tensão, estruturas, isoladores e cabos<small>Item 8.2</small></a></li>
+    <li><a href="#b2">2. Proteção e manobra da rede: fusível, religador, seccionalizador, seccionadora, para-raios, transformador e capacitores<small>Item 8.2</small></a></li>
+    <li><a href="#b3">3. Noções de dimensionamento, proteção e subestação: correntes, queda de tensão, capacitores, TC e TP<small>Item 8.2</small></a></li>
+    <li><a href="#b4">4. Manobra e segurança em média tensão: NR-10, zonas, aterramento temporário e linha viva<small>Item 8.2</small></a></li>
+    <li><a href="#b5">5. SPDA (NBR 5419): níveis de proteção e métodos de captação<small>Item 8.4</small></a></li>
+    <li><a href="#b6">6. SPDA: descidas, aterramento, equipotencialização, DPS, MPS e inspeção<small>Item 8.4</small></a></li>
+    <li><a href="#form">Formulário-resumo</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Média tensão de 1,0 a 17,5 kV e SPDA</h1>
+  <p class="lede">Material de estudo para o Processo Seletivo Transpetro 2026 (Edital nº 03, Cesgranrio), Ênfase 8: Manutenção – Elétrica. Redes aéreas de distribuição em média tensão e seus componentes, noções de dimensionamento e de proteção, manobra e segurança em alta tensão (NR-10) e o sistema de proteção contra descargas atmosféricas (NBR 5419), com figuras, equações com cada símbolo nomeado, exemplos resolvidos e exercícios comentados ao fim de cada seção.</p>
+</header>
+
+<section id="antes" class="block">
+  <div class="block-head"><h2>Antes de começar</h2></div>
+  <p>No Anexo IV do Edital nº 03, o bloco <b>8. Instalações elétricas</b> da Ênfase 8 tem quatro subitens. Esta estação cobre dois deles, com a redação do texto oficial:</p>
+  <ul>
+    <li><b>8.2</b> Redes aéreas e instalações elétricas de 1,0 kV a 17,5 kV;</li>
+    <li><b>8.4</b> Conceitos básicos de sistemas de proteção contra descargas atmosféricas (SPDA).</li>
+  </ul>
+  <p>Os itens 8.1 (baixa tensão) e 8.3 (aterramento e equipamentos especializados) estão na estação <b>I1</b>; a NR-10 inteira e o treinamento estão na <b>N1</b>, e aqui ela entra só no que a média tensão exige (seção 4). Fasores, potência e correção do fator de potência vêm da <b>E2</b> e da <b>E3</b> e são usados sem ser ensinados de novo; a relação de transformação e as ligações do transformador estão na <b>M2</b>.</p>
+  <div class="box cesg">
+    <p class="box-title">Como a Cesgranrio tem cobrado esse assunto</p>
+    <p>Na prova de 2023 da própria Transpetro (Manutenção – Elétrica), duas questões ficaram nestes itens, e as duas pedem <b>reconhecer o equipamento ou a medida certa</b>, sem conta:</p>
+    <ul>
+      <li>a 54 (item 8.2): para que serve o <b>transformador de corrente (TC)</b> numa subestação de distribuição: reproduzir, no enrolamento secundário, de forma isolada e em proporção conhecida, a corrente do primário, para medição e controle (gabarito B). As outras alternativas descrevem um reator limitador, um transformador de força, um retificador e um caminho de descarga para a terra (seção 3);</li>
+      <li>a 46 (item 8.4): a proteção que visa reduzir falhas em <b>sistemas eletroeletrônicos</b> dentro de uma estrutura é pautada pelas <b>medidas de proteção contra surtos</b>, e não pelo método de captação, pela avaliação de risco, pelos níveis de proteção nem pelo SPDA em si (gabarito C; seção 6).</li>
+    </ul>
+    <p>É um <b>padrão observado</b> numa prova só, não garantia de repetição. Mas ele aponta o formato: nome certo do equipamento, função certa do dispositivo, parte certa da norma. Os exemplos e exercícios daqui têm números próprios.</p>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Duas edições, duas redações</p>
+    <p>Dois textos que esta estação usa mudaram em 2026. A <b>NR-10</b> tem uma nova redação (Portaria MTE nº 737, de 29/05/2026) que só vale a partir de 01/06/2027; até lá vale o texto de 2019, e as tabelas das distâncias (Anexo II) são as mesmas nos dois. A <b>NBR 5419</b> teve uma edição de 2026, que cancela a de 2015 e passa a chamar a &ldquo;classe&rdquo; do SPDA de <b>nível de proteção</b> <span class="confira">(informação lida em artigos técnicos; o texto da norma de 2026, que é paga, não foi lido)</span>. Os números de raio de esfera, malha e descidas por nível são os mesmos nos resumos das duas edições.</p>
+  </div>
+</section>
+
+<!-- ============ SEÇÃO 1 ============ -->
+<section id="b1" class="block">
+  <div class="block-head"><span class="block-num">1</span><h2>Rede aérea de média tensão: classes de tensão, estruturas, isoladores e cabos</h2></div>
+  <p class="edital-ref">Edital, item 8.2</p>
+
+  <h3>Onde está a média tensão</h3>
+  <p>A energia sai da subestação (SE) de distribuição por <b>alimentadores primários</b>, em média tensão (MT), chega aos <b>transformadores de distribuição</b>, que a baixam para a <b>rede secundária</b> (baixa tensão, BT), e daí aos consumidores. As concessionárias padronizam a rede primária em <b>13,8 kV</b>, 23,1 kV e 34,5 kV; a <b>tensão nominal</b> é o valor eficaz de linha pelo qual o sistema é designado. Já a <b>classe de tensão</b> do equipamento corresponde à tensão máxima de operação do sistema.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Tensão nominal do sistema</th><th>Tensão máxima de operação</th><th>Classe de tensão dos equipamentos</th></tr></thead>
+    <tbody>
+      <tr><td>13,8 kV</td><td>15 kV</td><td>15 kV</td></tr>
+      <tr><td>34,5 kV</td><td>36,2 kV</td><td>36,2 kV</td></tr>
+    </tbody>
+  </table></div>
+  <p>A faixa do edital (1,0 a 17,5 kV) contém a classe de 15 kV, que é a da rede de 13,8 kV, a mais citada nos padrões das concessionárias consultadas. O valor de 17,5 kV coincide com o da tensão máxima de equipamento normalizada pela IEC para a faixa acima de 12 kV <span class="confira">(o texto da IEC não foi lido; a coincidência é uma leitura nossa, e o edital não explica a origem do número)</span>. Um cuidado de vocabulário: no texto da NR-10 em vigor, <b>toda tensão acima de 1.000 V em corrente alternada é &ldquo;alta tensão&rdquo;</b>; só a nova redação, que vale a partir de 01/06/2027, cria a faixa de <b>média tensão</b> (acima de 1.000 V e até 36.200 V). Por isso a banca pode falar em &ldquo;alta tensão&rdquo; para uma rede de 13,8 kV.</p>
+  <div class="eq">
+    <p class="eq-name">Tensão de fase de um sistema trifásico</p>
+    <div class="eq-main"><var>V</var><sub>F</sub> = <span class="frac"><span><var>V</var><sub>L</sub></span><span>√3</span></span></div>
+    <dl>
+      <dt><var>V</var><sub>F</sub></dt><dd>tensão entre fase e neutro (ou terra), em kV</dd>
+      <dt><var>V</var><sub>L</sub></dt><dd>tensão nominal do sistema, entre fases (de linha), em kV</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 1</p>
+    <p>Uma rede trifásica tem tensão nominal de 13,8 kV. Qual a tensão entre fase e neutro, a que ficam submetidos os ramais monofásicos e o para-raios de cada fase?</p>
+    <ol class="steps">
+      <li><var>V</var><sub>F</sub> = 13,8/√3 ≈ <b>7,97 kV</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Estrutura da rede convencional (cabos nus)</h3>
+  <p>Na rede <b>convencional</b>, os cabos nus ficam nos isoladores, presos a uma cruzeta, no alto de um poste. Cada peça tem uma função.</p>
+  <figure><svg viewBox="0 0 640 270" role="img" aria-label="Duas estruturas de rede aérea: à esquerda, a rede convencional, com três cabos nus sobre isoladores de pino fixados a uma cruzeta no poste; à direita, a rede compacta, com um cabo mensageiro de aço no alto e três cabos cobertos presos a um espaçador">
+<rect class="zbox" x="30" y="100" width="160" height="12"/>
+<rect class="zbox" x="104" y="112" width="12" height="120"/>
+<rect class="comp" x="39" y="76" width="12" height="24"/><rect class="comp" x="104" y="76" width="12" height="24"/><rect class="comp" x="169" y="76" width="12" height="24"/>
+<circle class="comp" cx="45" cy="66" r="6"/><circle class="comp" cx="110" cy="66" r="6"/><circle class="comp" cx="175" cy="66" r="6"/>
+<path class="guide" d="M181,66 H200 M181,88 H200 M190,106 H200 M116,160 H200"/>
+<text x="205" y="70" class="ts">Cabo nu</text><text x="205" y="92" class="ts">Isolador de pino</text><text x="205" y="110" class="ts">Cruzeta</text><text x="205" y="164" class="ts">Poste</text>
+<text x="110" y="258" class="tl" text-anchor="middle">Rede convencional</text>
+<rect class="zbox" x="424" y="100" width="12" height="132"/>
+<rect class="zbox" x="436" y="96" width="36" height="8"/>
+<circle class="comp" cx="456" cy="38" r="5"/>
+<path class="wire" d="M456,43 V62"/>
+<path class="wire" d="M436,68 L476,68 L456,88 Z"/>
+<circle class="comp" cx="436" cy="68" r="6"/><circle class="comp" cx="476" cy="68" r="6"/><circle class="comp" cx="456" cy="88" r="6"/>
+<path class="guide" d="M462,38 H494 M482,68 H494 M462,92 H494 M472,100 H494 M436,160 H494"/>
+<text x="500" y="42" class="ts">Mensageiro (aço)</text><text x="500" y="72" class="ts">Cabo coberto</text><text x="500" y="96" class="ts">Espaçador</text><text x="500" y="118" class="ts">Braço</text><text x="500" y="164" class="ts">Poste</text>
+<text x="430" y="258" class="tl" text-anchor="middle">Rede compacta</text>
+</svg><figcaption>Figura 1. Dois padrões de rede aérea primária. Na convencional, cada fase é um cabo nu sobre um isolador de pino, preso à cruzeta. Na compacta, três cabos cobertos ficam presos a espaçadores poliméricos, todo o conjunto é sustentado por um cabo mensageiro de aço, e o poste fica com poucas peças. Desenho esquemático, sem escala.</figcaption></figure>
+  <ul>
+    <li><b>Poste</b>: de concreto (duplo T ou circular), de madeira tratada ou de fibra de vidro. É designado pelo comprimento e pelo esforço nominal: &ldquo;11/600&rdquo; é um poste de 11 m e 600 daN (memoriais de projeto de concessionárias). A parte enterrada, o <b>engastamento</b>, costuma seguir <var>e</var> = <var>L</var>/10 + 0,6 m <span class="confira">(regra vista em memoriais de projeto da Equatorial; a norma de postes não foi lida)</span>.</li>
+    <li><b>Cruzeta</b>: peça horizontal que sustenta os isoladores e mantém o afastamento entre as fases. Pode ser de madeira tratada, de concreto ou de fibra de vidro.</li>
+    <li><b>Isolador de pino</b> (ou isolador-pilar): corpo único, de porcelana, de vidro ou de polímero, parafusado a um pino na cruzeta. O cabo é preso ao topo ou ao pescoço por amarração; o isolador sustenta o cabo nos trechos em linha reta e em pequenos ângulos.</li>
+    <li><b>Isolador de disco, de suspensão ou de ancoragem</b>: trabalha à tração, em cadeia (discos de porcelana ou de vidro, ou um isolador polimérico de ancoragem), com o cabo preso por alça pré-formada ou grampo. Usa-se no fim de linha, em derivações e em ângulos fortes, onde o cabo puxa a estrutura <span class="confira">(emprego descrito em padrões de concessionárias; a norma dos isoladores não foi lida)</span>.</li>
+    <li><b>Distância de escoamento</b>: caminho pela superfície do isolador entre o cabo e a ferragem, em mm por kV. Em regiões de poluição ou salinidade usa-se isolador com distância de escoamento maior (ou o tipo &ldquo;pilar híbrido&rdquo;, com núcleo de porcelana e saias de silicone).</li>
+    <li><b>Nível básico de isolamento (NBI ou BIL)</b>: a tensão de impulso atmosférico que a isolação suporta. Para a rede de 13,8 kV, uma especificação de concessionária (Enel Ceará) traz 95 kV na rede de distribuição e 110 kV na subestação.</li>
+  </ul>
+  <p>Os <b>cabos nus</b> de alumínio (CA) ou de alumínio com alma de aço (CAA) trabalham com grande vão e custo baixo, mas qualquer contato (galho, objeto lançado, ave) vira curto-circuito. A rede convencional é regida pela <b>NBR 15688</b> (redes de distribuição aérea com condutores nus).</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 2</p>
+    <p>Um poste de 11 m é engastado segundo <var>e</var> = <var>L</var>/10 + 0,6 m. Qual a profundidade do engastamento e a altura livre acima do solo?</p>
+    <ol class="steps">
+      <li>Engastamento: <var>e</var> = 11/10 + 0,6 = <b>1,70 m</b>.</li>
+      <li>Altura livre: 11 − 1,70 = <b>9,30 m</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Rede compacta e cabos cobertos; cabos multiplexados</h3>
+  <p>A <b>rede compacta</b> (NBR 15992, para tensões até 36,2 kV) usa <b>cabos cobertos</b> com camadas de polímero (polietileno reticulado, o XLPE), presos a <b>espaçadores losangulares</b> e sustentados por um <b>cabo mensageiro</b> de aço. A cobertura reduz a corrente de fuga se o cabo tocar um objeto aterrado, e por isso os três cabos podem ficar bem mais próximos que numa rede nua. Os cabos cobertos têm norma própria, a NBR 11873 (13,8 a 34,5 kV). As concessionárias apontam como vantagens menos podas de árvore, menor ocupação do espaço e menos desligamentos.</p>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Cabo <b>coberto</b> não é cabo <b>isolado</b>. A cobertura não confina o campo elétrico nem dá proteção contra choque. Nos padrões das concessionárias, a rede compacta é tratada como rede nua para segurança: os cabos e acessórios não podem ser tocados com a rede energizada, a não ser em linha viva, por equipe habilitada.</p>
+  </div>
+  <p>Na <b>baixa tensão</b>, a rede secundária pode usar <b>cabos multiplexados</b>: condutores isolados de alumínio pré-reunidos e torcidos em hélice, com o neutro funcionando como sustentação. Resumindo os três padrões:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Rede</th><th>Condutor</th><th>Onde e como</th></tr></thead>
+    <tbody>
+      <tr><td>Convencional</td><td>Cabo nu (CA ou CAA)</td><td>Primária, sobre isoladores de pino e de ancoragem em cruzetas; maior espaçamento entre fases.</td></tr>
+      <tr><td>Compacta</td><td>Cabo coberto em XLPE, com mensageiro de aço</td><td>Primária, em espaçadores; fases próximas; tratada como nua para a segurança.</td></tr>
+      <tr><td>Secundária multiplexada</td><td>Condutores isolados pré-reunidos</td><td>Baixa tensão, no mesmo poste da rede primária ou em poste próprio.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="quiz" data-set="b1"></div>
+</section>
+
+<!-- ============ SEÇÃO 2 ============ -->
+<section id="b2" class="block">
+  <div class="block-head"><span class="block-num">2</span><h2>Proteção e manobra da rede: fusível, religador, seccionalizador, seccionadora, para-raios, transformador e capacitores</h2></div>
+  <p class="edital-ref">Edital, item 8.2</p>
+
+  <p>Uma rede aérea fica exposta a vento, galho, ave e descarga atmosférica. A maioria das faltas é <b>transitória</b>: o arco se apaga quando o circuito é desligado por um instante. Algumas são <b>permanentes</b> (cabo partido, árvore caída) e exigem reparo. Os equipamentos desta seção existem para atender essas duas situações e, na falta permanente, desligar só o trecho defeituoso. A figura 2 mostra onde cada um fica.</p>
+  <figure><svg viewBox="0 0 640 260" role="img" aria-label="Diagrama unifilar de um alimentador de média tensão com a subestação à esquerda, religador, seccionalizador, para-raios e chave fusível derivando para o transformador, seccionadora e banco de capacitores">
+<path class="wire" d="M70,110 H467 M495,110 H560"/>
+<rect class="zbox" x="16" y="90" width="54" height="40"/><text x="43" y="115" class="ts" text-anchor="middle">SE</text>
+<rect class="zbox" x="110" y="95" width="36" height="30"/><text x="128" y="115" class="ts" text-anchor="middle">R</text>
+<text x="128" y="150" class="ts" text-anchor="middle">Religador</text>
+<rect class="zbox" x="230" y="95" width="36" height="30"/><text x="248" y="115" class="ts" text-anchor="middle">S</text>
+<text x="248" y="150" class="ts" text-anchor="middle">Seccionalizador</text>
+<path class="wire" d="M330,110 V150 M330,178 V190 M318,190 H342 M322,196 H338 M326,202 H334"/>
+<rect class="zbox" x="322" y="150" width="16" height="28"/>
+<text x="314" y="172" class="ts" text-anchor="end">Para-raios</text>
+<path class="wire" d="M380,110 V150 M380,184 V206"/>
+<rect class="zbox" x="370" y="150" width="20" height="34"/>
+<text x="398" y="172" class="ts">Chave fusível</text>
+<circle class="comp" cx="380" cy="220" r="14"/><circle class="comp" cx="380" cy="238" r="14"/>
+<text x="404" y="238" class="ts">Transformador</text>
+<circle class="comp" cx="470" cy="110" r="3"/><circle class="comp" cx="492" cy="110" r="3"/>
+<path class="wire" d="M470,110 L486,98"/>
+<text x="481" y="140" class="ts" text-anchor="middle">Seccionadora</text>
+<path class="wire" d="M540,110 V150 M526,150 H554 M526,158 H554 M540,158 V176"/>
+<text x="540" y="198" class="ts" text-anchor="middle">Banco de capacitores</text>
+<text x="436" y="92" class="tm">Alimentador de média tensão</text>
+</svg><figcaption>Figura 2. Unifilar esquemático de um alimentador primário. O religador, perto da subestação, protege o tronco; o seccionalizador, a jusante, conta as aberturas do religador; a chave fusível protege o ramal do transformador; o para-raios e o banco de capacitores ficam em derivação; a seccionadora isola um trecho para manobra sem carga. A ordem e a quantidade variam com o projeto.</figcaption></figure>
+
+  <h3>Chave fusível e elo fusível</h3>
+  <p>A <b>chave fusível</b> é o dispositivo de proteção mais simples da rede primária. Cada fase leva uma chave unipolar, de classe 15 kV nas redes de 13,8 kV, com um <b>cartucho porta-fusível</b> onde fica o <b>elo fusível</b>. Quando a corrente passa do valor do elo, ele funde, o arco se forma dentro do tubo e a fibra do tubo libera gases que o desionizam e o extinguem. Ela não religa: depois de operar, o elo precisa ser trocado. Os elos se classificam pela curva tempo × corrente:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Tipo</th><th>Característica</th><th>Relação de rapidez</th><th>Uso típico</th></tr></thead>
+    <tbody>
+      <tr><td><b>H</b></td><td>alto surto, lento</td><td>de 11,4 a 36,4 (0,5 A a 5 A)</td><td>proteção de transformadores de distribuição: não funde na corrente de energização</td></tr>
+      <tr><td><b>K</b></td><td>rápido</td><td>de 6 a 8,1</td><td>ramais e alimentadores, quando se quer atuação rápida</td></tr>
+      <tr><td><b>T</b></td><td>lento</td><td>de 10 a 13</td><td>ramais e alimentadores, quando se quer coordenar com dispositivos mais lentos</td></tr>
+    </tbody>
+  </table></div>
+  <p>A <b>relação de rapidez</b> compara a corrente que funde o elo em um tempo curto com a que o funde em um tempo longo <span class="confira">(definição de livro-texto: razão entre a corrente que funde o elo em 0,1 s e a que o funde em 300 s, ou 600 s para elos acima de 100 A; não conferida em norma)</span>. Quanto maior, mais lento é o elo. Os valores da tabela vêm de Mamede Filho, citado em trabalho acadêmico, e de uma especificação da Neoenergia. Para a <b>seletividade</b>, o elo do ramal (protetor) deve fundir antes do dispositivo de retaguarda, e o conjunto precisa respeitar as curvas.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 3</p>
+    <p>Um transformador de 75 kVA, 13,8 kV, será protegido por chave fusível. Qual a corrente nominal do primário e que corrente de energização (&ldquo;inrush&rdquo;) se deve esperar, admitindo, como dado do problema, 10 vezes a nominal por 0,1 s?</p>
+    <ol class="steps">
+      <li><var>I</var><sub>n</sub> = 75/(√3 × 13,8) ≈ <b>3,14 A</b>.</li>
+      <li>Corrente de energização: 10 × 3,14 ≈ <b>31,4 A</b> por 0,1 s. O elo escolhido precisa suportar esse pico sem fundir. Por isso se usa o elo de curva lenta (tipo H), que aguenta a corrente de energização sem fundir.</li>
+    </ol>
+  </div>
+
+  <h3>Religador e seccionalizador</h3>
+  <p>O <b>religador</b> é um disjuntor com religamento automático. Ao detectar sobrecorrente, abre, espera o <b>tempo morto</b> (ou tempo de religamento) e fecha de novo. Pode ser programado para realizar de 1 a 4 aberturas, e todas, menos a última, são seguidas de religamento; o conjunto é o <b>ciclo de operação</b>. Se a falta era transitória, o religador não completa o ciclo, e depois de um tempo de <b>rearme</b> volta à condição inicial. Se era permanente, completa o ciclo e <b>bloqueia</b> aberto, e só um fechamento manual (local ou por telecomando) o religa. A primeira operação costuma ser na curva rápida, para apagar o arco antes de o elo de um ramal fundir; as seguintes, na curva temporizada <span class="confira">(a divisão entre operações rápidas e temporizadas segue o material da CEMIG e de fabricantes; não é o único ajuste possível)</span>. O religador tem poder de interromper correntes de curto-circuito, normalmente com interruptores a vácuo e três transformadores de corrente que medem a corrente de cada fase.</p>
+  <p>O <b>seccionalizador</b> não tem poder de interrupção de curto-circuito. Ele é um dispositivo automático que <b>conta</b> as interrupções do circuito feitas pelo dispositivo de retaguarda (o religador) e, quando chega ao número de contagens ajustado (uma, duas ou três), <b>abre durante o tempo morto</b>, quando não circula corrente, e fica travado aberto, isolando o trecho com falta. Só funciona com retaguarda que religa. O ajuste de contagens deve ser menor que o número de aberturas do religador, para que ele abra antes do bloqueio <span class="confira">(regra de coordenação deduzida do princípio de funcionamento; os números exatos de cada ajuste são os do manual do fabricante)</span>.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Dispositivo</th><th>Interrompe curto-circuito?</th><th>Religa?</th><th>Como atua</th></tr></thead>
+    <tbody>
+      <tr><td>Chave fusível</td><td>sim, uma vez (o elo funde)</td><td>não</td><td>o elo funde; troca-se o elo</td></tr>
+      <tr><td>Religador</td><td>sim</td><td>sim, até o bloqueio</td><td>abre e fecha segundo o ciclo programado</td></tr>
+      <tr><td>Seccionalizador</td><td>não</td><td>não</td><td>conta as aberturas do religador e abre sem corrente</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Religador e seccionalizador <b>não são</b> o mesmo equipamento. O religador interrompe a corrente de falta e religa. O seccionalizador <b>não interrompe falta</b>: ele depende do religador a montante e só abre no tempo morto. No par religador–seccionalizador, quem abre o circuito sob a corrente de falta é o religador (ou o disjuntor da subestação), e não o seccionalizador; a chave fusível também interrompe a falta, fundindo o elo.</p>
+  </div>
+
+  <h3>Chave seccionadora, para-raios, transformador e banco de capacitores</h3>
+  <ul>
+    <li><b>Chave seccionadora (de faca)</b>: abre o circuito para dar <b>isolamento visível</b> a um trecho; não tem câmara de extinção do arco e, por isso, é manobrada <b>sem carga</b>, depois que outro dispositivo interrompeu a corrente. Existem chaves seccionadoras de classe 15 kV, 630 A, em especificações de concessionárias. A chave que abre <b>em carga</b> é outro equipamento (chave interruptora, com câmara). <span class="confira">(O uso sem carga é a definição de livro-texto; não foi conferido em norma nesta consulta.)</span></li>
+    <li><b>Para-raios de óxido de zinco (ZnO)</b>: resistor não linear de óxido metálico, <b>sem centelhadores</b>, em invólucro polimérico, ligado entre a fase e a terra. Em tensão normal conduz uma corrente mínima; numa sobretensão atmosférica ou de manobra, torna-se condutor, desvia a corrente à terra e limita a tensão sobre o equipamento protegido a um valor residual abaixo do nível de isolamento. Em especificações de concessionárias, o para-raios de rede de 13,8 kV (15 kV de tensão máxima) tem <b>tensão nominal de 12 kV</b> e corrente de descarga nominal de 10 kA (onda 8/20 µs). A <b>tensão de operação contínua</b> (COV) é a tensão eficaz que ele suporta indefinidamente. Fica junto ao transformador e ao ramal, com o menor caminho possível até o aterramento.</li>
+    <li><b>Transformador de distribuição</b>: de classe 15 kV, imerso em óleo, abaixa de 13,8 kV para 220/127 V ou 380/220 V. Num memorial de projeto baseado na especificação da Celesc, a ligação pedida é delta no primário e estrela aterrada no secundário (Dyn1); a ligação e o deslocamento angular são da estação M2. A proteção do primário é feita por chave fusível com elo H e por para-raios; a do secundário, por disjuntor.</li>
+    <li><b>Banco de capacitores</b>: injeta potência reativa, o que corrige o fator de potência, reduz a corrente do alimentador, as perdas e a queda de tensão, e ajuda na regulação de tensão. Pode ser <b>fixo</b> ou <b>automático</b> (chaveado conforme a tensão, a corrente ou o fator de potência). Ao ser energizado, o capacitor puxa uma corrente transitória elevada (&ldquo;inrush&rdquo;), e por isso os bancos de subestação têm reatores limitadores. Em redes com harmônicos, há risco de ressonância.</li>
+  </ul>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 4</p>
+    <p>Um banco trifásico de 600 kvar é ligado a um alimentador de 13,8 kV. Qual a corrente nominal do banco?</p>
+    <ol class="steps">
+      <li><var>I</var> = <var>Q</var>/(√3·<var>V</var><sub>L</sub>) = 600/(√3 × 13,8) ≈ <b>25,1 A</b>.</li>
+    </ol>
+  </div>
+
+  <div class="quiz" data-set="b2"></div>
+</section>
+
+<!-- ============ SEÇÃO 3 ============ -->
+<section id="b3" class="block">
+  <div class="block-head"><span class="block-num">3</span><h2>Noções de dimensionamento, proteção e subestação: correntes, queda de tensão, capacitores, TC e TP</h2></div>
+  <p class="edital-ref">Edital, item 8.2</p>
+
+  <h3>Corrente nominal e corrente de curto-circuito</h3>
+  <p>Os dispositivos da seção 2 são escolhidos por duas correntes: a <b>nominal</b> (o que o equipamento conduz em serviço) e a de <b>curto-circuito</b> (o que ele precisa suportar e interromper). As duas saem da mesma relação trifásica, com a potência em kVA ou kW e a tensão em kV.</p>
+  <div class="eq">
+    <p class="eq-name">Correntes trifásicas</p>
+    <div class="eq-main"><var>I</var><sub>n</sub> = <span class="frac"><span><var>S</var></span><span>√3 · <var>V</var><sub>L</sub></span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>I</var><sub>n</sub> = <span class="frac"><span><var>P</var></span><span>√3 · <var>V</var><sub>L</sub> · cos φ</span></span> &nbsp;&nbsp;&nbsp;&nbsp; <var>I</var><sub>cc</sub> = <span class="frac"><span><var>S</var><sub>cc</sub></span><span>√3 · <var>V</var><sub>L</sub></span></span></div>
+    <dl>
+      <dt><var>I</var><sub>n</sub></dt><dd>corrente nominal de linha, em A (com <var>S</var> em kVA e <var>V</var><sub>L</sub> em kV)</dd>
+      <dt><var>S</var>, <var>P</var></dt><dd>potência aparente (kVA) e potência ativa (kW) trifásicas</dd>
+      <dt><var>V</var><sub>L</sub></dt><dd>tensão nominal entre fases, em kV</dd>
+      <dt>cos φ</dt><dd>fator de potência da carga</dd>
+      <dt><var>I</var><sub>cc</sub></dt><dd>corrente de curto-circuito trifásica simétrica, em kA (com <var>S</var><sub>cc</sub> em MVA)</dd>
+      <dt><var>S</var><sub>cc</sub></dt><dd>potência de curto-circuito do ponto, informada pela concessionária, em MVA</dd>
+    </dl>
+  </div>
+  <p>A <b>capacidade de interrupção</b> de um fusível, de um religador ou de um disjuntor tem de ser maior ou igual à corrente de curto-circuito do ponto onde ele está. Em especificações de concessionárias, a capacidade de interrupção simétrica de chaves fusíveis de 15 kV aparece como 7,1 kA ou 10 kA, conforme o modelo.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 5</p>
+    <p>Um transformador de 300 kVA, 13.800/220 V, qual a corrente nominal em cada lado e a relação de transformação?</p>
+    <ol class="steps">
+      <li>Primário: <var>I</var> = 300/(√3 × 13,8) ≈ <b>12,55 A</b>.</li>
+      <li>Secundário: <var>I</var> = 300/(√3 × 0,22) ≈ <b>787 A</b>.</li>
+      <li>Relação: 13.800/220 ≈ <b>62,73</b>. A corrente do secundário é 62,73 vezes a do primário, como se confere por 787/12,55.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 6</p>
+    <p>A concessionária informa uma potência de curto-circuito trifásica de 250 MVA no ponto de entrega, em 13,8 kV. Qual a corrente de curto-circuito?</p>
+    <ol class="steps">
+      <li><var>I</var><sub>cc</sub> = 250/(√3 × 13,8) ≈ <b>10,46 kA</b>. Os equipamentos do ponto precisam ter capacidade de interrupção maior que esse valor.</li>
+    </ol>
+  </div>
+
+  <h3>Queda de tensão e perdas no alimentador</h3>
+  <p>A corrente que passa pelo cabo produz queda de tensão e perda por efeito Joule. A tensão de atendimento deve ficar dentro de uma faixa em torno da nominal: um padrão de concessionária (Equatorial) pede entre 93% e 105% da tensão primária contratada <span class="confira">(valor lido na norma técnica da concessionária; o módulo de qualidade do PRODIST não foi lido)</span>.</p>
+  <div class="eq">
+    <p class="eq-name">Queda de tensão e perdas trifásicas</p>
+    <div class="eq-main">Δ<var>V</var><sub>L</sub> ≈ √3 · <var>I</var> · <var>L</var> · (<var>r</var> cos φ + <var>x</var> sen φ) &nbsp;&nbsp;&nbsp;&nbsp; Δ<var>V</var>% = <span class="frac"><span>Δ<var>V</var><sub>L</sub></span><span><var>V</var><sub>L</sub></span></span> · 100 &nbsp;&nbsp;&nbsp;&nbsp; <var>P</var><sub>perda</sub> = 3 · <var>R</var> · <var>I</var>²</div>
+    <dl>
+      <dt>Δ<var>V</var><sub>L</sub></dt><dd>queda da tensão de linha, em V</dd>
+      <dt><var>I</var></dt><dd>corrente de linha, em A</dd>
+      <dt><var>L</var></dt><dd>comprimento do trecho, em km</dd>
+      <dt><var>r</var>, <var>x</var></dt><dd>resistência e reatância do cabo, em Ω/km</dd>
+      <dt>cos φ, sen φ</dt><dd>fator de potência da carga e seu seno</dd>
+      <dt><var>R</var></dt><dd>resistência do trecho por fase, em Ω (<var>R</var> = <var>r</var>·<var>L</var>)</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 7</p>
+    <p>Um trecho de 5 km, em 13,8 kV, leva 100 A com fator de potência 0,9 indutivo. O problema dá <var>r</var> = 0,40 Ω/km e <var>x</var> = 0,48 Ω/km (dados do enunciado, e não de catálogo). Qual a queda de tensão percentual e a perda no trecho?</p>
+    <ol class="steps">
+      <li>sen φ = √(1 − 0,9²) ≈ 0,436. A soma entre parênteses vale 0,40 × 0,9 + 0,48 × 0,436 ≈ 0,569 Ω/km.</li>
+      <li>Δ<var>V</var><sub>L</sub> = √3 × 100 × 5 × 0,569 ≈ <b>493 V</b>, ou 493/13.800 ≈ <b>3,57%</b>.</li>
+      <li><var>R</var> = 0,40 × 5 = 2 Ω por fase, e <var>P</var><sub>perda</sub> = 3 × 2 × 100² = <b>60 kW</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Capacitores e correção do fator de potência</h3>
+  <p>A potência reativa do banco de capacitores cancela parte da reativa indutiva da carga. A conta usa a potência ativa e as tangentes dos ângulos antes e depois da correção (<var>P</var> não muda).</p>
+  <div class="eq">
+    <p class="eq-name">Potência reativa do banco</p>
+    <div class="eq-main"><var>Q</var><sub>c</sub> = <var>P</var> · (tan φ<sub>1</sub> − tan φ<sub>2</sub>)</div>
+    <dl>
+      <dt><var>Q</var><sub>c</sub></dt><dd>potência do banco de capacitores, em kvar</dd>
+      <dt><var>P</var></dt><dd>potência ativa da carga, em kW</dd>
+      <dt>φ<sub>1</sub>, φ<sub>2</sub></dt><dd>ângulos do fator de potência antes e depois (tan φ = tan(arccos FP))</dd>
+    </dl>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 8</p>
+    <p>Uma carga de 2.000 kW tem fator de potência 0,80 em 13,8 kV. Que banco leva o fator a 0,95, e como muda a corrente?</p>
+    <ol class="steps">
+      <li>tan(arccos 0,80) = 0,75 e tan(arccos 0,95) ≈ 0,329. <var>Q</var><sub>c</sub> = 2.000 × (0,75 − 0,329) ≈ <b>843 kvar</b>.</li>
+      <li>Corrente antes: 2.000/(√3 × 13,8 × 0,80) ≈ <b>104,6 A</b>. Depois: 2.000/(√3 × 13,8 × 0,95) ≈ <b>88,1 A</b>. A corrente cai, e com ela a queda de tensão e as perdas.</li>
+    </ol>
+  </div>
+
+  <h3>Transformadores de instrumentos: TC e TP</h3>
+  <p>Medidores e relés não podem ser ligados direto à média tensão nem a correntes de centenas de ampères. Os <b>transformadores de instrumentos</b> reproduzem a corrente ou a tensão do circuito em valores pequenos, padronizados, e isolados da alta tensão: o <b>TC</b> (transformador de corrente) e o <b>TP</b> (transformador de potencial, ou de tensão). Alimentam medição, faturamento, proteção e controle.</p>
+  <figure><svg viewBox="0 0 640 250" role="img" aria-label="À esquerda, um transformador de corrente ligado em série com o condutor primário, com o secundário ligado a um relé ou medidor; à direita, um transformador de potencial ligado entre a fase e a terra, com o secundário ligado a um voltímetro">
+<path class="wire" d="M20,60 H300"/>
+<circle class="comp" cx="160" cy="60" r="20"/><text x="160" y="65" class="ts" text-anchor="middle">TC</text>
+<path class="wire" d="M160,80 V130"/>
+<rect class="zbox" x="100" y="130" width="120" height="34"/><text x="160" y="152" class="ts" text-anchor="middle">Relé / medidor</text>
+<text x="20" y="38" class="tm">Corrente do primário (em série)</text>
+<text x="160" y="190" class="ts" text-anchor="middle">Secundário: 5 A (ou 1 A)</text>
+<text x="160" y="212" class="tm" text-anchor="middle">Nunca abrir o secundário energizado</text>
+<text x="160" y="240" class="tl" text-anchor="middle">TC</text>
+<path class="wire" d="M340,60 H620"/>
+<path class="wire" d="M500,60 V90 M500,130 V150 M488,150 H512 M492,156 H508 M496,162 H504"/>
+<rect class="zbox" x="470" y="90" width="60" height="40"/><text x="500" y="115" class="ts" text-anchor="middle">TP</text>
+<path class="wire" d="M530,110 H574 M590,126 V150 M578,150 H602 M582,156 H598 M586,162 H594"/>
+<circle class="comp" cx="590" cy="110" r="16"/><text x="590" y="115" class="ts" text-anchor="middle">V</text>
+<text x="340" y="38" class="tm">Tensão do primário (em paralelo)</text>
+<text x="530" y="190" class="ts" text-anchor="middle">Secundário: 115 V (típico)</text>
+<text x="480" y="212" class="tm" text-anchor="middle">Nunca curto-circuitar o secundário</text>
+<text x="480" y="240" class="tl" text-anchor="middle">TP</text>
+</svg><figcaption>Figura 3. O TC fica em série com o condutor e entrega ao relé ou ao medidor uma corrente proporcional, em geral de 5 A ou 1 A. O TP fica em paralelo, entre fase e terra (ou entre fases), e entrega uma tensão proporcional, de 115 V ou 120 V nas aplicações típicas. Os dois isolam os instrumentos da média tensão. O cuidado com cada secundário é oposto: o do TC não pode ficar aberto, e o do TP não pode ser curto-circuitado.</figcaption></figure>
+  <div class="tw"><table>
+    <thead><tr><th></th><th>TC</th><th>TP</th></tr></thead>
+    <tbody>
+      <tr><td>Reproduz</td><td>a corrente do primário, em proporção conhecida</td><td>a tensão do primário, em proporção conhecida</td></tr>
+      <tr><td>Ligação do primário</td><td>em série com o condutor</td><td>em paralelo (entre fases ou fase e terra)</td></tr>
+      <tr><td>Secundário típico</td><td>5 A ou 1 A</td><td>115 V ou 120 V</td></tr>
+      <tr><td>Risco no secundário</td><td>aberto com o primário energizado: tensão perigosa e dano à isolação</td><td>em curto-circuito: corrente excessiva e aquecimento</td></tr>
+      <tr><td>Quem alimenta</td><td>amperímetros, relés de sobrecorrente (wattímetros e medidores de energia usam os dois)</td><td>voltímetros, relés de tensão (wattímetros e medidores de energia usam os dois)</td></tr>
+    </tbody>
+  </table></div>
+  <p>As classes de exatidão dos TCs e TPs de medição aparecem como 0,3; 0,6 e 1,2 (erro percentual máximo), e as de proteção são menos exatas, de 3 a 10% <span class="confira">(valores de catálogo de fabricante e de resumos; as normas dos transformadores de instrumentos não foram lidas)</span>. A NBR 14039 prevê meios de curto-circuitar os bornes secundários dos TCs para ensaios e trocas <span class="confira">(informação de artigo técnico; a norma não foi lida)</span>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 9</p>
+    <p>Um TC de relação 200/5 A tem o amperímetro do secundário indicando 3,2 A. Um TP de 13.800/115 V alimenta um relé que indica 114 V. Qual a corrente e a tensão no primário?</p>
+    <ol class="steps">
+      <li>Relação do TC: 200/5 = <b>40</b>. Corrente do primário: 3,2 × 40 = <b>128 A</b>.</li>
+      <li>Relação do TP: 13.800/115 = <b>120</b>. Tensão do primário: 114 × 120 = <b>13.680 V</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Aterramento da rede e subestação do consumidor</h3>
+  <p>As redes primárias das concessionárias consultadas usam <b>neutro multiaterrado</b>: o neutro (ou o cabo mensageiro, na rede compacta) é ligado à terra no transformador, no para-raios, nas estruturas dos equipamentos e em intervalos ao longo da rede (a Equatorial pede, no mínimo, a cada 300 m na rede compacta). As carcaças dos transformadores, religadores e bancos de capacitores e todos os para-raios são aterrados. Os limites de resistência são <b>de cada concessionária</b>: a Equatorial, por exemplo, indica 20 Ω como valor recomendável para transformadores e para-raios, e 10 Ω quando já houver pelo menos cinco hastes <span class="confira">(valores de uma norma técnica de concessionária; outras trazem outros limites)</span>.</p>
+  <p>A <b>NBR 14039</b> é a norma das instalações elétricas de média tensão de 1,0 kV a 36,2 kV, ou seja, dos consumidores atendidos em MT. A subestação do consumidor reúne, a partir do ponto de entrega: seccionamento e proteção (chave fusível ou disjuntor), para-raios, TC e TP para a medição, o transformador e a malha de aterramento. O transformador e a proteção seguem a lógica da seção 2.</p>
+
+  <div class="quiz" data-set="b3"></div>
+</section>
+
+<!-- ============ SEÇÃO 4 ============ -->
+<section id="b4" class="block">
+  <div class="block-head"><span class="block-num">4</span><h2>Manobra e segurança em média tensão: NR-10, zonas, aterramento temporário e linha viva</h2></div>
+  <p class="edital-ref">Edital, item 8.2</p>
+
+  <p>A segurança em média tensão é da <b>NR-10</b>. A estação <b>N1</b> traz a norma inteira; aqui está o que a média tensão exige de quem manobra e mantém a rede. Os números são do texto <b>em vigor</b> (redação de 2019, até 31/05/2027, que é a da prova de 29/11/2026), e onde a nova redação (Portaria MTE nº 737/2026) muda alguma coisa, isso está dito.</p>
+
+  <h3>Quem pode trabalhar e em que condições</h3>
+  <p>O texto em vigor trata como <b>alta tensão</b> (AT) o que passa de 1.000 V em corrente alternada; a rede de 13,8 kV cai nessas regras, assim como todo o <b>Sistema Elétrico de Potência</b> (SEP: geração, transmissão e distribuição). Os pontos que mais caem:</p>
+  <ul>
+    <li><b>não é trabalho individual</b>: os serviços em instalações energizadas em AT e os do SEP não podem ser realizados individualmente (10.7.3);</li>
+    <li>exigem <b>ordem de serviço específica</b> para data e local, assinada por superior responsável pela área (10.7.4);</li>
+    <li>dentro da <b>zona de risco</b>, só se intervém em instalação energizada em AT mediante a <b>desativação (bloqueio) dos conjuntos e dispositivos de religamento automático</b> do circuito (10.7.7). É por isso que o religador da seção 2 é bloqueado antes do serviço: do contrário, ele religaria sobre a equipe;</li>
+    <li>as <b>ferramentas, equipamentos e dispositivos isolantes</b> para AT passam por testes elétricos ou ensaios de laboratório periódicos, segundo o fabricante e a empresa, e na falta disso, anualmente (10.7.8);</li>
+    <li>o trabalhador precisa de <b>treinamento</b>: curso básico de 40 h e, para quem atua no SEP, o complementar de 40 h (Anexo III), com <b>reciclagem bienal</b> e quando mudar de função ou de empresa, voltar de afastamento superior a três meses ou houver mudança significativa nas instalações (10.8.8.2).</li>
+  </ul>
+  <p>Na nova redação, que vale a partir de 01/06/2027, a média tensão passa a ter faixa própria (acima de 1.000 V até 36.200 V), o trabalho com média e alta tensão continua sem ser individual (10.14.2), e o bloqueio do religamento continua exigido para a zona de risco (10.14.3).</p>
+
+  <h3>Zonas de risco, controlada e livre</h3>
+  <p>Em torno de uma parte condutora energizada e não segregada, a norma desenha duas esferas, cujo tamanho cresce com a tensão: a <b>zona de risco</b> (a mais próxima), onde só entram trabalhadores autorizados, com técnicas e instrumentos apropriados de trabalho, e a <b>zona controlada</b>, em volta dela, de aproximação só para autorizados. Além do raio de controle fica a <b>zona livre</b>. A tabela do Anexo II dá o raio de risco (<var>R</var><sub>r</sub>) e o raio da zona controlada (<var>R</var><sub>c</sub>) pela faixa de tensão nominal da instalação.</p>
+  <figure><svg viewBox="0 0 640 280" role="img" aria-label="Duas circunferências concêntricas em torno de um condutor energizado de 13,8 kV: a menor delimita a zona de risco, até 0,38 metro, e a maior a zona controlada, até 1,38 metro; fora dela fica a zona livre">
+<circle class="arc" cx="200" cy="140" r="110"/>
+<circle class="w pa" cx="200" cy="140" r="30"/>
+<circle class="comp" cx="200" cy="140" r="7"/>
+<path class="guide" d="M221,161 L340,206 M310,140 H340 M278,62 L340,70"/>
+<text x="345" y="210" class="ts">Zona de risco: até 0,38 m</text>
+<text x="345" y="144" class="ts">Zona controlada: de 0,38 m a 1,38 m</text>
+<text x="345" y="74" class="ts">Zona livre: além de 1,38 m</text>
+<text x="200" y="20" class="tm" text-anchor="middle">Condutor energizado, 13,8 kV</text>
+<text x="200" y="272" class="tm" text-anchor="middle">Raios na escala de 80 px por metro</text>
+</svg><figcaption>Figura 4. Zonas em torno de uma parte energizada, não segregada, numa rede de 13,8 kV (faixa de 10 kV a menos de 15 kV): R<sub>r</sub> = 0,38 m e R<sub>c</sub> = 1,38 m. Os raios não mudam entre a NR-10 em vigor e a redação de 2027.</figcaption></figure>
+  <div class="tw"><table>
+    <thead><tr><th>Faixa de tensão nominal (kV)</th><th><var>R</var><sub>r</sub> (zona de risco), m</th><th><var>R</var><sub>c</sub> (zona controlada), m</th></tr></thead>
+    <tbody>
+      <tr><td>&lt; 1</td><td>0,20</td><td>0,70</td></tr>
+      <tr><td>≥ 1 e &lt; 3</td><td>0,22</td><td>1,22</td></tr>
+      <tr><td>≥ 3 e &lt; 6</td><td>0,25</td><td>1,25</td></tr>
+      <tr><td>≥ 6 e &lt; 10</td><td>0,35</td><td>1,35</td></tr>
+      <tr><td>≥ 10 e &lt; 15</td><td>0,38</td><td>1,38</td></tr>
+      <tr><td>≥ 15 e &lt; 20</td><td>0,40</td><td>1,40</td></tr>
+      <tr><td>≥ 20 e &lt; 30</td><td>0,56</td><td>1,56</td></tr>
+      <tr><td>≥ 30 e &lt; 36</td><td>0,58</td><td>1,58</td></tr>
+    </tbody>
+  </table></div>
+  <p>Aproximar-se a uma distância <b>menor que</b> <var>R</var><sub>r</sub> é entrar na zona de risco; entre <var>R</var><sub>r</sub> e <var>R</var><sub>c</sub>, é a zona controlada; acima de <var>R</var><sub>c</sub>, a livre. Vale a tensão nominal entre fases.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 10</p>
+    <p>Um eletricista de uma rede de 13,8 kV pretende ficar a 1,0 m de um cabo nu energizado. Em que zona está, e qual a largura da faixa da zona controlada nessa tensão?</p>
+    <ol class="steps">
+      <li>A faixa de 10 a menos de 15 kV tem <var>R</var><sub>r</sub> = 0,38 m e <var>R</var><sub>c</sub> = 1,38 m. Como 0,38 &lt; 1,0 &lt; 1,38, ele está na <b>zona controlada</b>: só pode estar ali se for autorizado.</li>
+      <li>Largura da zona controlada: 1,38 − 0,38 = <b>1,00 m</b>.</li>
+    </ol>
+  </div>
+
+  <h3>Desenergização, aterramento temporário e reenergização</h3>
+  <p>Uma instalação só é considerada <b>desenergizada</b> depois de seguir, em ordem, a sequência do item 10.5.1 do texto em vigor:</p>
+  <ol class="steps">
+    <li>seccionamento;</li>
+    <li>impedimento de reenergização;</li>
+    <li>constatação da ausência de tensão;</li>
+    <li>instalação de aterramento temporário, com equipotencialização dos condutores dos circuitos;</li>
+    <li>proteção dos elementos energizados existentes na zona controlada;</li>
+    <li>instalação da sinalização de impedimento de reenergização.</li>
+  </ol>
+  <p>A nova redação (10.13.1) tem sete passos: sobe a constatação da ausência de tensão para antes do impedimento de reenergização, repete-a antes do aterramento, acrescenta a proteção contra o arco elétrico e a delimitação e sinalização da área de trabalho. Nas duas redações, <b>a constatação da ausência de tensão vem imediatamente antes do aterramento temporário</b>.</p>
+  <p>O <b>aterramento temporário</b> liga os condutores já desenergizados à terra e entre si (curto-circuito equipotencial). Protege a equipe contra a reenergização acidental, o retorno de tensão por manobra errada e a tensão induzida por circuitos vizinhos. Na prática: a ausência de tensão se constata com <b>detector de tensão apropriado à classe</b>, testado antes e depois da medição; a conexão do conjunto de aterramento é feita com <b>vara de manobra</b> isolada, ligando primeiro o terminal de terra e depois as fases, e a retirada segue a ordem inversa <span class="confira">(detector testado antes e depois e ordem terra primeiro são boa prática de procedimentos de concessionárias; não estão no texto da NR-10)</span>. A <b>reenergização</b> tem sequência própria (10.5.2: retirar ferramentas, retirar do local os trabalhadores não envolvidos, remover o aterramento e as proteções, remover a sinalização, destravar e religar): <b>não é a ordem inversa</b> da desenergização.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 11</p>
+    <p>Numa falta fase-terra de 400 A, o aterramento de uma estrutura tem 10 Ω. Que elevação de potencial surge nessa estrutura em relação à terra remota, e por que isso importa para a equipe?</p>
+    <ol class="steps">
+      <li><var>V</var> = <var>R</var>·<var>I</var> = 10 × 400 = <b>4.000 V</b> em relação à terra remota, valor perigoso para quem tocar a estrutura com os pés em outro potencial.</li>
+      <li>Por isso as estruturas e as ferramentas da equipe ficam <b>equipotencializadas</b> (o aterramento temporário liga tudo junto) e a equipe trabalha sobre uma superfície equipotencial.</li>
+    </ol>
+  </div>
+
+  <h3>Linha viva: introdução</h3>
+  <p>O serviço feito <b>com a rede energizada</b> (&ldquo;linha viva&rdquo;) é o recurso para não desligar consumidores. Exige tudo o que a lista acima pede, mais <b>procedimento específico</b>, ferramentas isolantes ensaiadas, equipe com mais de um trabalhador, e que o religamento automático esteja bloqueado. Os métodos clássicos são três: <b>ao contato</b> (o trabalhador toca as partes vivas protegido por luvas e mangas isolantes), <b>à distância</b> (usa varas isolantes e fica fora da zona de risco) e <b>ao potencial</b> (o trabalhador, com vestimenta condutiva, fica no mesmo potencial do condutor) <span class="confira">(classificação em três métodos vem de materiais de concessionárias e de cursos; não está no texto da NR-10)</span>. Uma rede compacta é tratada como rede nua: a cobertura do cabo não autoriza o toque.</p>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>&ldquo;Com a rede compacta, a cobertura é isolação e o eletricista pode tocar nos cabos.&rdquo; Não pode. Também é falso que o religador possa ficar ativo durante o serviço na zona de risco: o bloqueio do religamento automático é exigência da norma.</p>
+  </div>
+
+  <div class="quiz" data-set="b4"></div>
+</section>
+
+<!-- ============ SEÇÃO 5 ============ -->
+<section id="b5" class="block">
+  <div class="block-head"><span class="block-num">5</span><h2>SPDA (NBR 5419): níveis de proteção e métodos de captação</h2></div>
+  <p class="edital-ref">Edital, item 8.4</p>
+
+  <h3>O que o SPDA faz, e o que não faz</h3>
+  <p>O <b>SPDA</b> (sistema de proteção contra descargas atmosféricas) <b>não impede a descarga</b>: ele oferece um caminho preferencial e controlado para a corrente do raio chegar à terra, sem passar pela estrutura nem por quem está nela. Ele é composto por duas partes:</p>
+  <ul>
+    <li>o <b>SPDA externo</b>, com três subsistemas: <b>captação</b> (os captores, que interceptam o raio), <b>descida</b> (os condutores que levam a corrente até o solo) e <b>aterramento</b> (os eletrodos que a dispersam na terra);</li>
+    <li>o <b>SPDA interno</b>: as ligações equipotenciais e a distância de segurança, que evitam centelhamento perigoso dentro da estrutura (seção 6).</li>
+  </ul>
+  <p>A <b>NBR 5419</b> tem quatro partes: <b>1</b> (princípios gerais), <b>2</b> (gerenciamento de risco), <b>3</b> (danos físicos a estruturas e perigos à vida: o SPDA em si) e <b>4</b> (sistemas elétricos e eletrônicos internos à estrutura: as medidas contra surtos). O projeto segue uma ordem: análise de risco (parte 2), escolha do <b>nível de proteção</b>, captação, descidas, aterramento, proteção dos sistemas internos e inspeção. O SPDA é <b>externo isolado</b> quando captação e descidas são posicionadas de modo que a corrente não toque a estrutura, e se considera quando os efeitos térmicos e de explosão no ponto de impacto, ou nos condutores percorridos pela corrente, puderem causar dano ao conteúdo, por exemplo em estruturas com material combustível ou risco de explosão.</p>
+
+  <h3>Níveis de proteção I a IV</h3>
+  <p>O <b>nível de proteção</b> resume o quanto o SPDA é rigoroso. O <b>nível I é o mais rigoroso</b>, e o IV é o menos. O nível <b>não vem do tipo da estrutura</b>: sai da análise de risco (parte 2 da norma). Cada nível fixa o raio da esfera rolante, o módulo da malha, o espaçamento das descidas e a eficiência esperada do SPDA (1 − P<sub>B</sub>, que na NBR 5419:2005 vinha como 98, 95, 90 e 80%) <span class="confira">(valores de materiais didáticos; o texto da norma não foi lido)</span>.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Nível</th><th>Eficiência do SPDA (1 − P<sub>B</sub>)</th><th>Raio da esfera rolante</th><th>Módulo da malha</th><th>Espaçamento médio das descidas</th></tr></thead>
+    <tbody>
+      <tr><td><b>I</b></td><td>98%</td><td>20 m</td><td>5 m × 5 m</td><td>10 m</td></tr>
+      <tr><td><b>II</b></td><td>95%</td><td>30 m</td><td>10 m × 10 m</td><td>10 m</td></tr>
+      <tr><td><b>III</b></td><td>90%</td><td>45 m</td><td>15 m × 15 m</td><td>15 m</td></tr>
+      <tr><td><b>IV</b></td><td>80%</td><td>60 m</td><td>20 m × 20 m</td><td>20 m</td></tr>
+    </tbody>
+  </table></div>
+  <p>Observe o padrão: quanto mais rigoroso o nível, <b>menores</b> o raio da esfera, a malha e o espaçamento, e <b>mais captores e descidas</b>. Os níveis I e II têm o mesmo espaçamento de descidas, 10 m. A corrente de pico máxima da primeira descarga positiva considerada no projeto é de 200 kA (nível I), 150 kA (II) e 100 kA (III e IV) <span class="confira">(valores de artigo técnico sobre a edição de 2026; o texto da norma, que é pago, não foi lido, e as tabelas em edições antigas diferem em alguns números, como o espaçamento de descidas de 10, 15, 20 e 25 m da NBR 5419:2005)</span>. O raio da esfera vem da menor corrente que o SPDA deve interceptar naquele nível: <var>R</var> = 10·<var>I</var><sup>0,65</sup>, com <var>R</var> em metros e <var>I</var> em kA <span class="confira">(fórmula e correntes de 3, 5, 10 e 16 kA de material didático sobre a NBR 5419-1:2026)</span>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 12</p>
+    <p>Qual o raio da esfera para uma corrente mínima de interceptação de 10 kA, e a que nível corresponde?</p>
+    <ol class="steps">
+      <li><var>R</var> = 10 × 10<sup>0,65</sup> ≈ <b>44,7 m</b>, o que é o raio de <b>45 m</b> do nível III. A esfera menor é a do nível mais rigoroso: no nível I, com 3 kA, <var>R</var> = 10 × 3<sup>0,65</sup> ≈ 20,4 m, ou seja, 20 m.</li>
+    </ol>
+  </div>
+
+  <h3>Métodos de captação</h3>
+  <p>O projeto escolhe onde colocar os captores por um de três métodos (ou por mistura deles). Os três usam os dados do nível escolhido.</p>
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="À esquerda, o método da esfera rolante: uma esfera de 30 metros tangencia o solo e o topo de um mastro de 15 metros; o raio protegido no solo é de cerca de 26 metros. À direita, o método de Franklin: um cone com ângulo de proteção de 45 graus a partir do topo de um mastro de 10 metros, que protege um raio de 10 metros no solo">
+<text x="160" y="26" class="tl" text-anchor="middle">Esfera rolante</text>
+<path class="wire" d="M20,250 H300 M110,250 V205"/>
+<circle class="comp" cx="110" cy="205" r="4"/>
+<circle class="dash pb" cx="188" cy="160" r="90"/>
+<path class="guide" d="M188,160 L266,115"/>
+<text x="150" y="112" class="ts">R = 30 m</text>
+<text x="100" y="236" class="tm" text-anchor="end">h = 15 m</text>
+<path class="ar ink" d="M110,262 H188" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="149" y="284" class="ts" text-anchor="middle">r ≈ 26 m</text>
+<text x="480" y="26" class="tl" text-anchor="middle">Método de Franklin</text>
+<path class="wire" d="M340,250 H620 M430,250 V160"/>
+<circle class="comp" cx="430" cy="160" r="4"/>
+<path class="dash pc" d="M430,160 L340,250 M430,160 L520,250"/>
+<text x="445" y="148" class="ts">α = 45°</text>
+<text x="445" y="168" class="tm">nível III, h ≤ 20 m</text>
+<text x="438" y="240" class="tm">h = 10 m</text>
+<path class="ar ink" d="M430,262 H520" marker-start="url(#ah-ink)" marker-end="url(#ah-ink)"/>
+<text x="475" y="284" class="ts" text-anchor="middle">r = 10 m</text>
+</svg><figcaption>Figura 5. À esquerda, a esfera rolante de 30 m (nível II) toca o solo e o topo do mastro de 15 m; o círculo no solo, de raio ≈ 26 m, é a região protegida. À direita, o método de Franklin: o captor protege o cone de ângulo α a partir do topo, e o raio protegido no solo é <var>h</var>·tan α. Desenhos esquemáticos, em escalas diferentes.</figcaption></figure>
+  <ul>
+    <li><b>Franklin (ângulo de proteção)</b>: cada captor protege um <b>cone</b> de ângulo α a partir do topo. Em cada nível, o ângulo <b>diminui</b> quando a altura do captor aumenta; para uma mesma altura, ele é maior nos níveis menos rigorosos. Para captor com até 20 m: 25° (I), 35° (II), 45° (III) e 55° (IV); de 21 a 30 m: 25° (II), 35° (III) e 45° (IV); de 31 a 45 m: 25° (III) e 35° (IV); de 46 a 60 m: 25° (IV) <span class="confira">(valores lidos na NBR 5419:2005 reproduzida e em material didático baseado nela; o texto das edições de 2015 e de 2026 não foi lido; confira com a edição em vigor)</span>. Onde a tabela não dá ângulo (captor alto num nível rigoroso), o método não se aplica. É indicado para estruturas pequenas e baixas.</li>
+    <li><b>Esfera rolante (esfera fictícia)</b>: uma esfera do raio do nível &ldquo;rola&rdquo; sobre a estrutura em todas as direções; os pontos que ela toca precisam de captor, e o que fica fora do alcance dela está protegido. É o método <b>mais geral</b>, serve para formas complexas.</li>
+    <li><b>Gaiola de Faraday (malha)</b>: condutores formam uma malha sobre a cobertura e as laterais, com módulo máximo de 5, 10, 15 ou 20 m por nível. É indicada para coberturas planas e estruturas grandes: quanto menor o módulo, melhor a proteção.</li>
+  </ul>
+  <div class="eq">
+    <p class="eq-name">Raio protegido pela esfera rolante e pelo ângulo de proteção</p>
+    <div class="eq-main"><var>r</var> = √(<var>h</var>·(2<var>R</var> − <var>h</var>)) &nbsp;&nbsp;&nbsp;&nbsp; <var>r</var><sub>x</sub> = √(<var>h</var>·(2<var>R</var> − <var>h</var>)) − √(<var>h</var><sub>x</sub>·(2<var>R</var> − <var>h</var><sub>x</sub>)) &nbsp;&nbsp;&nbsp;&nbsp; <var>r</var> = <var>h</var> · tan α</div>
+    <dl>
+      <dt><var>r</var></dt><dd>raio protegido no plano do solo, em m</dd>
+      <dt><var>r</var><sub>x</sub></dt><dd>raio protegido no plano de altura <var>h</var><sub>x</sub>, em m</dd>
+      <dt><var>h</var></dt><dd>altura do captor (mastro) acima do plano de referência, em m; vale se <var>h</var> ≤ <var>R</var></dd>
+      <dt><var>h</var><sub>x</sub></dt><dd>altura do plano ou do objeto protegido, em m</dd>
+      <dt><var>R</var></dt><dd>raio da esfera do nível de proteção, em m</dd>
+      <dt>α</dt><dd>ângulo de proteção do método de Franklin, em graus</dd>
+    </dl>
+  </div>
+  <p>A primeira vem da geometria: a esfera toca o topo do mastro e o solo, e o círculo onde ela deixa de ser atingida tem raio √(<var>R</var>² − (<var>R</var> − <var>h</var>)²) = √(<var>h</var>(2<var>R</var> − <var>h</var>)). A segunda é a mesma conta para um plano mais alto, descontando a parte que a esfera cobre a essa altura.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 13</p>
+    <p>Um mastro de 15 m protege uma região do nível II (<var>R</var> = 30 m). Qual o raio protegido no solo?</p>
+    <ol class="steps">
+      <li><var>r</var> = √(15 × (2 × 30 − 15)) = √675 ≈ <b>25,98 m</b>.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 14</p>
+    <p>Um mastro de 20 m, no nível II (<var>R</var> = 30 m), deve proteger um equipamento de 10 m de altura. Qual o raio protegido a essa altura?</p>
+    <ol class="steps">
+      <li>No solo: √(20 × 40) = √800 ≈ 28,28 m. Na altura do equipamento: √(10 × 50) = √500 ≈ 22,36 m.</li>
+      <li><var>r</var><sub>x</sub> = 28,28 − 22,36 ≈ <b>5,92 m</b>. Quanto mais alto o objeto, menor o raio protegido: de 28 m no solo para menos de 6 m a 10 m de altura.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 15</p>
+    <p>Um captor de 10 m acima do plano protegido, em estrutura de até 20 m, com ângulo de 45° (nível III) ou de 55° (nível IV). Qual o raio protegido no plano?</p>
+    <ol class="steps">
+      <li>Nível III: <var>r</var> = 10 × tan 45° = <b>10 m</b>.</li>
+      <li>Nível IV: <var>r</var> = 10 × tan 55° ≈ <b>14,3 m</b>. O nível menos rigoroso protege um raio maior com o mesmo captor.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 16</p>
+    <p>A cobertura plana de um galpão de 40 m × 25 m recebe uma malha do nível III (módulo máximo de 15 m). Quantos módulos e condutores?</p>
+    <ol class="steps">
+      <li>Ao longo dos 40 m: 40/15 ≈ 2,67, então são necessários <b>3 módulos</b> (de 13,33 m cada). Ao longo dos 25 m: 25/15 ≈ 1,67, então <b>2 módulos</b> (de 12,5 m).</li>
+      <li>A malha tem 3 × 2 módulos, ou seja, 4 condutores no sentido dos 25 m e 3 condutores no sentido dos 40 m, e os lados dos módulos ficam todos menores que o máximo de 15 m.</li>
+    </ol>
+  </div>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 17</p>
+    <p>O mesmo galpão (40 m × 25 m): quantas descidas no nível III (espaçamento de 15 m) e no nível II (10 m)?</p>
+    <ol class="steps">
+      <li>Perímetro: 2 × (40 + 25) = <b>130 m</b>.</li>
+      <li>Nível III: 130/15 ≈ 8,67, arredondando para cima, <b>9 descidas</b>. Nível II: 130/10 = <b>13 descidas</b>. O número calculado nunca pode ser menor que dois.</li>
+    </ol>
+  </div>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>&ldquo;Nível I tem esfera maior, porque é o mais forte.&rdquo; É o contrário: o nível I tem a <b>menor</b> esfera (20 m), a malha mais fechada e as descidas mais próximas. Também é falso que o SPDA &ldquo;atraia&rdquo; ou &ldquo;evite&rdquo; o raio: ele só o capta e o conduz à terra.</p>
+  </div>
+
+  <div class="quiz" data-set="b5"></div>
+</section>
+
+<!-- ============ SEÇÃO 6 ============ -->
+<section id="b6" class="block">
+  <div class="block-head"><span class="block-num">6</span><h2>SPDA: descidas, aterramento, equipotencialização, DPS, MPS e inspeção</h2></div>
+  <p class="edital-ref">Edital, item 8.4</p>
+
+  <figure><svg viewBox="0 0 640 300" role="img" aria-label="Edificação com SPDA: um captor e um condutor de captação na cobertura, duas descidas até um anel de aterramento com hastes, o barramento de equipotencialização principal e um DPS no quadro onde chega a linha de energia">
+<path class="wire" d="M60,250 H580"/>
+<rect class="zbox" x="200" y="110" width="200" height="140"/>
+<path class="w pa" d="M200,104 H400 M300,104 V70 M206,104 V262 M394,104 V262 M170,262 H430 M190,262 V284 M410,262 V284"/>
+<circle class="comp" cx="300" cy="66" r="4"/>
+<rect class="comp" x="214" y="214" width="40" height="18"/><text x="234" y="227" class="ts" text-anchor="middle">BEP</text>
+<path class="wire" d="M234,232 V262"/>
+<rect class="comp" x="290" y="190" width="50" height="30"/><text x="315" y="210" class="ts" text-anchor="middle">DPS</text>
+<path class="wire" d="M315,220 V262 M560,204 H340"/>
+<text x="312" y="68" class="ts">Captor</text>
+<text x="196" y="184" class="ts" text-anchor="end">Descida</text>
+<text x="160" y="266" class="ts" text-anchor="end">Anel de aterramento</text>
+<text x="418" y="290" class="tm">Haste</text>
+<text x="450" y="196" class="ts">Linha de energia</text>
+</svg><figcaption>Figura 6. Estrutura com SPDA. Os traços coloridos são o SPDA externo: captor e condutor de captação na cobertura, duas descidas e o anel de aterramento com hastes. Por dentro, o barramento de equipotencialização principal (BEP) e o DPS do quadro, onde chega a linha de energia, ligam-se ao mesmo aterramento, por condutores curtos. O desenho é esquemático.</figcaption></figure>
+
+  <h3>Descidas e distância de segurança</h3>
+  <p>Os <b>condutores de descida</b> levam a corrente da captação ao aterramento pelo caminho mais curto, distribuídos de modo uniforme (de preferência nos cantos) e em <b>número mínimo de dois</b>. O número vem do perímetro dividido pelo espaçamento do nível, arredondado para cima (exemplo resolvido 17). Podem ser naturais, como as armaduras de aço do concreto e os pilares metálicos, desde que haja continuidade elétrica.</p>
+  <p>A corrente do raio é enorme e de subida rapidíssima. Se um condutor metálico interno ficar perto da descida, pode saltar uma faísca entre eles. A <b>distância de segurança</b> evita o centelhamento perigoso: se ela não puder ser mantida, liga-se a peça à descida por <b>ligação equipotencial</b>. Perto das descidas, a <b>tensão de toque e de passo</b> pode ser perigosa; a norma as limita por medidas como restringir o acesso, isolar o condutor de descida exposto (3 mm de polietileno reticulado, em material didático) ou contar com pelo menos 10 caminhos naturais de descida interligados <span class="confira">(medidas de material didático sobre a NBR 5419-3; o texto da norma não foi lido)</span>.</p>
+  <p>A <b>equipotencialização</b> liga ao <b>BEP</b> o SPDA, as armaduras, as tubulações metálicas e as massas, e as linhas de energia e de sinal entram nele por meio de DPS. Assim, durante a descarga, todas as peças metálicas sobem de potencial juntas, e a diferença entre elas, que é o que faz a faísca e o choque, fica pequena.</p>
+
+  <h3>Aterramento do SPDA</h3>
+  <p>O <b>subsistema de aterramento</b> dispersa a corrente do raio no solo. O que importa é a <b>geometria</b> do eletrodo e um aterramento único e integrado (SPDA, energia e sinais). Duas configurações principais: o <b>anel</b> em torno da estrutura, enterrado a pelo menos 0,5 m e a cerca de 1 m da parede, e as <b>hastes</b> (arranjo pontual). Para os níveis III e IV, o comprimento mínimo do eletrodo é de 5 m; nos níveis I e II ele cresce com a resistividade do solo <span class="confira">(comprimento mínimo e profundidade do anel conforme artigo técnico sobre a NBR 5419-3:2015; o texto da norma não foi lido)</span>. Segundo uma citação da NBR 5419:2005 em artigo técnico, recomenda-se uma resistência da ordem de <b>10 Ω</b> como forma de reduzir os gradientes de potencial no solo. As fontes sobre a edição de 2026 dizem que ela passa a avaliar a eficácia do aterramento pela <b>continuidade elétrica</b> e dispensa a medição de resistência para esse fim; a resistência continua sendo considerada no projeto <span class="confira">(informação de artigos técnicos; a norma de 2026 não foi lida)</span>.</p>
+  <p>Hastes em paralelo e <b>bem afastadas</b> se aproximam de dividir a resistência: duas hastes de 10 Ω a mais de 15 m uma da outra resultam em cerca de 5 Ω. Quando elas ficam perto, uma interfere na outra, e o ganho é menor.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 18</p>
+    <p>Cada haste de um aterramento tem 40 Ω isolada. Quatro hastes, tão afastadas que não interferem, dão que resistência (ideal)?</p>
+    <ol class="steps">
+      <li><var>R</var> ≈ 40/4 = <b>10 Ω</b>. É o limite ideal: na prática, a interferência entre hastes dá um valor maior.</li>
+    </ol>
+  </div>
+
+  <h3>DPS, zonas de proteção e medidas de proteção contra surtos</h3>
+  <p>O raio atinge a estrutura, mas o <b>surto</b> também chega por dentro, pelas linhas de energia e de sinal, induzido ou conduzido. O <b>DPS</b> (dispositivo de proteção contra surtos) limita a sobretensão transitória e desvia a corrente do surto. Há três classes (NBR IEC 61643-1):</p>
+  <div class="tw"><table>
+    <thead><tr><th>Classe</th><th>Ensaio</th><th>Onde costuma ficar</th></tr></thead>
+    <tbody>
+      <tr><td><b>I</b></td><td>corrente de impulso <var>I</var><sub>imp</sub>, onda 10/350 µs (parte da corrente de uma descarga direta)</td><td>entrada da estrutura que tem SPDA (fronteira da zona 0 para a 1)</td></tr>
+      <tr><td><b>II</b></td><td>corrente nominal <var>I</var><sub>n</sub>, onda 8/20 µs (surtos induzidos e residuais)</td><td>quadros de distribuição</td></tr>
+      <tr><td><b>III</b></td><td>onda combinada</td><td>junto ao equipamento, como complemento</td></tr>
+    </tbody>
+  </table></div>
+  <p>Os DPS devem ser <b>coordenados</b> entre si. O nível de proteção <var>U</var><sub>p</sub> do DPS é a tensão que ele deixa passar, mas a tensão que chega ao equipamento é maior, porque os condutores de ligação têm indutância (cerca de 1 µH por metro) e, com a corrente subindo rapidamente, produzem queda de tensão <var>L</var>·d<var>i</var>/d<var>t</var> <span class="confira">(ordem de grandeza de 1 µH/m: valor de referência geral, sem fonte normativa lida; o efeito é o ponto cobrado, não o valor)</span>. Por isso os cabos do DPS devem ser <b>os mais curtos possíveis</b>.</p>
+  <div class="box ex">
+    <p class="box-title">Exemplo resolvido 19</p>
+    <p>Um DPS de <var>U</var><sub>p</sub> = 1,5 kV é ligado com cabos de 2 m no total, de 1 µH/m, e percorrido por uma corrente que sobe 1 kA/µs. Que tensão chega ao equipamento?</p>
+    <ol class="steps">
+      <li>Indutância: 2 µH. Queda indutiva: 2 × 10<sup>−6</sup> × 10<sup>9</sup> = <b>2.000 V</b>.</li>
+      <li>Tensão que chega: 1.500 + 2.000 = <b>3.500 V</b>, mais que o dobro da tensão do DPS.</li>
+    </ol>
+  </div>
+  <p>As <b>zonas de proteção contra raios (ZPR)</b> dividem o ambiente pelo que se espera de surto e de campo eletromagnético: a <b>ZPR 0<sub>A</sub></b> está sujeita à descarga direta; a <b>0<sub>B</sub></b> está protegida da descarga direta, mas não do campo; as <b>ZPR 1, 2 e seguintes</b> são interiores, com surtos e campos cada vez menores. Em cada fronteira de zona, todas as partes metálicas que a cruzam são equipotencializadas e, se for o caso, há um DPS.</p>
+  <p>As <b>medidas de proteção contra surtos (MPS)</b> são tratadas na <b>parte 4</b> da norma e visam reduzir as falhas em <b>sistemas elétricos e eletrônicos internos</b>. Não se resumem a instalar DPS: incluem equipotencialização, DPS coordenados, blindagens, roteamento dos cabos, interfaces isolantes e as zonas de proteção. Esse é o assunto da questão 46 de 2023, e a distinção que a banca cobra é esta:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Parte da NBR 5419</th><th>Trata de</th></tr></thead>
+    <tbody>
+      <tr><td>1: princípios gerais</td><td>conceitos, parâmetros da descarga e níveis de proteção</td></tr>
+      <tr><td>2: gerenciamento de risco</td><td>a avaliação de risco, que diz se a proteção é necessária e qual o nível</td></tr>
+      <tr><td>3: danos físicos a estruturas e perigos à vida</td><td>o SPDA em si: captação, descidas, aterramento, distância de segurança e inspeção</td></tr>
+      <tr><td>4: sistemas elétricos e eletrônicos internos</td><td>as MPS: DPS coordenados, equipotencialização, zonas de proteção</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Inspeção e manutenção</h3>
+  <p>A eficácia a longo prazo do SPDA depende de inspeção. Há inspeção <b>fora do calendário</b>: durante a construção, ao fim da instalação (quando se emite o &ldquo;as built&rdquo;), após alteração do SPDA ou da estrutura e quando houver <b>suspeita de que o SPDA foi atingido</b> (por contador de raios ou inspeção visual). E há a inspeção <b>periódica</b>, por profissional capacitado e habilitado, com relatório, a cada:</p>
+  <ul>
+    <li><b>1 ano</b>, para estruturas com áreas classificadas 0, 1, 20 e 21, com munição, explosivos ou componentes tóxicos, expostas à corrosão atmosférica severa (litoral, atmosfera industrial agressiva) ou de fornecedores de serviços essenciais (energia, água, sinais);</li>
+    <li><b>3 anos</b>, para as demais.</li>
+  </ul>
+  <p>Estes intervalos são os do item 7.3.2 da NBR 5419-3 conforme material didático da UDESC e artigos técnicos <span class="confira">(o texto da norma não foi lido; artigos sobre a edição de 2015 tratam também de inspeção visual semestral, e a de 2026 teria simplificado tudo em 1 ou 3 anos; confira o item na edição em vigor)</span>. Uma instalação com área classificada, como a de um tanque de derivados, cai na faixa de <b>1 ano</b>. Na inspeção verificam-se: deterioração e corrosão de captores, descidas e eletrodos; fixações e conexões; distâncias de segurança; seção dos condutores; <b>continuidade elétrica</b> do eletrodo, da captação, das descidas e das ligações equipotenciais; condição dos DPS e do dispositivo de sobrecorrente a montante; integridade e atuações do contador de raios; e a documentação (projeto ou &ldquo;as built&rdquo; e relatórios).</p>
+  <div class="box trap">
+    <p class="box-title">Pegadinha clássica</p>
+    <p>Nome de parte da norma e conceito trocados: o &ldquo;método de captação&rdquo;, os &ldquo;níveis de proteção&rdquo; e a &ldquo;avaliação de risco&rdquo; são do SPDA e do projeto (partes 1, 2 e 3). O que a banca atribui à <b>proteção dos sistemas eletrônicos internos contra surtos</b> são as <b>MPS</b> (parte 4). E DPS sozinho, sem equipotencialização nem cabos curtos, não é uma MPS completa.</p>
+  </div>
+
+  <div class="quiz" data-set="b6"></div>
+</section>
+
+<section id="form" class="block">
+  <div class="block-head"><h2>Formulário-resumo</h2></div>
+  <div class="tw"><table>
+    <thead><tr><th>Grandeza</th><th>Fórmula</th><th>Observação</th></tr></thead>
+    <tbody>
+      <tr><td>Tensão de fase</td><td>V<sub>F</sub> = V<sub>L</sub>/√3</td><td>13,8 kV de linha dão 7,97 kV de fase</td></tr>
+      <tr><td>Corrente nominal trifásica</td><td>I = S/(√3·V<sub>L</sub>) = P/(√3·V<sub>L</sub>·cos φ)</td><td>S em kVA e V em kV dão A</td></tr>
+      <tr><td>Corrente de curto-circuito</td><td>I<sub>cc</sub> = S<sub>cc</sub>/(√3·V<sub>L</sub>)</td><td>S<sub>cc</sub> em MVA e V em kV dão kA; a capacidade de interrupção deve superá-la</td></tr>
+      <tr><td>Queda de tensão no alimentador</td><td>ΔV<sub>L</sub> ≈ √3·I·L·(r cos φ + x sen φ)</td><td>r e x em Ω/km, L em km; ΔV% = ΔV<sub>L</sub>/V<sub>L</sub>·100</td></tr>
+      <tr><td>Perdas por efeito Joule</td><td>P<sub>perda</sub> = 3·R·I²</td><td>R = r·L, por fase</td></tr>
+      <tr><td>Banco de capacitores</td><td>Q<sub>c</sub> = P·(tan φ<sub>1</sub> − tan φ<sub>2</sub>)</td><td>a corrente do alimentador cai com o fator de potência maior</td></tr>
+      <tr><td>TC e TP</td><td>I<sub>p</sub> = I<sub>s</sub>·K<sub>TC</sub> &nbsp; V<sub>p</sub> = V<sub>s</sub>·K<sub>TP</sub></td><td>TC em série: secundário nunca aberto; TP em paralelo: secundário nunca em curto</td></tr>
+      <tr><td>Zonas da NR-10 em 13,8 kV</td><td>R<sub>r</sub> = 0,38 m; R<sub>c</sub> = 1,38 m</td><td>faixa de 10 kV a menos de 15 kV; zona controlada entre os dois raios</td></tr>
+      <tr><td>Esfera rolante por nível</td><td>R = 20, 30, 45 e 60 m</td><td>níveis I, II, III e IV; o nível I é o mais rigoroso</td></tr>
+      <tr><td>Raio da esfera pela corrente</td><td>R = 10·I<sup>0,65</sup></td><td>I em kA, R em m</td></tr>
+      <tr><td>Raio protegido pela esfera</td><td>r = √(h·(2R − h)); r<sub>x</sub> = r − √(h<sub>x</sub>·(2R − h<sub>x</sub>))</td><td>h ≤ R; r<sub>x</sub> é o raio na altura h<sub>x</sub></td></tr>
+      <tr><td>Raio protegido por Franklin</td><td>r = h·tan α</td><td>α de 25° a 55°, conforme nível e altura</td></tr>
+      <tr><td>Número de descidas</td><td>N = perímetro/espaçamento, arredondado para cima, N ≥ 2</td><td>espaçamento de 10, 10, 15 e 20 m nos níveis I a IV</td></tr>
+      <tr><td>Tensão no DPS</td><td>U ≈ U<sub>p</sub> + L·di/dt</td><td>cabos curtos reduzem a parcela indutiva</td></tr>
+      <tr><td>Engastamento de poste</td><td>e = L/10 + 0,6 m</td><td>regra de padrões de concessionárias</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="fontes" class="block">
+  <div class="block-head"><h2>Fontes</h2></div>
+  <ul class="sources">
+    <li>Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3, Anexo IV, Ênfase 8 (Manutenção – Elétrica), itens 8.2 e 8.4, com a redação literal conferida no PDF do edital (fontes/edital-03-2026.pdf).</li>
+    <li>Caderno da prova Cesgranrio 2023, Transpetro, Prova 6 – Manutenção – Elétrica (questões 46 e 54), conferido nos recortes da prova, e o gabarito oficial (C e B); usados só para identificar o estilo de cobrança.</li>
+    <li>NR-10 (Ministério do Trabalho e Emprego): texto em vigor (redação da Portaria SEPRT nº 915/2019, itens 10.5.1, 10.5.2, 10.7.3, 10.7.4, 10.7.7, 10.7.8 e 10.8.8.2, Anexo II e Anexo III) e a nova redação (Portaria MTE nº 737/2026, itens 10.13.1, 10.14.1 a 10.14.3 e Anexo I), pela comparação feita em fontes/nr10-2019-x-2026.md e pela tabela do Anexo II conferida nas duas cópias oficiais do gov.br.</li>
+    <li>ABNT NBR 5419, partes 1 a 4 (2015 e 2026): <span class="confira">o texto das normas, que são pagas, não foi lido</span>. Os dados vêm de material didático da UDESC sobre a NBR 5419-3 e de artigos técnicos (A3A Engenharia, Token Engenharia, Lumen Verum, Tel, Teleco, Univap), e de uma cópia reproduzida da NBR 5419:2005 para a tabela de ângulos de proteção. As diferenças entre as edições (espaçamento de descidas, nomes de classe e de nível, inspeção, aterramento) são as relatadas nesses textos. Nível de proteção: raios de esfera de 20, 30, 45 e 60 m, malhas de 5, 10, 15 e 20 m e espaçamento de descidas de 10, 10, 15 e 20 m coincidem nas fontes lidas sobre as edições de 2015 e de 2026.</li>
+    <li>ABNT NBR 15688 (redes com condutores nus), NBR 15992 (cabos cobertos em espaçadores), NBR 11873 (cabos cobertos), NBR 14039 (instalações de MT de 1,0 kV a 36,2 kV), NBR 5440 e NBR 5282: <span class="confira">não lidas</span>; citadas por especificações de concessionárias (EDP, Equatorial, Celesc, Energisa, CEMIG) e pelo artigo de TC e TP da A3A Engenharia.</li>
+    <li>Especificações e padrões de concessionárias: Equatorial (NT.00018 rede compacta, NT.00008, ET.00231, NT.00037), EDP (PT.DT.PDN.00003, isoladores de pino), Celesc (E-313.0085, rede compacta), Energisa (ETU-106, ETU-151.1), Enel Ceará (para-raios de óxido de zinco MAT-18-0095; elo fusível PM-Br 138.01), Neoenergia (DIS-ETE-004 e DIS-ETE-046) e CEMIG (ND-4.15, sobre religadores e seccionalizadores): classes de tensão, para-raios de 12 kV e 10 kA, elos H, K e T, ciclo de operação do religador, seccionalizador, rede compacta, aterramento e NBI de 95 kV.</li>
+    <li>Mamede Filho, citado em trabalho acadêmico da UFERSA sobre coordenação de elos fusíveis: classificação e relação de rapidez dos elos. Romagnole (religadores) e Eaton e WEG (bancos de capacitores e correção do fator de potência). Transformadores de instrumentos: A3A Engenharia, Viox e catálogo da Kron. DPS: Clamper (NBR IEC 61643-1). Valores de classe de exatidão de TC e TP e de secundários típicos são de fabricantes e artigos.</li>
+    <li>Bibliografia de apoio: J. Mamede Filho, <i>Instalações Elétricas Industriais</i> (proteção, fusíveis, capacitores e SPDA) e <i>Manual de Equipamentos Elétricos</i> <span class="confira">(indicadas como leitura de apoio; não foram lidas para este texto)</span>.</li>
+  </ul>
+  <footer>Exercícios elaborados no estilo da banca para fixação; não são questões oficiais.</footer>
+</section>
+</main>
+</div>
+
+<script>
+const QUIZ = {"b1":[{"s":"Na rede aérea compacta de média tensão, a cobertura polimérica dos cabos tem a função de","o":["tornar o cabo um condutor isolado, que pode ser tocado com a rede energizada","dispensar o cabo mensageiro, porque o cabo coberto sustenta sozinho o peso do vão","elevar a tensão de operação da rede para além da classe de 36,2 kV","substituir os para-raios nas estruturas de transformação","reduzir a corrente de fuga em contatos acidentais com objetos aterrados, o que permite aproximar mais os condutores"],"a":4,"c":"A cobertura reduz a corrente de fuga se o cabo tocar um galho ou um objeto aterrado, e por isso os cabos ficam mais próximos que na rede nua. Ela não é isolação: a rede compacta é tratada como rede nua para a segurança. O mensageiro sustenta o conjunto, a cobertura não muda a classe de tensão, e o para-raios continua sendo o equipamento contra sobretensões."},
+{"s":"Num fim de linha de uma rede convencional de 13,8 kV, em que o cabo nu fica sob tração, o isolador mais adequado é o","o":["isolador de ancoragem (ou de disco, em cadeia), com o cabo preso por alça pré-formada","isolador de pino, com o cabo preso por amarração no topo, porque esse isolador resiste bem à tração do cabo","isolador de pino polimérico, porque o polímero dispensa a ancoragem do cabo","espaçador losangular, apoiado no cabo mensageiro","isolador de pino instalado na ponta da cruzeta, sem ferragem de ancoragem"],"a":0,"c":"Onde o cabo puxa a estrutura (fim de linha, derivação, ângulo forte), usa-se o isolador de ancoragem ou de disco, em cadeia, com alça pré-formada ou grampo. O isolador de pino sustenta o cabo em linha reta e em pequenos ângulos. O espaçador losangular pertence à rede compacta."},
+{"s":"Um sistema trifásico tem tensão nominal de 13,2 kV (tensão de linha). A tensão entre fase e neutro é, aproximadamente,","o":["4,40 kV","7,62 kV","9,33 kV","13,2 kV","22,9 kV"],"a":1,"c":"A tensão de fase é a de linha dividida por √3: <var>V</var><sub>F</sub> = 13,2/√3 ≈ 7,62 kV."}],
+"b2":[{"s":"Um seccionalizador automático é instalado a jusante de um religador em um alimentador de média tensão. A função do seccionalizador é","o":["contar as interrupções feitas pelo religador e abrir durante o tempo morto, ficando travado aberto, para isolar o trecho em falta permanente","interromper a corrente de curto-circuito do trecho com interruptor a vácuo, dispensando o religador","religar automaticamente o circuito até quatro vezes após uma falta e depois bloquear","fundir quando percorrido pela corrente de falta, sendo substituído como um elo fusível","funcionar sozinho, sem dispositivo de religamento a montante, abrindo no instante em que a falta aparece"],"a":0,"c":"O seccionalizador não interrompe falta: conta as aberturas do religador e abre no tempo morto, sem corrente, ficando travado aberto. Depende de um dispositivo de retaguarda com religamento."},
+{"s":"Na chave fusível que protege um transformador de distribuição de 13,8 kV, usa-se elo fusível do tipo H (alto surto) porque ele","o":["é o mais rápido de todos, o que protege melhor o transformador contra qualquer sobrecorrente","tem a mesma curva do elo K, com relação de rapidez de 6 a 8,1","religa o circuito automaticamente depois de fundir","substitui o para-raios na proteção contra descargas atmosféricas","é lento e suporta, sem fundir, a corrente de energização do transformador, operando nas faltas"],"a":4,"c":"Ao energizar o transformador surge uma corrente transitória elevada (inrush). O elo H, de alto surto e curva lenta, a suporta sem fundir, e funde nas faltas."},
+{"s":"Uma chave seccionadora (de faca) de rede de média tensão, sem câmara de extinção de arco, deve ser manobrada","o":["sob carga nominal, porque o ar extingue o arco com rapidez suficiente","sob corrente de curto-circuito, desde que a vara de manobra seja isolada","sem carga, depois que a corrente foi interrompida por outro dispositivo, para dar isolamento visível ao trecho","apenas com o circuito energizado e em carga, para evitar a formação de arco no vazio","com o religador ativo, pois ele reduz o arco durante a abertura"],"a":2,"c":"Sem câmara de extinção, a seccionadora serve para isolar: abre-se depois que outro dispositivo (disjuntor, religador, chave interruptora) interrompeu a corrente. Abri-la sob carga forma arco."},
+{"s":"Um banco trifásico de capacitores de 900 kvar é ligado a um alimentador de 13,8 kV. A corrente nominal do banco é, aproximadamente,","o":["21,7 A","34,6 A","37,7 A","65,2 A","113 A"],"a":2,"c":"<var>I</var> = <var>Q</var>/(√3·<var>V</var><sub>L</sub>) = 900/(√3 × 13,8) ≈ 37,7 A."}],
+"b3":[{"s":"Um relé de sobrecorrente de um alimentador de 13,8 kV recebe a corrente por meio de um TC. A função do TC nesse arranjo é","o":["reproduzir no secundário, isolada da média tensão e em proporção conhecida, a corrente do primário, para uso do relé","inserir uma impedância em série com o alimentador, de modo a limitar a corrente de curto-circuito","rebaixar a tensão do alimentador para um valor padronizado, como 115 V, para alimentar o relé","retificar a corrente alternada do alimentador para alimentar os circuitos auxiliares do relé","conduzir à terra as correntes de surto atmosférico, protegendo o relé"],"a":0,"c":"O TC reproduz no secundário, em proporção conhecida e isolada do primário, a corrente do circuito, para medição, proteção e controle. Limitar corrente, rebaixar tensão, retificar e descarregar surtos são funções de outros equipamentos."},
+{"s":"A potência de curto-circuito trifásica no ponto de entrega de uma subestação, em 13,8 kV, é de 180 MVA. A corrente de curto-circuito trifásica é, aproximadamente,","o":["4,35 kA","6,93 kA","7,53 kA","13,0 kA","22,6 kA"],"a":2,"c":"<var>I</var><sub>cc</sub> = <var>S</var><sub>cc</sub>/(√3·<var>V</var><sub>L</sub>) = 180/(√3 × 13,8) ≈ 7,53 kA."},
+{"s":"Um TC de relação 300/5 A tem um amperímetro ligado ao secundário, que indica 2,4 A. A corrente no primário é","o":["0,04 A","12 A","60 A","144 A","720 A"],"a":3,"c":"A relação é 300/5 = 60. A corrente do primário é a leitura vezes a relação: 2,4 × 60 = 144 A."},
+{"s":"Antes de substituir um medidor ligado ao secundário de um TC cujo primário continua energizado, o secundário do TC deve ser","o":["deixado aberto, para que o medidor fique sem corrente","ligado à terra por um fusível, como se faz no secundário do TP","curto-circuitado por um bloco de teste ou chave apropriada, e nunca deixado aberto","mantido ligado ao medidor, bastando desligar o disjuntor do medidor","ligado a um resistor de valor alto, para limitar a tensão"],"a":2,"c":"Com o primário energizado, o secundário do TC não pode ficar aberto: a tensão sobe a valores perigosos e danifica a isolação. Por isso o secundário é curto-circuitado (bloco de teste) antes de retirar o instrumento."}],
+"b4":[{"s":"Na NR-10, para considerar desenergizada uma instalação elétrica, a constatação da ausência de tensão deve ser feita","o":["depois da instalação da sinalização de impedimento, como último passo, para confirmar o trabalho","somente na reenergização, antes de retirar o aterramento temporário","depois do aterramento temporário, para verificar se ele funciona","uma única vez, no começo, antes do seccionamento","antes da instalação do aterramento temporário, que só pode ser instalado depois dessa constatação"],"a":4,"c":"Nas duas redações da NR-10, a ausência de tensão é constatada antes de instalar o aterramento temporário (a nova a repete imediatamente antes do aterramento). Constatar depois do aterramento, só no fim ou antes do seccionamento não cumpre a sequência."},
+{"s":"Um eletricista aproxima uma ferramenta a 0,60 m de um condutor nu energizado de uma rede de 13,8 kV, não segregado. Pelo Anexo II da NR-10, esse ponto está na","o":["zona controlada, pois está entre os raios de 0,38 m e de 1,38 m dessa faixa de tensão","zona de risco, pois a distância é menor que o raio de 1,38 m","zona livre, pois a distância é maior que o raio de risco de 0,38 m","zona de risco, pois a faixa de 10 kV a menos de 15 kV tem raio de risco de 0,70 m","zona livre, pois a zona controlada só existe em tensões abaixo de 1 kV"],"a":0,"c":"Na faixa de 10 kV a menos de 15 kV, R<sub>r</sub> = 0,38 m e R<sub>c</sub> = 1,38 m. Como 0,38 m &lt; 0,60 m &lt; 1,38 m, o ponto está na zona controlada."},
+{"s":"Para intervir em uma instalação energizada em alta tensão dentro dos limites da zona de risco, a NR-10 em vigor exige, entre outras medidas,","o":["manter ativos os religadores do circuito, para recompor o serviço em caso de falta","que o serviço seja executado por um único trabalhador experiente, para reduzir a exposição","a desativação (bloqueio) dos conjuntos e dispositivos de religamento automático do circuito","dispensar a ordem de serviço, desde que a equipe tenha o treinamento complementar do SEP","que as ferramentas isolantes sejam ensaiadas somente quando apresentarem defeito visível"],"a":2,"c":"Pelo item 10.7.7, a intervenção na zona de risco exige o bloqueio do religamento automático. O serviço não é individual (10.7.3), tem ordem de serviço específica (10.7.4) e usa ferramentas isolantes com ensaio periódico (10.7.8)."}],
+"b5":[{"s":"O SPDA externo de uma estrutura é formado pelos subsistemas de","o":["captação, equipotencialização e DPS","captação, medição e proteção","descida, aterramento e inspeção","captação, blindagem e roteamento de cabos","captação, descida e aterramento"],"a":4,"c":"O SPDA externo tem três subsistemas: captação (intercepta o raio), descida (conduz a corrente) e aterramento (a dispersa no solo). Equipotencialização, DPS, blindagem e roteamento são da proteção interna e das medidas contra surtos."},
+{"s":"Pelo método da esfera rolante, um mastro de 20 m, no nível de proteção II (esfera de 30 m de raio), protege no plano do solo um círculo de raio, aproximadamente,","o":["22,4 m","28,3 m","30,0 m","34,6 m","40,0 m"],"a":1,"c":"<var>r</var> = √(<var>h</var>·(2<var>R</var> − <var>h</var>)) = √(20 × 40) = √800 ≈ 28,3 m."},
+{"s":"Um captor de 10 m acima do plano protegido, em estrutura de até 20 m de altura, é dimensionado pelo método de Franklin com ângulo de proteção de 55° (nível IV). O raio protegido no plano é, aproximadamente,","o":["17,4 m","14,3 m","8,2 m","7,0 m","5,7 m"],"a":1,"c":"O cone de proteção tem raio na base <var>r</var> = <var>h</var>·tan α = 10 × tan 55° ≈ 14,3 m."},
+{"s":"Uma edificação de nível de proteção IV (espaçamento médio de descidas de 20 m) tem perímetro de 96 m. O número mínimo de condutores de descida é","o":["5","4","2","7","10"],"a":0,"c":"O número é o perímetro dividido pelo espaçamento, arredondado para cima: 96/20 = 4,8, então 5 descidas (e nunca menos de duas)."}],
+"b6":[{"s":"Um DPS de classe I, ensaiado com corrente de impulso de forma de onda 10/350 µs, é indicado para","o":["ficar junto ao equipamento sensível, como proteção fina complementar","os quadros de distribuição, apenas contra surtos induzidos de baixa energia","a entrada da estrutura que possui SPDA, onde pode circular parte da corrente da descarga direta","substituir o aterramento do SPDA, pois dispersa a corrente no solo","dispensar a equipotencialização das tubulações metálicas na entrada"],"a":2,"c":"O DPS classe I, ensaiado com a onda 10/350 µs, suporta parte da corrente da descarga direta, e fica na entrada da estrutura com SPDA (passagem da zona 0 para a 1). A proteção fina junto ao equipamento é de classe III."},
+{"s":"Um tanque de derivados de petróleo, com área classificada (zona 1), possui SPDA. Segundo a NBR 5419-3, a inspeção periódica da estrutura deve ser feita a cada","o":["5 anos","3 anos, como as demais estruturas","4 anos","2 anos","1 ano"],"a":4,"c":"O item 7.3.2 prevê inspeção periódica a cada 1 ano para estruturas com áreas classificadas 0, 1, 20 e 21 (e também para as com explosivos, corrosão severa ou serviços essenciais), e a cada 3 anos para as demais <span class=\"confira\">(intervalos de material didático e artigos técnicos; o texto da norma não foi lido)</span>."},
+{"s":"Um DPS com nível de proteção <var>U</var><sub>p</sub> de 1,2 kV é ligado por cabos de 1,5 m no total, de indutância 1 µH/m, percorridos por uma corrente que sobe 2 kA/µs. A tensão aproximada que chega ao equipamento é","o":["1.200 V","3.000 V","3.200 V","4.200 V","7.200 V"],"a":3,"c":"A queda indutiva é <var>L</var>·d<var>i</var>/d<var>t</var> = (1,5 × 1 µH) × 2 kA/µs = 1,5 × 10<sup>−6</sup> × 2 × 10<sup>9</sup> = 3.000 V. Soma-se à tensão do DPS: 1.200 + 3.000 = 4.200 V."},
+{"s":"As medidas de proteção contra surtos (MPS), tratadas na parte 4 da NBR 5419, têm como objetivo","o":["impedir que a descarga atmosférica atinja a estrutura","reduzir as falhas dos sistemas elétricos e eletrônicos internos à estrutura causadas por surtos","captar a descarga e conduzi-la ao solo, pelos subsistemas de captação, descida e aterramento","definir, por avaliação de risco, a necessidade da proteção e o nível de proteção","medir a resistência de aterramento da estrutura"],"a":1,"c":"As MPS protegem os sistemas elétricos e eletrônicos internos contra os surtos: DPS coordenados, equipotencialização, blindagem, roteamento, interfaces isolantes e zonas de proteção. Captar e conduzir a descarga é do SPDA (parte 3); o risco e o nível são da parte 2."}]};
+
+const L = "ABCDE";
+document.querySelectorAll(".quiz").forEach(box=>{
+  const set = box.dataset.set, qs = QUIZ[set];
+  let html = `<div class="quiz-head"><h3>Exercícios de fixação</h3><span class="score" aria-live="polite">0 de ${qs.length} respondidas</span></div>`;
+  qs.forEach((q,i)=>{
+    html += `<div class="q" data-a="${q.a}"><p class="stem"><b class="n">${i+1}.</b>${q.s}</p><ul class="opts">`+
+      q.o.map((t,k)=>`<li><button type="button" data-k="${k}"><span class="l">(${L[k]})</span><span>${t}</span></button></li>`).join("")+
+      `</ul><button type="button" class="link-btn show">Ver gabarito sem responder</button><div class="fbk" hidden></div></div>`;
+  });
+  html += `<div class="qtools"><button type="button" class="btn reset">Refazer o bloco</button></div>`;
+  box.innerHTML = html;
+  const score = box.querySelector(".score");
+  const upd = ()=>{
+    const done = box.querySelectorAll(".q.done").length, ok = box.querySelectorAll(".q.ok").length;
+    score.textContent = `${done} de ${qs.length} respondidas, ${ok} ${ok===1?"acerto":"acertos"}`;
+  };
+  box.querySelectorAll(".q").forEach((qe,i)=>{
+    const q = qs[i], fb = qe.querySelector(".fbk"), btns = qe.querySelectorAll(".opts button");
+    const reveal = (k)=>{
+      btns.forEach(b=>b.disabled=true);
+      btns[q.a].classList.add("right");
+      if(k!==null && k!==q.a) btns[k].classList.add("wrong");
+      const hit = k===q.a;
+      fb.classList.toggle("no", !hit);
+      fb.innerHTML = `<strong>${k===null?"Gabarito":(hit?"Correto.":"Incorreto.")} Resposta: (${L[q.a]})</strong><br>${q.c}`;
+      fb.hidden = false; qe.querySelector(".show").hidden = true;
+      qe.classList.add("done"); if(hit) qe.classList.add("ok");
+      upd();
+    };
+    btns.forEach(b=>b.addEventListener("click",()=>reveal(+b.dataset.k)));
+    qe.querySelector(".show").addEventListener("click",()=>reveal(null));
+  });
+  box.querySelector(".reset").addEventListener("click",()=>{
+    box.querySelectorAll(".q").forEach(qe=>{
+      qe.classList.remove("done","ok");
+      qe.querySelectorAll(".opts button").forEach(b=>{b.disabled=false;b.classList.remove("right","wrong")});
+      const fb=qe.querySelector(".fbk"); fb.hidden=true; fb.innerHTML="";
+      qe.querySelector(".show").hidden=false;
+    });
+    upd();
+  });
+});
+
+
+
+</script>
+</body>
+</html>

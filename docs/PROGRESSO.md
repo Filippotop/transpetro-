@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-12. T1–T6, M3, A2, N1, A1, I3, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus; A1 e I3 por uma passada em Opus, só leitura). Matemática completa (X1–X3). Falta a I2 (peso 2 em 2023).
+Última atualização: 2026-11-12. T1–T6, M3, A2, N1, A1, I3, I2, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus; A1, I3 e I2 por uma passada em Opus, só leitura). Matemática completa (X1–X3). Todas as estações do edital estão no app; o que resta é a avaliação do estudante e o estudo.
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 
@@ -17,7 +17,7 @@
 
 Ondas seguintes (spec, seção 3):
 - **Onda 2:** M3 ✅, A2 ✅ e A1 ✅ (escritas para o app e revisadas; ver `fontes/ERRATA.md`).
-- **Onda 3:** N1 ✅, I3 ✅ e I2 ⬜.
+- **Onda 3:** N1 ✅, I3 ✅ e I2 ✅.
 - **Onda 4:** Matemática (X1–X3) e recalibração do Plano e do Painel.
 
 ## Decisões já tomadas (não reabrir sem motivo)

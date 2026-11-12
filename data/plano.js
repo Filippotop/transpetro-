@@ -1,7 +1,6 @@
 /* Elétrica de Ouro: Plano de 10/11 a 28/11/2026 (DATA.plan). A prova é em 29/11.
-   Ordem: estações prontas pelo peso na prova de 2023 (DATA.mapa2023: E3 8, I1 5, E1 4, M2 4, A2 4, N1 4, X1 4, X2 4, E2 3, M3 2, X3 2, A1 2, I3 2, M1 0), prova de
-   2023 inteira no primeiro sábado, depois o que ainda não tem estação (redes de média tensão e SPDA,
-   Matemática e Português fora do app) e a segunda passada pelos erros.
+   Ordem: estações prontas pelo peso na prova de 2023 (DATA.mapa2023: E3 8, I1 5, E1 4, M2 4, A2 4, N1 4, X1 4, X2 4, E2 3, M3 2, X3 2, A1 2, I3 2, I2 2, M1 0), prova de
+   2023 inteira no primeiro sábado, depois o que ainda não tem estação (Matemática e Português fora do app) e a segunda passada pelos erros.
    Tarefa: {k, a, t}. k = mod (estação a), game (jogo a), bib (aba a), sim (foco a), prova ('t23:PME'), provares, erros,
    refazer, novos, painel, bancada ou out (fora do app, marcada à mão). Conferido por tests/biblioteca.test.mjs. */
 (function (D) {
@@ -23,7 +22,7 @@
     dia('19', 'qui', 'CA, fasores e impedância (3 questões em 2023)', [M('E2'), T('game', 'unid', 'Arena: Grandeza e unidade'), O('Português fora do app: interpretação de texto de uma prova da Cesgranrio')]),
     dia('20', 'sex', 'Motores, contagem e eletrônica (2 questões de eletrônica em 2023)', [M('M3'), M('X3'), M('A1'), T('bancada', null, 'Bancada: uma ordem de serviço de motor ou de comando')]),
     dia('21', 'sáb', 'Simulado e correção', [T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas'), T('erros', null, 'Caderno de erros: a regra de cada erro do simulado'), O(MAT + 'só as questões de Matemática que você errou até aqui')]),
-    dia('22', 'dom', 'Medidas, simbologia e refazer o que errou', [M('I3'), M('M1'), T('refazer', null, 'Treino: refazer os erros'), O('Redes de 1,0 a 17,5 kV e SPDA (8.2 e 8.4) pela sua apostila: ainda sem estação no app')]),
+    dia('22', 'dom', 'Medidas, média tensão e SPDA, simbologia e refazer o que errou', [M('I3'), M('I2'), M('M1'), T('refazer', null, 'Treino: refazer os erros')]),
     dia('23', 'seg', 'Segunda passada: seus pontos fracos', [T('painel', null, 'Painel: abra as estações de "Reabra primeiro" e releia só o que errou'), T('sim', 'fracos', 'Simulado de 20 questões, foco em pontos fracos'), T('provares', 't23', 'Provas: reveja as questões de Matemática e de Português da prova de 2023 que você errou')]),
     dia('24', 'ter', 'Contas com números novos', [T('novos', null, 'Treino: 15 questões de números novos, todas as estações'), T('game', 'formula', 'Arena: Qual é a fórmula?'), O('Eletrônica e automação (item 9): revisão pelas estações A1 e A2')]),
     dia('25', 'qua', 'Normas e números', [T('bib', 'nr10', 'Biblioteca: NR-10 lado a lado, de novo'), T('bib', 'anc', 'Biblioteca: números-âncora, tampando a coluna da direita'), T('game', 'nr10', 'Arena: Ordene a NR-10')]),

@@ -1,0 +1,102 @@
+/* Estação I2: média tensão de 1,0 a 17,5 kV e SPDA (itens 8.2 e 8.4 do Anexo IV).
+   Aprofundamento escrito para o app (fontes/media-tensao-spda.html), no formato das apostilas do estudante; aqui ficam os
+   metadados, o resumo, os cartões, o V ou F e as contas. As questões da aba Questões são os exercícios do fim de cada seção
+   mais as de tools/banco/I2.mjs (extra), com a explicação de cada alternativa.
+   Gerar: node tools/estacao.mjs fontes/media-tensao-spda.html I2 */
+export default {
+  fonte: 'fontes/media-tensao-spda.html',
+  meta: {
+    id: 'I2', vol: 'EL', line: 'I',
+    title: 'Média tensão de 1,0 a 17,5 kV e SPDA',
+    itens: '8.2, 8.4', faixa: 'A', peso2023: 6,
+    note: 'Em 2023 caíram o transformador de corrente de uma subestação de distribuição (54, item 8.2) e as medidas de proteção contra surtos nos sistemas eletrônicos (46, item 8.4). O peso de 6 é o do item 8 inteiro, dividido com a I1.',
+  },
+  renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
+  labs: {},
+  trocas: [],
+  resumo: [
+    ['Rede aérea de MT', 'Classe 15 kV (13,8 kV). Nua: pino e ancoragem. Compacta: cabo coberto, não isolado, com mensageiro.'],
+    ['Proteção da rede', 'Fusível não religa; elo H, lento, protege transformador. Religador religa. Seccionalizador só conta.'],
+    ['Cálculos de MT', 'I = S/(√3·V). I<sub>cc</sub> = S<sub>cc</sub>/(√3·V). Q<sub>c</sub> = P(tan φ<sub>1</sub> − tan φ<sub>2</sub>). I<sub>p</sub> = leitura × relação do TC.'],
+    ['TC e TP', 'TC em série, secundário nunca aberto. TP em paralelo, secundário nunca em curto. Reproduzem em escala.'],
+    ['NR-10 em MT', 'Em 13,8 kV: risco 0,38 m, controlada até 1,38 m. Bloquear o religamento; testar a ausência de tensão.'],
+    ['Níveis do SPDA', 'Nível I (mais rigoroso) a IV: esfera 20, 30, 45 e 60 m; malha 5, 10, 15 e 20 m; descidas 10, 10, 15, 20 m.'],
+    ['DPS, MPS e inspeção', 'DPS I na entrada (10/350 µs). MPS: parte 4, proteção interna. Inspeção: 1 ano (área classificada), 3 anos.'],
+  ],
+  cards: [
+    ['Tensão de fase de um sistema trifásico de 13,8 kV?', 'V<sub>F</sub> = V<sub>L</sub>/√3 = 13,8/√3 ≈ 7,97 kV.'],
+    ['Rede compacta: o que é o cabo coberto?', 'Cabo com cobertura polimérica (XLPE) que reduz a corrente de fuga e permite aproximar as fases. Não é isolado: não se toca com a rede energizada.'],
+    ['Isolador de pino × isolador de ancoragem (disco)?', 'Pino: linha reta e pequenos ângulos. Ancoragem ou disco, em cadeia: tração, fim de linha e ângulos fortes.'],
+    ['Elos fusíveis H, K e T: qual a diferença?', 'H: alto surto, lento, para transformadores. K: rápido (rapidez de 6 a 8,1). T: lento (10 a 13).'],
+    ['Religador × seccionalizador?', 'Religador interrompe a falta e religa (1 a 4 aberturas, depois bloqueia). Seccionalizador conta as aberturas do religador e abre no tempo morto, sem corrente.'],
+    ['A chave seccionadora (de faca) pode abrir sob carga?', 'Não. Sem câmara de extinção do arco, é manobrada sem carga, para dar isolamento visível.'],
+    ['O que é o para-raios de ZnO da rede de 13,8 kV?', 'Resistor não linear sem centelhadores, em derivação fase-terra; tensão nominal de 12 kV e 10 kA; limita as sobretensões.'],
+    ['Como se calculam as correntes nominal e de curto-circuito trifásicas?', 'I = S/(√3·V<sub>L</sub>) e I<sub>cc</sub> = S<sub>cc</sub>/(√3·V<sub>L</sub>), com kVA ou MVA e a tensão em kV.'],
+    ['Qual a função do TC (questão 54 de 2023) e qual o cuidado com o secundário?', 'Reproduz no secundário, isolada e em proporção conhecida, a corrente do primário, para medição e controle. O secundário nunca fica aberto com o primário energizado.'],
+    ['E a função do TP, e o cuidado com o secundário?', 'Reproduz a tensão do primário (secundário típico de 115 V ou 120 V), ligado em paralelo. Nunca se curto-circuita o secundário.'],
+    ['Zonas da NR-10 em 13,8 kV?', 'Zona de risco até 0,38 m; zona controlada até 1,38 m; zona livre além disso (faixa de 10 kV a menos de 15 kV).'],
+    ['Por que bloquear o religamento automático antes do serviço na zona de risco?', 'Para o circuito não ser religado sobre a equipe (NR-10 em vigor, 10.7.7). O serviço em AT também não pode ser individual.'],
+    ['Em que ordem entram a ausência de tensão e o aterramento temporário?', 'A ausência de tensão é constatada antes de instalar o aterramento temporário. A reenergização não é a ordem inversa da desenergização.'],
+    ['Níveis de proteção do SPDA: qual o mais rigoroso e o que muda?', 'Nível I: esfera de 20 m, malha de 5 × 5 m, descidas a cada 10 m. Esfera, malha e espaçamento crescem até o nível IV.'],
+    ['Raio protegido por esfera rolante e por Franklin?', 'Esfera: r = √(h·(2R − h)). Franklin: r = h·tan α.'],
+    ['Quantas descidas tem um SPDA?', 'Perímetro dividido pelo espaçamento do nível, arredondado para cima, e nunca menos de duas.'],
+    ['DPS classe I, II e III?', 'I: onda 10/350 µs, entrada da estrutura com SPDA. II: onda 8/20 µs, quadros. III: junto ao equipamento.'],
+    ['SPDA × MPS (questão 46 de 2023)?', 'O SPDA (parte 3) protege a estrutura. As MPS (parte 4) reduzem as falhas dos sistemas elétricos e eletrônicos internos causadas por surtos.'],
+    ['Periodicidade da inspeção periódica do SPDA?', '1 ano para áreas classificadas (0, 1, 20, 21), explosivos, corrosão severa e serviços essenciais; 3 anos nas demais <span class="confira">(item 7.3.2, lido em material didático; a norma não foi lida)</span>.'],
+  ],
+  vf: [
+    ['O seccionalizador interrompe a corrente de falta, como o religador.', false, 'Ele <b>não</b> interrompe falta: conta as aberturas do religador e abre no tempo morto, sem corrente.'],
+    ['O elo fusível tipo H, de alto surto, é lento e usado na proteção de transformadores de distribuição.', true, 'Por ser lento, suporta a corrente de energização (inrush) sem fundir, e funde nas faltas.'],
+    ['A chave seccionadora de faca pode ser aberta sob carga, desde que se use vara de manobra isolada.', false, 'A vara isolada protege a pessoa, mas a chave não tem câmara de extinção: abre-se <b>sem carga</b>.'],
+    ['O cabo coberto da rede compacta é um cabo isolado e pode ser tocado com a rede energizada.', false, 'Coberto não é isolado: a rede compacta é tratada como rede nua para a segurança.'],
+    ['O secundário de um TC não pode ficar aberto enquanto o primário estiver energizado.', true, 'O secundário aberto produz tensão perigosa e danifica a isolação; antes de retirar o instrumento, curto-circuita-se o secundário.'],
+    ['Antes de trocar um medidor, o secundário do TP deve ser curto-circuitado.', false, 'O que não pode ser curto-circuitado é o secundário do <b>TP</b>. É no TC que o secundário nunca pode ficar aberto.'],
+    ['Na faixa de 10 kV a menos de 15 kV, o raio da zona de risco da NR-10 é de 0,38 m e o da zona controlada, de 1,38 m.', true, 'É a faixa da rede de 13,8 kV. Os valores não mudam entre a NR-10 em vigor e a redação de 2027.'],
+    ['Para intervir na zona de risco de uma instalação energizada em alta tensão, o religamento automático deve ser bloqueado.', true, 'Exigência do item 10.7.7 do texto em vigor (10.14.3 na nova redação).'],
+    ['O nível de proteção I do SPDA, por ser o mais rigoroso, usa a maior esfera rolante, de 60 m.', false, 'O nível I usa a <b>menor</b> esfera (20 m), a malha mais fechada e as descidas mais próximas; os 60 m são do nível IV.'],
+    ['O SPDA impede que a descarga atmosférica atinja a estrutura.', false, 'O SPDA não impede a descarga: oferece um caminho preferencial e controlado para a corrente chegar à terra.'],
+    ['No método da esfera rolante, os pontos que a esfera toca são os que exigem captor.', true, 'A esfera, de raio definido pelo nível, rola sobre a estrutura; o que ela toca precisa de captor, e o que fica fora do alcance está protegido.'],
+    ['O DPS classe I, ensaiado com a onda 10/350 µs, fica na entrada da estrutura que tem SPDA.', true, 'É o que suporta parte da corrente de uma descarga direta; os quadros usam classe II (onda 8/20 µs).'],
+    ['As medidas de proteção contra surtos (MPS) estão na parte 3 da NBR 5419.', false, 'A parte 3 trata do SPDA (danos físicos); as MPS, dos sistemas internos, estão na <b>parte 4</b>.'],
+    ['Uma estrutura com área classificada zona 1 tem inspeção periódica do SPDA a cada 3 anos.', false, 'Estruturas com áreas classificadas têm inspeção periódica <b>anual</b>; 3 anos é para as demais <span class="confira">(intervalos lidos em material didático; a norma não foi lida)</span>.'],
+    ['Corrigir o fator de potência com capacitores reduz a corrente do alimentador.', true, 'A parcela reativa cai, e com ela a corrente, a queda de tensão e as perdas.'],
+  ],
+  contas: [
+    /* seção 1 */
+    ['13.8/Math.sqrt(3)', '7,97 kV', 'Exemplo resolvido 1'],
+    ['11/10+0.6', '1,70 m', 'Exemplo resolvido 2'], ['11-1.7', '9,30 m', 'Exemplo resolvido 2'],
+    /* seção 2 */
+    ['75/(Math.sqrt(3)*13.8)', '3,14 A', 'Exemplo resolvido 3'], ['10*75/(Math.sqrt(3)*13.8)', '31,4 A', 'Exemplo resolvido 3'],
+    ['600/(Math.sqrt(3)*13.8)', '25,1 A', 'Exemplo resolvido 4'],
+    /* seção 3 */
+    ['300/(Math.sqrt(3)*13.8)', '12,55 A', 'Exemplo resolvido 5'], ['300/(Math.sqrt(3)*0.22)', '787 A', 'Exemplo resolvido 5'], ['13800/220', '62,73', 'Exemplo resolvido 5'],
+    ['250/(Math.sqrt(3)*13.8)', '10,46 kA', 'Exemplo resolvido 6'],
+    ['Math.sqrt(1-0.9**2)', '0,436', 'Exemplo resolvido 7'], ['0.4*0.9+0.48*Math.sqrt(1-0.9**2)', '0,569 Ω/km', 'Exemplo resolvido 7'],
+    ['Math.sqrt(3)*100*5*(0.4*0.9+0.48*Math.sqrt(1-0.9**2))', '493 V', 'Exemplo resolvido 7'],
+    ['Math.sqrt(3)*100*5*(0.4*0.9+0.48*Math.sqrt(1-0.9**2))/13800*100', '3,57%', 'Exemplo resolvido 7'],
+    ['0.4*5', '2 Ω', 'Exemplo resolvido 7'], ['3*2*100**2/1000', '60 kW', 'Exemplo resolvido 7'],
+    ['Math.tan(Math.acos(0.95))', '0,329', 'Exemplo resolvido 8'],
+    ['2000*(Math.tan(Math.acos(0.8))-Math.tan(Math.acos(0.95)))', '843 kvar', 'Exemplo resolvido 8'],
+    ['2000/(Math.sqrt(3)*13.8*0.8)', '104,6 A', 'Exemplo resolvido 8'], ['2000/(Math.sqrt(3)*13.8*0.95)', '88,1 A', 'Exemplo resolvido 8'],
+    ['200/5', '40', 'Exemplo resolvido 9'], ['3.2*40', '128 A', 'Exemplo resolvido 9'], ['13800/115', '120', 'Exemplo resolvido 9'], ['114*120', '13.680 V', 'Exemplo resolvido 9'],
+    /* seção 4 */
+    ['1.38-0.38', '1,00 m', 'Exemplo resolvido 10'],
+    ['10*400', '4.000 V', 'Exemplo resolvido 11'],
+    /* seção 5 */
+    ['10*10**0.65', '44,7 m', 'Exemplo resolvido 12'], ['10*3**0.65', '20,4 m', 'Exemplo resolvido 12'],
+    ['Math.sqrt(15*(2*30-15))', '25,98 m', 'Exemplo resolvido 13'],
+    ['Math.sqrt(20*40)', '28,28 m', 'Exemplo resolvido 14'], ['Math.sqrt(10*50)', '22,36 m', 'Exemplo resolvido 14'], ['Math.sqrt(20*40)-Math.sqrt(10*50)', '5,92 m', 'Exemplo resolvido 14'],
+    ['10*Math.tan(Math.PI/4)', '10 m', 'Exemplo resolvido 15'], ['10*Math.tan(55*Math.PI/180)', '14,3 m', 'Exemplo resolvido 15'],
+    ['40/15', '2,67', 'Exemplo resolvido 16'], ['40/3', '13,33 m', 'Exemplo resolvido 16'], ['25/15', '1,67', 'Exemplo resolvido 16'], ['25/2', '12,5 m', 'Exemplo resolvido 16'],
+    ['2*(40+25)', '130 m', 'Exemplo resolvido 17'], ['130/15', '8,67', 'Exemplo resolvido 17'], ['130/10', '13', 'Exemplo resolvido 17'],
+    /* seção 6 */
+    ['40/4', '10 Ω', 'Exemplo resolvido 18'],
+    ['2e-6*1e9', '2.000 V', 'Exemplo resolvido 19'], ['1500+2000', '3.500 V', 'Exemplo resolvido 19'],
+    /* exercícios */
+    ['13.2/Math.sqrt(3)', '7,62 kV', 'Exercícios de fixação da seção 1'],
+    ['900/(Math.sqrt(3)*13.8)', '37,7 A', 'Exercícios de fixação da seção 2'],
+    ['180/(Math.sqrt(3)*13.8)', '7,53 kA', 'Exercícios de fixação da seção 3'], ['2.4*300/5', '144 A', 'Exercícios de fixação da seção 3'],
+    ['Math.sqrt(20*(2*30-20))', '28,3 m', 'Exercícios de fixação da seção 5'], ['10*Math.tan(55*Math.PI/180)', '14,3 m', 'Exercícios de fixação da seção 5'],
+    ['1200+1.5e-6*2e9', '4.200 V', 'Exercícios de fixação da seção 6'],
+  ],
+};

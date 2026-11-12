@@ -59,7 +59,7 @@ const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs
 const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
 /* 205 do banco do estudante (158 das apostilas + 47 do banco) + as das estações escritas para o app (origem e:): M3,
    com os 30 exercícios da Teoria e 4 extras. */
-const NOVAS_QS = { M3: 34, A1: 34, A2: 34, I3: 30, N1: 35, X1: 32, X2: 32, X3: 32 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
+const NOVAS_QS = { M3: 34, A1: 34, A2: 34, I2: 30, I3: 30, N1: 35, X1: 32, X2: 32, X3: 32 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
 check(BANCO.length === 205 + N_NOVAS, `banco: ${BANCO.length} questões (esperado ${205 + N_NOVAS}: 158 das apostilas + 47 do banco + ${N_NOVAS} das estações novas)`);
 for (const [m, n] of Object.entries(NOVAS_QS)) { const k = BANCO.filter(q => q.origem.startsWith('e:' + m + ':')).length; check(k === n, `banco: ${k} questões da estação ${m} (esperado ${n})`); }
 const ids = new Set(), origens = new Set(), markerIds = new Map();
