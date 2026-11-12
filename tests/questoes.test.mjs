@@ -59,7 +59,7 @@ const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs
 const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
 /* 205 do banco do estudante (158 das apostilas + 47 do banco) + as das estações escritas para o app (origem e:): M3,
    com os 30 exercícios da Teoria e 4 extras. */
-const NOVAS_QS = { M3: 34, A1: 34, A2: 34, I2: 30, I3: 30, N1: 35, X1: 32, X2: 32, X3: 32 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
+const NOVAS_QS = { M3: 34, A1: 34, A2: 34, I2: 30, I3: 30, N1: 35, X1: 32, X2: 32, X3: 32, P1: 32 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
 check(BANCO.length === 205 + N_NOVAS, `banco: ${BANCO.length} questões (esperado ${205 + N_NOVAS}: 158 das apostilas + 47 do banco + ${N_NOVAS} das estações novas)`);
 for (const [m, n] of Object.entries(NOVAS_QS)) { const k = BANCO.filter(q => q.origem.startsWith('e:' + m + ':')).length; check(k === n, `banco: ${k} questões da estação ${m} (esperado ${n})`); }
 const ids = new Set(), origens = new Set(), markerIds = new Map();
@@ -77,7 +77,7 @@ function validaQuestao(q, where, { banco = true } = {}) {
   for (const [k, t] of Object.entries(q.traps || {})) { check(TRAPS.includes(t), `${where}: armadilha "${t}" desconhecida`); check(k !== q.ans, `${where}: armadilha na alternativa correta`); }
   for (const [k, e] of Object.entries(q.erros || {})) { check(!!(DATA.erros || {})[e], `${where}: tipo de erro "${e}" fora de DATA.erros`); check(k !== q.ans, `${where}: tipo de erro na alternativa correta`); }
   check(['fácil', 'média', 'difícil'].includes(q.dif), `${where}: dificuldade "${q.dif}"`);
-  check(typeof q.hab === 'string' && /^(Mat )?\d+(\.\d+)?$/.test(q.hab), `${where}: item do edital "${q.hab}"`);
+  check(typeof q.hab === 'string' && /^((Mat|Port) )?\d+(\.\d+)?$/.test(q.hab), `${where}: item do edital "${q.hab}"`);
   check(typeof q.tag === 'string' && q.tag.trim(), `${where}: sem assunto (tag)`);
   check(Array.isArray(q.base) && typeof q.cmd === 'string' && q.cmd.trim(), `${where}: sem enunciado`);
   for (const [k, h] of [['cmd', q.cmd], ...q.alts.map((a, i) => ['alts.' + LET[i], a]), ...Object.entries(q.ex).map(([k, v]) => ['ex.' + k, v])]) {
@@ -99,7 +99,7 @@ for (const q of BANCO) {
   const where = `questão ${q.id} (${q.origem})`;
   check(!ids.has(q.id), `${where}: id repetido`); ids.add(q.id); origens.add(q.origem);
   validaQuestao(q, where);
-  check(q.vol === 'EL', `${where}: vol "${q.vol}"`);
+  check(q.vol === ({ X: 'MT', P: 'PT' }[(DATA.modules.find(m => m.id === q.mod) || {}).line] || 'EL'), `${where}: vol "${q.vol}"`);
   const m = MODS[q.mod];
   check(!!m, `${where}: estação ${q.mod} não existe`);
   if (m) {

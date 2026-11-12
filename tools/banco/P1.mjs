@@ -1,0 +1,204 @@
+/* Revisão das questões da estação P1 (Língua Portuguesa), escrita para o app: não vem do banco do estudante.
+   q: os exercícios do fim de cada seção da Teoria (QUIZ de fontes/lingua-portuguesa.html), pela chave "bN:i"; extra: questões só da aba Questões
+   (nesta estação não há). Formato de w e d: o do comentário de tools/banco.mjs. Cada alternativa errada diz qual erro leva a ela.
+   Os tipos de erro desta estação (extrapola, acentoAcordo, craseProib, virgulaTermos…) precisam estar em tools/banco/erros.mjs.
+   Português não tem conta: nenhuma questão traz o campo conta. */
+export default {
+  /* item do edital de cada seção da estação */
+  secoes: {"b1":"Port 1","b2":"Port 2","b3":"Port 3","b4":"Port 4","b5":"Port 5","b6":"Port 6","b7":"Port 7","b8":"Port 8"},
+  q: {
+    'b1:0': { d: 'f', w: {
+      A: "[extrapola] “dispensa o acompanhamento regular das equipes nas usinas”: Extrapola o texto. Ele diz o contrário: sem leitura regular dos dados, os sensores só dão falsa sensação de segurança. “Dispensa” é um absoluto que o texto não autoriza.",
+      B: "[contrarioTexto] “troca as peças em datas fixas para evitar o desgaste”: Trocar peças em datas fixas é a prática que a manutenção preditiva substituiu (“Em vez de trocar peças em datas fixas…”). A alternativa atribui à preditiva a prática antiga.",
+      D: "[extrapola] “elimina a possibilidade de defeitos inesperados”: “Elimina” é exagero. O texto diz que o primeiro defeito inesperado costuma ocorrer quando os relatórios não são abertos; não promete que nunca haverá defeito.",
+      E: "[trocaAgente] “custa mais que a manutenção planejada, por exigir sensores”: O texto compara a parada de emergência, que “custa muito mais”, com a manutenção planejada. A alternativa troca os termos da comparação e inventa o motivo (os sensores).",
+    } },
+    'b1:1': { d: 'm', w: {
+      B: "[extrapola] “sensores instalados são inúteis para detectar desgaste”: Extrapola: o texto não diz que os sensores são inúteis, e sim que os dados só ajudam se forem lidos. Lidos, eles indicam o desgaste.",
+      C: "[contrarioTexto] “os relatórios devem ser abertos somente depois que o defeito ocorre”: O texto cobra leitura regular dos dados; é a falta dela que deixa o primeiro defeito “inesperado”.",
+      D: "[foraTexto] “o primeiro defeito inesperado costuma ocorrer por falha dos próprios sensores”: A causa atribuída aos sensores não aparece no texto: ele liga a surpresa à falta de leitura dos relatórios.",
+      E: "[foraTexto] “as equipes preferem não ler os dados por falta de tempo”: O motivo (falta de tempo) e a preferência das equipes não são mencionados. Pode até ser verdade no mundo, mas o texto não diz nem implica.",
+    } },
+    'b1:2': { d: 'm', w: {
+      A: "[funcaoTroca] “apresentar um exemplo que contradiz a ideia do período anterior”: Não há exemplo no trecho: ele é uma correção de leitura (“não significa… significa…”) que completa o período anterior, sem contradizê-lo.",
+      B: "[contrarioTexto] “concluir que o usuário deve deixar de reclamar das previsões”: O trecho diz o oposto: reconhecer a cadeia “não significa aceitar o erro”, e o texto termina dizendo que quem entende reclama melhor.",
+      C: "[funcaoTroca] “justificar a confiabilidade da informação do aplicativo”: A confiabilidade é tratada na primeira frase. O trecho trata de como o usuário deve agir.",
+      D: "[funcaoTroca] “introduzir uma dúvida sobre a existência da cadeia de trabalho”: O trecho assume a cadeia (“reconhecer essa cadeia”); não a questiona.",
+    } },
+    'b1:3': { d: 'f', w: {
+      A: "[extrapola] “os aplicativos de transporte deveriam ser substituídos por avisos feitos por…”: O texto não propõe abandonar o aplicativo; explica de onde vem a informação que ele dá.",
+      B: "[contrarioTexto] “o usuário que reclama de previsões erradas não tem razão”: O texto afirma que reconhecer a cadeia de trabalho “não significa aceitar o erro” e que quem entende “reclama melhor”.",
+      C: "[trocaAgente] “motoristas e técnicos são os únicos responsáveis pelos atrasos dos ônibus”: Motoristas e técnicos aparecem como parte da cadeia que gera o dado, e não como responsáveis pelos atrasos. A alternativa troca o agente.",
+      E: "[foraTexto] “a informação sobre atrasos só é útil para quem usa o ônibus com frequência”: A frequência de uso do ônibus não é mencionada.",
+    } },
+    'b2:0': { d: 'm', w: {
+      A: "[acentoAcordo] “ideia — jóia — assembleia — heroico”: “Jóia” mantém o acento do ditongo aberto “oi” de paroxítona, que o Acordo suprimiu (como em “ideia”, “boia”, “heroico”): o certo é “joia”.",
+      C: "[acentoAcordo] “veem — leem — vôo — enjoo”: “Vôo” mantém o circunflexo do “oo” final, que o Acordo suprimiu (voo, enjoo). “Veem” e “leem” estão certos.",
+      D: "[acentoAcordo] “saída — país — feiúra — baiuca”: “Feiúra” acentua o “u” tônico, mas, quando i ou u tônicos vêm depois de ditongo (ei) em paroxítona, não há acento: “feiura”. “Saída” e “país” estão certos.",
+      E: "[acentoTem] “eles têm — eles vêm — ele convém — eles mantém”: Com “eles”, a forma de manter leva circunflexo: “mantêm”, 3ª pessoa do plural (“mantém” é a do singular). “Têm”, “vêm” e “convém” estão certos.",
+    } },
+    'b2:1': { d: 'm', w: {
+      A: "[duplicaRS] “pré-história — autoestrada — antirábico — micro-ondas”: Prefixo terminado em vogal e palavra iniciada por r: o r dobra. O certo é “antirrábico”.",
+      B: "[hifenSobra] “pré-história — auto-estrada — antirrábico — micro-ondas”: “Auto” termina em o e “estrada” começa por e (vogais diferentes): sem hífen, “autoestrada”.",
+      C: "[hifenFalta] “pré-história — autoestrada — antirrábico — microondas”: “Micro” termina em o e “ondas” começa por o (mesma vogal): hífen obrigatório, “micro-ondas”.",
+      D: "[hifenFalta] “préhistória — autoestrada — antirrábico — micro-ondas”: Palavra iniciada por h depois de prefixo leva hífen: “pré-história”.",
+    } },
+    'b2:2': { d: 'f', w: {
+      B: "[grafLetra] “jíria — xarope — obsessão — surpresa”: “Gíria” se escreve com g (como herege, relógio, girafa); “jíria” troca g por j.",
+      C: "[grafLetra] “gíria — charope — obsessão — surpresa”: “Xarope” se escreve com x (como xadrez, xícara, bruxa); “charope” troca x por ch.",
+      D: "[grafLetra] “gíria — xarope — obseção — surpresa”: “Obsessão” tem ss (como remessa, egresso e possesso, ao contrário de ascensão e pretensão, que têm s); “obseção” erra a letra do som de s.",
+      E: "[grafLetra] “gíria — xarope — obsessão — surpreza”: “Surpresa” se escreve com s (como empresa, defesa e presa); “surpreza” troca s por z.",
+    } },
+    'b2:3': { d: 'f', w: {
+      A: "[maiuscula] “A reunião será na Segunda-feira, em Outubro, na sede da empresa”: Dias da semana e meses se escrevem com minúscula: segunda-feira, outubro.",
+      B: "[maiuscula] “A subestação fica ao Sul da cidade, junto à rodovia”: Ponto cardeal que indica direção se escreve com minúscula: “ao sul da cidade”. A maiúscula é para quando o nome designa uma região (“o Nordeste”).",
+      D: "[maiuscula] “A equipe da transpetro estuda português toda terça-feira”: Nome de instituição leva maiúscula: Transpetro.",
+      E: "[maiuscula] “O Natal e a páscoa são feriados nacionais”: Nome de festa leva maiúscula: Natal e Páscoa.",
+    } },
+    'b3:0': { d: 'f', w: {
+      A: "[conectValor] “ainda que”: “Ainda que” é concessão (o fato ocorre apesar de um obstáculo). Aqui o sensor é a razão da parada, e não um obstáculo a ela.",
+      B: "[conectValor] “a fim de que”: “A fim de que” indica finalidade. O superaquecimento é a causa da parada, e não o objetivo dela.",
+      C: "[conectValor] “contanto que”: “Contanto que” indica condição (se). O sensor já indicava o superaquecimento: é um fato, e não uma hipótese.",
+      E: "[conectValor] “à medida que”: “À medida que” indica proporção (duas coisas que variam juntas); a frase não fala de variação.",
+    } },
+    'b3:1': { d: 'm', w: {
+      A: "[refTroca] “a empresa”: A empresa é o sujeito do primeiro período, mas quem identifica a pessoa pela impressão digital é o sistema, e não a empresa. No teste da troca, o sentido muda.",
+      B: "[refTroca] “o sistema antigo de controle de acesso”: O sistema antigo foi substituído. É o novo, o biométrico, que identifica pela impressão digital.",
+      D: "[refPerto] “os dados guardados”: “Os dados” é um termo próximo do pronome, mas dados não identificam ninguém. A proximidade enganou.",
+      E: "[refPerto] “cada entrada registrada”: “Cada entrada” também está perto, mas uma entrada não identifica a pessoa; quem faz isso é o sistema.",
+    } },
+    'b3:2': { d: 'm', w: {
+      A: "[poisPosicao] “explicação e conclusão”: Inverte os valores: em I, “pois” vem depois de um termo e entre vírgulas, e equivale a “portanto” (conclusão); em II, abre a oração e dá o motivo (explicação, equivale a “porque”).",
+      C: "[poisPosicao] “conclusão e conclusão”: Trata “pois” como sempre conclusivo. Em II ele abre a oração e dá o motivo: porque a tensão caiu.",
+      D: "[poisPosicao] “explicação e explicação”: Trata “pois” como sempre explicativo. Em I ele está entre vírgulas, depois de “é preciso”, e conclui (“portanto”).",
+      E: "[conectValor] “oposição e explicação”: Em I não há oposição: a revisão decorre da queda de tensão, e nenhum “mas” caberia.",
+    } },
+    'b3:3': { d: 'm', w: {
+      A: "[coesaoTipo] “um pronome relativo, que liga a segunda oração à primeira”: “Os profissionais” é um substantivo com artigo, e não um pronome relativo (não se troca por “o qual”).",
+      B: "[coesaoTipo] “uma elipse, que omite o termo repetido”: Na elipse o termo é omitido. Aqui ele está presente, substituído por outra expressão.",
+      C: "[coesaoTipo] “uma conjunção, que marca a oposição entre as ideias”: Não há conjunção: nenhuma palavra liga as orações com valor de oposição.",
+      D: "[coesaoTipo] “um pronome demonstrativo, que aponta para o que ainda será dito”: Não há demonstrativo, e a retomada é do que já foi dito (anáfora), e não do que virá (catáfora).",
+    } },
+    'b4:0': { d: 'f', w: {
+      B: "[queFuncao] “O técnico informou que o motor superaqueceu”: Aqui “que” completa o verbo “informou” (conjunção integrante). Não se troca por “o qual” e equivale a “informou isso”.",
+      C: "[queFuncao] “Mais vale um relé reserva que dois relés quebrados”: “Que” está no lugar de “do que” e liga os dois termos da comparação: conjunção comparativa.",
+      D: "[queFuncao] “Foi tão intenso o ruído que ninguém ouviu o alarme”: “Que” introduz a consequência de “tão intenso”: conjunção consecutiva.",
+      E: "[queFuncao] “Que máquina barulhenta!”: Em frase exclamativa, “que” acompanha o substantivo e dá ideia de intensidade; não retoma termo anterior nem equivale a “o qual”.",
+    } },
+    'b4:1': { d: 'f', w: {
+      A: "[malMau] “mal — mal — mau”: Primeira lacuna: antes do substantivo “contato” cabe “bom” (bom contato), logo é “mau”. “Mal” (oposto de “bem”) não qualifica substantivo.",
+      B: "[malMau] “mau — mau — mal”: Segunda lacuna: modifica o verbo “funcionar” (funcionar bem), logo é advérbio, “mal”. Terceira: “humor” é substantivo (bom humor), logo “mau”.",
+      C: "[malMau] “mal — mau — mau”: Inverte as duas primeiras: o adjetivo “mau” vai com “contato” e o advérbio “mal” vai com “funcionar”.",
+      E: "[malMau] “mau — mal — mal”: Terceira lacuna: “humor” é substantivo e cabe “bom humor”; logo, “mau humor”. “Mal” é advérbio.",
+    } },
+    'b4:2': { d: 'm', w: {
+      A: "[subjFuturo] “ver”: Infinitivo. Depois de “quando” com fato futuro, o verbo vai ao futuro do subjuntivo.",
+      B: "[subjFuturo] “vê”: Presente do indicativo. O fato é futuro e incerto (“deverá desligar”), e pede o subjuntivo.",
+      C: "[subjFuturo] “viu”: Pretérito perfeito, que indica fato passado. A frase fala de um futuro (“deverá desligar”).",
+      D: "[subjFuturo] “vier”: “Vier” é o futuro do subjuntivo do verbo VIR (quando ele vier). O verbo da frase é VER, cujo futuro do subjuntivo é “vir”.",
+    } },
+    'b4:3': { d: 'm', w: {
+      A: "[haOuA] “Faz dois anos que não visito a refinaria, mas daqui há dois anos voltarei”: “Daqui há dois anos” erra: para o futuro usa-se a preposição “a” (daqui a dois anos). “Há” indica tempo passado.",
+      C: "[porques] “Ninguém sabe porque a bomba parou”: Em pergunta indireta, com sentido de “por qual motivo”, escreve-se “por que” separado: “Ninguém sabe por que a bomba parou”. “Porque” é conjunção de causa.",
+      D: "[ondeAonde] “Aonde fica a subestação?”: “Aonde” (= a onde) pede verbo de movimento. “Ficar” indica lugar fixo: “Onde fica a subestação?”.",
+      E: "[masMais] “Ela chegou atrasada, mais não perdeu a reunião”: “Mais” é advérbio de quantidade. A oposição pede a conjunção “mas”.",
+    } },
+    'b5:0': { d: 'm', w: {
+      A: "[impessoal] “Haviam muitos técnicos na subestação durante a revisão”: “Haver” com sentido de existir é impessoal e fica no singular: “Havia muitos técnicos”.",
+      B: "[impessoal] “Fazem três dias que o gerador foi desligado”: “Fazer” indicando tempo decorrido é impessoal e fica no singular: “Faz três dias”.",
+      D: "[seIndeterm] “Precisam-se de eletricistas para a parada de manutenção”: “Precisar de” pede preposição; o “se” é índice de indeterminação e o verbo fica no singular: “Precisa-se de eletricistas”.",
+      E: "[atracao] “O resultado dos testes feitos nos motores chegaram ontem à gerência”: O núcleo do sujeito é “resultado” (singular); “testes” e “motores” estão em adjuntos. O verbo concordou com a palavra vizinha. O certo é “chegou”.",
+    } },
+    'b5:1': { d: 'm', w: {
+      A: "[sujResumido] “Pressão, temperatura e vazão, tudo foram registrados pelo sistema”: O sujeito composto vem resumido por “tudo”, e o verbo concorda com esse pronome (singular): “tudo foi registrado”.",
+      C: "[relativoConc] “Os operadores que verificou o painel assinaram o relatório”: O “que” é relativo e retoma “os operadores” (plural): o verbo deve ir ao plural, “verificaram”.",
+      D: "[relativoConc] “Fui eu que resolveu o problema da bomba”: Com antecedente “eu”, o verbo da oração relativa fica na 1ª pessoa: “Fui eu que resolvi”.",
+      E: "[impessoal] “Existe várias falhas no projeto elétrico”: “Existir” não é impessoal (diferente de “haver”): concorda com o sujeito “várias falhas”, “Existem”.",
+    } },
+    'b5:2': { d: 'm', w: {
+      A: "[nomTraicoeira] “Ela ficou meia cansada depois do plantão”: Aqui “meio” significa “um pouco” (advérbio) e não varia: “meio cansada”.",
+      B: "[nomTraicoeira] “Seguem anexo ao e-mail as planilhas”: “Anexo” é adjetivo e concorda com “as planilhas”: “seguem anexas”. (Só é invariável em “em anexo”.)",
+      C: "[nomTraicoeira] “Elas mesmo conferiram os cabos”: “Mesmo” reforça o pronome “elas” e concorda com ele: “elas mesmas”.",
+      E: "[nomTraicoeira] “Muito obrigada, disse o técnico ao colega”: “Obrigado” concorda com quem agradece; quem fala é um homem (o técnico): “muito obrigado”.",
+    } },
+    'b5:3': { d: 'f', w: {
+      B: "[proibidoArtigo] “É proibido a entrada de pessoas não autorizadas na subestação”: Com artigo (“a entrada”), “proibido” concorda com o substantivo: “É proibida a entrada”. (Sem artigo ficaria invariável: “É proibido entrada”.)",
+      C: "[nomTraicoeira] “Os cabos eram pouco resistentes, e as emendas, menas confiáveis”: “Menos” é advérbio e nunca varia; “menas” não existe na norma-padrão: “menos confiáveis”.",
+      D: "[nomTraicoeira] “O expediente terminou às cinco horas e meio”: “Meio”, no sentido de metade, concorda com “hora” (feminino): “cinco horas e meia”.",
+      E: "[nomTraicoeira] “Havia bastante peças em estoque”: “Bastante”, no sentido de “muitas”, é adjetivo e concorda com “peças”: “bastantes peças”.",
+    } },
+    'b6:0': { d: 'm', w: {
+      A: "[craseProib] “A equipe começou à trabalhar às sete horas”: Diante de verbo não há artigo, logo não há crase: “começou a trabalhar”. (O “às sete horas” está certo.)",
+      B: "[craseProib] “O técnico entregou o relatório à ela”: Diante de pronome pessoal (ela) não há artigo: “a ela”.",
+      C: "[craseProib] “A falha foi atribuída à fatores externos”: “Fatores” é palavra masculina e, diante de masculino sem artigo, não há crase: “a fatores externos”.",
+      D: "[craseProib] “Enviamos o laudo à várias empresas”: “Várias” é indefinido e não aceita artigo: “a várias empresas”.",
+    } },
+    'b6:1': { d: 'm', w: {
+      A: "[craseProib] “Voltamos a trabalhar na mesma usina”: Diante de verbo (“trabalhar”) não há artigo: o “a” fica sem acento.",
+      B: "[craseProib] “Entregue o crachá a funcionários autorizados”: “Funcionários” é masculino e plural, sem artigo: sem crase.",
+      D: "[craseProib] “O supervisor falou a respeito do projeto”: “Respeito” é masculino; “a respeito de” é locução sem crase.",
+      E: "[craseProib] “O estagiário foi a pé até a oficina”: “pé” é masculino; locução adverbial com palavra masculina não leva crase.",
+    } },
+    'b6:2': { d: 'f', w: {
+      B: "[craseHoraLoc] “A reunião foi marcada para às 9h”: Depois de “para” não há crase: “para as 9h”. O acento só aparece quando a preposição “a” encontra o artigo (às 9h).",
+      C: "[craseHoraLoc] “A manutenção será feita à partir de segunda-feira”: “A partir de” não leva acento: é locução com a preposição “a” e o verbo “partir”.",
+      D: "[craseHoraLoc] “O supervisor chegou desde às 6h”: Depois de “desde” não há crase: “desde as 6h”.",
+      E: "[craseFalta] “O serviço será pago a vista”: “À vista” é locução adverbial feminina e leva acento. Faltou a crase.",
+    } },
+    'b6:3': { d: 'm', w: {
+      A: "[craseProib] “Fez referência à esta norma durante a reunião”: “Esta” é demonstrativo e não aceita artigo: “a esta norma”.",
+      B: "[craseProib] “Ele se dirigiu à você com educação”: “Você” não aceita artigo: “a você”.",
+      C: "[craseProib] “O gerente deu a tarefa à quem tinha experiência”: “Quem” não aceita artigo: “a quem”.",
+      E: "[craseProib] “Voltamos à trabalhar na linha 2”: Diante de verbo não há artigo: “voltamos a trabalhar”.",
+    } },
+    'b7:0': { d: 'f', w: {
+      A: "[virgulaTermos] “A falta de manutenção preventiva nos transformadores, provocou a parada da…”: Vírgula entre o sujeito (“A falta de manutenção preventiva nos transformadores”) e o verbo (“provocou”).",
+      C: "[virgulaTermos] “A equipe de manutenção substituiu, os disjuntores danificados na semana passada”: Vírgula entre o verbo transitivo direto (“substituiu”) e o objeto direto (“os disjuntores”).",
+      D: "[virgulaE] “A empresa investiu em treinamento, segurança e, tecnologia”: Na enumeração, a vírgula separa os itens, mas não vai antes do “e” que fecha a lista: “treinamento, segurança e tecnologia”.",
+      E: "[virgulaFalta] “O relé atuou mas o disjuntor não abriu”: Falta a vírgula antes de “mas”, que inicia oração coordenada adversativa: “O relé atuou, mas o disjuntor não abriu”.",
+    } },
+    'b7:1': { d: 'm', w: {
+      B: "[explicRestr] “apenas parte dos técnicos trabalha à noite, e só ela recebeu o adicional”: Esse é o sentido da oração sem vírgulas (restritiva), que delimita um grupo. Com vírgulas, a oração é explicativa e fala de todos os técnicos.",
+      C: "[extrapola] “o adicional é pago exclusivamente porque os técnicos trabalham à noite”: Extrapola: a oração informa uma característica dos técnicos, mas não afirma que seja o único motivo do adicional.",
+      D: "[explicRestr] “há técnicos que não trabalham à noite e também receberam o adicional”: Contraria o sentido das vírgulas, que indicam que a característica vale para todos os técnicos mencionados.",
+      E: "[parVirgula] “as vírgulas separam o sujeito do verbo, o que é incorreto”: O par de vírgulas isola uma oração intercalada (explicativa), o que é correto. Só a vírgula solitária entre sujeito e verbo é proibida.",
+    } },
+    'b7:2': { d: 'm', w: {
+      A: "[funcaoVirgula] “Senhor Diretor, o relatório está pronto”: A vírgula isola um vocativo (chamamento), e não um aposto.",
+      B: "[funcaoVirgula] “A equipe, cansada, terminou o serviço”: “Cansada” é um adjetivo com valor de predicativo; aposto é um termo de valor substantivo que explica outro.",
+      D: "[funcaoVirgula] “Quando a chave abriu, a luz se apagou”: A vírgula separa uma oração subordinada adverbial deslocada, e não um aposto.",
+      E: "[funcaoVirgula] “Os motores, que giram a 1.800 rpm, são de quatro polos”: As vírgulas isolam uma oração adjetiva explicativa; aposto é um termo, e não uma oração.",
+    } },
+    'b7:3': { d: 'm', w: {
+      A: "[virgulaFalta] “Quando o motor superaquece o protetor térmico atua”: Falta a vírgula depois da oração adverbial que vem antes da principal: “Quando o motor superaquece, o protetor térmico atua”.",
+      B: "[virgulaE] “O supervisor, e o técnico revisaram o painel”: O “e” liga os núcleos do sujeito composto, e a vírgula antes dele separa termos da mesma função: “O supervisor e o técnico revisaram”.",
+      C: "[virgulaTermos] “O painel estava, danificado depois da tempestade”: Vírgula entre o verbo de ligação (“estava”) e o predicativo (“danificado”).",
+      D: "[virgulaTermos] “A empresa, adotou novas normas de segurança”: Vírgula entre o sujeito (“A empresa”) e o verbo (“adotou”).",
+    } },
+    'b8:0': { d: 'm', w: {
+      A: "[paronimo] “ratificou — ratificou”: “Ratificar” é confirmar. A primeira lacuna pede corrigir o valor: “retificou”.",
+      B: "[paronimo] “retificou — retificou”: Na segunda lacuna o acordo foi confirmado: “ratificou”. “Retificar” é corrigir.",
+      C: "[paronimo] “ratificou — retificou”: Troca as duas: corrigir o valor é retificar, e confirmar o acordo é ratificar.",
+      E: "[paronimo] “infringiu — ratificou”: “Infringir” é violar (uma norma, uma lei); não se infringe o valor de um contrato.",
+    } },
+    'b8:1': { d: 'm', w: {
+      A: "[sentidoOposto] “surpreendentes”: “Surpreendentes” fala do inesperado, e não de valor baixo; o texto diz que os resultados foram fracos e que a diretoria revê o plano.",
+      B: "[sentidoContexto] “alarmantes”: “Alarmantes” fala de resultados que assustam, mais forte que “pífios” (de pouco valor), e o texto não diz que causaram alarme.",
+      C: "[sentidoContexto] “rigorosos”: “Rigorosos” repete o adjetivo da primeira frase, aplicado à fiscalização; não descreve resultados.",
+      D: "[sentidoOposto] “exagerados”: “Exagerados” fala de excesso, e não de pouco valor.",
+    } },
+    'b8:2': { d: 'f', w: {
+      A: "[polissemia] “O cabo da enxada quebrou durante o serviço”: Aqui “cabo” é a haste pela qual se segura a ferramenta.",
+      C: "[polissemia] “O cabo Silva comandou o pelotão”: “Cabo” é uma graduação militar.",
+      D: "[polissemia] “O navio contornou o cabo da Boa Esperança”: “Cabo” é um acidente geográfico, uma ponta de terra que avança no mar.",
+      E: "[polissemia] “Do começo ao cabo, o curso foi proveitoso”: “Ao cabo” significa “ao fim”; “do começo ao cabo” = do início ao fim.",
+    } },
+    'b8:3': { d: 'f', w: {
+      A: "[denotConot] “denotativo, porque designa o lugar onde vivem as formigas”: No sentido denotativo, “formigueiro” é a toca das formigas. A fábrica não é isso.",
+      B: "[denotConot] “literal, porque a fábrica tem muitas formigas”: O trecho não fala de formigas na fábrica; a palavra foi usada por comparação.",
+      D: "[denotConot] “irônico, porque o autor diz o contrário do que pensa”: Ironia diz o contrário do que se pensa. Aqui o autor diz o que pensa: a fábrica é muito movimentada.",
+      E: "[foraTexto] “técnico, porque é um termo próprio da engenharia”: “Formigueiro” não é termo técnico da engenharia; o contexto indica comparação, e não vocabulário especializado.",
+    } },
+  },
+  extra: [],
+};

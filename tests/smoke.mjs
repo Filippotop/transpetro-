@@ -12,7 +12,7 @@ const require = createRequire(import.meta.url);
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 const TABS = ['linhas', 'provas', 'bancada', 'biblioteca', 'arena', 'treino', 'plano', 'painel'];
-const LINE_IDS = ['E', 'M', 'I', 'A', 'N', 'X'];
+const LINE_IDS = ['E', 'M', 'I', 'A', 'N', 'X', 'P'];
 const KEY = 'eletrica-de-ouro-v1';
 const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(',')) : null; /* ONLY=storage,home roda só esses testes */
 const VIEWPORTS = { '320': { width: 320, height: 640 }, '375': { width: 375, height: 780 }, '1280': { width: 1280, height: 850 } };
@@ -107,8 +107,8 @@ function testIntegrity() {
     }
     for (const q of m.qs) check(ids.has(q), `módulo ${m.id}: questão ${q} não existe`);
     /* Esquema da estação (spec, seção 2): vol, linha, itens do edital, faixa e peso em 2023. */
-    check(m.vol === (m.line === 'X' ? 'MT' : 'EL'), `estação ${m.id}: vol "${m.vol}" não combina com a linha ${m.line}`);
-    check(LINE_IDS.includes(m.line), `estação ${m.id}: linha "${m.line}" fora de E, M, I, A, N, X`);
+    check(m.vol === ({ X: 'MT', P: 'PT' }[m.line] || 'EL'), `estação ${m.id}: vol "${m.vol}" não combina com a linha ${m.line}`);
+    check(LINE_IDS.includes(m.line), `estação ${m.id}: linha "${m.line}" fora de E, M, I, A, N, X, P`);
     check(typeof m.itens === 'string' && m.itens.trim().length > 0, `estação ${m.id}: sem itens do edital`);
     check(['A', 'B', 'C'].includes(m.faixa), `estação ${m.id}: faixa "${m.faixa}"`);
     check(typeof m.peso2023 === 'number', `estação ${m.id}: peso2023 não é número`);
@@ -322,7 +322,7 @@ async function testLines(browser) {
         const b = line.querySelector('.line-head .badge'), cs = getComputedStyle(b), x = lum(cs.color), y = lum(cs.backgroundColor);
         return { L, name: line.querySelector('h3').textContent, ratio: (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05), n: line.querySelectorAll('.st').length, txt: line.textContent }; });
     }, LINE_IDS);
-    const names = { E: 'Eletricidade', M: 'Máquinas e Comandos', I: 'Instalações e Medidas', A: 'Automação e Eletrônica', N: 'Segurança e Normas', X: 'Matemática' };
+    const names = { E: 'Eletricidade', M: 'Máquinas e Comandos', I: 'Instalações e Medidas', A: 'Automação e Eletrônica', N: 'Segurança e Normas', X: 'Matemática', P: 'Português' };
     for (const x of r) {
       check(!x.missing, `linhas/${colorScheme}: a linha ${x.L} não aparece no mapa`); if (x.missing) continue;
       check(x.name === names[x.L], `linhas: a linha ${x.L} se chama "${x.name}" (esperado "${names[x.L]}")`);
@@ -583,7 +583,7 @@ async function testHome(browser) {
     check(h.count.includes(h.days) && /29\/11/.test(h.count), `início/${vp}: contagem regressiva sem os ${h.days} dias até 29/11 ("${h.count.trim().slice(0, 80)}")`);
     check(/retifica/i.test(h.count), `início/${vp}: a contagem não avisa para conferir a retificação ("${h.count.trim().slice(0, 120)}")`);
     check(/36 dias · 29\/11/.test(h.chip), `início/${vp}: chip do topo "${h.chip}"`);
-    check(h.rings.map(r => r[0]).join(',') === 'ESP,MAT,CRD', `início/${vp}: anéis = "${h.rings.map(r => r[0]).join(',')}"`);
+    check(h.rings.map(r => r[0]).join(',') === 'ESP,MAT,POR,CRD', `início/${vp}: anéis = "${h.rings.map(r => r[0]).join(',')}"`);
     for (const [a, l] of h.rings) check(/\d+%/.test(l), `início/${vp}: anel ${a} sem porcentagem no aria-label ("${l}")`);
     check(h.next.length > 0, `início/${vp}: falta o bloco "Próximo passo"`);
     check(/50%/.test(h.corte), `início/${vp}: falta a regra de corte (50% em cada bloco) ("${h.corte.trim().slice(0, 60)}")`);
@@ -966,9 +966,9 @@ async function testT6(browser) {
     check(await page.evaluate(() => view === 'game' && param.g === 'unid'), `${where}: a tarefa do plano não abriu o jogo`);
     await page.evaluate(() => go('linhas')); await page.waitForTimeout(150);
     check(/Plano de hoje: Circuitos CC/.test(await page.evaluate(() => document.body.innerText)), `${where}: a Missão de hoje não mostra o plano do dia`);
-    /* Painel: 11 itens do edital; a marca de 2023 só aparece depois de uma tentativa completa da prova. */
+    /* Painel: 12 itens do edital (10 específicas, Matemática e Português); a marca de 2023 só aparece depois de uma tentativa completa da prova. */
     await page.evaluate(() => go('painel')); await page.waitForTimeout(150);
-    check(await page.locator('#edbars .brow').count() === 11 && await page.locator('#edbars .track2 b').count() === 0, `${where}: Painel por item do edital errado antes da prova`);
+    check(await page.locator('#edbars .brow').count() === 12 && await page.locator('#edbars .track2 b').count() === 0, `${where}: Painel por item do edital errado antes da prova`);
     await page.evaluate(() => { const e = EX.t23, ans = {}; for (let n = 1; n <= 60; n++) ans[n] = n <= 40 ? (e.key[n] || 'A') : (e.key[n] === 'A' ? 'B' : 'A'); pvState('t23').runs.push({ id: 'x', areas: 'PME', mode: 'prova', ans, flag: {}, cut: {}, start: Date.now(), end: Date.now(), done: true }); go('painel'); }); await page.waitForTimeout(150);
     const ref = await page.evaluate(() => editalStats().map(x => [String(x.it.n), x.n23, x.ref]));
     check(ref.reduce((a, x) => a + x[1], 0) === 50, `${where}: os itens do edital somam ${ref.reduce((a, x) => a + x[1], 0)} questões de 2023 (esperado 50: 40 específicas + 10 de Matemática)`);

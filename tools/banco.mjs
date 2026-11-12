@@ -47,7 +47,7 @@ const SCTX = vm.createContext({ window: { DATA: { modules: [], cards: [], vf: []
 const ESTACOES = ['E1', 'E2', 'E3', 'M1', 'M2', 'I1'];
 /* Estações escritas para o app (sem apostila do estudante): os exercícios do fim de cada seção e as questões extras
    entram na aba Questões com a revisão de tools/banco/<id>.mjs (q: por "bN:i"; extra: só da aba Questões). */
-const NOVAS = ['M3', 'A1', 'A2', 'I2', 'I3', 'N1', 'X1', 'X2', 'X3'];
+const NOVAS = ['M3', 'A1', 'A2', 'I2', 'I3', 'N1', 'X1', 'X2', 'X3', 'P1'];
 for (const id of [...ESTACOES, ...NOVAS]) vm.runInContext(read(`data/estacoes/${id}.js`), SCTX);
 vm.runInContext(read('data/embreve.js'), SCTX);
 const MODS = Object.fromEntries(SCTX.window.DATA.modules.map(m => [m.id, m]));
@@ -169,7 +169,7 @@ for (const q0 of todas) {
   }
   if (!['f', 'm', 'd'].includes(r.d)) throw new Error(`${q0.id}: dificuldade "${r.d}"`);
   out.push({
-    id: 'BQ-' + q0.id.replace(/:/g, '-'), vol: 'EL', mod, kind: 'banco', tag, base: [], cmd: q.s,
+    id: 'BQ-' + q0.id.replace(/:/g, '-'), vol: MODS[mod].vol, mod, kind: 'banco', tag, base: [], cmd: q.s,
     ...(q.fig ? { fig: ajustaFigura(figura(q.fig, q0.id), r, q0.id) } : {}),
     alts: q.o, ans, ex, traps, erros, hab, dif: { f: 'fácil', m: 'média', d: 'difícil' }[r.d],
     ...(r.conta ? { conta: [].concat(r.conta) } : {}), src: '', origem: q0.id,
@@ -199,7 +199,7 @@ for (const est of NOVAS) {
     }
     if (!['f', 'm', 'd'].includes(q.d)) throw new Error(`${onde}: dificuldade "${q.d}"`);
     out.push({
-      id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: 'EL', mod: est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
+      id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: MODS[est].vol, mod: est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
       alts: q.o, ans, ex, traps, erros, hab: q.h, dif: { f: 'fácil', m: 'média', d: 'difícil' }[q.d],
       ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
     });

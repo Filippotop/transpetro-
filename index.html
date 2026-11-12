@@ -20,19 +20,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: um mapa de metrô do edital. Seis linhas (Eletricidade, Máquinas e Comandos, Instalações e Medidas, Automação e Eletrônica, Segurança e Normas, Matemática), cada estação um item. O dourado marca o que importa hoje. */
+/* Layout: um mapa de metrô do edital. Sete linhas (Eletricidade, Máquinas e Comandos, Instalações e Medidas, Automação e Eletrônica, Segurança e Normas, Matemática, Português), cada estação um item. O dourado marca o que importa hoje. */
 :root{
   --scale:1;
   --bg:#F2F3F7; --surface:#FFFFFF; --sunk:#E8EAF1; --ink:#141A2E; --muted:#5A6079; --rule:#D7DBE6;
   --gold:#8F6300; --gold-soft:#F6E7C1; --gold-ink:#3D2A00;
-  --h:#C33A33; --g:#1F7F55; --f:#3150C8; --s:#8A3BAE; --rd:#0E7C86;
+  --h:#C33A33; --g:#1F7F55; --f:#3150C8; --s:#8A3BAE; --rd:#0E7C86; --pg:#8A5A00;
   --ok:#1E7A4A; --ok-soft:#DDF1E5; --bad:#B3261E; --bad-soft:#F9DEDB; --warn:#A35F00; --warn-soft:#FCEBD0;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --read:"Source Serif 4", Georgia, "Times New Roman", serif;
   --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --r:10px; --on-color:#fff;
   --l:#B0306A;
-  --e:var(--f); --m:var(--h); --i:var(--g); --a:var(--s); --n:var(--l); --x:var(--rd);
+  --e:var(--f); --m:var(--h); --i:var(--g); --a:var(--s); --n:var(--l); --x:var(--rd); --p:var(--pg);
   --fs-1:12px; --fs-2:14px; --fs-3:16px; --fs-4:18px; --fs-5:22px; --fs-6:28px; --fs-7:36px;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px; --sp-7:32px; --sp-8:40px;
   --r-sm:8px; --r-lg:14px; --shadow-1:0 1px 2px rgba(20,26,46,.06),0 2px 8px rgba(20,26,46,.05); --ease:cubic-bezier(.2,.7,.2,1);
@@ -40,14 +40,14 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0E1120; --surface:#171B2D; --sunk:#1F2439; --ink:#E8EAF3; --muted:#9BA1BA; --rule:#2B3150;
   --gold:#E8B53E; --gold-soft:#3A2F12; --gold-ink:#F7E3B0;
-  --h:#F2665E; --g:#3FBF85; --f:#7A93FF; --s:#C383EA; --rd:#3CC4CC;
+  --h:#F2665E; --g:#3FBF85; --f:#7A93FF; --s:#C383EA; --rd:#3CC4CC; --pg:#E6B84A;
   --ok:#4CC787; --ok-soft:#163626; --bad:#FF7A70; --bad-soft:#3E1A1A; --warn:#F2A640; --warn-soft:#3A2A10; --on-color:#0E1120; --l:#F27BB4;
   --shadow-1:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E1120; --surface:#171B2D; --sunk:#1F2439; --ink:#E8EAF3; --muted:#9BA1BA; --rule:#2B3150;
   --gold:#E8B53E; --gold-soft:#3A2F12; --gold-ink:#F7E3B0;
-  --h:#F2665E; --g:#3FBF85; --f:#7A93FF; --s:#C383EA; --rd:#3CC4CC;
+  --h:#F2665E; --g:#3FBF85; --f:#7A93FF; --s:#C383EA; --rd:#3CC4CC; --pg:#E6B84A;
   --ok:#4CC787; --ok-soft:#163626; --bad:#FF7A70; --bad-soft:#3E1A1A; --warn:#F2A640; --warn-soft:#3A2A10; --on-color:#0E1120; --l:#F27BB4;
   --shadow-1:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);
   color-scheme:dark}
@@ -89,7 +89,7 @@ main{padding-block:22px 80px}
 .panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:18px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:999px;background:var(--sunk);color:var(--muted)}
 .chip.A{background:var(--gold-soft);color:var(--gold-ink);font-weight:600}
-.lc-E{--lc:var(--e)} .lc-M{--lc:var(--m)} .lc-I{--lc:var(--i)} .lc-A{--lc:var(--a)} .lc-N{--lc:var(--n)} .lc-X{--lc:var(--x)}
+.lc-E{--lc:var(--e)} .lc-M{--lc:var(--m)} .lc-I{--lc:var(--i)} .lc-A{--lc:var(--a)} .lc-N{--lc:var(--n)} .lc-X{--lc:var(--x)} .lc-P{--lc:var(--p)}
 .sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:28px 0 12px;flex-wrap:wrap}
 .sec-title h2{font-size:22px;font-weight:800;letter-spacing:-.01em}
 
@@ -631,6 +631,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/estacoes/X1.js"></script>
 <script src="data/estacoes/X2.js"></script>
 <script src="data/estacoes/X3.js"></script>
+<script src="data/estacoes/P1.js"></script>
 <script src="data/embreve.js"></script>
 <script src="data/questoes.js"></script>
 <script src="data/provas.js"></script>
@@ -645,13 +646,13 @@ const DATA = window.DATA;
 /* Aprofundamentos (data/aprofundamento-*.js): teoria extra no fim do módulo e questões novas na contagem. */
 function applyDeep(){ Object.entries(DATA.deep||{}).forEach(([id,d])=>{ const m=DATA.modules.find(x=>x.id===id); if(!m) return; if(d.html) m.html+=d.html; (d.questions||[]).forEach(q=>{ DATA.questions.push(q); m.qs.push(q.id); }); }); }
 applyDeep();
-const STUDY_LINES = ['E','M','I','A','N','X'];
+const STUDY_LINES = ['E','M','I','A','N','X','P'];
 /* Data do edital original (Anexo V). O app avisa para conferir a retificação no site da Cesgranrio. */
 const EXAM = new Date('2026-11-29T08:00:00-03:00');
 const EXAM_NOTE = 'data do edital original; confira a retificação no site da Cesgranrio';
-const LINES = {E:{name:'Eletricidade',vol:'EL'},M:{name:'Máquinas e Comandos',vol:'EL'},I:{name:'Instalações e Medidas',vol:'EL'},A:{name:'Automação e Eletrônica',vol:'EL'},N:{name:'Segurança e Normas',vol:'EL'},X:{name:'Matemática',vol:'MT'}};
-/* Blocos da prova: 40 específicas (vol EL) e 20 gerais, das quais 10 de Matemática (vol MT). Corte: 50% em cada bloco. */
-const BLOCKS = {EL:{name:'Específicas',lines:['E','M','I','A','N']},MT:{name:'Matemática',lines:['X']}};
+const LINES = {E:{name:'Eletricidade',vol:'EL'},M:{name:'Máquinas e Comandos',vol:'EL'},I:{name:'Instalações e Medidas',vol:'EL'},A:{name:'Automação e Eletrônica',vol:'EL'},N:{name:'Segurança e Normas',vol:'EL'},X:{name:'Matemática',vol:'MT'},P:{name:'Português',vol:'PT'}};
+/* Blocos da prova: 40 específicas (vol EL) e 20 gerais, 10 de Matemática (vol MT) e 10 de Português (vol PT). Corte: 50% em cada bloco; zerar Português ou Matemática elimina. */
+const BLOCKS = {EL:{name:'Específicas',lines:['E','M','I','A','N']},MT:{name:'Matemática',lines:['X']},PT:{name:'Português',lines:['P']}};
 const TRAPS = {
   oposto:{name:'Termo oposto',tip:'A alternativa diz o contrário do que a lei ou o enunciado afirma (aumenta × diminui, série × paralelo). Troque pelo contrário e veja qual combina com a teoria.'},
   unidade:{name:'Unidade ou prefixo',tip:'A conta está certa, mas a unidade ou o prefixo não (mA × A, kW × W, kVA × kW). Confira as unidades antes de marcar.'},
@@ -738,7 +739,7 @@ function openQView(ex,n,o={}){ const e=EX[ex]; if(!e||!e.img[n]) return; closeQV
 function closeQView(){ const d=document.querySelector('.qview'); if(d) d.remove(); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeQView(); });
 /* Origem da questão: bloco da prova (específicas ou matemática) ou extra do app. */
-function volLabel(q){ return q.kind==='extra'?'extra do app':q.vol==='MT'?'Matemática':'Específicas'; }
+function volLabel(q){ return q.kind==='extra'?'extra do app':q.vol==='MT'?'Matemática':q.vol==='PT'?'Português':'Específicas'; }
 function modStats(mid){
   const m=M[mid]; let done=0, ok=0;
   m.qs.forEach(id=>{ const a=S.ans[id]; if(a){done++; if(a.ok) ok++;} });
@@ -807,7 +808,7 @@ function vLinhas(){
   const bankAns=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a);
   const tot=DATA.questions.length, done=bankAns.length, ok=bankAns.filter(a=>a.ok).length;
   const mastered=Object.values(S.cards).filter(c=>c.box>=3).length;
-  const el=volStats('EL'), mt=volStats('MT');
+  const el=volStats('EL'), mt=volStats('MT'), pt=volStats('PT');
   const open=DATA.modules.filter(m=>STUDY_LINES.includes(m.line)&&!m.emBreve);
   const dl=daysLeft();
   app.innerHTML=`
@@ -821,13 +822,14 @@ function vLinhas(){
     </div>
     <aside class="side-home">
       <div class="countdown panel"><span class="big">${dl}</span><span>${dl===1?'dia':'dias'} para a prova<small>${examTarget().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'})}</small><small class="warn-date">${EXAM_NOTE}</small></span></div>
-      <div class="rings panel">${ring('ESP','Específicas',blockStats('EL'))}${ring('MAT','Matemática',blockStats('MT'))}${ring('CRD','Cartões',{done:mastered,n:DATA.cards.length},'dos cartões dominados')}</div>
+      <div class="rings panel">${ring('ESP','Específicas',blockStats('EL'))}${ring('MAT','Matemática',blockStats('MT'))}${ring('POR','Português',blockStats('PT'))}${ring('CRD','Cartões',{done:mastered,n:DATA.cards.length},'dos cartões dominados')}</div>
       <div class="corte panel"><b>Corte: 50% em cada bloco</b><small>específicas ≥ 20/40 · gerais ≥ 10/20 · zerar Português ou Matemática elimina</small></div>
       <div class="stats">
         <div class="stat"><div class="n">${done}<span class="muted" style="font-size:var(--fs-3)">/${tot}</span></div><div class="l">questões feitas</div><div class="bar2"><i style="width:${pct(done,tot)}%"></i></div></div>
         <div class="stat"><div class="n">${done?pct(ok,done)+'%':'—'}</div><div class="l">acerto de primeira</div></div>
         <div class="stat"><div class="n">${el.done?pct(el.ok,el.done)+'%':'—'}</div><div class="l">Específicas · meta: 50% ou mais</div></div>
         <div class="stat"><div class="n">${mt.done?pct(mt.ok,mt.done)+'%':'—'}</div><div class="l">Matemática · meta: 50% ou mais</div></div>
+        <div class="stat"><div class="n">${pt.done?pct(pt.ok,pt.done)+'%':'—'}</div><div class="l">Português · meta: 50% ou mais</div></div>
         <div class="stat"><div class="n">${Object.keys(S.vf).length}<span class="muted" style="font-size:var(--fs-3)">/${DATA.vf.length}</span></div><div class="l">afirmações V ou F</div><div class="bar2"><i style="width:${pct(Object.keys(S.vf).length,DATA.vf.length)}%"></i></div></div>
         <div class="stat"><div class="n">${mastered}<span class="muted" style="font-size:var(--fs-3)">/${DATA.cards.length}</span></div><div class="l">cartões dominados</div><div class="bar2"><i style="width:${pct(mastered,DATA.cards.length)}%"></i></div></div>
       </div>
@@ -942,7 +944,7 @@ function questionCard(el,q,opts={}){
   const L='ABCDE';
   function paint(){
     const reveal=st.locked;
-    el.innerHTML=`<div class="q lc-${q.mod&&M[q.mod]?M[q.mod].line:(q.vol==='MT'?'X':'E')}">
+    el.innerHTML=`<div class="q lc-${q.mod&&M[q.mod]?M[q.mod].line:(q.vol==='MT'?'X':q.vol==='PT'?'P':'E')}">
       <div class="qh"><span><b>Questão ${q.n}</b> <span class="muted">· ${volLabel(q)}</span></span><span class="chip">${esc(q.tag)}</span></div>
       ${q.base.length?`<blockquote>${q.base.map(p=>`<p>${p}</p>`).join('')}</blockquote>`:''}
       ${q.src?`<div class="qsrc">(${q.src})</div>`:''}
@@ -1062,7 +1064,7 @@ function gCards(){
       return;
     }
     const c=queue[i]; const box=(S.cards[c.id]||{box:0}).box;
-    app.innerHTML=`<div class="stage"><button class="back" id="back">← Arena</button><div class="score"><span>cartão ${i+1}/${queue.length}</span><span>${c.vol==='MT'?'Matemática':'Específicas'}</span><span>caixa ${box}</span></div><div style="height:12px"></div>
+    app.innerHTML=`<div class="stage"><button class="back" id="back">← Arena</button><div class="score"><span>cartão ${i+1}/${queue.length}</span><span>${c.vol==='MT'?'Matemática':c.vol==='PT'?'Português':'Específicas'}</span><span>caixa ${box}</span></div><div style="height:12px"></div>
       <button class="prompt card3" id="cd" style="width:100%"><span class="k">responda em voz alta, depois toque</span><span style="font-size:22px;font-weight:600">${c.q}</span><span class="ans" id="ans" hidden>${c.a}</span></button>
       <div class="row" id="rate" hidden style="justify-content:center"><button class="btn" id="no">Não sabia</button><button class="btn primary" id="yes">Sabia</button></div></div>`;
     $('#back').onclick=()=>go('arena');
@@ -1116,25 +1118,25 @@ function vSim(){
     <div class="eyebrow" style="margin:14px 0 8px">Quantas questões</div>
     <div class="choice" id="cn">${[10,15,20,30,60].map(n=>`<button data-n="${n}" aria-pressed="${cfg.n===n}">${n} · ${n*4} min</button>`).join('')}</div>
     <div class="eyebrow" style="margin:16px 0 8px">Foco</div>
-    <div class="choice" id="cf">${[['tudo','Todas as linhas (proporção da prova)'],['EL','Específicas'],['MT','Matemática'],['fracos','Meus pontos fracos'],['novas','Só questões que nunca fiz']].map(([k,l])=>`<button data-f="${k}" aria-pressed="${cfg.foco===k}">${l}</button>`).join('')}</div>
+    <div class="choice" id="cf">${[['tudo','Todas as linhas (proporção da prova)'],['EL','Específicas'],['MT','Matemática'],['PT','Português'],['fracos','Meus pontos fracos'],['novas','Só questões que nunca fiz']].map(([k,l])=>`<button data-f="${k}" aria-pressed="${cfg.foco===k}">${l}</button>`).join('')}</div>
     <div class="row" style="margin-top:18px"><button class="btn gold" id="start">Começar</button><span class="muted" id="avail"></span></div>
     <p class="muted" id="dist" style="font-size:12.5px;margin:8px 0 0"></p>
   </div>
   ${S.sims.length?`<div class="sec-title"><h2>Simulados anteriores</h2></div><div class="bars">${S.sims.slice(-6).reverse().map(s=>`<div class="brow"><span class="mono" style="font-size:12px">${new Date(s.t).toLocaleDateString('pt-BR')} · ${s.n}q</span><span class="track2"><i style="width:${pct(s.ok,s.n)}%"></i></span><span class="mono">${pct(s.ok,s.n)}%</span></div>`).join('')}</div>`:''}`;
   const pool=()=>{ let p=DATA.questions.slice();
-    if(cfg.foco==='EL'||cfg.foco==='MT') p=p.filter(q=>q.vol===cfg.foco);
+    if(cfg.foco==='EL'||cfg.foco==='MT'||cfg.foco==='PT') p=p.filter(q=>q.vol===cfg.foco);
     if(cfg.foco==='novas') p=p.filter(q=>!S.ans[q.id]);
     if(cfg.foco==='fracos'){ const weak=new Set(DATA.modules.filter(m=>{const s=modStats(m.id); return s.done===0? m.faixa==='A' : s.ok/s.done<0.67;}).map(m=>m.id)); p=p.filter(q=>weak.has(q.mod) || (q.kind!=='fixacao' && (!S.ans[q.id]||!S.ans[q.id].ok))); }
     return p; };
   const upd=()=>{ $('#avail').textContent=`${plural(pool().length,'questão disponível','questões disponíveis')} nesse foco`;
-    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'){ const d=simCotas(pool(),cfg.n,cfg.foco); $('#dist').textContent=d.length?'Por estação: '+d.map(([m,n])=>`${m} ${n}`).join(' · ')+'.':''; } else $('#dist').textContent=''; };
+    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'||cfg.foco==='PT'){ const d=simCotas(pool(),cfg.n,cfg.foco); $('#dist').textContent=d.length?'Por estação: '+d.map(([m,n])=>`${m} ${n}`).join(' · ')+'.':''; } else $('#dist').textContent=''; };
   $('#cn').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.n=+b.dataset.n; S.simcfg=cfg; vSim();};
   $('#cf').onclick=e=>{const b=e.target.closest('button'); if(!b) return; cfg.foco=b.dataset.f; S.simcfg=cfg; vSim();};
   upd();
   $('#start').onclick=()=>{ const p=pool(); if(!p.length){toast('Nenhuma questão nesse foco. Escolha outro.');return;}
-    /* Proporção da prova de 2023: 40 específicas para 10 de Matemática (Português fica fora do app). */
+    /* Proporção da prova: 40 específicas, 10 de Matemática e 10 de Português. */
     let picked=shuffle(p);
-    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'){ const by={}; picked.forEach(q=>(by[q.mod]=by[q.mod]||[]).push(q)); const esc1=simCotas(p,cfg.n,cfg.foco).flatMap(([m,n])=>by[m].slice(0,n)); const ja=new Set(esc1); picked=shuffle(esc1.concat(picked.filter(q=>!ja.has(q)).slice(0,Math.max(0,cfg.n-esc1.length)))); }
+    if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'||cfg.foco==='PT'){ const by={}; picked.forEach(q=>(by[q.mod]=by[q.mod]||[]).push(q)); const esc1=simCotas(p,cfg.n,cfg.foco).flatMap(([m,n])=>by[m].slice(0,n)); const ja=new Set(esc1); picked=shuffle(esc1.concat(picked.filter(q=>!ja.has(q)).slice(0,Math.max(0,cfg.n-esc1.length)))); }
     picked=picked.slice(0,cfg.n);
     SIM={qs:picked.map(q=>q.id),ans:{},cur:0,start:Date.now(),limit:picked.length*240000,running:true}; simSave(); simRun(); };
 }
@@ -1153,13 +1155,13 @@ function simCotas(pool,n,foco){
       alvo.map(([id,x])=>[id,x-Math.floor(x)]).sort((a,b)=>b[1]-a[1]||peso(b[0])-peso(a[0])).forEach(([id])=>{ if(dado<falta&&out[id]<disp[id]){ out[id]++; dado++; } });
       if(!dado) break; falta-=dado; }
     return out; };
-  const ids=Object.keys(disp), el=ids.filter(id=>M[id].vol==='EL'), mt=ids.filter(id=>M[id].vol==='MT');
+  const ids=Object.keys(disp), el=ids.filter(id=>M[id].vol==='EL'), mt=ids.filter(id=>M[id].vol==='MT'), pt=ids.filter(id=>M[id].vol==='PT');
   let cotas={};
-  if(foco==='MT') cotas=reparte(mt,n); else if(foco==='EL') cotas=reparte(el,n);
-  else { const nm=mt.length?Math.round(n*0.2):0; const cm=reparte(mt,nm); const usados=Object.values(cm).reduce((a,b)=>a+b,0); cotas=Object.assign(reparte(el,n-usados),cm); }
+  if(foco==='MT') cotas=reparte(mt,n); else if(foco==='PT') cotas=reparte(pt,n); else if(foco==='EL') cotas=reparte(el,n);
+  else { const fr=pt.length?1/6:0.2; const nm=mt.length?Math.round(n*fr):0, np=pt.length?Math.round(n*fr):0; const cm=Object.assign(reparte(mt,nm),reparte(pt,np)); const usados=Object.values(cm).reduce((a,b)=>a+b,0); cotas=Object.assign(reparte(el,n-usados),cm); }
   /* Com 15 questões ou mais, toda estação com questões entra com pelo menos 1 (o edital de 2026 cobra todos os itens,
      mesmo os que não caíram em 2023, como o item 1 da M1): a vaga sai da estação com a maior cota. */
-  if(n>=15){ const alvo=foco==='MT'?mt:foco==='EL'?el:ids; alvo.filter(id=>!cotas[id]).forEach(id=>{ const maior=Object.keys(cotas).sort((a,b)=>cotas[b]-cotas[a])[0]; if(maior&&cotas[maior]>1){ cotas[maior]--; cotas[id]=1; } }); }
+  if(n>=15){ const alvo=foco==='MT'?mt:foco==='PT'?pt:foco==='EL'?el:ids; alvo.filter(id=>!cotas[id]).forEach(id=>{ const maior=Object.keys(cotas).sort((a,b)=>cotas[b]-cotas[a])[0]; if(maior&&cotas[maior]>1){ cotas[maior]--; cotas[id]=1; } }); }
   return DATA.modules.filter(m=>cotas[m.id]).map(m=>[m.id,cotas[m.id]]);
 }
 function simRun(){
@@ -1187,7 +1189,7 @@ function simFinish(){
 function simResult(){
   const s=SIM; const rows=s.qs.map(id=>({q:Q[id],k:s.ans[id]}));
   const ok=rows.filter(r=>r.k===r.q.ans).length;
-  const byL={}; rows.forEach(r=>{ const L=r.q.mod&&M[r.q.mod]?M[r.q.mod].line:(r.q.vol==='MT'?'X':'E'); byL[L]=byL[L]||{n:0,ok:0}; byL[L].n++; if(r.k===r.q.ans) byL[L].ok++; });
+  const byL={}; rows.forEach(r=>{ const L=r.q.mod&&M[r.q.mod]?M[r.q.mod].line:(r.q.vol==='MT'?'X':r.q.vol==='PT'?'P':'E'); byL[L]=byL[L]||{n:0,ok:0}; byL[L].n++; if(r.k===r.q.ans) byL[L].ok++; });
   const easyMiss=rows.filter(r=>r.k!==r.q.ans && /fácil/.test(r.q.dif));
   const hardOk=rows.filter(r=>r.k===r.q.ans && /difícil|média/.test(r.q.dif));
   const traps={}; rows.forEach(r=>{ if(r.k && r.k!==r.q.ans){ const t=erroKey(r.q.id,{first:r.k,trap:r.q.traps[r.k]||'conteudo'}); traps[t]=(traps[t]||0)+1; } });

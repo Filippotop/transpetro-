@@ -84,7 +84,7 @@ if (B) {
 }
 
 /* ---- Anexo IV ---- */
-check(D.edital && D.edital.length === 11, 'edital: DATA.edital precisa dos itens 1 a 10 e da Matemática');
+check(D.edital && D.edital.length === 12, 'edital: DATA.edital precisa dos itens 1 a 10, da Matemática e do Português');
 if (D.edital) {
   const sub = D.edital.flatMap(i => i.sub.map(s => s.id));
   check(new Set(sub).size === sub.length, 'edital: subitem repetido');
@@ -100,7 +100,7 @@ check(D.plan && D.plan.length === 19, 'plano: DATA.plan precisa de 19 dias (10/1
 if (D.plan && D.plan.length) {
   const SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
   const built = D.modules.filter(m => !m.emBreve).map(m => m.id);
-  const KS = { game: ['formula', 'nr10', 'unid', 'cards', 'vf', 'traps'], bib: ['formulas', 'anc', 'nr10', 'simb', 'glos', 'metodo'], sim: ['tudo', 'EL', 'MT', 'fracos', 'novas'], prova: ['t23:PME'], provares: ['t23'], mod: built };
+  const KS = { game: ['formula', 'nr10', 'unid', 'cards', 'vf', 'traps'], bib: ['formulas', 'anc', 'nr10', 'simb', 'glos', 'metodo'], sim: ['tudo', 'EL', 'MT', 'PT', 'fracos', 'novas'], prova: ['t23:PME'], provares: ['t23'], mod: built };
   D.plan.forEach((p, i) => {
     const dt = new Date(Date.UTC(2026, 10, 10 + i));
     check(p.d === dt.toISOString().slice(0, 10), `plano: o dia ${i + 1} deveria ser ${dt.toISOString().slice(0, 10)} e é ${p.d}`);
@@ -116,7 +116,9 @@ if (D.plan && D.plan.length) {
   for (const id of built) check(mods.includes(id), `plano: a estação ${id} está pronta e não entrou no plano`);
   /* Ordem pelo peso na prova de 2023 (mapa2023). */
   const peso = id => Object.values(D.mapa2023).filter(x => x === id).length;
-  mods.forEach((id, i) => { if (i) check(peso(mods[i - 1]) >= peso(id), `plano: ${mods[i - 1]} (${peso(mods[i - 1])} em 2023) veio antes de ${id} (${peso(id)})`); });
+  /* P1 e C1 entraram depois do plano e vão onde a urgência manda (zerar Português elimina); o mapa2023 não os pesa. */
+  const ordenados = mods.filter(id => !['P1', 'C1'].includes(id));
+  ordenados.forEach((id, i) => { if (i) check(peso(ordenados[i - 1]) >= peso(id), `plano: ${ordenados[i - 1]} (${peso(ordenados[i - 1])} em 2023) veio antes de ${id} (${peso(id)})`); });
   check(D.plan.flatMap(p => p.tasks).some(t => t.k === 'out' && /Matemática/.test(t.t)), 'plano: Matemática elimina e precisa aparecer');
 }
 

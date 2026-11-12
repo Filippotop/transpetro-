@@ -100,7 +100,7 @@ for (const f of ST_FILES) {
   for (const [t, d] of m.resumo || []) check(!/</.test(d) || /^<span>[\s\S]*<\/span>$/.test(d), `${where}: cartão-resumo "${t}" com HTML fora de um <span> (o verso é flex e quebra cada <sub> numa linha)`);
   check(Array.isArray(m.formulas) && m.formulas.length > 0, `${where}: sem formulas`);
   check(Array.isArray(m.qs), `${where}: qs não é lista`);
-  check(Array.isArray(m.contas) && m.contas.length > 0, `${where}: sem contas dos exemplos resolvidos`);
+  check(Array.isArray(m.contas) && (m.contas.length > 0 || m.vol === 'PT'), `${where}: sem contas dos exemplos resolvidos`);
   check(!m.emBreve, `${where}: tem conteúdo e está marcada emBreve`);
   check(!/Estação de teste|provisóri/i.test(m.title + m.note + m.html), `${where}: ainda tem texto provisório`);
   /* HTML bem formado (teoria, fórmulas e resumo). */
@@ -165,7 +165,7 @@ for (const m of SOON) {
   const where = `estação em breve ${m.id}`;
   check(!ST_IDS.includes(m.id), `${where}: tem arquivo em data/estacoes/ e ainda está marcada emBreve`);
   for (const k of ['id', 'vol', 'line', 'title', 'itens', 'faixa', 'note']) check(typeof m[k] === 'string' && m[k].trim(), `${where}: campo ${k} vazio`);
-  check(['E', 'M', 'I', 'A', 'N', 'X'].includes(m.line) && m.vol === (m.line === 'X' ? 'MT' : 'EL'), `${where}: linha "${m.line}" ou vol "${m.vol}" inválidos`);
+  check(['E', 'M', 'I', 'A', 'N', 'X', 'P'].includes(m.line) && m.vol === ({ X: 'MT', P: 'PT' }[m.line] || 'EL'), `${where}: linha "${m.line}" ou vol "${m.vol}" inválidos`);
   check(['A', 'B', 'C'].includes(m.faixa) && typeof m.peso2023 === 'number', `${where}: faixa "${m.faixa}" ou peso2023 inválidos`);
   check(!m.html && [m.resumo, m.formulas, m.qs].every(x => Array.isArray(x) && !x.length), `${where}: tem conteúdo (html, resumo, fórmulas ou questões)`);
   check(m.note.length <= 220 && !/</.test(m.note), `${where}: a nota deve ser uma linha curta, sem HTML`);

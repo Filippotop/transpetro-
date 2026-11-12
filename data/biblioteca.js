@@ -271,6 +271,22 @@
     F('i2-ang', 'I2', 'Método de Franklin: raio protegido por um captor e o ângulo de proteção', '{r} = {h}·tan α',
       [['r', 'raio da base do cone de proteção', 'm'], ['h', 'altura do captor sobre o plano protegido', 'm'], ['α', 'ângulo de proteção (depende do nível e de h)', '°']],
       [['{r} = {h}·sen α', 'Usou o seno: o raio é o cateto oposto a α e a altura é o adjacente, então vale a tangente.'], ['{r} = {h}/tan α', 'Inverteu: ângulo maior protege raio maior.'], ['{r} = {h}·cos α', 'h·cos α não é lado do triângulo: com h como cateto adjacente, o raio (cateto oposto) é h·tan α.']]),
+    /* ---- P1 ---- */
+    F('p1-crase', 'P1', 'Quando há crase', '{a} (preposição) + {a} (artigo) = {à}',
+      [['a (1º)', 'preposição que o verbo ou o nome pede', '—'], ['a (2º)', 'artigo feminino; teste: trocar por masculino e ver “ao”', '—']],
+      [['{a} (preposição) + verbo = {à}', 'Diante de verbo não há artigo (“voltamos a trabalhar”).'], ['{a} (preposição) + palavra masculina = {à}', 'Masculino não tem artigo “a”; o teste da troca só dá “ao” se a palavra for feminina.'], ['{a} (preposição) + pronome pessoal = {à}', 'Pronome pessoal e “quem” não aceitam artigo (“a ela”, “a quem”).']]),
+    F('p1-sujeito', 'P1', 'Com que o verbo concorda', 'verbo ← núcleo do sujeito',
+      [['verbo', 'palavra que vai para o singular ou o plural', '—'], ['núcleo', 'palavra principal do sujeito, sem os adjuntos (de, com, em)', '—']],
+      [['verbo ← termo mais próximo do verbo', 'A proximidade engana: “O resultado dos testes chegou”, e não “chegaram”.'], ['verbo ← último termo do sujeito composto, sempre', 'Sujeito composto antes do verbo vai ao plural; só posposto admite a concordância com o mais próximo.'], ['haver (existir) ← complemento no plural', 'Haver com sentido de existir é impessoal: “Havia falhas”, sempre no singular.']]),
+    F('p1-virgula', 'P1', 'Onde a vírgula nunca entra', 'sujeito ✕ verbo ✕ complemento',
+      [['sujeito, verbo, complemento', 'termos essenciais da oração, que não se separam por vírgula solitária', '—']],
+      [['sujeito , verbo (a voz faz pausa)', 'A pausa da leitura não conta: a vírgula entre sujeito e verbo é erro.'], ['verbo , complemento', 'Verbo e complemento (objeto ou predicativo) não se separam por vírgula solitária.'], ['… , e / , ou no sujeito composto', 'O “e” liga os núcleos do sujeito composto, e a vírgula antes dele separa termos da mesma função.']]),
+    F('p1-hifen', 'P1', 'Hífen depois de prefixo', 'hífen se h ou vogal igual; prefixo em vogal + r/s dobra; hiper-, inter-, super- + r levam hífen',
+      [['h', 'segunda palavra começa por h (pré-história)', '—'], ['vogal igual', 'prefixo termina na vogal que inicia a palavra (micro-ondas)', '—']],
+      [['auto + estrada = auto-estrada', 'Vogal diferente: junto, “autoestrada”.'], ['anti + rábico = antirábico', 'Prefixo em vogal e palavra em r: o r dobra, “antirrábico”.'], ['micro + ondas = microondas', 'Mesma vogal: hífen, “micro-ondas”.']]),
+    F('p1-acento', 'P1', 'Quando acentuar', 'proparoxítona sempre; paroxítona em l, n, r, x, ps, ã, ão, ei, i, um, us e ditongo crescente (-ia, -io, -ua, -ue: história, série, água)',
+      [['paroxítona', 'tônica na penúltima sílaba', '—']],
+      [['paroxítona sempre acentuada', 'Só leva acento nas terminações da regra; “mesa” e “homem” não levam.'], ['ditongo aberto ei e oi acentuado em paroxítona (idéia, jóia)', 'O Acordo de 1990 suprimiu esses acentos: ideia, joia, heroico.'], ['oxítona acentuada só em a (está)', 'Oxítonas terminadas em a, e, o e em, ens levam acento: está, café, avó, também.']]),
     /* ---- I1 ---- */
     F('i1-disj', 'I1', 'Coordenação entre a corrente de projeto, o disjuntor e o condutor', '{I}<sub>B</sub> ≤ {I}<sub>n</sub> ≤ {I}<sub>z</sub>',
       [['I<sub>B</sub>', 'corrente de projeto do circuito', 'A'], ['I<sub>n</sub>', 'corrente nominal do disjuntor', 'A'], ['I<sub>z</sub>', 'capacidade de condução do condutor (já corrigida)', 'A']],
@@ -454,6 +470,18 @@
     G('Esfera rolante', 'Método de captação do SPDA: uma esfera de raio 20, 30, 45 ou 60 m (conforme o nível de proteção) rola sobre a estrutura, e onde ela toca é preciso captor.', 'I2'),
     G('Gaiola de Faraday', 'Malha de condutores sobre a cobertura e nas laterais, ligada às descidas, que forma uma gaiola em torno da estrutura para o SPDA.', 'I2'),
     G('DPS (classes I, II e III)', 'Dispositivo de proteção contra surtos: limita sobretensões transitórias e desvia a corrente do surto para a terra; as classes I, II e III se coordenam na instalação.', 'I2'),
+    G('Coesão', 'Conjunto de recursos (pronomes, conectivos, sinônimos, elipse) que ligam as partes do texto e retomam o que já foi dito.', 'P1'),
+    G('Referente', 'Termo do texto que um pronome ou expressão retoma ou anuncia; acha-se trocando o pronome pelo termo e relendo a frase.', 'P1'),
+    G('Anáfora', 'Retomada de algo já dito no texto, feita por pronome ou sinônimo; a catáfora é o contrário: anuncia o que ainda virá.', 'P1'),
+    G('Crase', 'Fusão da preposição a com o artigo a(s) ou com aquele(s), aquela(s) e aquilo, marcada pelo acento grave (à, às, àquele).', 'P1'),
+    G('Oração adjetiva explicativa', 'Oração iniciada por pronome relativo e isolada por vírgulas; acrescenta uma informação que vale para todos os antecedentes.', 'P1'),
+    G('Oração adjetiva restritiva', 'Oração iniciada por pronome relativo e sem vírgulas; delimita o termo anterior, falando só de parte dele.', 'P1'),
+    G('Aposto', 'Termo de valor substantivo que explica ou especifica outro termo da oração e vem isolado por vírgulas.', 'P1'),
+    G('Verbo impessoal', 'Verbo sem sujeito, sempre na 3ª pessoa do singular, como haver (no sentido de existir) e fazer (tempo decorrido ou clima).', 'P1'),
+    G('Paroxítona', 'Palavra cuja sílaba tônica é a penúltima; só leva acento gráfico em casos como terminar em l, n, r, x, ão, i ou um.', 'P1'),
+    G('Parônimo', 'Palavra parecida com outra na escrita ou no som, mas de sentido diferente, como retificar (corrigir) e ratificar (confirmar).', 'P1'),
+    G('Concessão', 'Relação lógica de um fato que ocorre apesar de um obstáculo, marcada por embora, ainda que e mesmo que.', 'P1'),
+    G('Polissemia', 'Propriedade de a mesma palavra ter vários sentidos, escolhidos pelo contexto (cabo de ferramenta, cabo militar, cabo elétrico).', 'P1'),
     G('Motor de indução trifásico', 'Motor cujo rotor (gaiola ou bobinado) recebe corrente induzida pelo campo girante do estator; gira abaixo da velocidade síncrona.', 'M3'),
     G('Velocidade síncrona (n<sub>s</sub>)', 'Velocidade do campo girante: n<sub>s</sub> = 120·f/p, em rpm. Com 4 polos em 60 Hz, 1.800 rpm.', 'M3'),
     G('Escorregamento (s)', 's = (n<sub>s</sub> − n)/n<sub>s</sub>: fração da velocidade síncrona que o rotor "perde". O rotor nunca alcança n<sub>s</sub>.', 'M3'),
@@ -560,6 +588,8 @@
     ['Mat 10', 'Geometria espacial: áreas e volumes']
   ];
   edital.push({ n: 'Mat', titulo: 'Matemática (conhecimentos gerais)', sub: mat.map(function (m) { return s(m[0], m[1]); }) });
+  var port = [['Port 1', 'Compreensão de textos de gêneros variados'], ['Port 2', 'Ortografia oficial'], ['Port 3', 'Mecanismos de coesão textual'], ['Port 4', 'Emprego das classes de palavras'], ['Port 5', 'Concordância nominal e verbal'], ['Port 6', 'Emprego do sinal indicativo de crase'], ['Port 7', 'Sinais de pontuação'], ['Port 8', 'Significação das palavras']];
+  edital.push({ n: 'Port', titulo: 'Língua Portuguesa (conhecimentos gerais)', sub: port.map(function (m) { return s(m[0], m[1]); }) });
 
   D.bib = { formulas: formulas, ancoras: ancoras, glos: glos, unidades: unidades };
   D.edital = edital;
