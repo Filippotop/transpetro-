@@ -12,7 +12,7 @@ export default {
       A: '[regimeTau] 12 V toma 1τ como o fim do transitório, mas em 1τ a tensão está em 63% do valor final.',
       C: '[regimeTau] 6 V toma a metade da fonte; em 1τ a carga chega a 63%, e não a 50%.',
       D: '[rcDescarga] 4,4 V usa a fórmula da descarga (12·e<sup>−1</sup>), mas o capacitor está sendo carregado.',
-      E: '[tauCalc] 1,1 V toma C como 1.000 µF (τ = 10 s) e calcula a tensão em t = 0,1τ.' } },
+      E: '[tauCalc] 1,1 V erra uma casa decimal no produto R·C (acha τ = 10 s, e não 1 s) e calcula a tensão em t = 0,1τ: 12 × (1 − e<sup>−0,1</sup>) ≈ 1,1 V.' } },
     'b1:1': { d: 'm', conta: '5*47e3*220e-6', w: {
       A: '[unidade] 0,052 s esquece o prefixo quilo: toma 47 kΩ como 47 Ω.',
       B: '[regimeTau] 10,3 s calcula só 1τ e para aí: o regime só chega em 5τ.',
@@ -45,7 +45,7 @@ export default {
       D: '[unidade] 2.000 V multiplica por 4 sem converter 4 cm em 0,04 m.',
       E: '[invertida] 12.500 V divide o campo pela distância, em vez de multiplicar.' } },
     'b2:3': { d: 'd', conta: '200*0.5*Math.cos(Math.PI/3)', w: {
-      A: '[formula] 12,5 V·m divide o fluxo correto por 4, aplicando o ½ da área e o do ângulo duas vezes.',
+      A: '[cosAng] 0 V·m supõe que nenhuma linha de campo atravessa a superfície inclinada; o fluxo só se anula quando a normal faz 90° com o campo, e aqui ela faz 60°.',
       B: '[cosAng] 25 V·m usa cos²60° = 0,25 no lugar de cos 60° = 0,5.',
       D: '[cosAng] 86,6 V·m usa sen 60° (0,866) no lugar de cos 60° (0,5).',
       E: '[cosAng] 100 V·m esquece o cosseno do ângulo (supõe a normal alinhada com o campo).' } },
@@ -61,7 +61,7 @@ export default {
       D: '[linhaFase] 380 V toma a tensão de linha como a tensão da bobina (vale só no triângulo).',
       E: '[fechamento12] 440 V soma as duas metades (série), mas o fechamento em 380 V tem as metades em paralelo.' } },
     'b3:2': { d: 'f', conta: '120/3', w: {
-      B: '[formula] 60 A divide por 2, sem relação com o método.',
+      B: '[umTerco] 60 A divide por 2, como se a estrela pusesse metade da tensão em cada bobina; o fator da tensão é 1/√3, e a corrente de linha cai a 1/3.',
       C: '[umTerco] 69,3 A divide por √3, o fator da tensão na bobina, e não o da corrente de linha.',
       D: '[raiz3inv] 207,8 A multiplica por √3 em vez de dividir por 3.',
       E: '[invertida] 360 A multiplica por 3 em vez de dividir.' } },

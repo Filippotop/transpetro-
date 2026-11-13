@@ -1155,7 +1155,12 @@ footer{margin-top:50px;font-family:var(--sans);color:var(--mut);font-size:.9rem}
   </div>
   <div class="box trap">
     <p class="box-title">Quando o prazo está em meses e a taxa em anos</p>
-    <p>Taxa e tempo precisam estar na mesma unidade. Com prazo de 24 meses e taxa ao ano, passe o prazo para 2 anos e use t = 2. Se o prazo não for um número inteiro de anos, passe a <b>taxa</b> para a unidade do prazo pela taxa equivalente, e não pela divisão simples <span class="confira">(com prazo fracionário, o enunciado costuma dizer a convenção; leia antes de calcular)</span>.</p>
+    <p>Taxa e tempo precisam estar na mesma unidade. Com prazo de 24 meses e taxa ao ano, passe o prazo para 2 anos e use t = 2. Se o prazo não for um número inteiro de períodos (1 ano e meio, com taxa ao ano), há <b>duas convenções</b>, e o enunciado diz qual vale:</p>
+    <ul>
+      <li><b>Convenção exponencial:</b> juros compostos no prazo todo, inclusive na fração: M = C·(1 + i)<sup>n + f</sup>. É o mesmo que passar a taxa para a unidade do prazo pela taxa equivalente.</li>
+      <li><b>Convenção linear:</b> juros compostos na parte inteira (n) e juros <b>simples</b> na fração (f): M = C·(1 + i)<sup>n</sup>·(1 + i·f) (definições conforme a nota sobre capitalização fracionária na <i>Revista de Administração de Empresas</i>, SciELO).</li>
+    </ul>
+    <p>Com R$ 10.000,00 a 44% ao ano por 1 ano e meio (n = 1, f = 0,5): pela exponencial, 10.000 × 1,44 × 1,44<sup>0,5</sup> = 10.000 × 1,44 × 1,2 = <b>R$ 17.280,00</b>; pela linear, 10.000 × 1,44 × (1 + 0,44 × 0,5) = 14.400 × 1,22 = <b>R$ 17.568,00</b>. A linear dá sempre um pouco mais, porque em menos de um período os juros simples rendem mais que os compostos. <span class="confira">Se o enunciado disser só "juros compostos", sem citar convenção, o usual nos livros é a exponencial (a própria fórmula do montante com t fracionário); confira as alternativas antes de marcar.</span></p>
   </div>
 
   <div class="quiz" data-set="b8"></div>

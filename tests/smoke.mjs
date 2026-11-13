@@ -243,7 +243,7 @@ async function testTabs(browser) {
     await page.goto(URL_); await page.waitForTimeout(400);
     for (const t of TABS) {
       const where = `${vpName}px/${colorScheme}/${t}`;
-      await page.click(`#tabs button[data-v="${t}"]`); await page.waitForTimeout(250);
+      await page.click(`#tabs button[data-v="${t}"]`); await page.waitForTimeout(1100); /* a entrada da tela (js/motion.js) dura até 0,85 s; o axe mede a tela parada */
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}: rolagem horizontal`);
       await page.addScriptTag({ content: AXE });
       const v = await page.evaluate(async () => (await axe.run(document, { runOnly: ['wcag2a', 'wcag2aa'] })).violations
@@ -524,7 +524,25 @@ async function testDesign(browser) {
   const p2 = await rm.newPage(); await p2.goto(URL_); await p2.waitForTimeout(300);
   const moving = await p2.evaluate(() => [...document.querySelectorAll('body *')].filter(e => { const cs = getComputedStyle(e); return cs.transitionDuration.split(',').some(d => parseFloat(d) > 0) || (cs.animationName !== 'none' && parseFloat(cs.animationDuration) > 0); }).slice(0, 3).map(e => e.className || e.tagName));
   check(!moving.length, `design: com movimento reduzido ainda há animação (${moving.join(', ')})`);
+  check(await p2.evaluate(() => document.documentElement.dataset.fx === 'off' && !document.querySelector('.edo-aurora')), 'movimento: com movimento reduzido o js/motion.js deveria ficar desligado');
   await rm.close();
+  /* js/motion.js: a preferência liga e desliga, e desligar não deixa nada escondido nem o fundo animado. */
+  const mo = await browser.newContext({ viewport: VIEWPORTS['1280'], serviceWorkers: 'block' });
+  await mo.addInitScript(() => { try { if (!localStorage.getItem('edo-prefs')) localStorage.setItem('edo-prefs', JSON.stringify({ motion: 'full' })); } catch (e) {} });
+  const p3 = await mo.newPage(); await p3.goto(URL_); await p3.waitForTimeout(600);
+  check(await p3.evaluate(() => document.documentElement.dataset.fx === 'full' && !!document.querySelector('.edo-aurora')), 'movimento: a preferência "Completas" não ligou o js/motion.js');
+  await p3.click('#prefsBtn'); await p3.click('[data-seg="motion"] [data-v="off"]'); await p3.waitForTimeout(300);
+  const off = await p3.evaluate(() => ({ fx: document.documentElement.dataset.fx, aurora: !!document.querySelector('.edo-aurora'), hidden: [...document.querySelectorAll('#app *')].filter(e => getComputedStyle(e).opacity === '0').length, saved: JSON.parse(localStorage.getItem('edo-prefs')).motion }));
+  check(off.fx === 'off' && !off.aurora && !off.hidden && off.saved === 'off', `movimento: desligar pela preferência falhou (${JSON.stringify(off)})`);
+  /* partículas ligadas no modo completo; fundo 3D e rolagem suave só quando pedidos, e saem ao desligar */
+  await p3.evaluate(() => { const p = JSON.parse(localStorage.getItem('edo-prefs')); p.motion = 'full'; p.bg = 'on'; p.smooth = 'on'; localStorage.setItem('edo-prefs', JSON.stringify(p)); });
+  await p3.reload(); await p3.waitForTimeout(900);
+  const on = await p3.evaluate(() => ({ fx: !!document.querySelector('.edo-fx'), gl: !!document.querySelector('.edo-gl'), lenis: document.documentElement.classList.contains('lenis') }));
+  check(on.fx && on.gl && on.lenis, `movimento: partículas, fundo 3D e rolagem suave não ligaram (${JSON.stringify(on)})`);
+  await p3.click('#prefsBtn'); await p3.click('[data-seg="bg"] [data-v="off"]'); await p3.click('[data-seg="smooth"] [data-v="off"]'); await p3.waitForTimeout(300);
+  const gone = await p3.evaluate(() => ({ gl: !!document.querySelector('.edo-gl'), lenis: document.documentElement.classList.contains('lenis') }));
+  check(!gone.gl && !gone.lenis, `movimento: fundo 3D e rolagem suave não desligaram (${JSON.stringify(gone)})`);
+  await mo.close();
 }
 
 /* Leitura da estação: sumário também no celular, metadados numa linha só e quadros didáticos legíveis nos dois temas. */

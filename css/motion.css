@@ -1,0 +1,57 @@
+/* Visual e movimento do Elétrica de Ouro. A ideia: o mapa das linhas é um circuito; estação concluída acende e a
+   corrente percorre a linha da missão de hoje. O movimento fica em js/motion.js e desliga com data-fx="off"
+   (preferência "animações" em Aa, ou "reduzir movimento" do aparelho). O que está fora de [data-fx] é desenho parado. */
+
+/* Papel de esquema: pontos discretos atrás das telas. */
+body{background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.4px);background-size:22px 22px}
+
+/* Próximo passo: a cor da linha entra pelo canto e pela borda. */
+.next{position:relative;overflow:hidden;border-left:6px solid var(--lc,var(--gold));
+  background:radial-gradient(60% 130% at 100% 0,color-mix(in srgb,var(--lc,var(--gold)) 50%,transparent),transparent 70%),var(--ink)}
+.next .cta svg{transition:transform .2s var(--ease)}
+.next:hover .cta svg,.next:focus-visible .cta svg{transform:translateX(4px)}
+
+/* Estação concluída fica acesa (as que têm anel de acerto ou erro mantêm o anel). */
+.st.done:not(.weak):not(.strong) .c{box-shadow:0 0 0 4px color-mix(in srgb,var(--lc) 26%,transparent),0 0 14px color-mix(in srgb,var(--lc) 55%,transparent)}
+
+/* A linha é desenhada da esquerda para a direita (js/motion.js anima --draw). */
+.stations::before{transform-origin:left center;transform:scaleX(var(--draw,1))}
+
+/* Corrente na linha da missão de hoje: um pulso claro que percorre o trilho. */
+html[data-fx="full"] .line.live .stations::after{content:"";position:absolute;top:21px;left:44px;width:56px;height:8px;border-radius:4px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,color-mix(in srgb,#fff 80%,var(--lc)),transparent);animation:edo-flow 4.5s cubic-bezier(.5,0,.5,1) infinite}
+@keyframes edo-flow{0%{left:44px;opacity:0}8%{opacity:.95}55%{left:calc(100% - 100px);opacity:.95}62%,100%{left:calc(100% - 100px);opacity:0}}
+
+/* Marca: o "de Ouro" reflete a luz de tempos em tempos. */
+html[data-fx]:not([data-fx="off"]) .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
+@keyframes edo-shine{0%,60%{background-position:120% 0}100%{background-position:-120% 0}}
+
+/* Respostas ao toque. */
+html[data-fx]:not([data-fx="off"]) :is(.btn,.tabs button,.alt:not(:disabled)):active{transform:scale(.97)}
+html[data-fx]:not([data-fx="off"]) .tabs button[aria-current="true"] .ni{animation:edo-pop .35s var(--ease)}
+@keyframes edo-pop{0%{transform:scale(.8)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+html[data-fx]:not([data-fx="off"]) :is(.fb,.toast:not([hidden]),#pop:not([hidden])){animation:edo-rise .28s var(--ease)}
+@keyframes edo-rise{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+
+/* Luz que segue o ponteiro nos cartões. Só com mouse. */
+@media (hover:hover) and (pointer:fine){
+  html[data-fx]:not([data-fx="off"]) :is(.panel,.task,.stat,.line):hover{background-image:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,var(--gold) 12%,transparent),transparent 70%)}
+}
+
+/* Fundo: manchas das cores das linhas à deriva, bem suaves (modo completo). */
+.edo-aurora{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:.14}
+.edo-aurora i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;background:radial-gradient(circle,var(--c) 0,transparent 65%)}
+.edo-aurora i:nth-child(1){left:-15vmax;top:-15vmax}.edo-aurora i:nth-child(2){right:-15vmax;top:5vh}
+.edo-aurora i:nth-child(3){left:10vw;bottom:-25vmax}.edo-aurora i:nth-child(4){right:-10vmax;bottom:-20vmax}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .edo-aurora{opacity:.2}}
+:root[data-theme="dark"] .edo-aurora{opacity:.2}
+html[data-fx="off"] .edo-aurora{display:none}
+
+/* Faíscas do acerto de primeira. */
+.edo-spark{position:fixed;z-index:30;width:6px;height:6px;border-radius:50%;pointer-events:none}
+
+/* Partículas douradas e fundo 3D (js/motion.js). */
+.edo-fx,.edo-gl{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+html[data-fx="off"] :is(.edo-fx,.edo-gl){display:none}
+@media (prefers-reduced-motion:reduce){.edo-fx,.edo-gl,.edo-aurora{display:none}}
+html.lenis{scroll-behavior:auto!important}

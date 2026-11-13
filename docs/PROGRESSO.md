@@ -42,6 +42,11 @@ Nenhuma bloqueia o trabalho:
 - algumas `contas` da E1 são tautológicas;
 - o `bancada-runtime-v1` antigo (só com fontes) fica órfão;
 - comentários internos que citam o Humanas (o alias CSS `.box.enem` saiu na T6).
+- pendências da revisão da onda 4 tratadas em 2026-11-12 (ver `fontes/ERRATA.md`, seções C1 e P1); seguem abertas: o texto da NBR 6856 (pago) não foi lido, a lista de cargas C2,5 a C200 e os 75–80% da chave centrífuga continuam com `confira`.
+
+## Visual e movimento (2026-11-12)
+
+`css/motion.css`, `js/motion.js` e `vendor/gsap.min.js` (GSAP 3.15.1, o mesmo do Humanas). Ideia: o mapa das linhas é um circuito. O trilho é desenhado e as estações acendem em sequência ao entrar na tela; estação concluída fica acesa; um pulso percorre a linha do próximo passo da missão; a resposta certa de primeira solta faíscas e a errada treme; fundo de papel de esquema e manchas das cores das linhas. Preferência "animações" em Aa (Automático, Completas, Leves, Desligadas; chave `motion` em `edo-prefs`); "reduzir movimento" do aparelho desliga tudo. Nada fica escondido à espera de rolagem (o axe reprova texto com opacidade 0). Do `motion.js` do Humanas ficaram de fora: rolagem suave (Lenis), fundo WebGL, partículas, inclinação 3D e título palavra por palavra. O teste de abas do `tests/smoke.mjs` espera 1,1 s antes do axe, porque a entrada da tela dura até 0,85 s.
 
 ## Fora deste repositório
 

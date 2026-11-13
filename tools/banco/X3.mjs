@@ -211,7 +211,7 @@ export default {
         D: '[etapa] 12 é o maior valor; falta subtrair o menor.',
         E: '[outra] 20 é a soma das frequências (o número de lotes).' } },
     { id: 'x5', h: 'Mat 7', tag: 'Variância e desvio padrão', d: 'd', conta: '4990/40',
-      s: 'Os tempos de reparo de 40 intervenções foram agrupados em classes de 10 minutos: [0, 10) com 4, [10, 20) com 10, [20, 30) com 14, [30, 40) com 8 e [40, 50) com 4. Usando o ponto médio de cada classe como valor dos seus dados, a variância desses tempos, em min<sup>2</sup>, é de',
+      s: 'Os tempos de reparo de 40 intervenções foram agrupados em classes de 10 minutos: [0, 10) com 4, [10, 20) com 10, [20, 30) com 14, [30, 40) com 8 e [40, 50) com 4. Usando o ponto médio de cada classe como valor dos seus dados, a variância populacional desses tempos (soma dividida pelas 40 intervenções), em min<sup>2</sup>, é de',
       o: ['11,2', '24,5', '200,25', '124,75', '4.990'], a: 3,
       c: 'Pontos médios 5, 15, 25, 35 e 45. Média = (20 + 150 + 350 + 280 + 180) ÷ 40 = 980 ÷ 40 = 24,5. Σf(x − 24,5)<sup>2</sup> = 1.521 + 902,5 + 3,5 + 882 + 1.681 = 4.990. Variância = 4.990 ÷ 40 = 124,75.',
       w: { A: '[outra] 11,2 é o desvio padrão (raiz de 124,75), e a pergunta é pela variância.',

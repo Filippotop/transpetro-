@@ -581,6 +581,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 .ankip{margin-top:18px;display:grid;gap:10px}
 </style>
 <link rel="stylesheet" href="css/estacao.css">
+<link rel="stylesheet" href="css/motion.css">
 
 <header class="top">
   <div class="wrap">
@@ -1520,12 +1521,13 @@ function errList(){
 }
 
 /* ---- preferências ---- */
-let prefs=Object.assign({scale:1,theme:'system',goal:20,sound:true},lsGet('edo-prefs')||{});
+let prefs=Object.assign({scale:1,theme:'system',goal:20,sound:true,motion:'auto',bg:'off',smooth:'off'},lsGet('edo-prefs')||{});
 const hostTheme=document.documentElement.getAttribute('data-theme');
 function applyPrefs(){
   document.documentElement.style.setProperty('--scale',prefs.scale);
   if(prefs.theme==='system'){ if(hostTheme) document.documentElement.setAttribute('data-theme',hostTheme); else document.documentElement.removeAttribute('data-theme'); }
   else document.documentElement.setAttribute('data-theme',prefs.theme);
+  document.documentElement.dataset.motion=prefs.motion; document.documentElement.dataset.bg=prefs.bg; document.documentElement.dataset.smooth=prefs.smooth; /* lidos por js/motion.js */
 }
 function savePrefs(){ lsSet('edo-prefs',prefs); applyPrefs(); }
 applyPrefs();
@@ -1561,6 +1563,9 @@ function popPrefs(){
     <div><div class="eyebrow" style="margin-bottom:6px">tema</div>${seg('theme',[['system','Do sistema'],['light','Claro'],['dark','Escuro']],prefs.theme)}</div>
     <div><div class="eyebrow" style="margin-bottom:6px">meta diária de atividades</div>${seg('goal',[[10,'10'],[20,'20'],[30,'30'],[40,'40'],[60,'60']],prefs.goal)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Conta cada questão, afirmação de V ou F, cartão e rodada de jogo.</p></div>
     <div><div class="eyebrow" style="margin-bottom:6px">som no fim do timer de foco</div>${seg('sound',[[true,'Ligado'],[false,'Desligado']],prefs.sound)}</div>
+    <div><div class="eyebrow" style="margin-bottom:6px">animações</div>${seg('motion',[['auto','Automático'],['full','Completas'],['light','Leves'],['off','Desligadas']],prefs.motion)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Automático usa as leves em aparelhos fracos. Com “reduzir movimento” ligado no aparelho, ficam desligadas.</p></div>
+    <div><div class="eyebrow" style="margin-bottom:6px">rolagem suave (só com mouse)</div>${seg('smooth',[['off','Desligada'],['on','Ligada']],prefs.smooth)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Suaviza a roda do mouse. Se a rolagem travar, desligue.</p></div>
+    <div><div class="eyebrow" style="margin-bottom:6px">fundo 3D (pesado)</div>${seg('bg',[['off','Desligado'],['on','Ligado']],prefs.bg)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Fluido colorido em WebGL, a meia resolução. Gasta bateria; não use em aparelho fraco.</p></div>
     <div class="row"><button class="btn" id="syncBtn">Copiar ou importar progresso</button><button class="btn" id="keysBtn">Ver atalhos de teclado</button><button class="btn" id="pc">Fechar</button></div>`;
   p.querySelectorAll('[data-seg] button').forEach(b=>b.onclick=()=>{ const k=b.parentElement.dataset.seg; let v=b.dataset.v; if(k==='scale'||k==='goal') v=+v; if(k==='sound') v=v==='true'; prefs[k]=v; savePrefs(); updateGoal(); popPrefs(); });
   $('#keysBtn').onclick=()=>{ popKind=null; openPop('keys'); }; $('#pc').onclick=closePop;
@@ -2054,6 +2059,9 @@ render();
 @media (min-width:1024px){#pwaToast{bottom:24px}}
 .tutor-out.ext{white-space:normal}
 </style>
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/lenis.min.js" defer></script>
+<script src="js/motion.js" defer></script>
 <script src="pwa.js" defer></script>
 <script src="gist-sync.js" defer></script>
 </html>
