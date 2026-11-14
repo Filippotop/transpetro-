@@ -649,9 +649,9 @@ const DATA = window.DATA;
 function applyDeep(){ Object.entries(DATA.deep||{}).forEach(([id,d])=>{ const m=DATA.modules.find(x=>x.id===id); if(!m) return; if(d.html) m.html+=d.html; (d.questions||[]).forEach(q=>{ DATA.questions.push(q); m.qs.push(q.id); }); }); }
 applyDeep();
 const STUDY_LINES = ['E','M','I','A','N','X','P'];
-/* Data do edital original (Anexo V). O app avisa para conferir a retificação no site da Cesgranrio. */
-const EXAM = new Date('2026-11-29T08:00:00-03:00');
-const EXAM_NOTE = 'data do edital original; confira a retificação no site da Cesgranrio';
+/* 06/12/2026: a retificação do edital, publicada no DOU de 10/09/2026, adiou a prova de 29/11 para 06/12 (cartão de confirmação em 01/12). O horário fica no cartão. */
+const EXAM = new Date('2026-12-06T08:00:00-03:00');
+const EXAM_NOTE = 'data da retificação do edital (DOU de 10/09/2026); local e horário no cartão de confirmação, em 1º/12';
 const LINES = {E:{name:'Eletricidade',vol:'EL'},M:{name:'Máquinas e Comandos',vol:'EL'},I:{name:'Instalações e Medidas',vol:'EL'},A:{name:'Automação e Eletrônica',vol:'EL'},N:{name:'Segurança e Normas',vol:'EL'},X:{name:'Matemática',vol:'MT'},P:{name:'Português',vol:'PT'}};
 /* Blocos da prova: 40 específicas (vol EL) e 20 gerais, 10 de Matemática (vol MT) e 10 de Português (vol PT). Corte: 50% em cada bloco; zerar Português ou Matemática elimina. */
 const BLOCKS = {EL:{name:'Específicas',lines:['E','M','I','A','N']},MT:{name:'Matemática',lines:['X']},PT:{name:'Português',lines:['P']}};
@@ -1450,6 +1450,7 @@ function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
 function taskGo(t){
   if(t.k==='mod') return ()=>go('mod',{id:t.a,tab:S.read[t.a]?'q':'teoria'});
+  if(t.k==='rev') return ()=>go('mod',{id:t.a,tab:'q'});
   if(t.k==='game') return ()=>go('game',{g:t.a});
   if(t.k==='sim') return ()=>{ SIM=null; go('treino',{s:'sim',foco:t.a,n:/30/.test(t.t)?30:20}); };
   if(t.k==='recal') return ()=>go('treino',{s:'recal'});
@@ -1468,12 +1469,21 @@ function vPlano(){
   const td=isoToday();
   const dayRow=p=>{const pd=planDone(p); return `<div class="day ${p.d===td?'today':''}" id="d-${p.d}"><div class="dl">${p.l}<small>${p.d===td?'hoje':(p.d<td?'passou':'')}</small><small>${pd.done}/${pd.n}</small></div><div><b style="font-size:16px">${esc(p.foco)}</b>
       ${p.tasks.map((t,i)=>`<div class="ptask ${taskDone(p,i)?'done':''}"><input type="checkbox" id="pt-${p.d}-${i}" data-k="${p.d}|${i}" ${taskDone(p,i)?'checked':''} ${(t.k==='mod'&&modStats(t.a).done===modStats(t.a).n)||(t.k==='prova'&&taskDone(p,i))?'disabled':''}><label for="pt-${p.d}-${i}"><span class="tx2">${taskLabel(t)}</span>${t.k==='out'?'<span class="out">fora do app</span>':''}</label>${taskGo(t)?`<button class="chipbtn" data-i="${p.d}|${i}">abrir</button>`:'<span></span>'}</div>`).join('')}</div></div>`};
-  const prova=`<div class="day"><div class="dl">dom 29/11<small>prova</small></div><div><b style="font-size:16px">Prova Transpetro · Cesgranrio</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">40 questões específicas e 20 gerais (10 de Português e 10 de Matemática). Data do edital original: confira a retificação no site da Cesgranrio.</p></div></div>`;
+  const prova=`<div class="day"><div class="dl">dom 06/12<small>prova</small></div><div><b style="font-size:16px">Prova Transpetro · Cesgranrio</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">40 questões específicas e 20 gerais (10 de Português e 10 de Matemática). Data da retificação do edital (DOU de 10/09/2026). O cartão de confirmação, com local e horário, sai em 1º/12.</p></div></div>`;
   app.innerHTML=`<div class="sec-title"><h2>Plano até a prova</h2><span class="eyebrow">${done} de ${tot} tarefas · ${daysLeft()} dias</span></div>
     ${DATA.plan.length?`<div class="panel" style="margin-bottom:14px"><div class="stat" style="border:0;padding:0"><div class="bar2"><i style="width:${pct(done,tot)}%"></i></div></div>
-    <p style="font-family:var(--read);margin:10px 0 0;font-size:15.5px">As estações vêm na ordem do peso de cada item na prova de 2023. As tarefas <span class="out mono" style="font-size:10px;background:var(--sunk);border-radius:4px;padding:1px 5px">fora do app</span> você marca à mão. Estações e provas se marcam sozinhas quando concluídas.</p></div>
-    <div>${DATA.plan.filter(p=>p.d<'2026-11-29').map(dayRow).join('')}${prova}${DATA.plan.filter(p=>p.d>'2026-11-29').map(dayRow).join('')}</div>`
-    :`<p class="empty">O plano dia a dia até 29/11 chega junto com as estações. Enquanto isso, siga a Missão de hoje na tela inicial: ela já escolhe a próxima estação pelo peso na prova de 2023.</p><div>${prova}</div>`}`;
+    <p style="font-family:var(--read);margin:10px 0 0;font-size:15.5px">Primeira passada (16 a 24/11): as estações vêm na ordem do peso de cada item na prova de 2023. Depois, simulado, pontos fracos e provas reais; a véspera é só para reler. A nota que ranqueia é a das 40 questões específicas (a de Português e Matemática soma depois e só elimina abaixo de 50%). As tarefas <span class="out mono" style="font-size:10px;background:var(--sunk);border-radius:4px;padding:1px 5px">fora do app</span> você marca à mão. Estações e provas se marcam sozinhas quando concluídas.</p>
+    <details style="margin-top:10px"><summary><b>Provas reais anteriores (fora do app)</b></summary>
+      <p style="font-family:var(--read);margin:8px 0 0;font-size:15px">Mesma banca e mesmo cargo, 60 questões, 4 horas. Faça com relógio, sem consulta. Os gabaritos ficam nas mesmas páginas; o de 2018 traz todas as provas daquele dia (procure a Prova 6).</p>
+      <ul style="font-family:var(--read);font-size:15px;margin:6px 0 0">
+        <li>2018: <a href="https://arquivos.qconcursos.com/prova/arquivo_prova/56866/cesgranrio-2018-transpetro-tecnico-de-manutencao-junior-eletrica-prova.pdf" target="_blank" rel="noopener">prova</a> · <a href="https://arquivos.qconcursos.com/prova/arquivo_gabarito/56866/cesgranrio-2018-transpetro-tecnico-de-manutencao-junior-eletrica-gabarito.pdf" target="_blank" rel="noopener">gabarito</a></li>
+        <li>2012: <a href="https://www.estudegratis.com.br/images/provas/23096-cesgranrio-2012-transpetro-tecnico-de-manutencao-junior-eletrica-prova.pdf" target="_blank" rel="noopener">prova</a> · <a href="https://www.estudegratis.com.br/provas/cesgranrio-2012-transpetro-tecnico-de-manutencao-junior-eletrica" target="_blank" rel="noopener">gabarito</a></li>
+        <li>2011: <a href="https://eticaconcursos.com.br/provas/arquivos/prova/cesgranrio-2011-transpetro-tecnico-de-manutencao-junior-eletrica-prova.pdf" target="_blank" rel="noopener">prova</a> · <a href="https://www.estudegratis.com.br/provas/cesgranrio-2011-transpetro-tecnico-de-manutencao-junior-eletrica" target="_blank" rel="noopener">gabarito</a></li>
+      </ul>
+      <p class="muted" style="font-size:12.5px;margin:6px 0 0">Sites de terceiros (Qconcursos, Estude Grátis, Ética Concursos). Provas de 2011 e 2012 têm temas mais antigos; use para treinar o estilo da banca, não como lista do que vai cair.</p>
+    </details></div>
+    <div>${DATA.plan.filter(p=>p.d<'2026-12-06').map(dayRow).join('')}${prova}${DATA.plan.filter(p=>p.d>'2026-12-06').map(dayRow).join('')}</div>`
+    :`<p class="empty">O plano dia a dia até 06/12 chega junto com as estações. Enquanto isso, siga a Missão de hoje na tela inicial: ela já escolhe a próxima estação pelo peso na prova de 2023.</p><div>${prova}</div>`}`;
   app.querySelectorAll('.ptask input').forEach(c=>c.onchange=()=>{ S.plan[c.dataset.k]=c.checked; save(); vPlano(); });
   app.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ const [d,i]=b.dataset.i.split('|'); const p=DATA.plan.find(x=>x.d===d); taskGo(p.tasks[+i])(); });
   const el=document.getElementById('d-'+td); if(el) setTimeout(()=>el.scrollIntoView({block:'center'}),50);

@@ -68,7 +68,7 @@ function navigate(h) { if (runAtivo()) return abandon(h); if (h === 'revisar') R
 const ABA = { estudar: 'estudar', mod: 'estudar', checagem: 'estudar', bancada: 'bancada', run: 'bancada', debrief: 'bancada', revisar: 'revisar' };
 function render({ top = false, focus = false } = {}) {
   if (UNOBS) { UNOBS(); UNOBS = null; }
-  $('#pill-days').textContent = `Faltam ${daysLeft()} dias para a prova (data do edital original)`; $('#pill-days').title = EXAM_DATE_NOTE;
+  $('#pill-days').textContent = `Faltam ${daysLeft()} dias para a prova (data da retificação do edital)`; $('#pill-days').title = EXAM_DATE_NOTE;
   document.body.dataset.view = VIEW;
   $$('.tabs a').forEach(a => { if (a.dataset.tab === ABA[VIEW]) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   let alvo = null;

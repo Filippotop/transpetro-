@@ -1,6 +1,6 @@
 # Elétrica de Ouro
 
-App de estudo para a prova da Transpetro (Edital nº 03/2026, Cesgranrio, nível médio), Ênfase 8: Manutenção – Elétrica. Prova em 29/11/2026 (data do edital original; confira a retificação no site da Cesgranrio).
+App de estudo para a prova da Transpetro (Edital nº 03/2026, Cesgranrio, nível médio), Ênfase 8: Manutenção – Elétrica. Prova em 06/12/2026 (adiada de 29/11 pela retificação do edital, DOU de 10/09/2026).
 
 É um clone do Humanas de Ouro, com o mesmo visual e a mesma navegação: linhas e estações por item do edital, Provas, Bancada, Biblioteca, Arena, Treino, Plano e Painel. Instalável no celular (PWA) e funciona sem internet depois do primeiro acesso. O progresso fica no aparelho (`eletrica-de-ouro-v1`); use **Aa → Copiar ou importar progresso** ou a sincronização por Gist para levá-lo a outro aparelho.
 

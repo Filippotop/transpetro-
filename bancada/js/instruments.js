@@ -26,5 +26,5 @@ export const NR10RE = [
   'Remoção da sinalização de impedimento de reenergização',
   'Destravamento, se houver, e religação dos dispositivos de seccionamento'
 ];
-export const EXAM_DATE = '2026-11-29T08:00:00-03:00';
-export const EXAM_DATE_NOTE = 'Data do edital original (Anexo V); confira a retificação no site da Cesgranrio.';
+export const EXAM_DATE = '2026-12-06T08:00:00-03:00';
+export const EXAM_DATE_NOTE = 'Data da retificação do edital (DOU de 10/09/2026); local e horário no cartão de confirmação, em 1º/12.';

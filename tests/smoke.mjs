@@ -584,7 +584,7 @@ async function testReading(browser) {
   }
 }
 
-/* Tela inicial: contagem até 29/11, anéis por bloco, próximo passo em destaque, regra de corte, ícones desenhados e estatísticas sem esticar. */
+/* Tela inicial: contagem até 06/12, anéis por bloco, próximo passo em destaque, regra de corte, ícones desenhados e estatísticas sem esticar. */
 async function testHome(browser) {
   for (const vp of ['375', '1280']) {
     const ctx = await browser.newContext({ viewport: VIEWPORTS[vp], serviceWorkers: 'block' });
@@ -597,10 +597,10 @@ async function testHome(browser) {
       icons: [...document.querySelectorAll('.task .ic')].map(i => i.querySelector('svg') ? 'svg' : i.textContent.trim()),
       statH: Math.max(0, ...[...document.querySelectorAll('.hero .stat')].map(s => s.getBoundingClientRect().height)),
     }));
-    check(h.days === '36', `início/${vp}: em 24/10 faltam ${h.days} dias para 29/11 (esperado 36)`);
-    check(h.count.includes(h.days) && /29\/11/.test(h.count), `início/${vp}: contagem regressiva sem os ${h.days} dias até 29/11 ("${h.count.trim().slice(0, 80)}")`);
+    check(h.days === '43', `início/${vp}: em 24/10 faltam ${h.days} dias para 06/12 (esperado 43)`);
+    check(h.count.includes(h.days) && /06\/12/.test(h.count), `início/${vp}: contagem regressiva sem os ${h.days} dias até 06/12 ("${h.count.trim().slice(0, 80)}")`);
     check(/retifica/i.test(h.count), `início/${vp}: a contagem não avisa para conferir a retificação ("${h.count.trim().slice(0, 120)}")`);
-    check(/36 dias · 29\/11/.test(h.chip), `início/${vp}: chip do topo "${h.chip}"`);
+    check(/43 dias · 06\/12/.test(h.chip), `início/${vp}: chip do topo "${h.chip}"`);
     check(h.rings.map(r => r[0]).join(',') === 'ESP,MAT,POR,CRD', `início/${vp}: anéis = "${h.rings.map(r => r[0]).join(',')}"`);
     for (const [a, l] of h.rings) check(/\d+%/.test(l), `início/${vp}: anel ${a} sem porcentagem no aria-label ("${l}")`);
     check(h.next.length > 0, `início/${vp}: falta o bloco "Próximo passo"`);
@@ -978,7 +978,7 @@ async function testT6(browser) {
     /* Plano: hoje (12/11) aparece, e a Missão de hoje aponta para ele. */
     await page.evaluate(() => go('plano')); await page.waitForTimeout(200);
     check(await page.locator('.day.today').count() === 1 && /qui 12\/11/.test(await page.locator('.day.today').textContent()), `${where}: o Plano não marca o dia de hoje`);
-    check(await page.locator('.day').count() === 20, `${where}: o Plano deveria ter 19 dias mais a prova`);
+    check(await page.locator('.day').count() === 27, `${where}: o Plano deveria ter 26 dias mais a prova`);
     await axe('Plano');
     await page.locator('.day.today [data-i]').nth(1).click(); await page.waitForTimeout(150);
     check(await page.evaluate(() => view === 'game' && param.g === 'unid'), `${where}: a tarefa do plano não abriu o jogo`);

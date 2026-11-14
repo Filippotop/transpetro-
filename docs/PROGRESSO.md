@@ -22,7 +22,7 @@ Ondas seguintes (spec, seção 3):
 
 ## Decisões já tomadas (não reabrir sem motivo)
 
-- **Data da prova:** 29/11/2026, a do edital original, com aviso para conferir a retificação.
+- **Data da prova:** **06/12/2026**. O edital original (Anexo V) dizia 29/11; a retificação publicada no DOU de 10/09/2026 e a nota da própria Transpetro (transpetro.com.br, "alterações em cronograma") adiaram para 06/12 (cartão de confirmação 01/12, gabaritos 07/12, recursos 07 e 08/12). Notícias de 11/11 (Agência Brasil, O Globo) confirmam. Alguns sites ainda citam 29/11 por engano. O app dizia 29/11 até 14/11/2026.
 - **Numeração da prova de 2023:** Português 1–10, Matemática 11–20, Específicas 21–60 (confirmada pela capa).
 - **Gabarito oficial de 2023: encontrado.** Está em `fontes/gabarito-2023.json`, junto com os dois PDFs da Cesgranrio (o preliminar e as "Respostas aos Recursos"), que batem letra a letra. As questões **28 e 30 foram anuladas**; nenhum outro gabarito da Prova 6 mudou.
 - **Q28 de 2023 (Dy5):** foi anulada (o preliminar dava 120°; o certo é 150°). O app ensina a regra (a BT fica atrasada 150° em relação à AT) e mostra a questão como anulada.
@@ -47,6 +47,10 @@ Nenhuma bloqueia o trabalho:
 ## Visual e movimento (2026-11-12)
 
 `css/motion.css`, `js/motion.js` e `vendor/gsap.min.js` (GSAP 3.15.1, o mesmo do Humanas). Ideia: o mapa das linhas é um circuito. O trilho é desenhado e as estações acendem em sequência ao entrar na tela; estação concluída fica acesa; um pulso percorre a linha do próximo passo da missão; a resposta certa de primeira solta faíscas e a errada treme; fundo de papel de esquema e manchas das cores das linhas. Preferência "animações" em Aa (Automático, Completas, Leves, Desligadas; chave `motion` em `edo-prefs`); "reduzir movimento" do aparelho desliga tudo. Nada fica escondido à espera de rolagem (o axe reprova texto com opacidade 0). Do `motion.js` do Humanas ficaram de fora: rolagem suave (Lenis), fundo WebGL, partículas, inclinação 3D e título palavra por palavra. O teste de abas do `tests/smoke.mjs` espera 1,1 s antes do axe, porque a entrada da tela dura até 0,85 s.
+
+## Plano de estudo até a prova (2026-11-14)
+
+`data/plano.js`: 26 dias, 10/11 a 05/12 (os de 10 a 15/11 ficaram como estavam, para não perder marcações). De 16/11 em diante: (1) 16 a 24/11 primeira passada pelas estações que faltam na ordem do peso de 2023; (2) 25 a 27/11 simulado completo e pontos fracos; (3) 28/11 a 04/12 prova real de 2018 (fora do app, links na página do Plano), prova de 2023 outra vez, segunda passada (tarefa nova `rev`: reabre a estação na aba Questões, sem marcar sozinha) pelas estações de maior peso, simulados e erros; (4) 05/12 véspera. Regras do edital conferidas no PDF: 40 específicas + 10 Português + 10 Matemática; elimina menos de 50% nas específicas ou nas gerais, ou zero em Português ou Matemática; o ranqueamento da 1ª etapa usa só a nota das específicas (até 2 vezes vagas + cadastro por ênfase/polo), e a nota das gerais soma depois. Ênfase 8: 3 vagas imediatas e 33 posições no total (fonte: IBETP, a conferir no Anexo I). Cobertura do edital: os 57 subitens (Anexo IV, Ênfase 8, Português e Matemática) têm estação e questões; o PDF do edital no repositório é o original (o conteúdo programático não mudou nas retificações lidas).
 
 ## Fora deste repositório
 

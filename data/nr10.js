@@ -2,7 +2,7 @@
    Os trechos entre aspas (campo txt) são CÓPIA LITERAL do texto oficial do gov.br, a mesma de fontes/nr10-2019-x-2026.md
    (acesso em 25/10/2026), com a grafia original ("seqüência", "carácter"…). tests/biblioteca.test.mjs confere que cada
    linha de txt aparece, palavra por palavra, naquele arquivo. Os campos mudou e as pegadinhas são texto do app.
-   a = texto em vigor até 31/05/2027 (o que a prova de 29/11/2026 cobra, por inferência); b = texto a partir de 01/06/2027.
+   a = texto em vigor até 31/05/2027 (o que a prova de 06/12/2026 cobra, por inferência); b = texto a partir de 01/06/2027.
    O endereço antigo …/arquivos/normas-regulamentadoras/nr-10.pdf, no gov.br, agora serve o texto de 2027: nunca o cite
    como "vigente". */
 (function (D) {
@@ -16,7 +16,7 @@
       'Em vigor até 31/05/2027: NR-10 com a redação da Portaria MTE nº 598/2004, alterada pela Portaria MTPS nº 508/2016 e pela Portaria SEPRT nº 915/2019 (PDF compilado de 18 páginas no gov.br).',
       'Em vigor a partir de 01/06/2027: Portaria MTE nº 737, de 29/05/2026 (DOU de 01/06/2026, seção 1; retificação no DOU de 24/06/2026), que entra em vigor um ano depois de publicada (art. 5º) e revoga as Portarias 598/2004 e 508/2016 (art. 4º).'
     ],
-    aviso: 'A prova é em 29/11/2026, quando vale o texto de 2019. O edital (item 10.4 da Ênfase 8) diz só "Conhecimento da Norma Regulamentadora NR-10 Segurança em Eletricidade", sem citar portaria e sem cláusula sobre norma publicada e ainda não vigente. <span class="confira">Qual versão a banca cobra não está escrito em lugar nenhum: é inferência. O mais provável é o texto de 2019, vigente no dia da prova.</span> Estude o de 2019 e saiba reconhecer o que muda em 2027.',
+    aviso: 'A prova é em 06/12/2026, quando vale o texto de 2019. O edital (item 10.4 da Ênfase 8) diz só "Conhecimento da Norma Regulamentadora NR-10 Segurança em Eletricidade", sem citar portaria e sem cláusula sobre norma publicada e ainda não vigente. <span class="confira">Qual versão a banca cobra não está escrito em lugar nenhum: é inferência. O mais provável é o texto de 2019, vigente no dia da prova.</span> Estude o de 2019 e saiba reconhecer o que muda em 2027.',
     linkAntigo: 'O endereço antigo do PDF da NR-10 no gov.br (…/normas-regulamentadoras/nr-10.pdf) agora serve o texto de 2027, com o aviso "Vigência a partir de 01 de junho de 2027". Quem baixar a NR-10 por esse link lê a norma nova achando que é a vigente.',
     fontes: [
       { t: 'Ministério do Trabalho e Emprego. NR-10, texto compilado até a Portaria SEPRT nº 915/2019, vigente até 31/05/2027.', url: P19 },

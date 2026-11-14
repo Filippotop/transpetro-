@@ -2,7 +2,7 @@
 ## Transpetro 2026 · Edital nº 03 · Ênfase 8: MANUTENÇÃO – ELÉTRICA
 
 **Banca:** Fundação Cesgranrio
-**Prova:** 29/11/2026 · 4 horas · 60 questões (40 Específicas + 20 Gerais)
+**Prova:** 06/12/2026 · 4 horas · 60 questões (40 Específicas + 20 Gerais)
 **Corte:** eliminado quem tirar menos de 50% nas Específicas, menos de 50% nas Gerais, ou zero em qualquer matéria das Gerais.
 **Base:** Anexo IV do Edital nº 03 – TRANSPETRO/PSP/TERRA/NÍVEL MÉDIO-2026.3 (conteúdo integral, na ordem oficial).
 

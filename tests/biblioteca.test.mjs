@@ -95,31 +95,36 @@ if (D.edital) {
   for (const q of D.questions) check(sub.includes(String(q.hab)), `edital: a questão ${q.id} cita o item ${q.hab}, que não está no edital`);
 }
 
-/* ---- Plano: um dia por data, de 10/11 a 28/11/2026, só com tarefas que o app sabe abrir ---- */
-check(D.plan && D.plan.length === 19, 'plano: DATA.plan precisa de 19 dias (10/11 a 28/11)');
+/* ---- Plano: um dia por data, de 10/11 a 05/12/2026 (a prova é em 06/12), só com tarefas que o app sabe abrir ---- */
+check(D.plan && D.plan.length === 26, 'plano: DATA.plan precisa de 26 dias (10/11 a 05/12)');
 if (D.plan && D.plan.length) {
   const SEM = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
   const built = D.modules.filter(m => !m.emBreve).map(m => m.id);
-  const KS = { game: ['formula', 'nr10', 'unid', 'cards', 'vf', 'traps'], bib: ['formulas', 'anc', 'nr10', 'simb', 'glos', 'metodo'], sim: ['tudo', 'EL', 'MT', 'PT', 'fracos', 'novas'], prova: ['t23:PME'], provares: ['t23'], mod: built };
+  const KS = { game: ['formula', 'nr10', 'unid', 'cards', 'vf', 'traps'], bib: ['formulas', 'anc', 'nr10', 'simb', 'glos', 'metodo'], sim: ['tudo', 'EL', 'MT', 'PT', 'fracos', 'novas'], prova: ['t23:PME'], provares: ['t23'], mod: built, rev: built };
   D.plan.forEach((p, i) => {
     const dt = new Date(Date.UTC(2026, 10, 10 + i));
     check(p.d === dt.toISOString().slice(0, 10), `plano: o dia ${i + 1} deveria ser ${dt.toISOString().slice(0, 10)} e é ${p.d}`);
-    check(p.l === `${SEM[dt.getUTCDay()]} ${p.d.slice(8)}/11`, `plano ${p.d}: rótulo "${p.l}" com dia da semana errado`);
+    check(p.l === `${SEM[dt.getUTCDay()]} ${p.d.slice(8)}/${p.d.slice(5, 7)}`, `plano ${p.d}: rótulo "${p.l}" com dia da semana errado`);
     check(p.foco && p.tasks.length >= 2 && p.tasks.length <= 4, `plano ${p.d}: precisa de foco e de 2 a 4 tarefas`);
     for (const t of p.tasks) {
-      check(['mod', 'game', 'bib', 'sim', 'prova', 'provares', 'erros', 'refazer', 'novos', 'painel', 'bancada', 'out'].includes(t.k), `plano ${p.d}: tipo de tarefa desconhecido "${t.k}"`);
+      check(['mod', 'rev', 'game', 'bib', 'sim', 'prova', 'provares', 'erros', 'refazer', 'novos', 'painel', 'bancada', 'out'].includes(t.k), `plano ${p.d}: tipo de tarefa desconhecido "${t.k}"`);
       if (KS[t.k]) check(KS[t.k].includes(t.a), `plano ${p.d}: a tarefa ${t.k} aponta para "${t.a}", que não existe`);
       if (t.k !== 'mod') check(t.t && t.t.length > 10, `plano ${p.d}: tarefa ${t.k} sem texto`);
     }
   });
-  const mods = D.plan.flatMap(p => p.tasks).filter(t => t.k === 'mod').map(t => t.a);
+  const mods = D.plan.flatMap(p => p.tasks).filter(t => t.k === 'mod').map(t => t.a); /* a primeira passada; 'rev' é a segunda e não entra na ordem */
   for (const id of built) check(mods.includes(id), `plano: a estação ${id} está pronta e não entrou no plano`);
   /* Ordem pelo peso na prova de 2023 (mapa2023). */
   const peso = id => Object.values(D.mapa2023).filter(x => x === id).length;
   /* P1 e C1 entraram depois do plano e vão onde a urgência manda (zerar Português elimina); o mapa2023 não os pesa. */
   const ordenados = mods.filter(id => !['P1', 'C1'].includes(id));
   ordenados.forEach((id, i) => { if (i) check(peso(ordenados[i - 1]) >= peso(id), `plano: ${ordenados[i - 1]} (${peso(ordenados[i - 1])} em 2023) veio antes de ${id} (${peso(id)})`); });
-  check(D.plan.flatMap(p => p.tasks).some(t => t.k === 'out' && /Matemática/.test(t.t)), 'plano: Matemática elimina e precisa aparecer');
+  check(D.plan.flatMap(p => p.tasks).some(t => t.k === 'sim' && t.a === 'MT'), 'plano: Matemática elimina e precisa de simulado próprio');
+  check(D.plan.flatMap(p => p.tasks).some(t => t.k === 'sim' && t.a === 'PT'), 'plano: Português elimina e precisa de simulado próprio');
+  /* a segunda passada reabre as estações de maior peso, e o plano termina na véspera da prova */
+  const revs = D.plan.flatMap(p => p.tasks).filter(t => t.k === 'rev').map(t => t.a);
+  for (const id of ['E3', 'I1', 'E1', 'M2', 'A2', 'N1']) check(revs.includes(id), `plano: a estação ${id} (peso alto em 2023) não tem segunda passada`);
+  check(D.plan[D.plan.length - 1].d === '2026-12-05', 'plano: o último dia deveria ser 05/12, véspera da prova de 06/12');
 }
 
 if (fails.length) { console.error(`FALHOU (${fails.length}):\n- ` + fails.join('\n- ')); process.exit(1); }
