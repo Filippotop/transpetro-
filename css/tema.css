@@ -48,3 +48,10 @@ html[data-fx]:not([data-fx="off"]) .spark .dt{opacity:0;animation:edo-fade .3s 1
 .rings{grid-template-columns:repeat(4,1fr)}
 :root:not([data-theme="dark"]) .edo-aurora{opacity:.07}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .edo-aurora{opacity:.2}}
+
+/* Aulas em vídeo */
+.aulas{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.aula{background:var(--surface);border:1px solid var(--rule);border-radius:var(--card-radius);box-shadow:var(--card-shadow);overflow:hidden}
+.aula video{display:block;width:100%;aspect-ratio:16/9;background:#171512}
+.aula .ab{padding:14px 16px 16px}.aula h3{margin:4px 0 6px;font-size:18px}.aula p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.aula details{margin-top:10px}.aula summary{cursor:pointer;font-weight:600;font-size:13.5px}.aula details p{margin-top:8px}

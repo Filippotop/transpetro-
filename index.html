@@ -801,7 +801,7 @@ function render(){
   if(view!=='game') clearInterval(gameTimer);
   $('#readbar').hidden=true; updateGoal();
   const d=daysLeft(), dd=examTarget().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}); $('#count').title='Prova: '+examTarget().toLocaleDateString('pt-BR')+' ('+EXAM_NOTE+')'; $('#count').innerHTML = d===1? `<span class="cl">falta </span>1 dia · ${dd}` : `<span class="cl">faltam </span>${d} dias · ${dd}`;
-  ({linhas:vLinhas,mod:vMod,arena:vArena,game:vGame,biblioteca:vBib,treino:vTreino,plano:vPlano,painel:vPainel,busca:vBusca,provas:vProvas,prova:vProva,provares:vProvaRes,papel:vPapel,bancada:vBancada}[view]||vLinhas)();
+  ({linhas:vLinhas,mod:vMod,arena:vArena,game:vGame,biblioteca:vBib,treino:vTreino,plano:vPlano,painel:vPainel,busca:vBusca,provas:vProvas,prova:vProva,provares:vProvaRes,papel:vPapel,bancada:vBancada,aulas:vAulas}[view]||vLinhas)();
 }
 
 /* ---------- LINHAS ---------- */
@@ -861,7 +861,7 @@ function vLinhas(){
       </div>
       <div class="panel atalhos"><div class="eyebrow">atalhos</div>
         <button class="at" data-at="aq">${atIc('aq')}Aquecimento de 10 questões</button><button class="at" data-at="sim">${atIc('sim')}Simulado</button><button class="at" data-at="err">${atIc('err')}Caderno de erros</button>
-        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
+        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="aul">${atIc('aul')}Aulas em vídeo</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
     </aside>
   </section>
   <div class="sec-title"><h2>O mapa das linhas</h2><span class="eyebrow">${open.length} ${open.length===1?'estação':'estações'} · ${plural(DATA.questions.length,'questão','questões')} · ${plural(DATA.vf.length,'afirmação','afirmações')} V ou F</span></div>
@@ -872,7 +872,7 @@ function vLinhas(){
         return `<button class="st ${cls}" data-m="${m.id}" title="${esc(m.title)}">${m.faixa==='A'?'<span class="fa">A</span>':''}<span class="c"></span><span class="code">${m.id}</span><span class="t">${esc(m.title.split(/[:(]/)[0])}</span></button>`}).join('')}</div></div>`:'<p class="soon-line">Estações em breve.</p>'}</div>`}).join('')}
   <div class="legend"><span><i></i>não iniciado</span><span><i style="background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)"></i>em andamento</span><span><i style="background:var(--muted)"></i>concluído</span><span><i style="box-shadow:0 0 0 2px var(--ok)"></i>tudo certo</span><span><i style="box-shadow:0 0 0 2px var(--bad)"></i>menos de 2 de 3</span><span><b class="chip A">A</b> pesou mais em 2023</span></div>`;
   app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
-  app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),bib:()=>go('biblioteca'),ban:()=>go('bancada')})[b.dataset.at]());
+  app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),bib:()=>go('biblioteca'),aul:()=>go('aulas'),ban:()=>go('bancada')})[b.dataset.at]());
   app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
   if($('#vPl')) $('#vPl').onclick=()=>go('plano');
   if(pday&&planDone(pday).done===pday.tasks.length&&!S.plan['fim|'+pday.d]){ S.plan['fim|'+pday.d]=true; save(); toast('Dia fechado. Bom trabalho.'); const h=app.querySelector('.hoje'); if(h) document.dispatchEvent(new CustomEvent('edo:celebrate',{detail:h})); }
@@ -1516,7 +1516,7 @@ function sparkSvg(vals,labels,desc){
     <line class="gl" x1="${P}" x2="${W-P}" y1="${H-B}" y2="${H-B}"/><path class="ar" d="${area}" fill="url(#spg)"/><path class="ln" pathLength="1" d="${d}"/><circle class="dt" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/>
     <text x="${P}" y="${H-3}">${labels[0]}</text><text x="${W-P}" y="${H-3}" text-anchor="end">${labels[1]}</text></svg>`;
 }
-const AT_ICON={aq:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',sim:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',err:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',bib:'<path d="M5 4h4v16H5zM10 4h4v16h-4z"/>',ban:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-1.4 1.4a4 4 0 0 1-4.2.9L7 20.7a2 2 0 0 1-2.8-2.8l7.1-7.1a4 4 0 0 1 .9-4.2z"/>',car:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'};
+const AT_ICON={aq:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',sim:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',err:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',bib:'<path d="M5 4h4v16H5zM10 4h4v16h-4z"/>',aul:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>',ban:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-1.4 1.4a4 4 0 0 1-4.2.9L7 20.7a2 2 0 0 1-2.8-2.8l7.1-7.1a4 4 0 0 1 .9-4.2z"/>',car:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'};
 const atIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${AT_ICON[k]}</svg>`;
 function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }); return {done:d,n:p.tasks.length}; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
@@ -1842,7 +1842,7 @@ setInterval(()=>{ pomoTick(); simPill(); if(document.visibilityState==='visible'
 
 /* ---- link direto (#plano, #arena, #E1…) ---- */
 (()=>{ const h=(location.hash||'').slice(1); if(!h) return;
-  const views={bancada:'bancada',linhas:'linhas',provas:'provas',biblioteca:'biblioteca',arena:'arena',treino:'treino',plano:'plano',painel:'painel',erros:'treino',simulado:'treino',formulas:'biblioteca',glossario:'biblioteca'};
+  const views={bancada:'bancada',linhas:'linhas',provas:'provas',aulas:'aulas',biblioteca:'biblioteca',arena:'arena',treino:'treino',plano:'plano',painel:'painel',erros:'treino',simulado:'treino',formulas:'biblioteca',glossario:'biblioteca'};
   if(M[h.toUpperCase()]&&!M[h.toUpperCase()].emBreve){ view='mod'; param={id:h.toUpperCase(),tab:'teoria'}; }
   else if(views[h]){ view=views[h]; param= h==='erros'?{s:'erros'}: h==='simulado'?{s:'sim'}: h==='formulas'?{s:'formulas'}: h==='glossario'?{s:'glos'}: null; }
 })();
@@ -1855,6 +1855,11 @@ const OS_LIST=[
   {n:3,line:'M',t:'O motor que desarma sozinho',a:'Máquinas e proteção',d:'Motor no CCM: falta de fase, sobrecarga mecânica, relé mal ajustado ou desequilíbrio de tensão.'},
   {n:4,line:'I',t:'O DR que não para ligado',a:'Instalações e proteção',d:'Dispositivo DR: neutro ligado ao PE, chuveiro com fuga, soma de fugas ou DR com defeito.'}
 ];
+const AULAS=[{"f": "v1", "t": "Fator de potência", "d": "Corrente atrasada, ângulo φ e o triângulo de potências com 220 V e 10 A.", "s": 58, "tx": "Numa carga indutiva, a corrente atrasa em relação à tensão. O ângulo entre as duas é o ângulo φ, e o fator de potência é o cosseno de φ. Exemplo: 220 V, 10 A e ângulo de 36,87°, que dá FP 0,8. A potência aparente é 220 × 10 = 2.200 VA. A ativa é 2.200 × 0,8 = 1.760 W. A reativa é 2.200 × sen φ, com sen φ = 0,6: 1.320 var. A potência instantânea tem trechos negativos: energia que volta à fonte. A média dela é a potência ativa."}, {"f": "v2", "t": "Trifásico: estrela e triângulo", "d": "Tensão de fase, tensão de linha (√3) e a rede 220/380 V.", "s": 42, "tx": "Três tensões de mesmo valor, defasadas de 120°. Na estrela, a tensão de fase é medida entre fase e neutro: 220 V. A tensão de linha é medida entre duas fases: é a diferença entre dois fasores. Vale √3 × 220 ≈ 381 V. Por isso a rede é 220/380 V. No triângulo, a tensão da bobina é a própria tensão de linha, e a corrente de linha é √3 vezes a da bobina."}, {"f": "v3", "t": "Constante de tempo RC", "d": "τ = R·C e os 63%, 86% e 99% da carga do capacitor.", "s": 37, "tx": "Carregando um capacitor por um resistor, a tensão sobe de forma exponencial. A constante de tempo é τ = R × C. Com 10 kΩ e 100 µF, τ = 1 s. Em 1 τ a tensão chega a 63% da fonte. Em 2 τ, 86%. Em 5 τ, mais de 99%: o transitório acabou. Na descarga, em 1 τ sobram 37% da tensão inicial."}];
+function vAulas(){
+  app.innerHTML=`<div class="pagehead"><div><div class="eyebrow">revisão em vídeo · menos de 1 minuto cada</div><h1>Aulas</h1><p class="lede">Três revisões curtas, com a conta feita na tela. Servem para fixar, não para substituir a estação. Precisam de internet: não ficam guardadas para uso sem sinal.</p></div></div>
+  <div class="aulas">${AULAS.map(a=>`<article class="aula"><video controls preload="none" playsinline poster="aulas/${a.f}.jpg" src="aulas/${a.f}.mp4" aria-label="${esc(a.t)}"></video><div class="ab"><span class="eyebrow">${Math.floor(a.s/60)}:${String(a.s%60).padStart(2,'0')}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><details><summary>Texto da aula</summary><p>${esc(a.tx)}</p></details></div></article>`).join('')}</div>`;
+}
 function vBancada(){
   app.innerHTML=`<div class="pagehead"><div><div class="eyebrow">simulador de diagnóstico · instrumentos virtuais · NR-10</div><h1>Bancada</h1><p class="lede">Ordens de serviço como as da manutenção de verdade: você mede o circuito com multímetro e alicate, desenergiza seguindo a NR-10, dá o diagnóstico e recebe um relatório com teoria e questões no estilo da banca. A Bancada abre numa página própria e guarda o progresso dela à parte.</p></div><a class="btn gold" href="bancada/">Abrir a Bancada →</a></div>
   <div class="cards2">${OS_LIST.map(o=>`<article class="fc oscard lc-${o.line}"><span class="lbl">OS ${o.n} · ${esc(o.a)}</span><h3>${esc(o.t)}</h3><p>${esc(o.d)}</p></article>`).join('')}</div>

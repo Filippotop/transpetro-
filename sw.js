@@ -1,7 +1,7 @@
 /* Elétrica de Ouro: service worker da raiz. Cobre o app e a Bancada (bancada/), que não tem service worker próprio.
    Mude VER a cada publicação: é o que faz os aparelhos baixarem a versão nova.
    Caches com prefixo edo-: o Humanas de Ouro (mesma origem github.io) usa hdo- e apaga só os dele. */
-const VER='2026-11-14.5';
+const VER='2026-11-14.6';
 const SHELL='edo-shell-'+VER, IMGS='edo-provas-v1', RUNTIME='edo-runtime-v1';
 const SHELL_FILES=['./','index.html','data/base.js','data/estacoes/E1.js','data/estacoes/E2.js','data/estacoes/E3.js','data/estacoes/M1.js','data/estacoes/M2.js','data/estacoes/M3.js','data/estacoes/I1.js','data/estacoes/A1.js','data/estacoes/A2.js','data/estacoes/I2.js','data/estacoes/I3.js','data/estacoes/N1.js','data/estacoes/X1.js','data/estacoes/X2.js','data/estacoes/X3.js','data/estacoes/P1.js','data/estacoes/C1.js','data/embreve.js','data/questoes.js','data/provas.js','data/biblioteca.js','data/nr10.js','data/plano.js','js/calc.js','js/gerador.js','js/motion.js','vendor/gsap.min.js','vendor/lenis.min.js','vendor/confetti.browser.min.js','css/estacao.css','css/motion.css','css/tema.css','merge.js','gist-sync.js','manifest.webmanifest','pwa.js','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
 /* A Bancada inteira, para abrir sem internet depois da primeira visita ao app. */
@@ -59,6 +59,7 @@ function pageKey(url){ return /\/bancada(\/|$)/.test(url.pathname)?'bancada/inde
 self.addEventListener('fetch',e=>{
   const req=e.request; if(req.method!=='GET') return;
   const url=new URL(req.url);
+  if(url.pathname.includes('/aulas/')) return; /* vídeo: pedidos de faixa (206) não vão para o cache */
   if(url.hostname==='api.github.com') return; /* sincronização: sempre da rede, nunca do cache */
   if(req.mode==='navigate'){
     const key=pageKey(url);

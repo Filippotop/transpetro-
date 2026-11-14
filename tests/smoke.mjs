@@ -501,6 +501,18 @@ async function testDeletesSync(browser) {
 }
 
 /* Design: tokens, campos e links com estilo, cabeçalho compacto no celular e movimento reduzido. */
+/* Aulas em vídeo: três cartões, arquivos servidos (o Chromium do teste não decodifica H.264, então só vê-se o elemento e o arquivo), sem erro de página. */
+async function testAulas(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_ + '#aulas'); await page.waitForTimeout(500);
+  const n = await page.evaluate(() => ({ v: document.querySelectorAll('.aula video').length, h1: document.querySelector('h1')?.textContent }));
+  check(n.v === 3 && n.h1 === 'Aulas', `aulas: ${n.v} vídeos, título "${n.h1}" (esperado 3 e "Aulas")`);
+  for (const f of ['v1', 'v2', 'v3']) for (const ext of ['mp4', 'jpg']) { const r = await page.request.get(URL_ + `aulas/${f}.${ext}`, { headers: { Range: 'bytes=0-99' } });
+    check([200, 206].includes(r.status()), `aulas: aulas/${f}.${ext} respondeu ${r.status()}`); }
+  check(!errs.length, `aulas: erro de página: ${errs.join(' | ')}`);
+  await ctx.close();
+}
 async function testDesign(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
   const page = await ctx.newPage(); await page.goto(URL_); await page.waitForTimeout(400);
@@ -1010,6 +1022,7 @@ try {
   await run('gist', testGistSync);
   await run('deletes', testDeletesSync);
   await run('design', testDesign);
+  await run('aulas', testAulas);
   await run('reading', testReading);
   await run('home', testHome);
   await run('lines', testLines);
