@@ -1,0 +1,50 @@
+/* Tema "papel": a linguagem visual do painel de referência (neutros quentes, cartões brancos com borda fina e sombra suave,
+   rótulos pequenos em monoespaçada, números grandes, gráfico de linha com área). Tokens em três camadas, como na skill design-system:
+   primitivos (valores) -> semânticos (--bg, --surface...) -> componentes (--card-*). O tema escuro do app não muda.
+   As cores das sete linhas e o dourado da marca ficam como estavam (identidade e contraste já testados). */
+:root{
+  /* primitivos */
+  --p-paper:#F5F2EC; --p-card:#FFFFFF; --p-sunk:#EDE9E1; --p-ink:#171512; --p-muted:#625D54; --p-rule:#E4DFD5;
+  /* semânticos */
+  --bg:var(--p-paper); --surface:var(--p-card); --sunk:var(--p-sunk); --ink:var(--p-ink); --muted:var(--p-muted); --rule:var(--p-rule);
+  /* componentes */
+  --card-radius:14px; --card-shadow:0 1px 2px rgba(40,30,10,.04),0 6px 18px -8px rgba(40,30,10,.10);
+  --r:12px; --r-lg:16px; --shadow-1:var(--card-shadow); --shadow:var(--card-shadow);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card-shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px -10px rgba(0,0,0,.5);--shadow-1:var(--card-shadow);--shadow:var(--card-shadow)}}
+:root[data-theme="dark"]{--card-shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px -10px rgba(0,0,0,.5);--shadow-1:var(--card-shadow);--shadow:var(--card-shadow)}
+
+/* Cartões: borda fina, raio maior, sombra suave. */
+.panel,.stat,.line,.task,.excard,.game,.err,.fc{border-radius:var(--card-radius);box-shadow:var(--card-shadow)}
+
+/* Cartões de número: rótulo pequeno em cima (monoespaçada), número grande embaixo. */
+.stat{display:flex;flex-direction:column;gap:2px;padding:14px 16px}
+.stat .l{order:-1;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .n{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.stat .bar2{order:3}
+
+/* Gráfico de linha com área (Ritmo). */
+.spark{display:block;width:100%;height:auto;overflow:visible}
+.spark .ln{fill:none;stroke:var(--gold);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.spark .ar{stroke:none}
+.spark .dt{fill:var(--gold)}
+.spark .gl{stroke:var(--rule);stroke-width:1}
+.spark text{font-family:var(--mono);font-size:10px;fill:var(--muted);letter-spacing:.06em}
+html[data-fx]:not([data-fx="off"]) .spark .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:edo-draw 1.1s .25s cubic-bezier(.4,0,.2,1) forwards}
+html[data-fx]:not([data-fx="off"]) .spark .ar{opacity:0;animation:edo-fade .6s .9s ease forwards}
+html[data-fx]:not([data-fx="off"]) .spark .dt{opacity:0;animation:edo-fade .3s 1.2s ease forwards}
+@keyframes edo-draw{to{stroke-dashoffset:0}}@keyframes edo-fade{to{opacity:1}}
+.ritmo{display:grid;gap:6px}
+.ritmo .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ritmo b{font-size:15px}
+
+/* Atalhos: botões pequenos em fundo rebaixado, como os "links rápidos" do modelo. */
+.atalhos{display:grid;gap:6px}
+.atalhos .at{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:var(--sunk);color:var(--ink);border-radius:9px;padding:8px 10px;font-size:13.5px;font-weight:600;cursor:pointer;transition-property:background-color,transform;transition-duration:.15s}
+.atalhos .at:hover{background:color-mix(in srgb,var(--gold) 14%,var(--sunk))}
+.atalhos .at svg{width:16px;height:16px;flex:none;color:var(--muted)}
+
+/* Ajustes: quatro anéis numa linha e fundo mais quieto no tema claro (as manchas de cor competiam com o papel). */
+.rings{grid-template-columns:repeat(4,1fr)}
+:root:not([data-theme="dark"]) .edo-aurora{opacity:.07}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .edo-aurora{opacity:.2}}

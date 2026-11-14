@@ -593,6 +593,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 .ankip{margin-top:18px;display:grid;gap:10px}
 </style>
 <link rel="stylesheet" href="css/estacao.css">
+<link rel="stylesheet" href="css/tema.css">
 <link rel="stylesheet" href="css/motion.css">
 
 <header class="top">
@@ -847,15 +848,20 @@ function vLinhas(){
       <div class="countdown panel"><span class="big">${dl}</span><span>${dl===1?'dia':'dias'} para a prova<small>${examTarget().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'})}</small><small class="warn-date">${EXAM_NOTE}</small></span></div>
       <div class="rings panel">${ring('ESP','Específicas',blockStats('EL'))}${ring('MAT','Matemática',blockStats('MT'))}${ring('POR','Português',blockStats('PT'))}${ring('CRD','Cartões',{done:mastered,n:DATA.cards.length},'dos cartões dominados')}</div>
       <div class="corte panel"><b>Corte: 50% em cada bloco</b><small>específicas ≥ 20/40 · gerais ≥ 10/20 · zerar Português ou Matemática elimina</small></div>
+      ${(()=>{ const ds=lastDays(14), v=ds.map(d=>S.act[d]||0), tot=v.reduce((a,b)=>a+b,0), dm=d=>d.slice(8)+'/'+d.slice(5,7);
+        return `<div class="panel ritmo"><div class="top"><span class="eyebrow">atividades por dia · 14 dias</span><b class="mono">${tot}</b></div>${sparkSvg(v,[dm(ds[0]),dm(ds[13])],`Atividades por dia nos últimos 14 dias: ${tot} no total, ${v[13]} hoje`)}</div>`; })()}
       <div class="stats">
         <div class="stat"><div class="n">${done}<span class="muted" style="font-size:var(--fs-3)">/${tot}</span></div><div class="l">questões feitas</div><div class="bar2"><i style="width:${pct(done,tot)}%"></i></div></div>
         <div class="stat"><div class="n">${done?pct(ok,done)+'%':'—'}</div><div class="l">acerto de primeira</div></div>
-        <div class="stat"><div class="n">${el.done?pct(el.ok,el.done)+'%':'—'}</div><div class="l">Específicas · meta: 50% ou mais</div></div>
-        <div class="stat"><div class="n">${mt.done?pct(mt.ok,mt.done)+'%':'—'}</div><div class="l">Matemática · meta: 50% ou mais</div></div>
-        <div class="stat"><div class="n">${pt.done?pct(pt.ok,pt.done)+'%':'—'}</div><div class="l">Português · meta: 50% ou mais</div></div>
+        <div class="stat"><div class="n">${el.done?pct(el.ok,el.done)+'%':'—'}</div><div class="l">Específicas</div></div>
+        <div class="stat"><div class="n">${mt.done?pct(mt.ok,mt.done)+'%':'—'}</div><div class="l">Matemática</div></div>
+        <div class="stat"><div class="n">${pt.done?pct(pt.ok,pt.done)+'%':'—'}</div><div class="l">Português</div></div>
         <div class="stat"><div class="n">${Object.keys(S.vf).length}<span class="muted" style="font-size:var(--fs-3)">/${DATA.vf.length}</span></div><div class="l">afirmações V ou F</div><div class="bar2"><i style="width:${pct(Object.keys(S.vf).length,DATA.vf.length)}%"></i></div></div>
         <div class="stat"><div class="n">${mastered}<span class="muted" style="font-size:var(--fs-3)">/${DATA.cards.length}</span></div><div class="l">cartões dominados</div><div class="bar2"><i style="width:${pct(mastered,DATA.cards.length)}%"></i></div></div>
       </div>
+      <div class="panel atalhos"><div class="eyebrow">atalhos</div>
+        <button class="at" data-at="aq">${atIc('aq')}Aquecimento de 10 questões</button><button class="at" data-at="sim">${atIc('sim')}Simulado</button><button class="at" data-at="err">${atIc('err')}Caderno de erros</button>
+        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
     </aside>
   </section>
   <div class="sec-title"><h2>O mapa das linhas</h2><span class="eyebrow">${open.length} ${open.length===1?'estação':'estações'} · ${plural(DATA.questions.length,'questão','questões')} · ${plural(DATA.vf.length,'afirmação','afirmações')} V ou F</span></div>
@@ -866,6 +872,7 @@ function vLinhas(){
         return `<button class="st ${cls}" data-m="${m.id}" title="${esc(m.title)}">${m.faixa==='A'?'<span class="fa">A</span>':''}<span class="c"></span><span class="code">${m.id}</span><span class="t">${esc(m.title.split(/[:(]/)[0])}</span></button>`}).join('')}</div></div>`:'<p class="soon-line">Estações em breve.</p>'}</div>`}).join('')}
   <div class="legend"><span><i></i>não iniciado</span><span><i style="background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)"></i>em andamento</span><span><i style="background:var(--muted)"></i>concluído</span><span><i style="box-shadow:0 0 0 2px var(--ok)"></i>tudo certo</span><span><i style="box-shadow:0 0 0 2px var(--bad)"></i>menos de 2 de 3</span><span><b class="chip A">A</b> pesou mais em 2023</span></div>`;
   app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
+  app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),bib:()=>go('biblioteca'),ban:()=>go('bancada')})[b.dataset.at]());
   app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
   if($('#vPl')) $('#vPl').onclick=()=>go('plano');
   if(pday&&planDone(pday).done===pday.tasks.length&&!S.plan['fim|'+pday.d]){ S.plan['fim|'+pday.d]=true; save(); toast('Dia fechado. Bom trabalho.'); const h=app.querySelector('.hoje'); if(h) document.dispatchEvent(new CustomEvent('edo:celebrate',{detail:h})); }
@@ -1499,6 +1506,18 @@ function chanceCortes(){
   const a=binom(10,P(mt)), b=binom(10,P(pt)); let g=0; a.forEach((x,i)=>b.forEach((y,j)=>{ if(i+j>=10&&i>=1&&j>=1) g+=x*y; }));
   return {e,g};
 }
+/* Gráfico de linha com área, em SVG (sem biblioteca). vals = um número por dia. */
+function sparkSvg(vals,labels,desc){
+  const W=320,H=96,P=6,B=18,mx=Math.max(1,...vals), n=vals.length;
+  const X=i=>P+i*(W-2*P)/(n-1), Y=v=>H-B-(v/mx)*(H-B-P-4);
+  const pts=vals.map((v,i)=>[X(i),Y(v)]), d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=d+` L ${X(n-1).toFixed(1)} ${H-B} L ${X(0).toFixed(1)} ${H-B} Z`, last=pts[n-1];
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(desc)}"><defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--gold)" stop-opacity=".28"/><stop offset="1" stop-color="var(--gold)" stop-opacity="0"/></linearGradient></defs>
+    <line class="gl" x1="${P}" x2="${W-P}" y1="${H-B}" y2="${H-B}"/><path class="ar" d="${area}" fill="url(#spg)"/><path class="ln" pathLength="1" d="${d}"/><circle class="dt" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/>
+    <text x="${P}" y="${H-3}">${labels[0]}</text><text x="${W-P}" y="${H-3}" text-anchor="end">${labels[1]}</text></svg>`;
+}
+const AT_ICON={aq:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',sim:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',err:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',bib:'<path d="M5 4h4v16H5zM10 4h4v16h-4z"/>',ban:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-1.4 1.4a4 4 0 0 1-4.2.9L7 20.7a2 2 0 0 1-2.8-2.8l7.1-7.1a4 4 0 0 1 .9-4.2z"/>',car:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'};
+const atIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${AT_ICON[k]}</svg>`;
 function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }); return {done:d,n:p.tasks.length}; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
 function taskGo(t){
