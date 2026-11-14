@@ -90,6 +90,10 @@
       const a=i/12*6.283+Math.random()*.5, d=28+Math.random()*34;
       gsap.to(s,{x:Math.cos(a)*d,y:Math.sin(a)*d+10,opacity:0,scale:.3,duration:.55+Math.random()*.25,ease:'power2.out',onComplete:()=>s.remove()}); }
   }
+  document.addEventListener('edo:celebrate',e=>{ if(cur!=='full') return;
+    if(window.confetti){ const cs=getComputedStyle(root), c=['--gold','--e','--i','--m'].map(v=>cs.getPropertyValue(v).trim()).filter(Boolean);
+      const r=e.detail.getBoundingClientRect(); confetti({particleCount:90,spread:75,startVelocity:38,ticks:160,origin:{x:(r.left+r.width/2)/innerWidth,y:Math.min(.8,(r.top+r.height/3)/innerHeight)},colors:c,disableForReducedMotion:true}); }
+    else sparks(e.detail); });
   document.addEventListener('click',e=>{
     if(cur==='off') return; const alt=e.target.closest&&e.target.closest('.alt'); if(!alt||!alt.dataset.k) return;
     const q=alt.closest('.q'), host=q&&q.parentElement, k=alt.dataset.k; if(!host) return;

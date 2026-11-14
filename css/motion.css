@@ -26,8 +26,15 @@ html[data-fx="full"] .line.live .stations::after{content:"";position:absolute;to
 html[data-fx]:not([data-fx="off"]) .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
 @keyframes edo-shine{0%,60%{background-position:120% 0}100%{background-position:-120% 0}}
 
+/* Números de largura fixa (não pulam quando mudam) e troca de aba com fusão nativa. */
+.stat .n,.countdown .big,#count,.aring b,.hoje small,.pr b{font-variant-numeric:tabular-nums}
+@keyframes edo-vt-out{to{opacity:0}}@keyframes edo-vt-in{from{opacity:0;translate:0 8px}}
+::view-transition-old(root){animation:edo-vt-out .14s ease-out both}
+::view-transition-new(root){animation:edo-vt-in .26s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+
 /* Respostas ao toque. */
-html[data-fx]:not([data-fx="off"]) :is(.btn,.tabs button,.alt:not(:disabled)):active{transform:scale(.97)}
+html[data-fx]:not([data-fx="off"]) :is(.btn,.tabs button,.alt:not(:disabled)):active{transform:scale(.96)}
 html[data-fx]:not([data-fx="off"]) .tabs button[aria-current="true"] .ni{animation:edo-pop .35s var(--ease)}
 @keyframes edo-pop{0%{transform:scale(.8)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
 html[data-fx]:not([data-fx="off"]) :is(.fb,.toast:not([hidden]),#pop:not([hidden])){animation:edo-rise .28s var(--ease)}

@@ -358,6 +358,7 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .tmin{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-ink)}.tmin small{color:inherit;opacity:.85}
 .tmr{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:14.5px;cursor:pointer}.tmr input{width:18px;height:18px;accent-color:var(--gold);margin:1px 0 0}
 .sr{position:absolute;left:-9999px}
+.fechado{margin:4px 0 0;padding:10px 12px;border-radius:var(--r-sm);background:var(--ok-soft);border-left:4px solid var(--ok);font-size:14.5px}
 .day{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
 .day.today{background:var(--gold-soft);border-radius:var(--r);padding:14px;border-bottom:0}
 .day .dl{font-family:var(--mono);font-size:13px;font-weight:600}
@@ -788,7 +789,8 @@ function nextModules(k){ return DATA.modules.slice().sort((a,b)=>priority(b)-pri
 /* ---------- router ---------- */
 let view='linhas', param=null;
 function go(v,p){ view=v; param=p||null; if(v==='mod'&&param){ lsSet('edo-last',{id:param.id,tab:param.tab||'teoria',t:Date.now()}); } closePop(); render(); window.scrollTo({top:0}); }
-$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) go(b.dataset.v);});
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; const f=()=>go(b.dataset.v), fx=document.documentElement.dataset.fx;
+  if(document.startViewTransition&&fx&&fx!=='off') document.startViewTransition(f); else f(); /* troca de aba com fusão nativa (View Transitions); sem suporte ou com animações desligadas, troca direta */ });
 $('#brand').addEventListener('click',()=>go('linhas'));
 function render(){
   regGen();
@@ -816,6 +818,7 @@ function vLinhas(){
   nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${plural(PESO23[m.id]||0,'questão','questões')} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
+  tasks.push({ic:'↺',t:'Aquecimento: 10 questões dos seus pontos fracos',s:'Mistura estações de propósito (intercalar rende mais que estudar em bloco). 40 minutos, sem consulta; corrija depois.',act:()=>{ SIM=null; go('treino',{s:'sim',foco:'fracos',n:10}); }});
   tasks.push({ic:'⚒',t:'Bancada: atenda uma ordem de serviço',s:'Meça, desenergize pela NR-10 e diagnostique o defeito. É a teoria aplicada na prática.',act:()=>go('bancada')});
   const bankAns=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a);
   const tot=DATA.questions.length, done=bankAns.length, ok=bankAns.filter(a=>a.ok).length;
@@ -825,6 +828,7 @@ function vLinhas(){
   const dl=daysLeft();
   const hoje=pday?(()=>{ const pd=planDone(pday); return `<div class="panel hoje"><div class="eyebrow">${pday.l} · ${planFase(pday.d)}</div><b class="hb">Plano de hoje: ${esc(pday.foco)}</b>
       <div class="bar2"><i style="width:${pct(pd.done,pd.n)}%"></i></div><small class="muted">${pd.done} de ${pd.n} tarefas feitas${pd.done===pd.n?'. Dia fechado.':''}</small>
+      ${pd.done===pd.n?(()=>{ const nx=DATA.plan.find(x=>x.d>pday.d); return `<p class="fechado"><b>Dia fechado.</b>${nx?` Amanhã, ${nx.l}: ${esc(nx.foco)}.`:' Depois da prova, descanse.'} Pare aqui: dormir bem rende mais que mais uma hora.</p>`; })():''}
       ${pday.tasks.map((t,i)=>`<button class="ptk ${taskDone(pday,i)?'done':''}" data-pt="${i}"${taskGo(t)?'':' disabled'}><span class="ck" aria-hidden="true">${taskDone(pday,i)?'✓':''}</span><span>${taskDone(pday,i)?'<span class="sr">Feita: </span>':''}${taskLabel(t)}</span></button>`).join('')}
       <button class="chipbtn" id="vPl">ver o plano inteiro</button></div>`; })():'';
   const TM=['Cartão de confirmação aberto: local, horário e trajeto conferidos (sai em 01/12)','Documento de identidade original e caneta esferográfica preta de material transparente separados','Chegada ao local 1 hora antes do início, com margem para o trânsito','Celular desligado e guardado; sem relógio de qualquer tipo, nem de pulso','Sem conteúdo novo: só caderno de erros, fórmulas e cartões']; // edital 8.3.1, 8.18 e regras de sala
@@ -864,6 +868,7 @@ function vLinhas(){
   app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
   app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
   if($('#vPl')) $('#vPl').onclick=()=>go('plano');
+  if(pday&&planDone(pday).done===pday.tasks.length&&!S.plan['fim|'+pday.d]){ S.plan['fim|'+pday.d]=true; save(); toast('Dia fechado. Bom trabalho.'); const h=app.querySelector('.hoje'); if(h) document.dispatchEvent(new CustomEvent('edo:celebrate',{detail:h})); }
   app.querySelectorAll('[data-tm]').forEach(c=>c.onchange=()=>{ S.plan['tm|'+c.dataset.tm]=c.checked; save(); });
   app.querySelectorAll('.st').forEach(b=>b.onclick=()=>{ if(b.dataset.soon){ toast('Estação em breve: o conteúdo chega numa próxima etapa.'); return; } go('mod',{id:b.dataset.m,tab:'teoria'}); });
 }
@@ -1266,6 +1271,7 @@ function vPainel(){
   app.innerHTML=`<div class="sec-title"><h2>Painel</h2><span class="eyebrow">${plural(answered.length,'resposta registrada','respostas registradas')} · ${daysLeft()} dias para a prova</span></div>
   <div class="panel pronto" style="margin-bottom:14px"><div class="eyebrow">pronto para a prova?</div><b class="hb">${prOk} de ${pr.length} critérios atingidos</b>
     ${pr.map(x=>`<div class="pr ${x.ok?'ok':''}"><span class="ck" aria-hidden="true">${x.ok?'✓':'○'}</span><span><span class="sr">${x.ok?'Atingido: ':'Falta: '}</span>${x.t}<small class="muted" style="display:block">${x.v}</small></span></div>`).join('')}
+    ${(()=>{ const c=chanceCortes(); return c?`<div class="pr ok"><span class="ck" aria-hidden="true">%</span><span>Chance estimada de passar nos cortes, se a prova fosse com o seu acerto de hoje: <b>Específicas (20 de 40) ${Math.round(c.e*100)}%</b> · <b>Gerais (10 de 20, sem zerar nenhuma) ${Math.round(c.g*100)}%</b><small class="muted" style="display:block">Conta binomial com o seu acerto de primeira, que costuma subestimar (a segunda tentativa não conta). Serve de termômetro, não de promessa.</small></span></div>`:`<div class="pr"><span class="ck" aria-hidden="true">%</span><span>Chance de passar nos cortes: responda pelo menos 15 questões específicas e 8 de cada geral para a conta aparecer.</span></div>`; })()}
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">Os critérios são visíveis e conferíveis; nenhum número garante aprovação. O que ranqueia é a nota das 40 questões específicas, então não adianta passar no corte de Português e Matemática e ficar fraco em Elétrica.</p></div>
   <div class="grid2">
     <div class="panel"><div class="eyebrow">por bloco da prova</div><p class="muted" style="font-family:var(--read);font-size:14px">A linha preta marca o corte: 50% em cada bloco. A barra é o seu acerto de primeira aqui.</p>
@@ -1482,6 +1488,16 @@ function prontoCriterios(){
     {ok:feitos>=3, t:'Pelo menos 3 simulados ou provas completas feitos com relógio', v:`${feitos} feitos`},
     {ok:dayStreak()>=7, t:'Sequência de 7 dias de estudo', v:`${dayStreak()} dia(s)`}
   ];
+}
+/* Chance de passar nos cortes: binomial com o seu acerto de primeira (prior de 2 acertos e 2 erros, para amostra pequena).
+   Específicas: 20 de 40. Gerais: 10 de 20 (Português + Matemática) e nenhuma das duas zerada (edital 7.1.4.3). */
+function binom(n,p){ const d=[]; let c=Math.pow(1-p,n); d.push(c); for(let k=1;k<=n;k++){ c=c*(n-k+1)/k*p/(1-p); d.push(c); } return d; }
+function chanceCortes(){
+  const el=volStats('EL'), mt=volStats('MT'), pt=volStats('PT'), P=s=>(s.ok+2)/(s.done+4);
+  if(el.done<15||mt.done<8||pt.done<8) return null;
+  const e=binom(40,P(el)).slice(20).reduce((a,b)=>a+b,0);
+  const a=binom(10,P(mt)), b=binom(10,P(pt)); let g=0; a.forEach((x,i)=>b.forEach((y,j)=>{ if(i+j>=10&&i>=1&&j>=1) g+=x*y; }));
+  return {e,g};
 }
 function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }); return {done:d,n:p.tasks.length}; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
@@ -2108,6 +2124,7 @@ render();
 </style>
 <script src="vendor/gsap.min.js" defer></script>
 <script src="vendor/lenis.min.js" defer></script>
+<script src="vendor/confetti.browser.min.js" defer></script>
 <script src="js/motion.js" defer></script>
 <script src="pwa.js" defer></script>
 <script src="gist-sync.js" defer></script>
