@@ -59,3 +59,7 @@ Nenhuma bloqueia o trabalho:
 ## Como continuar
 
 Pegue a primeira tarefa ⬜ ou ⏳ da tabela e leia o texto dela no plano. Siga o `AGENTS.md`, rode a revisão independente, faça commit, push e atualize esta página.
+
+## Interface de estudo (2026-11-14)
+
+Referências: StudyRise e PLABRevisions (painel de preparo com critérios visíveis, checklist da semana da prova), Duolingo (um passo claro por vez), TEC Concursos (filtros por assunto do edital, que o Treino já cobre). Feito: painel "Plano de hoje" na tela inicial (fase, barra, tarefas abríveis); painel "Pronto para a prova?" no Painel (4 critérios; limiares de 60%, 20 respostas e 3 simulados são escolha nossa, não do edital); "Semana da prova" nos últimos 7 dias (itens 8.3.1 e 8.18 do edital). Sem revisão independente (só interface).

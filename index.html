@@ -347,6 +347,17 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .node .nb{border:1px solid var(--rule);border-left:4px solid var(--lc);border-radius:8px;padding:8px 10px;background:var(--surface);text-align:left;cursor:pointer;max-width:240px;font-family:var(--read);font-size:14.5px;line-height:1.35}
 .node .nb b{display:block;font-family:var(--mono);font-size:11px;color:var(--lc)}
 .node .ar{color:var(--muted);padding:0 6px;font-family:var(--mono)}
+.hoje,.tmin,.pronto{display:grid;gap:8px;margin:0 0 14px}
+.hb{font-size:17px;font-weight:800;letter-spacing:-.01em}
+.hoje .bar2{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}.hoje .bar2 i{display:block;height:100%;background:var(--gold)}
+.ptk{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;text-align:left;border:1px solid var(--rule);background:var(--surface);border-radius:var(--r-sm);padding:9px 11px;cursor:pointer;font-size:14.5px}
+.ptk:hover:not(:disabled){border-color:var(--ink)}.ptk:disabled{cursor:default;opacity:.8}
+.ck{width:20px;height:20px;border-radius:50%;border:2px solid var(--rule);display:grid;place-items:center;font-size:12px;font-weight:800;line-height:1}
+.ptk.done{background:var(--sunk)}.ptk.done .ck,.pr.ok .ck{background:var(--ok);border-color:var(--ok);color:var(--on-color)}
+.pr{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:14.5px}.pr .ck{border:0;color:var(--muted);font-size:16px}
+.tmin{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-ink)}.tmin small{color:inherit;opacity:.85}
+.tmr{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;font-size:14.5px;cursor:pointer}.tmr input{width:18px;height:18px;accent-color:var(--gold);margin:1px 0 0}
+.sr{position:absolute;left:-9999px}
 .day{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule)}
 .day.today{background:var(--gold-soft);border-radius:var(--r);padding:14px;border-bottom:0}
 .day .dl{font-family:var(--mono);font-size:13px;font-weight:600}
@@ -802,7 +813,6 @@ function vLinhas(){
   const rc=DATA.recal.find(r=>!S.recal[r.vol+r.num]);
   const tasks=[];
   const last=lsGet('edo-last'); if(last&&M[last.id]&&!M[last.id].emBreve){ const lm=M[last.id], ls=modStats(lm.id); if(ls.done<ls.n) tasks.push({lc:lm.line,ic:'▸',t:`Continuar: ${lm.id} · ${lm.title}`,s:`Você parou em ${({teoria:'Teoria',formulas:'Fórmulas',resumo:'Cartões-resumo',vf:'V ou F',q:'Questões',tutor:'Tutor',notas:'Anotações'})[last.tab]||'Teoria'} · ${ls.done}/${ls.n} questões`,act:()=>go('mod',{id:lm.id,tab:last.tab})}); }
-  if(pday){ const pd=planDone(pday); tasks.push({ic:'▦',t:`Plano de hoje: ${pday.foco}`,s:`${pd.done} de ${pd.n} tarefas feitas · ${pday.l}`,act:()=>go('plano'),done:pd.done===pd.n}); }
   nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${plural(PESO23[m.id]||0,'questão','questões')} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
@@ -813,12 +823,19 @@ function vLinhas(){
   const el=volStats('EL'), mt=volStats('MT'), pt=volStats('PT');
   const open=DATA.modules.filter(m=>STUDY_LINES.includes(m.line)&&!m.emBreve);
   const dl=daysLeft();
+  const hoje=pday?(()=>{ const pd=planDone(pday); return `<div class="panel hoje"><div class="eyebrow">${pday.l} · ${planFase(pday.d)}</div><b class="hb">Plano de hoje: ${esc(pday.foco)}</b>
+      <div class="bar2"><i style="width:${pct(pd.done,pd.n)}%"></i></div><small class="muted">${pd.done} de ${pd.n} tarefas feitas${pd.done===pd.n?'. Dia fechado.':''}</small>
+      ${pday.tasks.map((t,i)=>`<button class="ptk ${taskDone(pday,i)?'done':''}" data-pt="${i}"${taskGo(t)?'':' disabled'}><span class="ck" aria-hidden="true">${taskDone(pday,i)?'✓':''}</span><span>${taskDone(pday,i)?'<span class="sr">Feita: </span>':''}${taskLabel(t)}</span></button>`).join('')}
+      <button class="chipbtn" id="vPl">ver o plano inteiro</button></div>`; })():'';
+  const TM=['Cartão de confirmação aberto: local, horário e trajeto conferidos (sai em 01/12)','Documento de identidade original e caneta esferográfica preta de material transparente separados','Chegada ao local 1 hora antes do início, com margem para o trânsito','Celular desligado e guardado; sem relógio de qualquer tipo, nem de pulso','Sem conteúdo novo: só caderno de erros, fórmulas e cartões']; // edital 8.3.1, 8.18 e regras de sala
+  const tmin=(dl<=7)?`<div class="panel tmin"><b class="hb">Semana da prova: ${dl===0?'é hoje':dl===1?'falta 1 dia':'faltam '+dl+' dias'}</b>${TM.map((x,i)=>`<label class="tmr"><input type="checkbox" data-tm="${i}" ${S.plan['tm|'+i]?'checked':''}><span>${x}</span></label>`).join('')}<small class="muted">Itens do edital nº 03: 8.3.1 (chegar 1 hora antes) e 8.18 (caneta). Confira o resto no cartão de confirmação.</small></div>`:'';
   app.innerHTML=`
   <section class="hero">
     <div class="mission">
       <div class="eyebrow">Missão de hoje · ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div>
       <h2>${done===0?'Comece pela estação que mais pesou na prova de 2023.':'Continue de onde parou. A ordem abaixo já considera seus erros.'}</h2>
       ${done===0?'<p class="lead">A missão escolhe as estações pelo peso de cada item do edital na prova de 2023 e pelo que você errou aqui. Itens que caíram mais vêm primeiro.</p>':''}
+      ${tmin}${hoje}
       ${tasks.length?`<button class="next ${tasks[0].lc?'lc-'+tasks[0].lc:''}" data-i="0"><span class="eyebrow">Próximo passo</span><b>${esc(tasks[0].t)}</b><small>${esc(tasks[0].s)}</small><span class="cta">Começar ${ICON.go}</span></button>`:''}
       <div class="tasks">${tasks.map((t,i)=>i===0?'':`<button class="task ${t.done?'done':''} ${t.lc?'lc-'+t.lc:''}" data-i="${i}"><span class="ic">${TASK_IC[t.ic]||esc(t.ic)}</span><span><b>${esc(t.t)}</b><small>${esc(t.s)}</small></span><span class="go" aria-hidden="true">${ICON.go}</span></button>`).join('')}</div>
     </div>
@@ -845,6 +862,9 @@ function vLinhas(){
         return `<button class="st ${cls}" data-m="${m.id}" title="${esc(m.title)}">${m.faixa==='A'?'<span class="fa">A</span>':''}<span class="c"></span><span class="code">${m.id}</span><span class="t">${esc(m.title.split(/[:(]/)[0])}</span></button>`}).join('')}</div></div>`:'<p class="soon-line">Estações em breve.</p>'}</div>`}).join('')}
   <div class="legend"><span><i></i>não iniciado</span><span><i style="background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)"></i>em andamento</span><span><i style="background:var(--muted)"></i>concluído</span><span><i style="box-shadow:0 0 0 2px var(--ok)"></i>tudo certo</span><span><i style="box-shadow:0 0 0 2px var(--bad)"></i>menos de 2 de 3</span><span><b class="chip A">A</b> pesou mais em 2023</span></div>`;
   app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
+  app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
+  if($('#vPl')) $('#vPl').onclick=()=>go('plano');
+  app.querySelectorAll('[data-tm]').forEach(c=>c.onchange=()=>{ S.plan['tm|'+c.dataset.tm]=c.checked; save(); });
   app.querySelectorAll('.st').forEach(b=>b.onclick=()=>{ if(b.dataset.soon){ toast('Estação em breve: o conteúdo chega numa próxima etapa.'); return; } go('mod',{id:b.dataset.m,tab:'teoria'}); });
 }
 
@@ -1242,7 +1262,11 @@ function vPainel(){
   const boxes=[0,1,2,3,4,5].map(b=>Object.values(S.cards).filter(c=>c.box===b).length); const unseen=DATA.cards.length-Object.keys(S.cards).length;
   const ed=editalStats();
   const worst=DATA.modules.map(m=>({m,s:modStats(m.id)})).filter(x=>x.s.done).sort((a,b)=>a.s.ok/a.s.done-b.s.ok/b.s.done).slice(0,4);
+  const pr=prontoCriterios(), prOk=pr.filter(x=>x.ok).length;
   app.innerHTML=`<div class="sec-title"><h2>Painel</h2><span class="eyebrow">${plural(answered.length,'resposta registrada','respostas registradas')} · ${daysLeft()} dias para a prova</span></div>
+  <div class="panel pronto" style="margin-bottom:14px"><div class="eyebrow">pronto para a prova?</div><b class="hb">${prOk} de ${pr.length} critérios atingidos</b>
+    ${pr.map(x=>`<div class="pr ${x.ok?'ok':''}"><span class="ck" aria-hidden="true">${x.ok?'✓':'○'}</span><span><span class="sr">${x.ok?'Atingido: ':'Falta: '}</span>${x.t}<small class="muted" style="display:block">${x.v}</small></span></div>`).join('')}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Os critérios são visíveis e conferíveis; nenhum número garante aprovação. O que ranqueia é a nota das 40 questões específicas, então não adianta passar no corte de Português e Matemática e ficar fraco em Elétrica.</p></div>
   <div class="grid2">
     <div class="panel"><div class="eyebrow">por bloco da prova</div><p class="muted" style="font-family:var(--read);font-size:14px">A linha preta marca o corte: 50% em cada bloco. A barra é o seu acerto de primeira aqui.</p>
       <div class="bars">${Object.entries(BLOCKS).map(([v,b])=>{ const st=volStats(v); return `<div class="brow lc-${b.lines[0]}"><span>${b.name}</span><span class="track2"><i style="width:${st.done?pct(st.ok,st.done):0}%"></i><b style="left:50%"></b></span><span class="mono">${st.done?pct(st.ok,st.done)+'%':'—'}</span></div>`; }).join('')}</div>
@@ -1446,6 +1470,19 @@ function bNR10(){
 function isoToday(){ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function planToday(){ return DATA.plan.find(p=>p.d===isoToday()); }
 function taskDone(p,i){ const t=p.tasks[i]; if(t.k==='mod'&&M[t.a]){ const s=modStats(t.a); if(s.done===s.n) return true; } if(t.k==='prova'&&EX[(t.a||'').split(':')[0]]){ const [ex,ar]=t.a.split(':'); const ds=allRuns(ex).filter(runReal).map(r=>r.areas).join(''); if(ar.split('').every(a=>ds.includes(a))) return true; } return !!S.plan[p.d+'|'+i]; }
+function planFase(d){ return d<'2026-11-16'?'início do plano':d<'2026-11-25'?'fase 1 · primeira passada':d<'2026-11-28'?'fase 2 · simulado e pontos fracos':d<'2026-12-05'?'fase 3 · provas e segunda passada':'fase 4 · véspera'; }
+/* Painel "Pronto para a prova?": quatro critérios visíveis, sem nota escondida. Nenhum número garante aprovação. */
+function prontoCriterios(){
+  const bl=['EL','MT','PT'].map(v=>({v,n:BLOCKS[v].name,...volStats(v)}));
+  const read=DATA.modules.filter(m=>!m.emBreve&&S.read[m.id]).length, tot=DATA.modules.filter(m=>!m.emBreve).length;
+  const feitos=(S.sims||[]).length+allRuns('t23').filter(runReal).length;
+  return [
+    {ok:bl.every(b=>b.done>=20&&b.ok/b.done>=0.6), t:'Acerto de primeira em 60% ou mais nos três blocos (margem de 10 pontos sobre o corte de 50%), com pelo menos 20 respostas em cada', v:bl.map(b=>`${b.n} ${b.done?pct(b.ok,b.done)+'%':'—'} (${b.done})`).join(' · ')},
+    {ok:read>=tot*0.9, t:'Teoria lida em 90% das estações', v:`${read} de ${tot}`},
+    {ok:feitos>=3, t:'Pelo menos 3 simulados ou provas completas feitos com relógio', v:`${feitos} feitos`},
+    {ok:dayStreak()>=7, t:'Sequência de 7 dias de estudo', v:`${dayStreak()} dia(s)`}
+  ];
+}
 function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }); return {done:d,n:p.tasks.length}; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
 function taskGo(t){
