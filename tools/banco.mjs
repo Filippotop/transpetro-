@@ -21,6 +21,7 @@
              (o app não tem questão de clicar na figura nem de ordenar; a figura continua junto da questão)
    - As figuras vêm das estações (as mesmas, já revisadas, com classes s-*); as do comando de partida direta e de
      reversão são desenhadas pelo próprio banco. Os marcadores de seta de cada figura ganham ids próprios da questão. */
+import { planoLetras } from './letras.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -70,6 +71,15 @@ for (const id of [...ESTACOES, ...NOVAS]) {
   for (const t of M.trocas || []) { if (src.split(t.de).length !== 2) throw new Error(`${id}: troca que não bate uma vez`); src = src.replace(t.de, () => t.para); }
   QUIZ[id] = vm.runInNewContext('(' + src.match(/const QUIZ\s*=\s*(\{[\s\S]*?\});\s*\n\s*const L\b/)[1] + ')');
 }
+/* Plano de troca das letras corretas dos exercícios da Teoria (tools/letras.mjs): a questão da aba Questões segue o exercício. */
+const PLANOS = Object.fromEntries(Object.keys(QUIZ).map(id => [id, planoLetras(id, QUIZ[id])]));
+const trocaLetras = (q, de, para) => {
+  const i = LET.indexOf(de), j = LET.indexOf(para);
+  q.alts = q.alts.slice(); /* o array pode ser compartilhado com o QUIZ ou com outra questão */
+  [q.alts[i], q.alts[j]] = [q.alts[j], q.alts[i]];
+  for (const o of [q.ex, q.traps, q.erros]) { const a = o[de], b = o[para]; if (b === undefined) delete o[de]; else o[de] = b; if (a === undefined) delete o[para]; else o[para] = a; }
+  q.ans = para;
+};
 
 /* ---- figuras ---- */
 const svgClasses = svg => svg.replace(/\sclass="([^"]*)"/g, (_, c) => ` class="${c.split(/\s+/).filter(Boolean).map(x => 's-' + x).join(' ')}"`);
@@ -135,11 +145,12 @@ for (const q0 of todas) {
   const r = REV[q0.id];
   if (!r) { faltam.push(q0.id); continue; }
   usados.add(q0.id);
-  let q = q0, mod = r.mod, hab = r.h, tag = r.tag;
+  let q = q0, mod = r.mod, hab = r.h, tag = r.tag, gemeo = null;
   if (q0.fonte === 'APOST') {
     const [, t, b, i] = q0.id.split(':');
     const [est, sec, h] = BLOCO[t][b];
     const ex = QUIZ[est][b] && QUIZ[est][b][+i];
+    gemeo = { est, k: `${b}:${+i}` };
     if (!ex) throw new Error(`${q0.id}: exercício não encontrado na apostila da ${est}`);
     q = { ...q0, s: ex.s, o: ex.o, a: ex.a, c: ex.c };
     mod = mod || est; hab = hab || h; tag = tag || secTitulo(est, sec);
@@ -174,6 +185,8 @@ for (const q0 of todas) {
     alts: q.o, ans, ex, traps, erros, hab, dif: { f: 'fácil', m: 'média', d: 'difícil' }[r.d],
     ...(r.conta ? { conta: [].concat(r.conta) } : {}), src: '', origem: q0.id,
   });
+  const pl = gemeo && PLANOS[gemeo.est][gemeo.k];
+  if (pl) { const o = out[out.length - 1]; if (o.ans !== LET[pl.de]) throw new Error(`${q0.id}: plano de letras fora de sincronia`); trocaLetras(o, LET[pl.de], LET[pl.para]); }
 }
 for (const id of Object.keys(REV)) if (!usados.has(id)) throw new Error('revisão para questão que não existe: ' + id);
 
@@ -206,6 +219,45 @@ for (const est of NOVAS) {
   }
 }
 if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.join(' ')}`); if (!process.argv.includes('--parcial')) process.exit(1); }
+
+/* Equilíbrio das letras corretas. O app não embaralha as alternativas, então uma letra que concentra as respostas de uma estação
+   (E3 tinha 12 B em 18) vira palpite que rende. Para cada estação, as questões que passam do teto de ceil(n/5) por letra
+   trocam a correta de lugar com a alternativa da letra menos usada (troca de duas posições, determinística pelo id: a revisão
+   e as explicações vão junto). Ficam como estão: alternativas numéricas em ordem (crescente ou decrescente) e questões em que
+   algum texto cita letra ou posição ("alternativa C", "a segunda", "(A)", "todas as anteriores"). */
+{
+  const txt = t => String(t).replace(/<[^>]+>/g, '');
+  const cita = q => /\b(alternativas? [A-E]\b|opç(?:ão|ões) [A-E]\b|letras? [A-E]\b|\([A-E]\)|[A-E]\)|primeira|segunda|terceira|quarta|quinta|anteriores?|nenhuma d[ao]s?|todas as|ambas)/i.test([q.cmd, ...q.alts, ...Object.values(q.ex)].map(txt).join(' | '));
+  const emOrdem = q => {
+    const n = q.alts.map(a => { const m = txt(a).replace(/\./g, '').replace(',', '.').match(/-?\d+(\.\d+)?/); return m ? +m[0] : null; });
+    return n.every(x => x !== null) && (n.every((x, i) => !i || x >= n[i - 1]) || n.every((x, i) => !i || x <= n[i - 1]));
+  };
+  const hash = id => [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const L5 = 'ABCDE';
+  const troca = (q, de, para) => {
+    const i = L5.indexOf(de), j = L5.indexOf(para);
+    q.alts = q.alts.slice();
+    [q.alts[i], q.alts[j]] = [q.alts[j], q.alts[i]];
+    for (const o of [q.ex, q.traps, q.erros]) { const a = o[de], b = o[para]; if (b === undefined) delete o[de]; else o[de] = b; if (a === undefined) delete o[para]; else o[para] = a; }
+    q.ans = para;
+  };
+  const porMod = {};
+  for (const q of out) (porMod[q.mod] = porMod[q.mod] || []).push(q);
+  let movidas = 0;
+  for (const qs of Object.values(porMod)) {
+    const teto = Math.ceil(qs.length / 5), cont = Object.fromEntries([...L5].map(l => [l, 0]));
+    qs.forEach(q => cont[q.ans]++);
+    for (const q of qs) {
+      if (cont[q.ans] <= teto || /^[ae]:\w+:b\d+:\d+$/.test(q.origem) || cita(q) || emOrdem(q)) continue; /* os exercícios da Teoria (a: e e:…bN:i) têm gêmeo na Teoria da estação: não mudam */
+      const livres = [...L5].filter(l => cont[l] < teto && l !== q.ans);
+      if (!livres.length) continue;
+      const menor = Math.min(...livres.map(l => cont[l])), cand = livres.filter(l => cont[l] === menor);
+      const alvo = cand[hash(q.id) % cand.length];
+      cont[q.ans]--; cont[alvo]++; troca(q, q.ans, alvo); movidas++;
+    }
+  }
+  console.log(`letras: ${movidas} questões tiveram a correta trocada de lugar`);
+}
 
 /* Numeração por estação, na ordem do banco: E1.1, E1.2… */
 const cont = {};

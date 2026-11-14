@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { planoLetras, aplicaPlano } from './letras.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -34,6 +35,8 @@ for (const t of M.trocas || []) {
 /* Exercícios: o objeto QUIZ do <script> da apostila. */
 const qm = src.match(/const QUIZ\s*=\s*(\{[\s\S]*?\});\s*\n\s*const L\b/);
 const QUIZ = qm ? vm.runInNewContext('(' + qm[1] + ')') : {};
+/* Equilíbrio das letras corretas (tools/letras.mjs; a aba Questões, em tools/banco.mjs, aplica o mesmo plano). */
+aplicaPlano(QUIZ, planoLetras(id, QUIZ));
 /* Exercícios de seções novas, escritas para a estação (campo quiz dos metadados). */
 Object.assign(QUIZ, M.quiz || {});
 /* Exercícios novos no fim de um bloco que já existe na apostila (campo quizMais: {b5: […]}). */

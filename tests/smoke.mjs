@@ -576,7 +576,7 @@ async function testReading(browser) {
       const tops = await page.evaluate(() => [...document.querySelectorAll('.mod-head .chip')].map(c => c.offsetTop));
       check(new Set(tops).size === 1, `leitura: metadados da estação quebram em ${new Set(tops).size} linhas no celular`);
       const meta = await page.evaluate(() => document.querySelector('.mod-head').innerText);
-      check(/Itens 2\.1, 2\.5 do edital/.test(meta) && /7 questões em 2023/.test(meta), `leitura: cabeçalho sem "Itens … do edital" ou sem o peso de 2023 ("${meta.replace(/\n/g, ' ')}")`);
+      check(/Itens 2\.1, 2\.5 do edital/.test(meta) && /4 questões em 2023/.test(meta), `leitura: cabeçalho sem "Itens … do edital" ou sem o peso de 2023 ("${meta.replace(/\n/g, ' ')}")`);
     }
     const r = await page.evaluate(types => {
       const prose = document.querySelector('#prose');

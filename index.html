@@ -26,7 +26,7 @@
   --bg:#F2F3F7; --surface:#FFFFFF; --sunk:#E8EAF1; --ink:#141A2E; --muted:#5A6079; --rule:#D7DBE6;
   --gold:#8F6300; --gold-soft:#F6E7C1; --gold-ink:#3D2A00;
   --h:#C33A33; --g:#1F7F55; --f:#3150C8; --s:#8A3BAE; --rd:#0E7C86; --pg:#8A5A00;
-  --ok:#1E7A4A; --ok-soft:#DDF1E5; --bad:#B3261E; --bad-soft:#F9DEDB; --warn:#A35F00; --warn-soft:#FCEBD0;
+  --ok:#1E7A4A; --ok-soft:#DDF1E5; --bad:#B3261E; --bad-soft:#F9DEDB; --warn:#8F5300; --warn-soft:#FCEBD0;
   --display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --read:"Source Serif 4", Georgia, "Times New Roman", serif;
   --mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -775,6 +775,7 @@ function examTarget(){ return EXAM; }
 function daysLeft(){ const n=new Date(), t=examTarget(); const a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()); const b=Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()); return Math.max(0,Math.round((b-a)/86400000)); }
 /* Peso da estação: nº de questões da prova de 2023 que caem nela (DATA.mapa2023), não o peso2023 do item inteiro. */
 const PESO23={}; Object.values(DATA.mapa2023||{}).forEach(id=>{ if(id) PESO23[id]=(PESO23[id]||0)+1; });
+if(!PESO23.P1) PESO23.P1=10; /* questões 1 a 10 de 2023 são de Português; ficam null no mapa para não mexer na ordem do Plano */
 /* Prioridade da estação: faixa e peso na prova de 2023, mais o que você errou aqui. */
 function priority(m){
   if(m.emBreve) return -99;
@@ -887,7 +888,7 @@ function vMod(){
   const lineAll=DATA.modules.filter(x=>x.line===m.line); const lineMods=lineAll.filter(x=>!x.emBreve); const idx=lineMods.indexOf(m);
   app.innerHTML=`<div class="lc-${m.line}">
     <button class="back" id="back">← mapa das linhas</button>
-    <div class="mod-head"><div class="row" tabindex="0" role="group" aria-label="Dados da estação"><span class="eyebrow">Linha ${LINES[m.line].name} · estação ${lineAll.indexOf(m)+1} de ${lineAll.length}</span><span class="chip ${m.faixa}">Faixa ${m.faixa}</span><span class="chip">Itens ${esc(m.itens||'')} do edital</span><span class="chip">${m.peso2023||0} ${m.peso2023===1?'questão':'questões'} em 2023</span><span class="chip">leitura ~${Math.max(3,Math.round(strip(m.html).split(/\s+/).length/180))} min</span></div>
+    <div class="mod-head"><div class="row" tabindex="0" role="group" aria-label="Dados da estação"><span class="eyebrow">Linha ${LINES[m.line].name} · estação ${lineAll.indexOf(m)+1} de ${lineAll.length}</span><span class="chip ${m.faixa}">Faixa ${m.faixa}</span><span class="chip">Itens ${esc(m.itens||'')} do edital</span><span class="chip">${plural(PESO23[m.id]||0,'questão','questões')} em 2023</span><span class="chip">leitura ~${Math.max(3,Math.round(strip(m.html).split(/\s+/).length/180))} min</span></div>
       <h1>${m.id} · ${esc(m.title)}</h1>${m.note?`<p class="note">${m.note}</p>`:''}</div>
     <div class="subtabs">
       ${[['teoria','Teoria'],...(m.formulas&&m.formulas.length?[['formulas','Fórmulas']]:[]),['resumo','Cartões-resumo'],['vf','V ou F'],['q',`Questões ${s.done}/${s.n}`],['notas',S.snotes[m.id]?'Anotações ●':'Anotações'],['tutor','Pergunte ao tutor']].map(([k,l])=>`<button data-t="${k}" aria-current="${k===tab}" class="${k==='tutor'?'tutor-only':''}">${l}</button>`).join('')}
@@ -1172,7 +1173,7 @@ function vSim(){
     let picked=shuffle(p);
     if(cfg.foco==='tudo'||cfg.foco==='EL'||cfg.foco==='MT'||cfg.foco==='PT'){ const by={}; picked.forEach(q=>(by[q.mod]=by[q.mod]||[]).push(q)); const esc1=simCotas(p,cfg.n,cfg.foco).flatMap(([m,n])=>by[m].slice(0,n)); const ja=new Set(esc1); picked=shuffle(esc1.concat(picked.filter(q=>!ja.has(q)).slice(0,Math.max(0,cfg.n-esc1.length)))); }
     picked=picked.slice(0,cfg.n);
-    SIM={qs:picked.map(q=>q.id),ans:{},cur:0,start:Date.now(),limit:picked.length*240000,running:true}; simSave(); simRun(); };
+    SIM={qs:picked.map(q=>q.id),ans:{},cur:0,start:Date.now(),limit:picked.length*((cfg.foco==='PT'||cfg.foco==='MT')?120000:240000),running:true}; simSave(); simRun(); };
 }
 /* Proporção da prova de 2023: as n questões se dividem entre as estações com questões pelo peso2023 de cada uma
    (maiores restos). Estações que dividem o peso de um item (as notas delas dizem "dividido com…") contam a metade:
@@ -1544,7 +1545,7 @@ function vPlano(){
   const prova=`<div class="day"><div class="dl">dom 06/12<small>prova</small></div><div><b style="font-size:16px">Prova Transpetro · Cesgranrio</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">40 questões específicas e 20 gerais (10 de Português e 10 de Matemática). Data da retificação do edital (DOU de 10/09/2026). O cartão de confirmação, com local e horário, sai em 1º/12.</p></div></div>`;
   app.innerHTML=`<div class="sec-title"><h2>Plano até a prova</h2><span class="eyebrow">${done} de ${tot} tarefas · ${daysLeft()} dias</span></div>
     ${DATA.plan.length?`<div class="panel" style="margin-bottom:14px"><div class="stat" style="border:0;padding:0"><div class="bar2"><i style="width:${pct(done,tot)}%"></i></div></div>
-    <p style="font-family:var(--read);margin:10px 0 0;font-size:15.5px">Primeira passada (16 a 24/11): as estações vêm na ordem do peso de cada item na prova de 2023. Depois, simulado, pontos fracos e provas reais; a véspera é só para reler. A nota que ranqueia é a das 40 questões específicas (a de Português e Matemática soma depois e só elimina abaixo de 50%). As tarefas <span class="out mono" style="font-size:10px;background:var(--sunk);border-radius:4px;padding:1px 5px">fora do app</span> você marca à mão. Estações e provas se marcam sozinhas quando concluídas.</p>
+    <p style="font-family:var(--read);margin:10px 0 0;font-size:15.5px">Primeira passada (16 a 24/11): as estações vêm na ordem do peso de cada estação na prova de 2023. Depois, simulado, pontos fracos e provas reais; a véspera é só para reler. A nota que ranqueia é a das 40 questões específicas (a de Português e Matemática soma depois e só elimina abaixo de 50%). As tarefas <span class="out mono" style="font-size:10px;background:var(--sunk);border-radius:4px;padding:1px 5px">fora do app</span> você marca à mão. Estações e provas se marcam sozinhas quando concluídas.</p>
     <details style="margin-top:10px"><summary><b>Provas reais anteriores (fora do app)</b></summary>
       <p style="font-family:var(--read);margin:8px 0 0;font-size:15px">Mesma banca e mesmo cargo, 60 questões, 4 horas. Faça com relógio, sem consulta. Os gabaritos ficam nas mesmas páginas; o de 2018 traz todas as provas daquele dia (procure a Prova 6).</p>
       <ul style="font-family:var(--read);font-size:15px;margin:6px 0 0">
@@ -1738,7 +1739,7 @@ function readProgress(){
   const r=pr.getBoundingClientRect(); const total=r.height-window.innerHeight*0.6; const done=Math.min(1,Math.max(0,(-r.top+120)/Math.max(1,total)));
   bar.firstElementChild.style.width=(done*100)+'%';
 }
-window.addEventListener('scroll',()=>{ readProgress(); const tt=$('#totop'); if(tt) tt.hidden=window.scrollY<1200 || !!(SIM&&SIM.running&&view!=='treino'); },{passive:true});
+window.addEventListener('scroll',()=>{ readProgress(); const tt=$('#totop'); if(tt) tt.hidden=window.scrollY<1200 || view==='plano' || !!(SIM&&SIM.running&&view!=='treino'); },{passive:true});
 $('#totop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 
 /* ---- simulado salvo ---- */

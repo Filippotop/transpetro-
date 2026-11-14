@@ -14,7 +14,7 @@
   var R = function (a, t) { return { k: 'rev', a: a, t: t }; };
   var T = function (k, a, t) { return { k: k, a: a, t: t }; };
   var O = function (t) { return { k: 'out', t: t }; };
-  var MAT = 'Matemática fora do app (o app ainda não tem estação de Matemática): 40 min de ';
+  var MAT = 'Matemática, 40 min de ';
   /* md = 'MM-DD'; o rótulo (dia da semana + DD/MM) vem de l + data */
   var dia = function (md, l, foco, tasks) { return { d: '2026-' + md, l: l + ' ' + md.slice(3) + '/' + md.slice(0, 2), foco: foco, tasks: tasks }; };
   D.plan = [

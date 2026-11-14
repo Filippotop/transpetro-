@@ -23,7 +23,7 @@ html[data-fx="full"] .line.live .stations::after{content:"";position:absolute;to
 @keyframes edo-flow{0%{left:44px;opacity:0}8%{opacity:.95}55%{left:calc(100% - 100px);opacity:.95}62%,100%{left:calc(100% - 100px);opacity:0}}
 
 /* Marca: o "de Ouro" reflete a luz de tempos em tempos. */
-html[data-fx]:not([data-fx="off"]) .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
+html[data-fx="full"] .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
 @keyframes edo-shine{0%,60%{background-position:120% 0}100%{background-position:-120% 0}}
 
 /* Números de largura fixa (não pulam quando mudam) e troca de aba com fusão nativa. */

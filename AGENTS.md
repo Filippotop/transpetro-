@@ -51,7 +51,7 @@ npx serve .                               # e abra http://localhost:3000/
 - Estações que ainda não existem ficam em `data/embreve.js` (`emBreve:true`).
 - Todo arquivo novo usado em tempo de execução entra em `SHELL_FILES` no `sw.js`, e `VER` precisa mudar.
 
-Os campos de uma estação são `{id, vol:'EL'|'MT', line:'E'|'M'|'I'|'A'|'N'|'X', title, itens, faixa:'A'|'B'|'C', peso2023, note, html, resumo, formulas, qs, emBreve?}`.
+Os campos de uma estação são `{id, vol:'EL'|'MT'|'PT', line:'E'|'M'|'I'|'A'|'N'|'X'|'P'|'C', title, itens, faixa:'A'|'B'|'C', peso2023, note, html, resumo, formulas, qs, emBreve?}`.
 
 ## Para criar uma estação NOVA (sem aprofundamento do estudante)
 

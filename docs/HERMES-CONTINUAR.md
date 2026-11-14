@@ -1,5 +1,7 @@
 # Para o Hermes: continuar o app "Elétrica de Ouro"
 
+> **Estado em 2026-11-14:** a prova é em **06/12/2026** (retificação do DOU de 10/09/2026; antes 29/11). As 17 estações (E1–E3, M1–M3, I1–I3, A1, A2, N1, X1–X3, P1, C1) estão prontas e publicadas. O que está escrito abaixo é o histórico de 10/11 (datas, "o que falta" e "estado do repositório" estão superados); o estado atual está em `docs/PROGRESSO.md`.
+
 Atualizado em 2026-11-10. A prova da Transpetro 2026 (Cesgranrio, nível médio, Ênfase 8: Manutenção – Elétrica) é em **29/11/2026**, faltam 19 dias. Responda ao estudante em **português (pt-BR)**, seja direto e honesto, sem elogios.
 
 ## 0. Cole isto para começar

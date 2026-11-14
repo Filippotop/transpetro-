@@ -10,7 +10,7 @@
   const SEL='.pagehead,.panel,.stat,.task,.next,.line,.aring,.excard,.q,.fc,.err,.game,.prompt';
   let cur='', undo=[], lastKey=null, io=null;
 
-  const mode=()=>{ const p=root.dataset.motion||'auto'; if(RM.matches||p==='off') return 'off'; if(p==='auto') return lowEnd?'light':'full'; return p; };
+  const mode=()=>{ const p=root.dataset.motion||'auto'; if(RM.matches||p==='off') return 'off'; if(p==='auto') return 'light'; /* Automático = leve: em celular de 8 núcleos o modo completo gastava ~6 s de CPU a cada 10 s parado. 'Completas' continua nas Preferências. */ return p; };
 
   /* Uma linha do mapa "liga": o trilho é desenhado e as estações acendem em sequência. */
   function energize(line,delay){
