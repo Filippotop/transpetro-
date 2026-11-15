@@ -31,10 +31,10 @@ Se a sessão nova for na nuvem, anexe o repositório `Filippotop/transpetro-` e 
 
 ## 4. Decisões já tomadas (não reabrir sem motivo)
 
-- Prova em 29/11/2026 (edital original; "confira a retificação" no site da Cesgranrio).
+- Prova em 06/12/2026 (retificação do DOU de 10/09/2026).
 - Numeração da prova de 2023: Português 1–10, Matemática 11–20, Específicas 21–60.
 - Q28 de 2023 (Dy5): anulada pela banca; o app ensina a regra (BT atrasada 150° da AT). Q30: anulada, provável motivo (duas alternativas iguais) é **inferência** e está dito na tela.
-- A NR-10 que a prova cobra é, provavelmente, a de 2019 (vigente em 29/11/2026); isso é inferência, marcada com `confira`.
+- A NR-10 que a prova cobra é, provavelmente, a de 2019 (vigente em 06/12/2026); isso é inferência, marcada com `confira`.
 - Peso por estação vem do `mapa2023` (`data/provas.js`), não do campo `peso2023` (que é o peso do item inteiro).
 - Geradores: letra da resposta sorteada de A a E, só erros reais (sem enchimento); exceções documentadas em `tests/questoes.test.mjs`.
 - Simulado: a partir de 15 questões, toda estação com questões entra com pelo menos 1.

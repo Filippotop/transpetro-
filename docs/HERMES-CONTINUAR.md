@@ -2,7 +2,7 @@
 
 > **Estado em 2026-11-14:** a prova é em **06/12/2026** (retificação do DOU de 10/09/2026; antes 29/11). As 17 estações (E1–E3, M1–M3, I1–I3, A1, A2, N1, X1–X3, P1, C1) estão prontas e publicadas. O que está escrito abaixo é o histórico de 10/11 (datas, "o que falta" e "estado do repositório" estão superados); o estado atual está em `docs/PROGRESSO.md`.
 
-Atualizado em 2026-11-10. A prova da Transpetro 2026 (Cesgranrio, nível médio, Ênfase 8: Manutenção – Elétrica) é em **29/11/2026**, faltam 19 dias. Responda ao estudante em **português (pt-BR)**, seja direto e honesto, sem elogios.
+Atualizado em 2026-11-10. A prova da Transpetro 2026 (Cesgranrio, nível médio, Ênfase 8: Manutenção – Elétrica) é em **06/12/2026**, faltam 19 dias. Responda ao estudante em **português (pt-BR)**, seja direto e honesto, sem elogios.
 
 ## 0. Cole isto para começar
 
@@ -53,7 +53,7 @@ Modelo de referência dos arquivos tocados por uma estação: `git show --stat 5
 
 ## 5. Decisões já tomadas (não reabrir sem motivo)
 
-- Prova em 29/11/2026 (edital original; "confira a retificação" no site da Cesgranrio).
+- Prova em 06/12/2026 (retificação do DOU de 10/09/2026).
 - Numeração da prova de 2023: Português 1–10, Matemática 11–20, Específicas 21–60. Q28 e Q30 anuladas (ponto para todos).
 - Peso por estação vem do `mapa2023` (`data/provas.js`), não do campo `peso2023` (que é o peso do item inteiro; o cabeçalho da estação mostra o do item).
 - Progresso do estudante: chave `eletrica-de-ouro-v1` no navegador. Nunca misturar com o Humanas de Ouro nem com a Bancada.
