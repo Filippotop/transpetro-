@@ -329,6 +329,10 @@ Pendências da revisão, tratadas em 2026-11-12 (segunda passada):
 
 Extras da mesma onda: X1 ganhou tempo e taxa em juros compostos e taxa proporcional × equivalente (6 questões); X3 ganhou histograma, polígono, ogiva, setores, amplitude e variância por classes (5 questões, Figura 5); P1 ganhou texto com parágrafos numerados, referente, conectivo e concordância nominal e com "ou" (8 questões). Escritas por modelo menor; ver a linha de revisão abaixo.
 
+## Lacunas da auditoria de cobertura (2026-11-15)
+
+Dez questões novas (E3: 3.1 e 3.3; M2: 7.2; I3: 8.3) e o remapeamento de b5 em T1. Revisão independente (Claude Opus 5.5, só leitura): contas e gabaritos certos; achados aplicados: distratores sem erro nomeado trocados (x2 B e C, x4 D, I3 x7 B), correta mais longa em I3 x8, "em milifarads" fora do enunciado de x8, H/henry em x7, título da fórmula e giga no glossário; b5:4 voltou ao item 3.2. Não conferido: texto literal do edital para os itens, K<sub>h</sub> = 7,2 Wh/volta contra catálogo e a regra dos 62% contra a NBR 15749 (só literatura do próprio repositório). Continuam fora do banco os quatro exercícios antigos da E3 que só aparecem na aba Teoria.
+
 ## Banco de questões (`fontes/banco-de-questoes.html` → `data/questoes.js`, aba Questões das estações e Treino)
 
 Revisão de 2026-10-25 (T4). As 205 questões do banco (158 "das apostilas" e 47 do próprio banco) passaram por revisão

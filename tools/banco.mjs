@@ -212,7 +212,7 @@ for (const est of NOVAS) {
     }
     if (!['f', 'm', 'd'].includes(q.d)) throw new Error(`${onde}: dificuldade "${q.d}"`);
     out.push({
-      id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: MODS[est].vol, mod: est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
+      id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: MODS[q.mod || est].vol, mod: q.mod || est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
       alts: q.o, ans, ex, traps, erros, hab: q.h, dif: { f: 'fácil', m: 'média', d: 'difícil' }[q.d],
       ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
     });

@@ -111,7 +111,7 @@ export default {
     D: '[unidade] 1.591 Hz usa C = 1 µF (ou L = 1 mH): errou o prefixo de um dos dois.',
     E: '[unidade] 5.033 Hz: dez vezes mais, o que sai de errar o prefixo de L e de C (LC 100 vezes menor).' } },
   /* ---------- E3 · potência e fator de potência (bloco 5) ---------- */
-  'a:T1:b5:0': { d: 'm', conta: 'Math.sqrt(100**2-60**2)/100', w: {
+  'a:T1:b5:0': { d: 'm', h: '3.3', conta: 'Math.sqrt(100**2-60**2)/100', w: {
     A: '[senCos] 0,6 = Q/S = 60/100 é o seno de φ; o fator de potência é P/S = cos φ. E não estaria adequado.',
     C: '[oposto] O FP é 0,8, mas 0,8 está abaixo de 0,92, não acima.',
     D: '[senCos] 60 é a potência reativa (kvar). A ativa é √(100² − 60²) = 80 kW.',
@@ -121,12 +121,12 @@ export default {
     B: '[semQuad] 984 var = 2.200 × √(1 − 0,8): esqueceu de elevar o FP ao quadrado; senφ = √(1 − 0,8²) = 0,6.',
     D: '[senCos] 1.760 W = 2.200 × 0,8 é a potência ativa (cosseno), não a reativa (seno).',
     E: '[aparente] 2.200 VA = V·I é a potência aparente.' } },
-  'a:T1:b5:2': { d: 'f', conta: '40*0.6/0.8', w: {
+  'a:T1:b5:2': { d: 'f', h: '3.3', conta: '40*0.6/0.8', w: {
     A: '[somaArit] 10 = 50 − 40: subtraiu as potências aparente e ativa como números comuns; elas formam um triângulo retângulo.',
     B: '[senCos] 24 = 40 × 0,6: multiplicou P pelo seno. A reativa é P·tg φ = 40 × 0,75.',
     D: '[outra] 40 é a potência ativa em kW, que não muda com a correção.',
     E: '[aparente] 50 kVA é a potência aparente inicial (40/0,8).' } },
-  'a:T1:b5:3': { d: 'f', w: {
+  'a:T1:b5:3': { d: 'f', h: '3.3', w: {
     A: '[oposto] Os capacitores fornecem reativo; a potência ativa da carga continua a mesma.',
     C: '[detalhe] A tensão nominal da carga não muda; o que diminui é a corrente que vem da fonte.',
     D: '[oposto] A potência aparente diminui, porque Q diminui e P fica igual.',

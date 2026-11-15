@@ -96,6 +96,9 @@
     F('e3-kd', 'E3', 'Constante do disco de um medidor de energia', '{K}<sub>d</sub> = 1.000/{K}<sub>r</sub>',
       [['K<sub>d</sub>', 'energia por volta do disco', 'Wh/volta'], ['K<sub>r</sub>', 'voltas por quilowatt-hora', 'volta/kWh']],
       [['{K}<sub>d</sub> = {K}<sub>r</sub>/1.000', 'Inverteu a divisão: 500 volta/kWh dariam 0,5, e o certo é 2 Wh/volta.'], ['{K}<sub>d</sub> = 1.000·{K}<sub>r</sub>', 'Multiplicou: K<sub>d</sub> e K<sub>r</sub> são grandezas inversas.'], ['{K}<sub>d</sub> = {K}<sub>r</sub>', 'Wh por volta e voltas por kWh não são o mesmo número: um é o inverso do outro (com o fator 1.000).']]),
+    F('e3-en', 'E3', 'Energia elétrica consumida', '{E} = {P}·{t}',
+      [['E', 'energia consumida', 'kWh (ou Wh)'], ['P', 'potência da carga', 'kW (ou W)'], ['t', 'tempo de funcionamento', 'h']],
+      [['{E} = {P}/{t}', 'Dividiu: energia é potência vezes tempo, e a divisão devolve a potência.'], ['{E} = {P}·{t}·60', 'Multiplicou pelos minutos de uma hora: o tempo precisa estar em horas para o resultado sair em kWh.'], ['{E} = {t}/{P}', 'Inverteu a divisão: a unidade resultante (h/kW) não é a de energia.']]),
     /* ---- M2 ---- */
     F('m2-b', 'M2', 'Densidade de fluxo magnético', '{B} = {Φ}/{A}',
       [['B', 'densidade de fluxo (indução magnética)', 'T = Wb/m²'], ['Φ', 'fluxo magnético', 'Wb'], ['A', 'área da seção atravessada', 'm²']],
@@ -371,6 +374,7 @@
     G('Ponte de Wheatstone', 'Quatro resistores em losango que servem para medir uma resistência desconhecida; está em equilíbrio, com o galvanômetro em zero, quando os produtos dos lados opostos são iguais.', 'E1'),
     G('Efeito de carga do instrumento', 'O voltímetro real tem resistência finita (a ideal é infinita) e o amperímetro real tem resistência não nula (a ideal é zero): a presença do instrumento altera um pouco o circuito medido.', 'E1'),
     G('Efeito Joule', 'Conversão de energia elétrica em calor em um resistor: P = R·I².', 'E1'),
+    G('Prefixos do SI', 'Potências de dez antes da unidade: quilo (k) = 10³, giga (G) = 10⁹, mega (M) = 10⁶, mili (m) = 10⁻³, micro (µ) = 10⁻⁶, nano (n) = 10⁻⁹ e pico (p) = 10⁻¹².', 'M2'),
     G('Quilowatt-hora (kWh)', 'Unidade de energia: 1 kWh = 1.000 W × 3.600 s = 3,6 × 10⁶ J.', 'E1'),
     G('Valor de pico', 'Valor máximo que a senoide atinge, V<sub>p</sub>. O pico a pico é o dobro: V<sub>pp</sub> = 2·V<sub>p</sub>.', 'E2'),
     G('Valor eficaz (RMS)', 'Valor de uma tensão (ou corrente) contínua que dissiparia a mesma potência no mesmo resistor. Para a senoide, V<sub>ef</sub> = V<sub>p</sub>/√2.', 'E2'),
