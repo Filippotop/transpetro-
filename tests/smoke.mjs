@@ -641,7 +641,7 @@ async function testProva(browser) {
       for (const x of v) check(false, `${where}/${tag}: acessibilidade: ${x}`);
       check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${where}/${tag}: rolagem horizontal`); };
     await page.goto(URL_); await page.waitForTimeout(300);
-    await page.click('#tabs button[data-v="provas"]'); await page.waitForTimeout(200);
+    await page.click('#tabs button[data-v="provas"]'); await page.waitForTimeout(1100); /* a entrada da tela (js/motion.js) dura até 0,85 s; o axe mede a tela parada */
     const txt = await page.textContent('#app');
     check(/Transpetro 2023/.test(txt) && /Gabarito oficial da Cesgranrio, após recursos; questões 28 e 30 anuladas/.test(txt), `${where}: a aba Provas não mostra a prova de 2023 com a fonte do gabarito`);
     check(!/\b(ENEM|Inep|TRI)\b|Caderno Azul/i.test(txt), `${where}: texto do Humanas (ENEM/Inep/TRI) na aba Provas`);
