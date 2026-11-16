@@ -106,7 +106,7 @@ export default {
   'a:T5:b4:3': { d: 'f', w: {
     A: '[valorNorma] Preto é cor de fase; o neutro é azul-claro e a proteção, verde-amarelo.',
     C: '[valorNorma] O neutro é azul-claro, não branco.',
-    D: '[valorNorma] Preto é cor de fase, não de proteção.',
+    D: '[valorNorma] Vermelho é cor de fase, não de proteção.',
     E: '[valorNorma] Vermelho é cor de fase; o neutro é azul-claro.' } },
   'a:T5:b4:4': { d: 'f', h: '5.6', w: {
     A: '[funcaoDisp] Proteção contra contato indireto é do seccionamento automático (DR ou disjuntor, conforme o esquema).',
@@ -161,12 +161,12 @@ export default {
     C: '[oposto] O PE nunca pode ser seccionado.',
     D: '[valorNorma] Verde-amarelo é a cor do PE; o neutro é azul-claro.',
     E: '[esquemaTerra] O DR não pode ficar no trecho com PEN; ele vai depois da separação, no trecho TN-S.' } },
-  'f:t5:2': { mod: 'I1', h: '5.6', d: 'm', w: {
+  'f:t5:2': { fix: { o: ['o disjuntor do circuito ser de curva C, e não de curva B', 'o neutro do circuito estar ligado ao PE depois do DR', 'o condutor de proteção ser verde-amarelo, e não verde', 'a seção do circuito ser de 2,5 mm², e não de 4 mm²', 'a tensão do circuito ser de 220 V, e não de 127 V'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'I1', h: '5.6', d: 'm', w: {
     A: '[funcaoDisp] A curva do disjuntor define o disparo magnético; não faz o DR desarmar.',
     C: '[detalhe] Verde-amarelo é a cor correta do PE; não causa desarme.',
     D: '[detalhe] 2,5 mm² é a seção usual de tomadas; não faz o DR desarmar.',
     E: '[detalhe] A tensão de 220 V não provoca fuga à terra.' } },
-  'f:t5:3': { mod: 'I1', h: '5.6', d: 'm', w: {
+  'f:t5:3': { fix: { o: ['em série com o condutor de fase, logo após o disjuntor geral', 'entre os condutores vivos e o barramento de PE, desviando o surto', 'entre a fase e o neutro, apenas, pois o surto só aparece entre eles', 'em série com o condutor de proteção, no trecho até o BEP', 'em paralelo com o DR, para evitar desarmes indevidos por surto'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'I1', h: '5.6', d: 'm', w: {
     A: '[seriePar] Em série, o DPS levaria a corrente de carga; ele fica em paralelo, entre os condutores vivos e o PE.',
     C: '[exagero] Não “apenas” entre fase e neutro: a ligação típica é entre os condutores vivos e o barramento de proteção.',
     D: '[seriePar] Em série com o PE ele não teria por onde desviar o surto.',
@@ -181,7 +181,7 @@ export default {
     C: '[valorNorma] 3,0 m é o dobro do limite da norma.',
     D: '[valorNorma] A distância é medida até o local do equipamento, não até o quadro.',
     E: '[valorNorma] Ser circuito exclusivo não dispensa a distância máxima de 1,5 m.' } },
-  'f:t5:6': { mod: 'I1', d: 'f', w: {
+  'f:t5:6': { fix: { o: ['uma das tomadas de uso geral da cozinha, a mais próxima do forno', 'um circuito independente, pois a corrente nominal passa de 10 A', 'o circuito de iluminação da cozinha, que tem folga de carga', 'qualquer circuito existente com disjuntor de 32 A no quadro', 'uma extensão a partir do quadro, com cabo flexível de 4 mm²'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'I1', d: 'f', w: {
     A: '[valorNorma] Com 13,6 A, acima de 10 A, o forno exige circuito independente.',
     C: '[detalhe] O circuito de iluminação não serve para equipamento de mais de 10 A.',
     D: '[exagero] Não basta qualquer circuito com disjuntor de 32 A: o circuito tem de ser independente e dimensionado para ele.',

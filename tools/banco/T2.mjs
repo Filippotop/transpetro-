@@ -205,27 +205,27 @@ export default {
     E: '[rtc] 200 A é a corrente nominal do primário, não a corrente medida.' } },
 
   /* ---------- banco (BANK) ---------- */
-  'f:t2:1': { mod: 'M2', d: 'm', w: {
+  'f:t2:1': { fix: { o: ['só o lado de baixa tensão tem perdas no ferro, porque o fluxo do núcleo é criado só por esse enrolamento', 'a tensão desse lado é menor, o que simplifica a fonte e a medição, sem mudar as perdas no ferro medidas', 'no lado de alta a corrente a vazio seria nula, e a medição das perdas no ferro não seria possível', 'assim se mede a impedância percentual do transformador e a tensão de curto-circuito', 'o lado de alta não pode ser energizado com o outro aberto, pois a corrente de magnetização seria excessiva'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', d: 'm', w: {
     A: '[detalhe] As perdas no ferro são do núcleo, e o fluxo é o mesmo com a tensão nominal aplicada a qualquer dos lados.',
     C: '[oposto] Pelo lado de alta a corrente a vazio existe; só é menor, na razão das tensões.',
     D: '[detalhe] A impedância percentual vem do ensaio de curto-circuito.',
     E: '[oposto] O lado de alta pode ser energizado com o outro aberto; só exigiria uma fonte de tensão alta, mais cara e mais perigosa.' } },
-  'f:t2:2': { mod: 'M2', d: 'm', w: {
+  'f:t2:2': { fix: { o: ['indica curto-circuito entre espiras, e o transformador deve ser desenergizado de imediato e revisado', 'é a corrente de energização (inrush), por saturação momentânea do núcleo, e não é defeito', 'é causado pela resistência dos enrolamentos, que limita a corrente na energização', 'só ocorre com carga no secundário, quando a corrente de carga se soma à de magnetização', 'indica polaridade invertida entre os enrolamentos e exige refazer as ligações'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', d: 'm', w: {
     A: '[detalhe] Um curto entre espiras não desaparece depois de alguns ciclos; a corrente alta e passageira na energização é normal.',
     C: '[detalhe] A resistência dos enrolamentos limita a corrente; não é ela que causa o pico.',
     D: '[oposto] O fenômeno ocorre na energização, inclusive a vazio; não depende de carga.',
     E: '[detalhe] Polaridade não altera a corrente de magnetização do próprio transformador.' } },
-  'f:t2:3': { mod: 'M2', d: 'd', conta: '(60/50-1)*100', w: {
+  'f:t2:3': { fix: { o: ['o fluxo no núcleo diminua cerca de 20%, e as perdas caiam', 'o fluxo máximo suba cerca de 20%, com risco de saturar o núcleo', 'a tensão no secundário caia 20%, acompanhando a queda de frequência', 'nada se altere, pois a relação de espiras é a mesma nas duas frequências', 'a relação de transformação aumente, pois o fluxo no núcleo diminui'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', d: 'd', conta: '(60/50-1)*100', w: {
     A: '[oposto] Com E fixo, Φ<sub>máx</sub> é inversamente proporcional a f: em 50 Hz o fluxo aumenta, não diminui.',
     C: '[detalhe] A relação de tensões depende só das espiras; com a mesma tensão no primário, o secundário fica igual.',
     D: '[oposto] A relação de espiras não muda, mas o fluxo muda: Φ<sub>máx</sub> = E/(4,44·f·N).',
     E: '[detalhe] A relação de transformação é a relação de espiras, que não depende da frequência.' } },
-  'f:t2:4': { mod: 'M2', d: 'f', w: {
+  'f:t2:4': { fix: { o: ['isola eletricamente a carga da rede, como o de dois enrolamentos', 'é mais compacto, mas não oferece isolação entre primário e secundário', 'só funciona em corrente contínua, pois tem um único enrolamento', 'tem rendimento sempre menor, por ter um único enrolamento', 'não pode ser usado em partida de motores, pois não reduz a tensão aplicada ao motor'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', d: 'f', w: {
     A: '[oposto] No autotransformador, parte do enrolamento é comum aos dois lados: não há isolação elétrica.',
     C: '[detalhe] Nenhum transformador funciona em CC, nem o autotransformador.',
     D: '[oposto] O rendimento costuma ser maior, porque só parte da potência passa por indução.',
     E: '[oposto] É usado justamente na partida de motores, nas chaves compensadoras.' } },
-  'f:t2:5': { mod: 'M2', h: '5.1', d: 'm', w: {
+  'f:t2:5': { fix: { o: ['pela atração magnética do alumínio, que é ferromagnético e se alinha ao campo do ímã', 'pelas correntes parasitas induzidas, que se opõem ao movimento (lei de Lenz)', 'pela histerese do alumínio, que dissipa a energia do movimento', 'pelo atrito com o ar e com o eixo do disco, independente do ímã', 'pela força eletrostática entre as cargas do disco e o campo do ímã'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', h: '5.1', d: 'm', w: {
     A: '[detalhe] O alumínio é paramagnético, não ferromagnético: quase não é atraído por ímãs.',
     C: '[detalhe] Histerese é fenômeno de materiais ferromagnéticos; o alumínio não tem.',
     D: '[detalhe] O atrito com o ar é desprezível e não depende do ímã; a frenagem cresce com o campo e com a velocidade.',
@@ -236,7 +236,7 @@ export default {
     B: '[invertida] 5 kA = 1.000 × 5: multiplicou pela impedância percentual em vez de dividir 100 por ela.',
     D: '[raiz3inv] 34,6 kA = 20 kA × √3: pôs um √3 a mais; a corrente nominal dada já é a de linha.',
     E: '[unidade] 200 kA usa Z = 0,5%: errou a vírgula da impedância percentual.' } },
-  'f:t2:7': { mod: 'M2', h: '5.1', d: 'f', w: {
+  'f:t2:7': { fix: { o: ['de atração, proporcional ao produto das correntes e à distância', 'de repulsão, proporcional ao produto das correntes e inversa à distância', 'nula, pois as correntes têm mesmo valor e sentidos opostos e se cancelam', 'de atração, só em corrente contínua, pois em CA o sentido alterna', 'de repulsão, proporcional ao produto das correntes e ao quadrado da distância'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, mod: 'M2', h: '5.1', d: 'f', w: {
     A: '[oposto] Correntes em sentidos opostos se repelem; e a força diminui com a distância.',
     C: '[oposto] As correntes não se cancelam: cada uma está no seu condutor e cria um campo que age sobre a outra.',
     D: '[oposto] Em sentidos opostos a força é de repulsão, em CC ou em CA.',
@@ -259,7 +259,7 @@ export default {
     E: '[detalhe] A relação B/H é a permeabilidade do material.' } },
   'h:t2:req': { mod: 'M2', d: 'm', figTira: ['perdas no ferro (ensaio a vazio)', 'perdas no cobre (ensaio de curto)'], conv: {
     s: 'A figura mostra o circuito equivalente aproximado de um transformador. No ensaio de curto-circuito, a potência indicada pelo wattímetro corresponde, essencialmente, às perdas no elemento',
-    o: ['R<sub>c</sub>, que representa as perdas no ferro', 'X<sub>m</sub>, que representa a magnetização do núcleo', 'R<sub>eq</sub>, que representa as perdas no cobre dos enrolamentos', 'X<sub>eq</sub>, que representa a dispersão de fluxo', 'R<sub>c</sub> e X<sub>m</sub> juntos, o ramo de magnetização'],
+    o: ['R<sub>c</sub>, que representa as perdas no ferro do núcleo', 'X<sub>m</sub>, que representa a corrente de magnetização do núcleo', 'R<sub>eq</sub>, que representa as perdas no cobre dos enrolamentos', 'X<sub>eq</sub>, que representa a dispersão de fluxo nos enrolamentos', 'R<sub>c</sub> e X<sub>m</sub> juntos, o ramo de magnetização do núcleo'],
     a: 2,
     c: 'No ensaio de curto, circula a corrente nominal com tensão reduzida: o wattímetro mede as perdas no cobre, representadas por R<sub>eq</sub>. X<sub>eq</sub> não dissipa potência ativa, e R<sub>c</sub> representa as perdas no ferro, medidas no ensaio a vazio.' }, w: {
     A: '[detalhe] R<sub>c</sub> representa as perdas no ferro, medidas no ensaio a vazio. Com tensão reduzida, o fluxo e essas perdas ficam desprezíveis.',

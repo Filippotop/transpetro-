@@ -25,6 +25,9 @@ export default {
   },
   renomear: { antes: 'Escopo do edital e como a banca cobra', fontes: 'Fontes' },
   trocas: [
+    /* ---- alternativas equilibradas em comprimento (a correta não é a mais longa) ---- */
+    { de: 'o:["a reatância indutiva cai à metade e a capacitiva dobra","as duas reatâncias dobram","a reatância indutiva dobra e a capacitiva cai à metade","a resistência dobra","as reatâncias não dependem da frequência"],a:2,',
+      para: 'o:["a reatância indutiva cai à metade e a capacitiva dobra","as reatâncias indutiva e capacitiva dobram juntas","a indutiva dobra e a capacitiva cai à metade","a resistência ôhmica do resistor também dobra","ambas as reatâncias independem da frequência da fonte"],a:2,' },
     /* ---- distratores dos exercícios trocados na revisão do banco (fontes/ERRATA.md, BQ-1): a mesma questão aparece na
        aba Questões, e as alternativas precisam ser as mesmas nos dois lugares ---- */
     { errata: 'BQ-1', de: 'o:["30°","45°","60°","90°","120°"],a:2,',

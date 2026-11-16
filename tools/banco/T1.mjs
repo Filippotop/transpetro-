@@ -179,7 +179,7 @@ export default {
     C: '[detalhe] Somar senoides de mesma frequência não muda a frequência. Os 120 Hz aparecem na potência instantânea, não na soma das tensões.',
     D: '[detalhe] A soma de duas senoides de 60 Hz não tem componente contínua; o valor de pico não entra.',
     E: '[somaArit] √2 vezes a amplitude seria a soma de duas senoides em quadratura (90°), não em oposição.' } },
-  'f:t1:2': { mod: 'E3', h: '3.2', d: 'f', w: {
+  'f:t1:2': { mod: 'E3', h: '3.2', d: 'f', fix: { o: ['igual à potência aparente, pois a corrente é máxima', 'nula, pois o capacitor só troca energia com a fonte', 'igual à potência reativa, V·I·sen 90°, em módulo', 'máxima quando a frequência é de 60 Hz, a da rede', 'igual a V·I·cos 0°, como acontece num resistor ideal'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[aparente] A potência aparente V·I não é nula, mas é toda reativa: a ativa (média) é zero.',
     C: '[senCos] A potência reativa é V·I·sen 90° = V·I; a ativa é V·I·cos 90° = 0.',
     D: '[detalhe] No capacitor ideal a potência ativa é nula em qualquer frequência.',
@@ -194,12 +194,12 @@ export default {
     C: '[detalhe] Quem se anula duas vezes por ciclo é a potência instantânea de uma fase com carga resistiva; a soma das três não se anula.',
     D: '[detalhe] O monofásico tem potência pulsante; a constância é justamente a vantagem do trifásico.',
     E: '[detalhe] A sequência de fases muda o sentido do campo girante, não o valor da potência entregue.' } },
-  'f:t1:5': { mod: 'E2', h: '2.4', d: 'm', w: {
+  'f:t1:5': { mod: 'E2', h: '2.4', d: 'm', fix: { o: ['será exata, pois todo multímetro digital indica o valor eficaz verdadeiro', 'pode ter erro significativo: o fator de forma 1,11 só vale para senoides', 'indicará sempre o valor de pico, pois a onda do inversor é distorcida', 'indicará zero, pois o valor médio de qualquer onda alternada é nulo', 'será exata se a frequência de saída do inversor for ajustada em 60 Hz'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[exagero] Nem todo multímetro mede valor eficaz verdadeiro: o de valor médio só acerta com senoide.',
     C: '[outra] O instrumento não mede pico: mede o médio retificado e multiplica por 1,11.',
     D: '[medio] O instrumento retifica antes de medir: o médio retificado não é zero. Zero é o médio da onda sem retificação.',
     E: '[detalhe] O erro vem da forma de onda (harmônicos), não da frequência: com 60 Hz e onda distorcida, a leitura continua errada.' } },
-  'f:t1:6': { mod: 'E3', h: '4.1', d: 'f', w: {
+  'f:t1:6': { mod: 'E3', h: '4.1', d: 'f', fix: { o: ['não parte, pois uma das fases ficou sem alimentação na troca', 'gira no sentido oposto, pois a sequência de fases foi invertida', 'gira no mesmo sentido, mas com metade da velocidade nominal', 'gira no mesmo sentido e aquece por desequilíbrio de tensão', 'gira no mesmo sentido, pois a sequência não depende da ordem das fases'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[detalhe] Nenhuma fase foi retirada: as três continuam ligadas, só que em outra ordem.',
     C: '[detalhe] A velocidade depende da frequência e do número de polos, não da ordem das fases.',
     D: '[detalhe] Trocar duas fases não desequilibra as tensões: o módulo de cada uma continua o mesmo.',

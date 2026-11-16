@@ -187,7 +187,7 @@ export default {
         E: '[invertida] 90 = n·f/120: inverteu a fórmula.' } },
     { id: 'x4', h: '5.7', tag: 'Partida estrela-triângulo', d: 'd',
       s: 'Um motor de indução tem conjugado de partida igual a 2,4 vezes o nominal com tensão plena. Ele aciona uma carga que exige, na partida, um conjugado igual ao nominal do motor. Sobre a partida estrela-triângulo desse conjunto, verifica-se que',
-      o: ['o motor parte normalmente, porque 2,4 vezes o nominal supera a carga', 'o motor parte, porque em estrela o conjugado cai só a 1/√3, cerca de 1,4 vez o nominal', 'o motor não parte em estrela, porque o conjugado cai a 0,8 vez o nominal, abaixo do exigido pela carga', 'o motor parte com o dobro do conjugado, porque a corrente em estrela é menor', 'a partida é indiferente, porque o conjugado não depende da tensão'], a: 2,
+      o: ['o motor parte normalmente, porque 2,4 vezes o nominal supera com folga a carga', 'o motor parte, porque em estrela o conjugado cai só a 1/√3, cerca de 1,4 vez o nominal', 'o motor não parte em estrela: o conjugado cai a 0,8 vez o nominal, abaixo da carga', 'o motor parte com o dobro do conjugado, porque a corrente em estrela é menor', 'a partida é indiferente, porque o conjugado do motor não depende da tensão da rede'], a: 2,
       c: 'Em estrela, o conjugado cai a 1/3: 2,4/3 = 0,8·C<sub>n</sub>, menor que o 1,0·C<sub>n</sub> da carga. O motor não acelera: seria preciso partir com outro método (compensadora num tap alto, inversor) ou aliviar a carga.',
       w: { A: '[detalhe] 2,4·C<sub>n</sub> é o conjugado com tensão plena; em estrela ele cai a 1/3.',
         B: '[umTerco] O conjugado cai a 1/3 (o quadrado de 1/√3), e não a 1/√3.',

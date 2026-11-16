@@ -144,22 +144,22 @@ export default {
     E: '[exagero] Na máxima transferência metade da potência fica em R<sub>th</sub>.' } },
 
   /* ---------- banco (BANK) ---------- */
-  'f:t4:1': { mod: 'E1', d: 'm', w: {
+  'f:t4:1': { mod: 'E1', d: 'm', fix: { o: ['a de 100 W brilha mais, por ter maior potência nominal que a outra', 'a de 60 W brilha mais, pois tem maior resistência e dissipa mais', 'as duas brilham igualmente, pois a corrente é a mesma nas duas lâmpadas', 'as duas dissipam suas potências nominais de 60 W e 100 W, respectivamente', 'a de 60 W queima, pois recebe toda a tensão da fonte de 127 V'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[oposto] A potência nominal só vale com 127 V em cada uma; em série, brilha mais a de maior resistência, a de 60 W.',
     C: '[detalhe] A corrente é a mesma, mas as resistências são diferentes: P = R·I² é diferente em cada uma.',
     D: '[detalhe] Cada lâmpada recebe só parte dos 127 V: nenhuma dissipa a potência nominal.',
     E: '[exagero] A de 60 W fica com a maior parte da tensão (cerca de 79 V), mas não com toda; recebe menos que a nominal e não queima.' } },
-  'f:t4:2': { mod: 'E1', d: 'f', w: {
+  'f:t4:2': { mod: 'E1', d: 'f', fix: { o: ['apagam, pois o circuito foi interrompido pela lâmpada queimada', 'continuam com o mesmo brilho, pois a tensão em cada uma é a da fonte', 'brilham mais, pois recebem a corrente que passava pela lâmpada queimada', 'brilham menos, pois a resistência equivalente do conjunto aumentou', 'piscam por alguns instantes até a fonte se ajustar à nova carga'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[seriePar] Apagar todas é o que acontece na ligação em série.',
     C: '[detalhe] Cada ramo continua com a tensão da fonte; as outras lâmpadas não recebem a corrente da que queimou.',
     D: '[oposto] A resistência equivalente aumenta, mas a tensão em cada lâmpada continua a mesma, e o brilho também.',
     E: '[detalhe] Com fonte ideal não há transitório que faça as lâmpadas piscarem.' } },
-  'f:t4:3': { mod: 'E1', h: '2.5', d: 'm', w: {
+  'f:t4:3': { mod: 'E1', h: '2.5', d: 'm', fix: { o: ['os dois equivalentes dissipam internamente a mesma potência, com carga ou sem carga ligada', 'vale para o que se vê nos terminais; a potência interna dissipada em geral difere', 'só vale para circuitos lineares que tenham uma única fonte independente na rede', 'a resistência de Norton é o inverso da resistência de Thévenin da mesma rede linear', 'a corrente de Norton é a tensão de Thévenin multiplicada pela resistência de Thévenin'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[exagero] Os equivalentes reproduzem o que se vê nos terminais, não o que acontece dentro: em aberto, o Thévenin não dissipa nada e o Norton dissipa I<sub>N</sub>²·R<sub>N</sub>.',
     C: '[detalhe] Os teoremas valem para qualquer circuito linear, com uma ou várias fontes.',
     D: '[invertida] A resistência de Norton é igual à de Thévenin, não o inverso.',
     E: '[invertida] I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub>: divide pela resistência, não multiplica.' } },
-  'f:t4:4': { mod: 'E1', d: 'm', w: {
+  'f:t4:4': { mod: 'E1', d: 'm', fix: { o: ['curto-circuito entre espiras vizinhas do enrolamento do estator do motor', 'aumento da temperatura do enrolamento, efeito previsto para o cobre', 'que o instrumento de medição está descalibrado e deve ser trocado', 'rompimento total de um dos condutores do enrolamento, abrindo o circuito', 'redução da seção do fio de cobre por desgaste ao longo de anos de uso'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[oposto] Curto entre espiras diminui a resistência medida, não aumenta.',
     C: '[detalhe] O aumento de 15% com o enrolamento quente é o esperado: cerca de 38 °C de elevação.',
     D: '[oposto] Um condutor rompido daria resistência infinita (circuito aberto).',
@@ -169,7 +169,7 @@ export default {
     C: '[detalhe] O sinal da corrente não diz se a malha tem fontes.',
     D: '[detalhe] A lei das malhas vale para qualquer circuito; o sinal só indica o sentido.',
     E: '[detalhe] Um sinal negativo não indica fonte em curto.' } },
-  'f:t4:6': { mod: 'E1', h: '7.3', d: 'm', w: {
+  'f:t4:6': { mod: 'E1', h: '7.3', d: 'm', fix: { o: ['maior que a tensão real, pois o voltímetro soma a sua resistência', 'menor que a real, pois o voltímetro em paralelo reduz a resistência do trecho', 'igual à tensão real, pois todo voltímetro mede a tensão sem a alterar', 'nula, pois a resistência baixa do voltímetro curto-circuita o resistor', 'igual à tensão da fonte, pois o voltímetro está em paralelo com ela'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[oposto] O voltímetro em paralelo reduz a resistência do trecho, e a tensão lida cai, não sobe.',
     C: '[detalhe] Só o voltímetro ideal (resistência infinita) leria a tensão real; este tem resistência baixa.',
     D: '[exagero] A leitura cai, mas não a zero: o voltímetro tem resistência finita, não nula.',

@@ -73,3 +73,5 @@ Aulas em vídeo (2026-11-14): `aulas/v1..v3.mp4` (fator de potência, trifásico
 Lacunas da auditoria de cobertura (2026-11-15): +10 questões (591 no banco): energia, medidor e custo (3.1, 4), fator de potência e correção (3.3, 2) e unidades do SI (7.2, 2) na aba Questões de E3 e M2; terrômetro (8.3, 2) em I3. Os extras de C1 aceitam `mod` (a questão aparece na estação do assunto). O bloco 5 de T1 deixou de contar tudo como 3.2: b5:0, b5:2 e b5:3 contam 3.3 e b5:4 conta 3.1. Biblioteca: fórmula e3-en (energia e custo) e termo 'Prefixos do SI'. Revisão independente: ver fontes/ERRATA.md.
 
 Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fáceis, 377 médias e 122 difíceis), todas em `tools/banco/<ID>x.mjs` (formato em `tools/banco.mjs`), com revisão independente (ver ERRATA). Simulado ganhou o seletor Nível: misto, do fácil ao difícil, só fáceis, só médias, só difíceis.
+
+2026-11-16: alternativas das 164 questões com a correta mais longa equilibradas; +14 questões de Português (P1z.mjs): banco com 749 questões. Gerador do banco aceita <ID>x.mjs e <ID>z.mjs.

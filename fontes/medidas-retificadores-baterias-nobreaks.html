@@ -1029,11 +1029,11 @@ const QUIZ = {
 {
 "s": "Um técnico abraça, de uma só vez, com um alicate amperímetro, os condutores fase e neutro de um circuito monofásico que alimenta uma carga de 12 A. A leitura esperada é",
 "o": [
-"aproximadamente 0 A (só aparece a corrente de fuga, se houver)",
-"6 A",
-"12 A",
-"17 A",
-"24 A"
+"aproximadamente 0 A (só a corrente de fuga)",
+"6 A (metade da corrente de cada condutor)",
+"12 A (corrente de um dos condutores apenas)",
+"17 A (12 A × √2, correntes defasadas de 90°)",
+"24 A (soma dos módulos das duas correntes)"
 ],
 "a": 0,
 "c": "As correntes de ida (fase) e de volta (neutro) têm o mesmo módulo e sentidos opostos; o núcleo do alicate vê a soma vetorial, que é nula, a menos de uma corrente de fuga. É o princípio do alicate de fuga e do DR. 12 A é a leitura com um condutor só; 24 A soma os módulos; 6 A é a média dos dois; 17 A (12√2) soma como se as correntes estivessem a 90°."
@@ -1079,11 +1079,11 @@ const QUIZ = {
 {
 "s": "Antes de medir com um megôhmetro de 500 V a resistência de isolação de um circuito de iluminação alimentado por quadro, com reatores eletrônicos e módulos de controle ligados, o procedimento correto é",
 "o": [
-"medir com o circuito energizado, para que a isolação seja testada nas condições reais de trabalho",
+"medir com o circuito energizado, para que a isolação seja testada nas condições reais de trabalho do quadro",
 "reduzir a tensão do megôhmetro para 12 V, para não danificar os módulos de controle e ainda ler a isolação",
 "apenas abrir o disjuntor do circuito e ligar o megôhmetro, pois os reatores eletrônicos suportam a tensão de ensaio",
 "usar um ôhmetro comum no lugar do megôhmetro, que é mais seguro para a eletrônica e mede a mesma coisa",
-"desenergizar e bloquear o circuito, verificar a ausência de tensão e desconectar ou isolar a eletrônica antes de aplicar a tensão de ensaio"
+"desenergizar e bloquear o circuito, constatar a ausência de tensão e desconectar a eletrônica antes do ensaio"
 ],
 "a": 4,
 "c": "O megôhmetro aplica tensão contínua alta: o circuito precisa estar desenergizado, bloqueado e sem tensão, e os equipamentos eletrônicos devem ser desconectados, porque a tensão de ensaio os danifica ou falseia a leitura. Medir energizado é perigoso e destrói o instrumento; 12 V não revelam falhas de isolação; abrir só o disjuntor deixa a eletrônica sob a tensão de ensaio; o ôhmetro comum usa tensão baixa e não mede a isolação."
@@ -1091,11 +1091,11 @@ const QUIZ = {
 {
 "s": "Num ensaio com megôhmetro em um motor de isolação classe F, as leituras de resistência foram 140 MΩ em 30 s, 175 MΩ em 1 min e 280 MΩ em 10 min. O índice de polarização e a avaliação pelo critério da IEEE 43 são",
 "o": [
-"IP = 0,63, que indica isolação em curto-circuito",
-"IP = 1,25 (175/140), abaixo do mínimo de 2,0: reprovado",
+"IP = 0,63 (175/280), que indica isolação em curto-circuito",
+"IP = 1,25 (175/140), abaixo do mínimo de 2,0 exigido: reprovado",
 "IP = 2,0 (280/140), que atende ao mínimo de 2,0: aprovado",
-"IP = 1,6 (280/175), abaixo do mínimo de 2,0 para a classe F: reprovado",
-"IP = 1,6 (280/175), acima do mínimo de 1,5: aprovado"
+"IP = 1,6 (280/175), abaixo do mínimo de 2,0: reprovado",
+"IP = 1,6 (280/175), acima do mínimo de 1,5 da classe F: aprovado"
 ],
 "a": 3,
 "c": "IP = R<sub>10 min</sub>/R<sub>1 min</sub> = 280/175 = 1,6. Para as classes B, F e H, o mínimo recomendado é 2,0: o motor não passa no critério. IP = 0,63 inverte a razão; 1,25 é a razão de absorção dielétrica (175/140), e não o IP; 2,0 usa a leitura de 30 s no denominador; 1,5 é o mínimo da classe A, e não da F."
@@ -1253,11 +1253,11 @@ const QUIZ = {
 {
 "s": "Um no-break on-line, em operação normal, sofre uma falha no inversor. O comportamento esperado do equipamento é",
 "o": [
-"desligar a saída, porque o on-line não tem caminho alternativo para a carga",
-"passar a alimentar a carga pela bateria, ligada diretamente à saída",
-"acionar o bypass manual, que é comandado pela chave estática",
-"ligar a carga ao retificador, que fornece a tensão de saída em corrente contínua",
-"transferir a carga para o bypass pela chave estática, sem interrupção se o inversor estava sincronizado com a rede"
+"desligar a saída, porque o on-line não tem caminho alternativo para alimentar a carga",
+"passar a alimentar a carga pela bateria, ligada diretamente à saída, sem passar pelo inversor",
+"acionar o bypass manual, que é comandado pela chave estática, em poucos milissegundos",
+"ligar a carga ao retificador, que fornece a tensão de saída em corrente contínua para os equipamentos",
+"transferir a carga ao bypass pela chave estática, sem interrupção, com o inversor sincronizado"
 ],
 "a": 4,
 "c": "A chave estática transfere a carga para o bypass (a rede); para isso o inversor se mantém sincronizado com a rede, e a transferência é sem interrupção. O on-line tem o bypass justamente para isso; a bateria alimenta o inversor, e não a saída; o bypass manual é uma chave de manutenção, acionada pelo operador; a carga é de corrente alternada e não pode ser ligada ao retificador."

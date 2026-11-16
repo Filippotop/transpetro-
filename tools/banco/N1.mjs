@@ -25,7 +25,7 @@ export default {
     'b1:3': { d: 'f', w: {
       A: '[conceitoSST] Para a lei, a doença do trabalho, adquirida em função das condições em que o trabalho é realizado, é equiparada ao acidente; não é preciso um evento súbito.',
       C: '[conceitoSST] Incidente é o evento sem lesão; aqui há perda auditiva, ou seja, lesão.',
-      D: '[conceitoSST] Acidente de trajeto é o ocorrido no percurso entre a residência e o trabalho.',
+      D: '[conceitoSST] Acidente de trajeto é o ocorrido no percurso entre a residência e o trabalho; a perda auditiva foi adquirida na casa de compressores, durante o trabalho.',
       E: '[conceitoSST] A lei inclui também a redução, permanente ou temporária, da capacidade para o trabalho, e não só a morte.' } },
     /* ---------- seção 2: choque, arco e primeiros socorros ---------- */
     'b2:0': { d: 'm', conta: '220/2500*1000', w: {
@@ -121,7 +121,7 @@ export default {
       B: '[isolCabo] Inverteu as temperaturas: é o HEPR que admite 90 °C, e o PVC admite 70 °C.',
       C: '[isolCabo] Os dois não admitem a mesma temperatura; o HEPR admite 20 °C a mais e por isso conduz mais corrente.',
       D: '[isolCabo] O PVC é termoplástico, e o HEPR é termofixo.',
-      E: '[isolCabo] Inverteu os limites de curto-circuito: o PVC admite 160 °C, e o HEPR, 250 °C.' } },
+      E: '[isolCabo] Inverteu os limites de curto-circuito: o PVC admite 160 °C, e o HEPR, 250 °C; e a capacidade de corrente dos dois não é a mesma.' } },
     'b6:2': { d: 'm', w: {
       A: '[condutaSeg] Cabo plastificado não é isolamento ensaiado; só a ferramenta isolada, marcada com 1.000 V, serve ao trabalho energizado.',
       B: '[condutaSeg] A ferramenta isolada não muda a prioridade da desenergização; é o recurso para quando o trabalho energizado é inevitável.',

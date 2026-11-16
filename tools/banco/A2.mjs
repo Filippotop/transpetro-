@@ -186,7 +186,7 @@ export default {
         E: '[zeroVivo] 18,0 mA soma 4 mA a 20 × 0,7, usando 20 mA como largura do sinal, e não 16.' } },
     { id: 'x2', h: '9.4', tag: 'Ladder: contatos, selo e intertravamento', d: 'm',
       s: 'Um comando de partida direta foi passado do painel de relés para um CLP. O contato NF do relé de sobrecarga (F7) foi ligado à entrada I0.2. No degrau da bobina do motor, o contato de I0.2 deve ser',
-      o: ['NF em série com a bobina, porque o contato do relé no campo é NF', 'NA em série com a bobina, porque em condição normal a entrada vale 1 e, quando o relé atua, vai a 0', 'NA em paralelo com o botão de liga, como um selo', 'NF em paralelo com o selo', 'dispensado, porque o relé de sobrecarga atua direto no motor'], a: 1,
+      o: ['NF em série com a bobina, porque o contato do relé no campo é NF e o programa deve copiá-lo', 'NA em série com a bobina: a entrada vale 1 em condição normal e vai a 0 quando o relé atua', 'NA em paralelo com o botão de liga, como um selo que mantém a saída ligada', 'NF em paralelo com o selo, interrompendo a bobina quando o relé atuar', 'dispensado, porque o relé de sobrecarga atua direto no motor, sem passar pelo CLP'], a: 1,
       c: 'Em condição normal o contato NF de F7 conduz e a entrada vale 1; o contato NA no programa passa. Quando o relé atua, a entrada vai a 0 e o NA abre, desligando a saída. É a mesma regra do botão de parada NF.',
       w: { A: '[naNf] Copiou o tipo do contato do campo: com NF no programa, o motor só ligaria com o relé atuado.',
         C: '[detalhe] Em paralelo com o botão de liga, o térmico ligaria o motor em vez de protegê-lo.',

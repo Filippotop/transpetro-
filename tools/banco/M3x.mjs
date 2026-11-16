@@ -56,7 +56,7 @@ export default {
            E: '[m3CompLinear] Inclui a II, que é falsa (42%, não 65%), e deixa de fora a I, verdadeira (1/3 da corrente e do conjugado).' } },
     { id: 'y4', h: '5.7', tag: 'Escolha do método de partida com limites', d: 'd',
       s: 'Um motor de 380/660 V, com corrente nominal de 40 A em 380 V e corrente de partida direta igual a 6 vezes a nominal, será ligado a uma rede de 380 V. A concessionária limita a corrente de linha na partida a 110 A, e a máquina acionada exige conjugado de partida de, no mínimo, 40% do conjugado de partida direta do motor. Desprezando a corrente de magnetização do autotransformador, o método que atende às duas condições é',
-      o: ['a chave compensadora com derivação de 80%', 'a chave compensadora com derivação de 50%', 'a partida direta', 'a chave estrela-triângulo', 'a chave compensadora com derivação de 65%'], a: 4,
+      o: ['a chave compensadora com derivação de 80%', 'a chave compensadora com derivação de 50%', 'a partida direta, sem redução de tensão', 'a chave estrela-triângulo em rede de 380 V', 'a chave compensadora com derivação de 65%'], a: 4,
       c: 'Partida direta: 6·40 = 240 A (acima de 110 A). Estrela-triângulo: 240/3 = 80 A, mas o conjugado cai a 33% (abaixo de 40%). Compensadora: linha = k²·240 e conjugado = k². Com 50%: 60 A e 25% (conjugado insuficiente). Com 65%: 0,4225·240 ≈ 101 A (≤ 110 A) e 42% (≥ 40%): atende. Com 80%: 154 A (acima do limite).',
       w: { A: '[m3Excesso] Com 80%, a linha recebe 0,64·240 ≈ 154 A, acima de 110 A.',
            B: '[m3ConjFraco] Com 50%, a corrente é 60 A, mas o conjugado cai a 25%, abaixo de 40%.',

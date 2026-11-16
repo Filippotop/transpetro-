@@ -160,12 +160,12 @@ export default {
 
   /* ---------- banco (BANK) ---------- */
   'f:t3:1': { mod: 'M1', d: 'm',
-    fix: { c: 'Retardo na energização: a mudança de estado acontece depois do tempo ajustado, contado da energização; a volta ao repouso é instantânea.', ed: 'a última frase do comentário (“O último comportamento descrito é o de retardo na desenergização”) não se ligava a nada' }, w: {
+    fix: { o: ['o contato fecha imediatamente e abre após 10 s, com a bobina energizada', 'o contato fecha após 10 s e abre de imediato ao desenergizar a bobina', 'o contato só fecha quando a bobina é desenergizada, depois de 10 s', 'o contato abre após 10 s e permanece aberto até desenergizar a bobina', 'o contato permanece fechado por 10 s depois de desenergizar a bobina'], a: 1, c: 'Retardo na energização: a mudança de estado acontece depois do tempo ajustado, contado da energização; a volta ao repouso é instantânea.', ed: 'a última frase do comentário (“O último comportamento descrito é o de retardo na desenergização”) não se ligava a nada' }, w: {
     A: '[detalhe] Fechar já na energização e abrir depois do tempo é o temporizador de impulso (intervalo), não o de retardo na energização.',
     C: '[oposto] O contato muda de estado com a bobina energizada, depois do tempo; não na desenergização.',
     D: '[naNf] O contato é NA: depois do tempo ele fecha, não abre.',
     E: '[oposto] Manter o contato por um tempo depois de desenergizar é o retardo na desenergização.' } },
-  'f:t3:2': { mod: 'M1', d: 'f', w: {
+  'f:t3:2': { mod: 'M1', d: 'f', fix: { o: ['ligar o motor de fechamento quando o portão chega ao fim', 'desligar o contator de abertura ao fim da abertura total', 'inverter automaticamente o sentido do motor ao fim do curso', 'proteger o motor do portão contra sobrecarga de corrente', 'sinalizar falta de fase na alimentação do motor do portão'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[oposto] Um NF em série com a bobina desliga ao ser acionado; não liga o motor.',
     C: '[detalhe] Inverter o sentido exigiria o outro contator (o de fechamento); este fim de curso só interrompe a abertura.',
     D: '[funcaoDisp] Proteção contra sobrecarga é do relé de sobrecarga, pela corrente, não pela posição.',
@@ -175,17 +175,22 @@ export default {
     C: '[ansi] Diferença entre correntes de entrada e saída é a proteção diferencial, 87.',
     D: '[ansi] Temperatura é 49 ou 26.',
     E: '[ansi] Acúmulo de gases é o relé 63 (Buchholz).' } },
-  'f:t3:4': { mod: 'M1', h: '9.4', d: 'f', w: {
+  'f:t3:4': { mod: 'M1', h: '9.4', d: 'f', fix: { o: ['cria um intertravamento entre duas saídas, impedindo a ligação simultânea', 'funciona como o selo do comando convencional, mantendo a saída ligada', 'impede a saída de ligar enquanto o botão de liga estiver pressionado', 'temporiza o acionamento da saída, atrasando a ligação do botão', 'é proibido, pois uma saída não pode comandar a si mesma no programa'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[detalhe] Intertravamento usa um contato NF de outra saída em série; um NA da própria saída em paralelo é retenção.',
     C: '[oposto] O arranjo não impede: ele mantém a saída ligada depois que o botão é solto.',
     D: '[funcaoDisp] Temporização exige um bloco temporizador; o contato da própria saída só retém.',
     E: '[oposto] A autorretenção é a forma clássica de selo no Ladder; é permitida.' } },
-  'f:t3:5': { mod: 'I1', h: '8.1', d: 'm', w: {
+  'f:t3:5': { mod: 'I1', h: '8.1', d: 'm', fix: { o: [
+    'três interruptores simples em paralelo, ligados entre fase e lâmpada',
+    'dois paralelos (three-way) nas pontas e um intermediário (four-way) entre eles',
+    'três interruptores simples em série, ligados ao mesmo condutor fase',
+    'três interruptores intermediários (four-way), ligados em sequência',
+    'um interruptor bipolar e dois simples, ligados em série com a lâmpada e o neutro'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[seriePar] Simples em paralelo: qualquer um liga, mas nenhum desliga se outro estiver fechado.',
     C: '[seriePar] Simples em série: só acende com os três fechados ao mesmo tempo.',
     D: '[detalhe] Os intermediários só funcionam entre dois interruptores paralelos, nas pontas; três intermediários não fecham o circuito.',
     E: '[detalhe] O bipolar interrompe dois condutores ao mesmo tempo; não faz o comando de um ponto por vários locais.' } },
-  'f:t3:6': { mod: 'M1', d: 'm', w: {
+  'f:t3:6': { mod: 'M1', d: 'm', fix: { o: ['as correntes nominais de cada um dos contatos de K1', 'as colunas do diagrama com os contatos de K1', 'a numeração dos bornes da própria bobina de K1', 'a ordem de fechamento dos contatos de K1 ao energizar', 'os relés auxiliares que comandam a bobina de K1'], a: 1, ed: 'Alternativas equilibradas em comprimento' }, w: {
     A: '[simbolo] As correntes dos contatos estão no catálogo do contator, não sob a bobina.',
     C: '[simbolo] Os bornes da bobina são A1-A2, marcados junto dela; a lista sob a bobina é outra coisa.',
     D: '[simbolo] Os contatos mudam todos juntos; a lista não é uma sequência de fechamento.',
@@ -224,7 +229,7 @@ export default {
     E: '[ansi] 89 é a chave seccionadora.' } },
   'h:t3:52': { mod: 'M1', h: '1.1', d: 'm', figTira: ['comando de abertura'], conv: {
     s: 'No diagrama unifilar da subestação mostrado na figura, quando o relé 50/51 atua, o equipamento que efetivamente interrompe a corrente de falta no lado de média tensão é o',
-    o: ['seccionador 89', 'transformador de corrente (TC)', 'disjuntor 52 do lado de média tensão', 'disjuntor 52 do lado de baixa tensão', 'relé 63'], a: 2,
+    o: ['seccionador 89, de manobra sem carga', 'transformador de corrente (TC) do relé', 'disjuntor 52 do lado de média tensão', 'disjuntor 52 do lado de baixa tensão', 'relé 63, de pressão e gás do transformador'], a: 2,
     c: 'O relé só decide; quem interrompe a corrente é o disjuntor 52 do lado de média tensão, que recebe dele o comando de abertura. A seccionadora 89 não é feita para abrir correntes de falta.' }, w: {
     A: '[funcaoDisp] A seccionadora 89 é para manobra sem carga e isolamento visível; não interrompe corrente de falta.',
     B: '[funcaoDisp] O TC só mede a corrente e alimenta o relé.',

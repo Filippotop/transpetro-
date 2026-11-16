@@ -45,8 +45,13 @@ for (const k of Object.keys(ERR)) if (!ERROS[k]) throw new Error('erros.mjs: fal
 
 const XFILES = {};
 for (const est of ['E1', 'E2', 'E3', 'M1', 'M2', 'I1', 'M3', 'A1', 'A2', 'I2', 'I3', 'N1', 'X1', 'X2', 'X3', 'P1', 'C1']) {
-  const f = path.join(ROOT, 'tools/banco', est + 'x.mjs');
-  if (fs.existsSync(f)) { XFILES[est] = (await import(pathToFileURL(f))).default; for (const [k, v] of Object.entries(XFILES[est].erros || {})) { if (ERROS[k]) throw new Error(`${est}x.mjs: tipo de erro \"${k}\" já existe`); ERROS[k] = v; } }
+  for (const suf of ['x', 'z']) { /* <ID>x.mjs e <ID>z.mjs: duas levas de questões extras, com ids próprios (y1… e z1…) */
+    const f = path.join(ROOT, 'tools/banco', est + suf + '.mjs');
+    if (!fs.existsSync(f)) continue;
+    const RX = (await import(pathToFileURL(f))).default;
+    (XFILES[est] = XFILES[est] || { extra: [] }).extra.push(...(RX.extra || []));
+    for (const [k, v] of Object.entries(RX.erros || {})) { if (ERROS[k]) throw new Error(`${est}${suf}.mjs: tipo de erro \"${k}\" já existe`); ERROS[k] = v; }
+  }
 }
 
 /* ---- as estações: módulos gerados (figuras, títulos) e as apostilas com as trocas aplicadas (exercícios) ---- */

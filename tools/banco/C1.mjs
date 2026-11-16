@@ -66,10 +66,10 @@ export default {
       D: '[raiz3inv] 207,8 A multiplica por √3 em vez de dividir por 3.',
       E: '[invertida] 360 A multiplica por 3 em vez de dividir.' } },
     'b3:3': { d: 'f', h: '5.2', w: {
-      A: '[capPartida] corrigir o fator de potência em regime, permanecendo ligado o tempo todo: essa é a função do capacitor permanente; o de partida é desligado depois que o motor acelera.',
-      B: '[capPartida] limitar a corrente de partida, como um reator em série com o motor: o capacitor defasa a corrente do auxiliar; quem limita a corrente é a impedância dos enrolamentos.',
-      C: '[capPartida] converter a corrente alternada em contínua no enrolamento principal: o capacitor não retifica: ele só defasa a corrente do enrolamento auxiliar.',
-      D: '[capPartida] inverter o sentido de giro do motor, trocando a polaridade do enrolamento principal: inverter o giro é trocar as ligações de um dos enrolamentos (auxiliar ou principal); o capacitor só defasa a corrente do auxiliar e não decide o sentido.' } },
+      A: '[capPartida] corrigir o fator de potência do motor em regime, permanecendo ligado durante todo o funcionamento: essa é a função do capacitor permanente; o de partida é desligado depois que o motor acelera.',
+      B: '[capPartida] limitar a corrente de partida do enrolamento principal, como um reator em série com o motor: o capacitor defasa a corrente do auxiliar; quem limita a corrente é a impedância dos enrolamentos.',
+      C: '[capPartida] converter a corrente alternada em contínua no enrolamento principal, para criar o torque de partida: o capacitor não retifica: ele só defasa a corrente do enrolamento auxiliar.',
+      D: '[capPartida] inverter o sentido de giro do motor, trocando a polaridade do enrolamento principal na partida: inverter o giro é trocar as ligações de um dos enrolamentos (auxiliar ou principal); o capacitor só defasa a corrente do auxiliar e não decide o sentido.' } },
     /* ---------- seção 4: TC e TP ---------- */
     'b4:0': { d: 'f', conta: '3.5*400/5', w: {
       A: '[relInv] 0,04 A divide a leitura pela relação em vez de multiplicar.',
@@ -83,9 +83,9 @@ export default {
       E: '[formula] 37,5 VA usa I³·Z.' } },
     'b4:2': { d: 'm', w: {
       A: '[tcSec] abrir o circuito do secundário e trocar o instrumento, pois a corrente de 5 A é pequena e não oferece risco: o secundário nunca é aberto com o primário energizado: a tensão induzida no secundário aberto pode chegar a quilovolts.',
-      B: '[tcSec] desligar o primário só depois de abrir o secundário, para não danificar o núcleo: inverte a ordem: abrir o secundário com o primário energizado é justamente o que danifica o TC e fere quem o toca.',
-      C: '[tcTp] deixar o secundário em aberto, como se faz com o TP, porque o TC nunca pode ter carga: confunde o TC com o TP: o TP é que pode ficar com o secundário aberto, e o TC trabalha com o secundário em carga ou em curto.',
-      D: '[tcSec] ligar um fusível em série no secundário, que protege o TC e permite abri-lo: o fusível em série abre o circuito do secundário ao queimar, que é a condição perigosa; o TC não leva fusível no secundário.' } },
+      B: '[tcSec] desligar o primário só depois de abrir o secundário, para não danificar o núcleo do transformador: inverte a ordem: abrir o secundário com o primário energizado é justamente o que danifica o TC e fere quem o toca.',
+      C: '[tcTp] deixar o secundário em aberto, como se faz com o TP, porque o TC nunca pode ter carga no secundário: confunde o TC com o TP: o TP é que pode ficar com o secundário aberto, e o TC trabalha com o secundário em carga ou em curto.',
+      D: '[tcSec] ligar um fusível em série no secundário, que protege o TC contra sobretensão e permite abri-lo: o fusível em série abre o circuito do secundário ao queimar, que é a condição perigosa; o TC não leva fusível no secundário.' } },
     'b4:3': { d: 'm', conta: '20*300', w: {
       B: '[tcFator] 1.500 A toma o 5 (o erro em %) como o fator limite de exatidão.',
       C: '[etapa] 300 A responde a própria corrente nominal primária, sem aplicar o fator limite.',
@@ -171,10 +171,10 @@ export default {
       D: '[fvPotencia] 333 W é V<sub>oc</sub> × I<sub>sc</sub> de um módulo só, e não a potência do arranjo.',
       E: '[fvAssoc] 260 W é a potência de um módulo só.' } },
     'b8:3': { d: 'f', w: {
-      A: '[starterFuncao] limitar a corrente da lâmpada depois de acesa, como um resistor em série: quem limita a corrente é o reator, em série com o tubo; o starter fica aberto depois da partida.',
-      B: '[starterFuncao] corrigir o fator de potência do conjunto, em paralelo com a rede: essa é a função do capacitor; o starter fica em paralelo com a lâmpada e só atua na partida.',
-      C: '[starterFuncao] converter a tensão da rede em alta frequência para acender a lâmpada: essa é a função do reator eletrônico, que dispensa o starter.',
-      D: '[starterFuncao] manter a lâmpada acesa, fechando o circuito durante todo o funcionamento: depois de acesa o starter fica aberto: fechado, ele curto-circuitaria o tubo e a lâmpada apagaria.' } },
+      A: '[starterFuncao] limitar a corrente da lâmpada depois de acesa, como um resistor em série com o tubo: quem limita a corrente é o reator, em série com o tubo; o starter fica aberto depois da partida.',
+      B: '[starterFuncao] corrigir o fator de potência do conjunto, ligado em paralelo com a rede de alimentação: essa é a função do capacitor; o starter fica em paralelo com a lâmpada e só atua na partida.',
+      C: '[starterFuncao] converter a tensão da rede em alta frequência para acender a lâmpada e mantê-la acesa: essa é a função do reator eletrônico, que dispensa o starter.',
+      D: '[starterFuncao] manter a lâmpada acesa, fechando o circuito do tubo durante todo o seu funcionamento: depois de acesa o starter fica aberto: fechado, ele curto-circuitaria o tubo e a lâmpada apagaria.' } },
   },
   extra: [
     /* ---------- E3 · item 3.1: energia, medidor de energia e custo (questões só da aba Questões) ---------- */
