@@ -43,6 +43,12 @@ const { APOST, BANK, ERR, FIG } = BCTX;
 if (APOST.length + BANK.length !== 205) throw new Error(`banco: esperava 205 questões, achei ${APOST.length + BANK.length}`);
 for (const k of Object.keys(ERR)) if (!ERROS[k]) throw new Error('erros.mjs: falta o tipo do banco ' + k);
 
+const XFILES = {};
+for (const est of ['E1', 'E2', 'E3', 'M1', 'M2', 'I1', 'M3', 'A1', 'A2', 'I2', 'I3', 'N1', 'X1', 'X2', 'X3', 'P1', 'C1']) {
+  const f = path.join(ROOT, 'tools/banco', est + 'x.mjs');
+  if (fs.existsSync(f)) { XFILES[est] = (await import(pathToFileURL(f))).default; for (const [k, v] of Object.entries(XFILES[est].erros || {})) { if (ERROS[k]) throw new Error(`${est}x.mjs: tipo de erro \"${k}\" já existe`); ERROS[k] = v; } }
+}
+
 /* ---- as estações: módulos gerados (figuras, títulos) e as apostilas com as trocas aplicadas (exercícios) ---- */
 const SCTX = vm.createContext({ window: { DATA: { modules: [], cards: [], vf: [] } } });
 const ESTACOES = ['E1', 'E2', 'E3', 'M1', 'M2', 'I1'];
@@ -201,6 +207,9 @@ for (const est of NOVAS) {
   });
   for (const k of Object.keys(RV.q)) { const [b, i] = k.split(':'); if (!(QUIZ[est][b] || [])[+i]) throw new Error(`${est}: revisão ${k} sem exercício na Teoria`); }
   for (const x of RV.extra || []) lista.push({ ...x, chave: x.id });
+  emitLista(est, lista);
+}
+function emitLista(est, lista) {
   for (const q of lista) {
     const onde = `${est}:${q.chave}`, ans = LET[q.a], ex = {}, traps = {}, erros = {};
     if (!q.o || q.o.length !== 5) throw new Error(`${onde}: precisa de 5 alternativas`);
@@ -217,6 +226,12 @@ for (const est of NOVAS) {
       ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
     });
   }
+}
+/* Questões extras em tools/banco/<ID>x.mjs (qualquer estação): `extra` no mesmo formato de tools/banco/<ID>.mjs (`mod` opcional leva a
+   questão para outra estação) e `erros`, tipos de erro novos desta leva (juntados aos de erros.mjs antes de tudo). */
+for (const est of [...ESTACOES, ...NOVAS]) {
+  const RX = XFILES[est];
+  if (RX) emitLista(est, (RX.extra || []).map(x => ({ ...x, chave: x.id })));
 }
 if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.join(' ')}`); if (!process.argv.includes('--parcial')) process.exit(1); }
 

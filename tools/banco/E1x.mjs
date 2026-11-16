@@ -1,0 +1,76 @@
+/* Questões extras (nível prova) da estação E1. Revisão independente: ver fontes/ERRATA.md. */
+export default {
+  erros: {
+    afirmErrada1: { n: 'Julgou falsa uma afirmativa verdadeira', d: 'Marcou como errada uma afirmativa que é verdadeira (ou como certa uma falsa), sem refazer o raciocínio da afirmativa.', t: 'detalhe' },
+    zerouErrado: { n: 'Rth com fonte tratada errada', d: 'Calculou a resistência de Thévenin sem a resistência série do terminal, ou com todos os resistores em série.', t: 'formula' },
+    semDivisor: { n: 'Fonte original no lugar da de Thévenin', d: 'Usou a tensão da fonte (ou a de Thévenin, sem a resistência) como se estivesse aplicada direto à carga.', t: 'formula' },
+    pmaxTotal: { n: 'Potência total no lugar da máxima na carga', d: 'Respondeu a potência total da fonte (V²/(2R), carga igual à interna), ou outra expressão sem o fator 4, no lugar de V<sub>th</sub>²/(4R<sub>th</sub>).', t: 'formula' },
+    ramoIgnorado: { n: 'Ramo ou fonte ignorado no nó', d: 'Resolveu o circuito ignorando uma das fontes ou um dos ramos, ou confundiu a corrente de um ramo com a de outro.', t: 'formula' },
+    nosPonte: { n: 'Nós da ponte trocados', d: 'Comparou tensões de nós que não são os pontos de medição da ponte (a diferença é entre os pontos médios).', t: 'formula' },
+    cabo2x: { n: 'Comprimento do cabo mal contado', d: 'Contou o comprimento do cabo duas vezes (ida e volta já consideradas) ou desprezou o cabo.', t: 'formula' },
+    tempBase: { n: 'Base de temperatura trocada', d: 'Montou errado a variação de resistência com a temperatura (referência, variação percentual ou base da razão).', t: 'formula' },
+    supSinal: { n: 'Superposição mal aplicada', d: 'Na superposição, ignorou uma fonte, não zerou a outra corretamente (a fonte de tensão vira curto) ou usou resistência equivalente errada.', t: 'formula' },
+    deltaMal: { n: 'Triângulo de resistores mal reduzido', d: 'Reduziu o triângulo como se fossem resistores em série, em paralelo ou como Y, em vez de R·2R/3R entre dois terminais.', t: 'formula' },
+  },
+  extra: [
+    { id: 'y1', h: '2.5', tag: 'Corrente na carga por Thévenin', d: 'd', conta: '(36*6/18)/(12*6/18+2+6)',
+      s: 'Uma fonte de 36 V alimenta, por meio de um resistor de 12 Ω, um nó N. Do nó N ao terminal de retorno da fonte (referência) está ligado um resistor de 6 Ω. Do nó N sai ainda um resistor de 2 Ω até o terminal a, e uma carga de 6 Ω é ligada entre o terminal a e a referência. A corrente na carga, em ampères, é',
+      o: ['3', '2', '1,38', '1,2', '1'], a: 4,
+      c: 'Thévenin visto pelo terminal a: V<sub>th</sub> = 36·6/(12 + 6) = 12 V e R<sub>th</sub> = (12 ∥ 6) + 2 = 4 + 2 = 6 Ω. I = 12/(6 + 6) = 1 A. (Conferência: V<sub>N</sub> = 8 V e 8/(2 + 6) = 1 A.)',
+      w: { A: '[semDivisor] 36/(6 + 6) = 3 A: usou os 36 V da fonte no lugar de V<sub>th</sub>.', B: '[semRth] 12/6 = 2 A: aplicou V<sub>th</sub> direto sobre a carga, sem a R<sub>th</sub> de 6 Ω.', C: '[serieTudo] 36/(12 + 6 + 2 + 6) = 1,38 A: tratou o resistor de 6 Ω em paralelo como se estivesse em série.', D: '[zerouErrado] 12/(4 + 6) = 1,2 A: esqueceu o resistor de 2 Ω ao calcular R<sub>th</sub>.' } },
+
+    { id: 'y2', h: '2.5', tag: 'Máxima potência por dois ensaios de carga', d: 'd', conta: '40**2/(4*10)',
+      s: 'Um circuito linear alimenta uma carga resistiva variável. Quando a carga vale 10 Ω, a tensão sobre ela é de 20 V; quando vale 30 Ω, a tensão é de 30 V. A máxima potência que esse circuito pode fornecer a uma carga resistiva, em watts, é',
+      o: ['30', '40', '80', '160', '1.600'], a: 1,
+      c: 'V = V<sub>th</sub>·R<sub>L</sub>/(R<sub>th</sub> + R<sub>L</sub>). Com 10 Ω: 20(R<sub>th</sub> + 10) = 10V<sub>th</sub>, logo V<sub>th</sub> = 2R<sub>th</sub> + 20. Com 30 Ω: 30(R<sub>th</sub> + 30) = 30V<sub>th</sub>, logo V<sub>th</sub> = R<sub>th</sub> + 30. Então R<sub>th</sub> = 10 Ω e V<sub>th</sub> = 40 V. P<sub>máx</sub> = V<sub>th</sub>²/(4R<sub>th</sub>) = 1.600/40 = 40 W.',
+      w: { A: '[formula] 30²/30 = 30 W é a potência na carga de 30 Ω, que não é a de máxima transferência.', C: '[pmaxTotal] 1.600/20 = 80 W é a potência total fornecida pela fonte equivalente quando R<sub>L</sub> = R<sub>th</sub>, e metade fica em R<sub>th</sub>.', D: '[sem4] 1.600/10 = 160 W: esqueceu o fator 4.', E: '[sem4] 1.600 é V<sub>th</sub>² sem dividir por 4R<sub>th</sub>.' } },
+
+    { id: 'y3', h: '2.5', tag: 'Duas baterias em paralelo', d: 'd', conta: '(24-(24/2+12/4)/(1/2+1/4+1/4))/2',
+      s: 'Duas baterias, de 24 V (com resistência interna de 2 Ω) e de 12 V (com resistência interna de 4 Ω), têm os polos positivos ligados a um nó N e os negativos ligados a um nó M. Entre N e M há ainda um resistor de 4 Ω. A corrente fornecida pela bateria de 24 V, em ampères, é',
+      o: ['0,75', '3,75', '4,5', '6', '12'], a: 2,
+      c: 'Nodal: V<sub>NM</sub> = (24/2 + 12/4)/(1/2 + 1/4 + 1/4) = 15/1 = 15 V. I<sub>24</sub> = (24 − 15)/2 = 4,5 A. (O resistor de 4 Ω conduz 3,75 A, e a bateria de 12 V recebe 0,75 A, pois 15 V &gt; 12 V.)',
+      w: { A: '[ramoIgnorado] 0,75 A é a corrente da bateria de 12 V (que está recebendo carga), não a da de 24 V.', B: '[ramoIgnorado] 3,75 A é a corrente no resistor de 4 Ω (15/4), e não na bateria de 24 V.', D: '[ignorouFonte] 24/(2 + 4∥4) = 6 A: ignorou a bateria de 12 V, que na verdade eleva V<sub>NM</sub> acima de 12 V.', E: '[semRth] 24/2 = 12 A: tratou como se a bateria estivesse em curto, sem a queda de 15 V entre N e M.' } },
+
+    { id: 'y4', h: '2.1', tag: 'Ponte de Wheatstone desequilibrada', d: 'm', conta: '12*200/300-12*100/400',
+      s: 'Uma fonte de 12 V alimenta duas associações em série ligadas em paralelo. A primeira tem um resistor de 100 Ω (ligado ao polo positivo) e outro de 200 Ω (ligado ao polo negativo). A segunda tem um resistor de 300 Ω (ligado ao positivo) e outro de 100 Ω (ligado ao negativo). Um voltímetro ideal é ligado entre os pontos de junção dos resistores de cada associação. A leitura, em volts, é',
+      o: ['1', '3', '4', '5', '8'], a: 3,
+      c: 'Em relação ao polo negativo, o ponto médio da primeira associação está a 12·200/300 = 8 V, e o da segunda, a 12·100/400 = 3 V. O voltímetro lê 8 − 3 = 5 V.',
+      w: { A: '[nosPonte] 4 − 3 = 1 V: comparou o resistor superior da primeira associação (4 V) com o inferior da segunda (3 V).', B: '[ramoIgnorado] 3 V é só a tensão do ponto médio da segunda associação.', C: '[nosPonte] 4 V é a tensão sobre o resistor de 100 Ω superior da primeira associação, não a diferença entre os pontos médios.', E: '[ramoIgnorado] 8 V é só a tensão do ponto médio da primeira associação.' } },
+
+    { id: 'y5', h: '2.1', tag: 'Queda no cabo e potência na carga', d: 'm', conta: '(110/(20+0.02*100/1))**2*20',
+      s: 'Uma carga resistiva de 20 Ω é alimentada por uma fonte de 110 V (CC) por meio de dois condutores de cobre de seção 1 mm², ρ = 0,02 Ω·mm²/m, com 50 m de comprimento cada um (ida e volta). A potência dissipada na carga, em watts, é',
+      o: ['50', '420', '500', '550', '605'], a: 2,
+      c: 'Cabo (ida e volta): R = ρ·ℓ/S = 0,02·100/1 = 2 Ω. I = 110/(20 + 2) = 5 A. P na carga = I²·20 = 25·20 = 500 W.',
+      w: { A: '[formula] 50 W é a perda no cabo (5²·2), não a potência na carga.', B: '[cabo2x] Contou 200 m (R = 4 Ω): I = 4,58 A e P = 420 W.', D: '[formula] 110·5 = 550 W é a potência fornecida pela fonte (carga + cabo).', E: '[cabo2x] 110²/20 = 605 W: desprezou a resistência do cabo.' } },
+
+    { id: 'y6', h: '2.1', tag: 'Temperatura do enrolamento por resistência', d: 'd', conta: '20+((60/5-60/6)/(60/6))/0.004',
+      s: 'O enrolamento de cobre de um motor, a 20 °C, é ligado a uma fonte CC de 60 V e absorve 6 A. Após funcionar por algumas horas, é novamente ligado aos mesmos 60 V e absorve 5 A. Adotando α = 0,004/°C a 20 °C, a temperatura do enrolamento nessa segunda medida, em °C, é',
+      o: ['24', '50', '62', '70', '520'], a: 3,
+      c: 'R<sub>frio</sub> = 60/6 = 10 Ω e R<sub>quente</sub> = 60/5 = 12 Ω. R<sub>q</sub> = R<sub>f</sub>[1 + α(T − 20)]: 1,2 = 1 + 0,004(T − 20), então T − 20 = 50 e T = 70 °C.',
+      w: { A: '[tempBase] 1,2·20 = 24 °C: aplicou a razão das resistências direto sobre a temperatura.', B: '[deltaT] 50 °C é só a variação ΔT; somar 20 °C da referência dá 70 °C.', C: '[tempBase] Usou ΔI/I<sub>frio</sub> = 1/6 como variação relativa: ΔT = 41,7 °C e T ≈ 62 °C.', E: '[tempBase] Fez ΔR/α = 2/0,004 = 500 e somou 20 °C, sem dividir ΔR pela resistência fria.' } },
+
+    { id: 'y7', h: '2.5', tag: 'Superposição com fonte de corrente', d: 'd', conta: '12*6/10+3*(4*6/10)',
+      s: 'Uma fonte de tensão de 12 V, em série com um resistor de 4 Ω, está ligada a um nó N. Entre N e a referência há um resistor de 6 Ω e uma fonte de corrente ideal de 3 A, que injeta corrente no nó N (da referência para N). A tensão no nó N, em volts, é',
+      o: ['7,2 V', '14,4 V', '19,2 V', '25,2 V', '30 V'], a: 1,
+      c: 'Superposição. Só a fonte de 12 V (fonte de corrente aberta): V<sub>N</sub>′ = 12·6/(4 + 6) = 7,2 V. Só a fonte de 3 A (fonte de tensão em curto): V<sub>N</sub>″ = 3·(4 ∥ 6) = 3·2,4 = 7,2 V. V<sub>N</sub> = 7,2 + 7,2 = 14,4 V.',
+      w: { A: '[ignorouFonte] 7,2 V é o efeito de uma só das fontes (cada parcela vale 7,2 V); esqueceu de somar a outra.', C: '[supSinal] 7,2 + 3·4 = 19,2 V: ao zerar a fonte de tensão, ignorou o resistor de 6 Ω em paralelo.', D: '[supSinal] 7,2 + 3·6 = 25,2 V: na parcela da fonte de corrente, ignorou o resistor de 4 Ω (que fica entre N e a referência após o curto).', E: '[supSinal] 12 + 3·6 = 30 V: aplicou os 12 V direto sobre N e somou 3·6.' } },
+
+    { id: 'y8', h: '2.5', tag: 'Teoremas de circuitos: assinale a INCORRETA', d: 'm',
+      s: 'Sobre o estudo de circuitos lineares de corrente contínua, assinale a afirmação <b>INCORRETA</b>.',
+      o: ['Para obter a resistência de Thévenin, fontes de corrente viram curtos-circuitos e fontes de tensão, circuitos abertos.', 'A potência máxima transferida a uma carga resistiva ocorre quando R<sub>L</sub> = R<sub>th</sub> e vale V<sub>th</sub>²/(4R<sub>th</sub>), com rendimento de 50%.', 'A corrente de Norton é a corrente de curto-circuito entre os terminais, e a resistência de Norton é igual à de Thévenin.', 'Na superposição, zeram-se as fontes independentes não consideradas, e as respostas parciais são somadas algebricamente.', 'A soma algébrica das correntes em um nó é nula, o que expressa a conservação da carga elétrica no nó.'], a: 0,
+      c: 'Ao zerar fontes independentes, a de tensão vira curto-circuito (0 V) e a de corrente vira circuito aberto (0 A); a afirmação troca os dois. As demais estão corretas.',
+      w: { B: '[afirmErrada1] Afirmação correta: R<sub>L</sub> = R<sub>th</sub> dá P<sub>máx</sub> = V<sub>th</sub>²/(4R<sub>th</sub>); a metade da potência fica em R<sub>th</sub>.', C: '[afirmErrada1] Afirmação correta: I<sub>N</sub> = V<sub>th</sub>/R<sub>th</sub> e R<sub>N</sub> = R<sub>th</sub>.', D: '[afirmErrada1] Afirmação correta, desde que o circuito seja linear.', E: '[afirmErrada1] Afirmação correta: é a lei de Kirchhoff das correntes (LKC).' } },
+
+    { id: 'y9', h: '2.1', tag: 'Associação mista e corrente em ramo', d: 'm', conta: '(48-48/12*6)/12',
+      s: 'Uma fonte de 48 V alimenta um resistor de 6 Ω em série com uma associação em paralelo: de um lado, um resistor de 12 Ω; do outro, a série de um resistor de 4 Ω com um de 8 Ω. A corrente no resistor de 8 Ω, em ampères, é',
+      o: ['2', '3', '4', '6', '8'], a: 0,
+      c: 'Paralelo: 12 ∥ (4 + 8) = 12 ∥ 12 = 6 Ω. R<sub>eq</sub> = 6 + 6 = 12 Ω e I<sub>total</sub> = 4 A. A tensão no paralelo é 4·6 = 24 V, então a corrente no ramo de 12 Ω (4 + 8) é 24/12 = 2 A. (Pelo divisor: 4 A divide-se igualmente entre dois ramos de 12 Ω.)',
+      w: { B: '[divisorTroca] 24/8 = 3 A: aplicou a tensão do paralelo ao resistor de 8 Ω, esquecendo o de 4 Ω em série com ele.', C: '[ramoIgnorado] 4 A é a corrente total da fonte, e não a do ramo.', D: '[divisorTroca] 24/4 = 6 A é o que passaria só pelo resistor de 4 Ω se ele estivesse sozinho no ramo.', E: '[ramoIgnorado] 48/6 = 8 A: considerou só o resistor série, sem o paralelo.' } },
+
+    { id: 'y10', h: '2.1', tag: 'Triângulo de resistores', d: 'd', conta: '60/(10+30*60/90)',
+      s: 'Três resistores de 30 Ω formam um triângulo, com vértices A, B e C. Uma fonte de 60 V é ligada entre os vértices A e B, por meio de um resistor de 10 Ω em série; o vértice C não tem outra ligação. A corrente fornecida pela fonte, em ampères, é',
+      o: ['6 A', '3 A', '2,4 A', '2 A', '1,5 A'], a: 3,
+      c: 'Entre A e B: o resistor AB (30 Ω) em paralelo com a série AC + CB (60 Ω): 30·60/90 = 20 Ω. R<sub>eq</sub> = 10 + 20 = 30 Ω e I = 60/30 = 2 A.',
+      w: { A: '[deltaMal] 60/10 = 6 A: ignorou o triângulo (tratou como curto).', B: '[deltaMal] Reduziu o triângulo a 30/3 = 10 Ω, como se os três estivessem em paralelo: 60/20 = 3 A.', C: '[deltaMal] Usou 30 ∥ 30 = 15 Ω (esqueceu que o ramo ACB tem dois resistores em série): 60/25 = 2,4 A.', E: '[deltaMal] 60/(10 + 30) = 1,5 A: considerou só o resistor AB e esqueceu o caminho A–C–B em paralelo.' } },
+  ],
+};
