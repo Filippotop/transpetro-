@@ -1,35 +1,84 @@
-/* Polimento (Impeccable): só acabamento visual sobre o tema base, sem mexer em conteúdo. */
-:root{--sp-polish:1}
-/* Cabeçalho: marca + contagem alinhadas, ações em fila única de mesma altura */
-.count{background:transparent;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--rule));color:var(--gold-ink);letter-spacing:.02em}
-:root[data-theme="dark"] .count{color:var(--gold)}
-.bar .chipbtn,.bar button.chipbtn{min-height:36px}
-/* Título da missão: mais firme e com respiro */
-.mission .eyebrow{display:flex;align-items:center;gap:10px}
-.mission .eyebrow::before{content:"";width:18px;height:2px;background:var(--gold);border-radius:2px}
-.mission h2{letter-spacing:-.028em;line-height:1.04;font-weight:800}
+/* Polimento v2 (Impeccable): neutros calmos, borda fina, uma só cor de marca (ouro), acabamento sem brilho.
+   Referências: Vercel (borda como anel de 1px, tinta quase preta), Linear (superfícies escuras em degraus,
+   bordas translúcidas), Notion (neutros quentes, bordas leves), Stripe (raio contido, sombra em camadas baixas).
+   Só tokens e acabamento: nenhum texto ou conteúdo muda. As cores das 7 linhas seguem as mesmas famílias, só mais sóbrias. */
+
+/* ---------- Tokens: claro ---------- */
+:root{
+  --bg:#F7F6F3; --surface:#FFFFFF; --sunk:#F0EEE9; --ink:#17181C; --muted:#5C606A; --rule:#E6E4DE;
+  --ring:rgba(23,24,28,.09);
+  --gold:#8A6000; --gold-soft:#F5EBD1; --gold-ink:#3A2A06; --gold-bright:#E3B84C;
+  --f:#2F4DB5; --h:#B3392F; --g:#1D7A52; --s:#7B3FA3; --rd:#0C727D; --l:#A62E64; --pg:#85580A;
+  --ok:#1D7A4A; --ok-soft:#E1F1E7; --bad:#B0281F; --bad-soft:#F8E1DE; --warn:#8A5200; --warn-soft:#FAEBD3;
+  --on-color:#fff;
+  --r:10px; --r-sm:8px; --r-lg:12px; --card-radius:10px;
+  --card-shadow:0 0 0 1px var(--ring),0 1px 2px rgba(23,24,28,.04),0 6px 16px -10px rgba(23,24,28,.10);
+  --shadow-1:var(--card-shadow); --shadow:var(--card-shadow);
+  --next-bg:#17181C; --next-ink:#F6F5F1; --next-sub:rgba(246,245,241,.72); --next-ring:rgba(255,255,255,.08);
+  color-scheme:light;
+}
+/* ---------- Tokens: escuro (degraus de superfície, bordas translúcidas) ---------- */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0B0C0E; --surface:#141517; --sunk:#1B1D20; --ink:#EDEEF0; --muted:#9A9FA9; --rule:#24262A;
+  --ring:rgba(255,255,255,.08);
+  --gold:#D6A63C; --gold-soft:#2A2312; --gold-ink:#EBD79B; --gold-bright:#E3B84C;
+  --f:#8199F2; --h:#EE7A71; --g:#4CC38D; --s:#B98BE0; --rd:#4AC3CB; --l:#E97FB0; --pg:#DDB04A;
+  --ok:#4CC787; --ok-soft:#14301F; --bad:#FF7F75; --bad-soft:#3A1B1A; --warn:#EDA84A; --warn-soft:#35280F;
+  --on-color:#0B0C0E;
+  --card-shadow:0 0 0 1px var(--ring),0 1px 2px rgba(0,0,0,.4),0 8px 20px -12px rgba(0,0,0,.6);
+  --shadow-1:var(--card-shadow); --shadow:var(--card-shadow);
+  --next-bg:#1B1D20; --next-ink:#EDEEF0; --next-sub:rgba(237,238,240,.68); --next-ring:rgba(255,255,255,.09);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0C0E; --surface:#141517; --sunk:#1B1D20; --ink:#EDEEF0; --muted:#9A9FA9; --rule:#24262A;
+  --ring:rgba(255,255,255,.08);
+  --gold:#D6A63C; --gold-soft:#2A2312; --gold-ink:#EBD79B; --gold-bright:#E3B84C;
+  --f:#8199F2; --h:#EE7A71; --g:#4CC38D; --s:#B98BE0; --rd:#4AC3CB; --l:#E97FB0; --pg:#DDB04A;
+  --ok:#4CC787; --ok-soft:#14301F; --bad:#FF7F75; --bad-soft:#3A1B1A; --warn:#EDA84A; --warn-soft:#35280F;
+  --on-color:#0B0C0E;
+  --card-shadow:0 0 0 1px var(--ring),0 1px 2px rgba(0,0,0,.4),0 8px 20px -12px rgba(0,0,0,.6);
+  --shadow-1:var(--card-shadow); --shadow:var(--card-shadow);
+  --next-bg:#1B1D20; --next-ink:#EDEEF0; --next-sub:rgba(237,238,240,.68); --next-ring:rgba(255,255,255,.09);
+  color-scheme:dark}
+
+/* ---------- Superfícies: anel de 1px em vez de borda + sombra baixa ---------- */
+.panel,.stat,.line,.task,.excard,.game,.err,.fc,.aula{border-color:transparent;border-radius:var(--card-radius);box-shadow:var(--card-shadow)}
+.task.done{box-shadow:0 0 0 1px var(--ring);background:var(--sunk)}
+.btn,.chipbtn{border-radius:8px;border-color:var(--rule);transition:border-color .15s,background-color .15s,transform .1s}
+.btn:hover,.chipbtn:hover{border-color:color-mix(in srgb,var(--ink) 40%,var(--rule))}
+.btn:active,.chipbtn:active{transform:scale(.985)}
+.btn.gold{background:var(--gold);color:var(--surface);border-color:var(--gold)}
+:root[data-theme="dark"] .btn.gold{color:#17140A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.gold{color:#17140A}}
+.count{background:var(--sunk);border:0;box-shadow:0 0 0 1px var(--ring);color:var(--ink);font-weight:600}
+
+/* ---------- Missão e tarefas ---------- */
+.mission h2{letter-spacing:-.025em;line-height:1.06;font-weight:800}
 .mission p.lead{font-size:15.5px;line-height:1.55}
-/* Cartão de plano e tarefas: hierarquia clara, ícone discreto, estado concluído legível */
-.task{border-color:var(--rule);box-shadow:none;transition:border-color .18s,background-color .18s,transform .12s}
-.task:hover{border-color:color-mix(in srgb,var(--lc,var(--gold)) 55%,var(--rule));background:color-mix(in srgb,var(--lc,var(--gold)) 5%,var(--surface));transform:none}
-.task:active{transform:scale(.992)}
-.task .ic{width:32px;height:32px;background:color-mix(in srgb,var(--lc,var(--gold)) 16%,var(--surface));color:var(--lc,var(--gold));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc,var(--gold)) 38%,transparent)}
+.task{transition:box-shadow .16s,background-color .16s,transform .1s}
+.task:hover{transform:none;box-shadow:0 0 0 1px color-mix(in srgb,var(--lc,var(--gold)) 45%,var(--ring)),0 6px 16px -10px rgba(0,0,0,.18);background:var(--surface)}
+.task:active{transform:scale(.995)}
+.task .ic{width:32px;height:32px;background:color-mix(in srgb,var(--lc,var(--gold)) 13%,var(--surface));color:var(--lc,var(--gold));box-shadow:none}
 .task b{font-weight:700;letter-spacing:-.005em}
-.task small{line-height:1.4}
-/* "Próximo passo": tinta de ouro em vez de cinza lavado no escuro; tinta profunda no claro */
-.next{position:relative;overflow:hidden;isolation:isolate;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
-  background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 20%,#14110a) 0%,#14110a 70%);color:#F6EEDA}
-.next::after{content:"";position:absolute;inset:auto -30% -60% auto;width:70%;aspect-ratio:1;background:radial-gradient(closest-side,color-mix(in srgb,var(--gold) 38%,transparent),transparent);z-index:-1;opacity:.55}
-.next .eyebrow{color:color-mix(in srgb,#F6EEDA 65%,transparent)}
-.next b{color:#FFF8E6}
-.next small{opacity:.78}
-.next .cta{color:#F0C45A;letter-spacing:.01em}
+
+/* ---------- Próximo passo: superfície chapada, sem brilho; ouro só na chamada ---------- */
+.next{background:var(--next-bg);color:var(--next-ink);box-shadow:0 0 0 1px var(--next-ring),0 8px 22px -14px rgba(0,0,0,.45);border:0;border-radius:var(--r-lg)}
+.next .eyebrow{color:var(--next-sub)}
+.next b{color:var(--next-ink);letter-spacing:-.015em}
+.next small{color:var(--next-sub);opacity:1}
+.next .cta{color:var(--gold-bright);font-weight:700}
+.next .cta svg,.next .cta .go{transition:transform .16s}
 .next:hover .cta svg,.next:hover .cta .go{transform:translateX(3px)}
-.next .cta svg,.next .cta .go{transition:transform .18s}
-/* Barra de abas: ativa com ouro suave e marcador, em vez de bloco preto */
-nav.tabs button{transition:background-color .18s,color .18s}
-nav.tabs button[aria-current="true"],nav.tabs button[aria-current="true"]:hover{background:var(--gold-soft);color:var(--gold-ink);box-shadow:inset 0 -2px 0 var(--gold)}
-:root[data-theme="dark"] nav.tabs button[aria-current="true"]{color:var(--gold)}
-/* Superfícies: sombra mais baixa e borda mais fina para o cartão não competir com o texto */
-.panel,.stat,.line,.excard,.game,.err,.fc{border-color:color-mix(in srgb,var(--rule) 80%,transparent)}
-@media (prefers-reduced-motion:reduce){.task,.next .cta svg,.next .cta .go{transition:none}}
+
+/* ---------- Abas: ativa em tom de superfície com marcador ouro, sem bloco preto ---------- */
+nav.tabs button{transition:background-color .15s,color .15s}
+nav.tabs button[aria-current="true"],nav.tabs button[aria-current="true"]:hover{background:var(--sunk);color:var(--ink);box-shadow:inset 0 -2px 0 var(--gold)}
+
+/* ---------- Detalhes de navegador e dados ---------- */
+::selection{background:color-mix(in srgb,var(--gold) 28%,transparent);color:inherit}
+input,textarea,select{caret-color:var(--gold);accent-color:var(--gold)}
+html{scrollbar-color:color-mix(in srgb,var(--muted) 45%,transparent) transparent}
+.mono,.stat .n,.count,.countdown .big,.pill,.chip{font-variant-numeric:tabular-nums}
+.edo-aurora{opacity:.05!important}
+
+@media (prefers-reduced-motion:reduce){.task,.btn,.chipbtn,.next .cta svg,.next .cta .go,nav.tabs button{transition:none}}
