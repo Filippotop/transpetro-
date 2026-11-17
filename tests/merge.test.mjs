@@ -9,7 +9,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'merge.js'), 'utf8'), ctx, { filename: 'merge.js' });
 const mergeS = (a, b) => JSON.parse(JSON.stringify(ctx.mergeS(a, b)));
-const base = o => ({ v: 1, ans: {}, cards: {}, read: {}, best: {}, sims: [], recal: {}, vf: {}, notes: {}, plan: {}, rep: {}, marks: {}, chute: {}, redo: {}, snotes: {}, act: {}, pv: {}, updated: 0, ...o });
+const base = o => ({ v: 1, ans: {}, cards: {}, read: {}, best: {}, sims: [], recal: {}, vf: {}, notes: {}, plan: {}, rep: {}, marks: {}, chute: {}, redo: {}, fx: {}, snotes: {}, act: {}, pv: {}, updated: 0, ...o });
 
 const tests = {
   'ans: fica a primeira tentativa (menor t)': () => {
@@ -20,6 +20,13 @@ const tests = {
     const r = mergeS(base({ vf: { v1: { ok: false, t: 1 } }, recal: { k: { ok: true, t: 9 } }, redo: { q: { ok: false, t: 3 } } }),
       base({ vf: { v1: { ok: true, t: 2 } }, recal: { k: { ok: false, t: 4 } }, redo: { q: { ok: true, t: 8 } } }));
     assert.equal(r.vf.v1.ok, true); assert.equal(r.recal.k.ok, true); assert.equal(r.redo.q.ok, true);
+  },
+  'fx (fixação da Teoria): vence a resposta mais recente, e refazer (exclusão) não ressuscita': () => {
+    const k = 'E1|1|0';
+    let r = mergeS(base({ fx: { [k]: { k: 1, t: 5 } } }), base({ fx: { [k]: { k: 3, t: 9 } } }));
+    assert.equal(r.fx[k].k, 3);
+    r = mergeS(base({ fx: { [k]: { k: 1, t: 5 } }, updated: 1 }), base({ fx: {}, del: { [JSON.stringify(['fx', k])]: 20 }, updated: 30 }));
+    assert.equal(r.fx[k], undefined);
   },
   'read, best e act: maior valor': () => {
     const r = mergeS(base({ read: { F1: 5 }, best: { g: 7 }, act: { '2026-10-23': 4 } }), base({ read: { F1: 9, F2: 1 }, best: { g: 3 }, act: { '2026-10-23': 6, '2026-10-22': 2 } }));

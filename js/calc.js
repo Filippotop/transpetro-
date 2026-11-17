@@ -570,17 +570,34 @@
       txt.innerHTML = r.estado === 'estável' ? 'Todos os termos da primeira coluna são positivos: os polos de malha fechada estão no semiplano esquerdo.' : r.estado === 'limite' ? 'O terceiro termo zera: dois polos em ±j' + fmt(r.w) + ', e a saída oscila com amplitude constante.' : r.estado === 'instável' ? 'O terceiro termo ficou negativo: há duas trocas de sinal na primeira coluna, logo dois polos no semiplano direito.' : 'Com K = 0 não há realimentação nem saída.';
     } });
 
-  /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar. */
+  /* Exercícios comentados: a lista estática (com <details> de gabarito) vira alternativas clicáveis com placar.
+     A resposta de cada exercício fica guardada (g.EDO_FX, definido no index.html: S.fx['ESTAÇÃO|seção|n'] = {k, t}) e volta
+     marcada ao reabrir a estação. "Refazer a seção" apaga só as respostas desta seção (toque duplo para confirmar). */
   W['exercicios'] = function (el) {
     var qs = el.querySelectorAll('.exq'), n = qs.length;
+    var fx = g.EDO_FX, mod = el.getAttribute('data-fx-mod') || '';
+    var tit = el.querySelector('.exs-t'), sec = ((tit && tit.textContent.match(/(\d+)/)) || [])[1] || '0';
+    var chave = function (i) { return mod + '|' + sec + '|' + i; };
+    var guarda = !!(fx && mod);
     var placar = document.createElement('p'); placar.className = 'exs-score'; placar.setAttribute('aria-live', 'polite');
+    var txt = document.createElement('span'); placar.appendChild(txt);
+    var reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn exs-reset'; reset.textContent = 'Refazer a seção'; reset.hidden = true;
+    placar.appendChild(reset);
     el.querySelector('.exs-h').after(placar);
     function upd() {
       var feitas = el.querySelectorAll('.exq.feita').length, certas = el.querySelectorAll('.exq.certa').length;
-      placar.textContent = feitas + ' de ' + n + ' respondidas · ' + certas + ' ' + (certas === 1 ? 'acerto' : 'acertos');
+      txt.textContent = feitas + ' de ' + n + ' respondidas · ' + certas + ' ' + (certas === 1 ? 'acerto' : 'acertos');
+      reset.hidden = feitas === 0;
+      if (feitas === 0) { reset.dataset.c = ''; reset.textContent = 'Refazer a seção'; }
     }
-    qs.forEach(function (qe) {
+    function marca(qe, k) {
       var a = +qe.dataset.a, det = qe.querySelector('details'), sum = det.querySelector('summary');
+      qe.classList.add('feita'); if (k === a) qe.classList.add('certa');
+      qe.querySelectorAll('.exq-b').forEach(function (x, j) { x.disabled = true; if (j === a) x.classList.add('right'); else if (j === k) x.classList.add('wrong'); });
+      sum.textContent = k === a ? 'Correto. Gabarito comentado' : 'Incorreto. Gabarito comentado';
+      return det;
+    }
+    qs.forEach(function (qe, qi) {
       var lis = qe.querySelectorAll('.exq-o > li');
       lis.forEach(function (li, k) {
         var b = document.createElement('button'); b.type = 'button'; b.className = 'exq-b'; b.dataset.k = k;
@@ -588,23 +605,26 @@
         li.appendChild(b);
         b.addEventListener('click', function () {
           if (qe.classList.contains('feita')) return;
-          qe.classList.add('feita'); if (k === a) qe.classList.add('certa');
-          qe.querySelectorAll('.exq-b').forEach(function (x, j) { x.disabled = true; if (j === a) x.classList.add('right'); else if (j === k) x.classList.add('wrong'); });
-          sum.textContent = k === a ? 'Correto. Gabarito comentado' : 'Incorreto. Gabarito comentado';
-          det.open = true; upd();
+          marca(qe, k).open = true; if (guarda) fx.set(chave(qi), k); upd();
         });
       });
+      var rec = guarda && fx.get(chave(qi));
+      if (rec && rec.k >= 0 && rec.k < lis.length) marca(qe, rec.k); /* resposta de antes: volta marcada, com o gabarito fechado */
     });
-    var reset = document.createElement('button'); reset.type = 'button'; reset.className = 'btn exs-reset'; reset.textContent = 'Refazer os exercícios';
     reset.addEventListener('click', function () {
+      if (!reset.dataset.c) {
+        reset.dataset.c = '1'; reset.textContent = 'Toque de novo para apagar as respostas';
+        setTimeout(function () { if (reset.dataset.c) { reset.dataset.c = ''; reset.textContent = 'Refazer a seção'; } }, 4000);
+        return;
+      }
       qs.forEach(function (qe) {
         qe.classList.remove('feita', 'certa');
         qe.querySelectorAll('.exq-b').forEach(function (x) { x.disabled = false; x.classList.remove('right', 'wrong'); });
         var det = qe.querySelector('details'); det.open = false; det.querySelector('summary').textContent = 'Ver o gabarito comentado';
       });
+      if (guarda) fx.clear([].map.call(qs, function (_, i) { return chave(i); }));
       upd();
     });
-    el.appendChild(reset);
     upd();
   };
 

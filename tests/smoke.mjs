@@ -501,6 +501,36 @@ async function testDeletesSync(browser) {
 }
 
 /* Design: tokens, campos e links com estilo, cabeçalho compacto no celular e movimento reduzido. */
+/* Exercícios de fixação da Teoria: a resposta fica guardada (S.fx), volta marcada ao reabrir a estação e "Refazer a seção" apaga só ela. */
+async function testFixacao(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_); await page.waitForTimeout(400);
+  const abre = async () => { await page.evaluate(() => go('mod', { id: 'E1', tab: 'teoria' })); await page.waitForTimeout(500); };
+  await abre();
+  const n0 = await page.locator('.exs').first().locator('.exq').count();
+  check(n0 >= 3, `fixação: ${n0} exercícios na primeira seção de E1`);
+  const exs = page.locator('.exs').first();
+  await exs.locator('.exq').nth(0).locator('.exq-b').nth(0).click();
+  await exs.locator('.exq').nth(1).locator('.exq-b').nth(2).click();
+  let st = await page.evaluate(() => ({ fx: JSON.stringify(Object.keys(S.fx || {}).sort()), feitas: document.querySelectorAll('.exs')[0].querySelectorAll('.exq.feita').length }));
+  check(st.feitas === 2 && JSON.parse(st.fx).length === 2, `fixação: depois de responder 2 há ${st.feitas} feitas e S.fx com ${st.fx}`);
+  await page.evaluate(() => go('linhas')); await page.waitForTimeout(300); await abre();
+  st = await page.evaluate(() => { const e = document.querySelectorAll('.exs')[0]; return { feitas: e.querySelectorAll('.exq.feita').length, travados: e.querySelectorAll('.exq.feita .exq-b:disabled').length, placar: e.querySelector('.exs-score').textContent, aberto: e.querySelectorAll('.exq details[open]').length }; });
+  check(st.feitas === 2 && st.travados >= 8 && /2 de \d+ respondidas/.test(st.placar), `fixação: ao voltar, ${st.feitas} feitas, ${st.travados} botões travados, placar "${st.placar}"`);
+  await page.reload(); await page.waitForTimeout(500); await abre();
+  check(await page.locator('.exs').first().locator('.exq.feita').count() === 2, 'fixação: depois de recarregar a página as respostas sumiram');
+  const rb = page.locator('.exs').first().locator('.exs-reset');
+  await rb.click(); check(/de novo/.test(await rb.textContent()), 'fixação: o primeiro toque em "Refazer a seção" deveria pedir confirmação');
+  check(await page.locator('.exs').first().locator('.exq.feita').count() === 2, 'fixação: o primeiro toque apagou as respostas sem confirmar');
+  await rb.click(); await page.waitForTimeout(200);
+  st = await page.evaluate(() => ({ feitas: document.querySelectorAll('.exs')[0].querySelectorAll('.exq.feita').length, fx: Object.keys(S.fx).length, del: Object.keys(S.del || {}).length, oculto: document.querySelector('.exs-reset').hidden }));
+  check(st.feitas === 0 && st.fx === 0 && st.del >= 2 && st.oculto, `fixação: depois de refazer há ${st.feitas} feitas, S.fx ${st.fx}, exclusões ${st.del}, botão oculto ${st.oculto}`);
+  await page.evaluate(() => go('linhas')); await page.waitForTimeout(300); await abre();
+  check(await page.locator('.exs').first().locator('.exq.feita').count() === 0, 'fixação: respostas apagadas voltaram ao reabrir');
+  check(!errs.length, `fixação: erro de página: ${errs.join(' | ')}`);
+  await ctx.close();
+}
 /* Aulas em vídeo: três cartões, arquivos servidos (o Chromium do teste não decodifica H.264, então só vê-se o elemento e o arquivo), sem erro de página. */
 async function testAulas(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
@@ -834,6 +864,7 @@ async function testCalc(browser) {
           if (await w.count()) await fn(w.first(), ck, tag);
         }
         const ex = page.locator('.exs').first();
+        const rs = ex.locator('.exs-reset'); if (await rs.isVisible()) { await rs.click(); await rs.click(); await page.waitForTimeout(60); } /* respostas guardadas da volta anterior */
         await ex.locator('.exq-b').nth(0).click(); await page.waitForTimeout(60);
         ck(await ex.locator('.exq-b.right').count() === 1 && await ex.locator('details[open]').count() === 1, `exercício comentado não marca o gabarito ao responder${tag}`);
       }
@@ -1023,6 +1054,7 @@ try {
   await run('deletes', testDeletesSync);
   await run('design', testDesign);
   await run('aulas', testAulas);
+  await run('fixacao', testFixacao);
   await run('reading', testReading);
   await run('home', testHome);
   await run('lines', testLines);

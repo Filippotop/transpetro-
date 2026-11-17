@@ -691,9 +691,9 @@ const plural = (n,um,varios) => `${n} ${n===1?um:varios}`;
 /* ---------- state ---------- */
 /* Progresso deste app. Fica separado do Humanas de Ouro (mesma origem github.io) e da Bancada (bancada-transpetro-v1). */
 const KEY='eletrica-de-ouro-v1';
-let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, notes:{}, plan:{}, rep:{}, marks:{}, chute:{}, redo:{}, snotes:{}, act:{}, pv:{}, updated:0};
+let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, notes:{}, plan:{}, rep:{}, marks:{}, chute:{}, redo:{}, snotes:{}, act:{}, pv:{}, fx:{}, updated:0};
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
-function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
+function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red','fx'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
 fix();
 /* Questões com números novos (js/gerador.js): o id G2:<gerador>:<semente> reconstrói a questão, que entra em Q para o
    caderno de erros, o Refazer e o Revisar depois funcionarem como com as do banco. */
@@ -709,6 +709,8 @@ const ansRec=(q,k,src)=>({first:k,ok:k===q.ans,t:Date.now(),src,trap:k!==q.ans?(
 let dbRef=null, saveTimer=null, saving=false, dirty=false;
 /* Exclusões que a sincronização precisa respeitar (ver merge.js): t>0 apagado em t, t<0 recriado em -t. */
 function markDel(path,gone){ S.del=S.del||{}; S.del[JSON.stringify(path.map(String))]=gone?Date.now():-Date.now(); }
+/* Exercícios de fixação da Teoria (js/calc.js): cada resposta é S.fx[chave] = {k, t}; apagar vira exclusão para a sincronização respeitar. */
+window.EDO_FX={ get:k=>(S.fx&&S.fx[k])||null, set:(k,v)=>{ S.fx[k]={k:v,t:Date.now()}; markDel(['fx',k],false); save(); }, clear:ks=>{ ks.forEach(k=>{ if(S.fx[k]){ delete S.fx[k]; markDel(['fx',k],true); } }); save(); } };
 function save(){
   S.updated=Date.now();
   try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
@@ -917,6 +919,7 @@ function vMod(){
     twScroll(body.querySelectorAll('.prose .tw'));
     body.querySelectorAll('#prose a[data-ex]').forEach(a=>a.onclick=e=>{ e.preventDefault(); openQView(a.dataset.ex,a.dataset.n); });
     body.querySelectorAll('#prose a[data-ir]').forEach(a=>a.onclick=e=>{ e.preventDefault(); const [v,id]=a.dataset.ir.split(':'); if(v==='mod'&&!(M[id]&&!M[id].emBreve)) return; go(v, id?{id,tab:'teoria'}:null); });
+    body.querySelectorAll('.exs[data-calc="exercicios"]').forEach(e=>e.setAttribute('data-fx-mod',m.id)); /* js/calc.js guarda cada resposta em S.fx['E1|1|0'] */
     if(window.montarCalculadoras) montarCalculadoras(body);
     $('#readbar').hidden=false; readProgress();
     $('#toResumo').onclick=()=>{ if(!S.read[m.id]){S.read[m.id]=Date.now(); save();} param.tab='resumo'; vMod(); window.scrollTo({top:0}); };
@@ -1317,7 +1320,7 @@ function vPainel(){
     const fallback=()=>{ ta.hidden=false; ta.focus(); ta.select(); $('#cpst').textContent='Não consegui copiar sozinho: o texto está selecionado abaixo, copie manualmente.'; };
     try{ navigator.clipboard.writeText(txt).then(()=>{ $('#cpst').textContent='Copiado. Cole na conversa com o tutor.'; },fallback); }catch(e){ fallback(); } };
   app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>go('mod',{id:b.dataset.m,tab:'teoria'}));
-  $('#reset').onclick=()=>{ const b=$('#reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Toque de novo para confirmar'; $('#rs').textContent='Isso apaga respostas, cartões e simulados.'; return; } S={v:1,ans:{},cards:{},read:{},best:{},sims:[],recal:{},vf:{},notes:{},plan:{},rep:{},marks:{},chute:{},redo:{},snotes:{},act:{},pv:{},updated:0,reset:Date.now()}; save(); toast('Progresso apagado'); render(); };
+  $('#reset').onclick=()=>{ const b=$('#reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Toque de novo para confirmar'; $('#rs').textContent='Isso apaga respostas, cartões e simulados.'; return; } S={v:1,ans:{},cards:{},read:{},best:{},sims:[],recal:{},vf:{},notes:{},plan:{},rep:{},marks:{},chute:{},redo:{},snotes:{},act:{},pv:{},fx:{},updated:0,reset:Date.now()}; save(); toast('Progresso apagado'); render(); };
 }
 
 /* ================= v2: novos recursos ================= */

@@ -123,7 +123,8 @@
 .estacao .exq-g summary{cursor:pointer;font-family:var(--display);font-size:14px;font-weight:600;color:var(--muted);padding:4px 0}
 .estacao .exq-g p{margin:6px 0 0;padding:10px 12px;border-left:4px solid var(--ok);background:var(--ok-soft);border-radius:0 8px 8px 0;font-size:calc(15.5px*var(--scale))}
 .estacao .exq.feita:not(.certa) .exq-g p{border-left-color:var(--bad);background:var(--bad-soft)}
-.estacao .exs-reset{margin-top:8px}
+.estacao .exs-score{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.estacao .exs-reset{margin:0;padding:6px 12px;font-size:13px;min-height:44px}
 .estacao .fontes li{font-size:calc(15px*var(--scale))}
 .estacao .nota{font-family:var(--display);font-size:13px;color:var(--muted)}
 
