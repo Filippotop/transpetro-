@@ -1,0 +1,35 @@
+/* Polimento (Impeccable): só acabamento visual sobre o tema base, sem mexer em conteúdo. */
+:root{--sp-polish:1}
+/* Cabeçalho: marca + contagem alinhadas, ações em fila única de mesma altura */
+.count{background:transparent;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--rule));color:var(--gold-ink);letter-spacing:.02em}
+:root[data-theme="dark"] .count{color:var(--gold)}
+.bar .chipbtn,.bar button.chipbtn{min-height:36px}
+/* Título da missão: mais firme e com respiro */
+.mission .eyebrow{display:flex;align-items:center;gap:10px}
+.mission .eyebrow::before{content:"";width:18px;height:2px;background:var(--gold);border-radius:2px}
+.mission h2{letter-spacing:-.028em;line-height:1.04;font-weight:800}
+.mission p.lead{font-size:15.5px;line-height:1.55}
+/* Cartão de plano e tarefas: hierarquia clara, ícone discreto, estado concluído legível */
+.task{border-color:var(--rule);box-shadow:none;transition:border-color .18s,background-color .18s,transform .12s}
+.task:hover{border-color:color-mix(in srgb,var(--lc,var(--gold)) 55%,var(--rule));background:color-mix(in srgb,var(--lc,var(--gold)) 5%,var(--surface));transform:none}
+.task:active{transform:scale(.992)}
+.task .ic{width:32px;height:32px;background:color-mix(in srgb,var(--lc,var(--gold)) 16%,var(--surface));color:var(--lc,var(--gold));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc,var(--gold)) 38%,transparent)}
+.task b{font-weight:700;letter-spacing:-.005em}
+.task small{line-height:1.4}
+/* "Próximo passo": tinta de ouro em vez de cinza lavado no escuro; tinta profunda no claro */
+.next{position:relative;overflow:hidden;isolation:isolate;border:1px solid color-mix(in srgb,var(--gold) 40%,transparent);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 20%,#14110a) 0%,#14110a 70%);color:#F6EEDA}
+.next::after{content:"";position:absolute;inset:auto -30% -60% auto;width:70%;aspect-ratio:1;background:radial-gradient(closest-side,color-mix(in srgb,var(--gold) 38%,transparent),transparent);z-index:-1;opacity:.55}
+.next .eyebrow{color:color-mix(in srgb,#F6EEDA 65%,transparent)}
+.next b{color:#FFF8E6}
+.next small{opacity:.78}
+.next .cta{color:#F0C45A;letter-spacing:.01em}
+.next:hover .cta svg,.next:hover .cta .go{transform:translateX(3px)}
+.next .cta svg,.next .cta .go{transition:transform .18s}
+/* Barra de abas: ativa com ouro suave e marcador, em vez de bloco preto */
+nav.tabs button{transition:background-color .18s,color .18s}
+nav.tabs button[aria-current="true"],nav.tabs button[aria-current="true"]:hover{background:var(--gold-soft);color:var(--gold-ink);box-shadow:inset 0 -2px 0 var(--gold)}
+:root[data-theme="dark"] nav.tabs button[aria-current="true"]{color:var(--gold)}
+/* Superfícies: sombra mais baixa e borda mais fina para o cartão não competir com o texto */
+.panel,.stat,.line,.excard,.game,.err,.fc{border-color:color-mix(in srgb,var(--rule) 80%,transparent)}
+@media (prefers-reduced-motion:reduce){.task,.next .cta svg,.next .cta .go{transition:none}}

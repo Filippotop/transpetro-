@@ -75,3 +75,5 @@ Lacunas da auditoria de cobertura (2026-11-15): +10 questões (591 no banco): en
 Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fáceis, 377 médias e 122 difíceis), todas em `tools/banco/<ID>x.mjs` (formato em `tools/banco.mjs`), com revisão independente (ver ERRATA). Simulado ganhou o seletor Nível: misto, do fácil ao difícil, só fáceis, só médias, só difíceis.
 
 2026-11-16: alternativas das 164 questões com a correta mais longa equilibradas; +14 questões de Português (P1z.mjs): banco com 749 questões. Gerador do banco aceita <ID>x.mjs e <ID>z.mjs.
+
+2026-11-17: polimento visual (Impeccable) em `css/polish.css`, carregado depois de `motion.css`: cartão Próximo passo, aba ativa em ouro, ícones das tarefas, título da missão e contador. Só acabamento, sem mudar conteúdo. Adicionado `PRODUCT.md` (contexto de produto do Impeccable). `VER` do sw.js 2026-11-17.1; npm test verde (smoke com axe incluso). Sem revisão independente de outra sessão ainda.
