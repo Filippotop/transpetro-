@@ -596,6 +596,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <link rel="stylesheet" href="css/tema.css">
 <link rel="stylesheet" href="css/motion.css">
 <link rel="stylesheet" href="css/polish.css">
+<link rel="stylesheet" href="css/contas.css">
 
 <header class="top">
   <div class="wrap">
@@ -656,6 +657,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/plano.js"></script>
 <script src="js/calc.js"></script>
 <script src="js/gerador.js"></script>
+<script src="js/contas.js"></script>
 <script src="merge.js"></script>
 <script>
 const DATA = window.DATA;
@@ -691,9 +693,9 @@ const plural = (n,um,varios) => `${n} ${n===1?um:varios}`;
 /* ---------- state ---------- */
 /* Progresso deste app. Fica separado do Humanas de Ouro (mesma origem github.io) e da Bancada (bancada-transpetro-v1). */
 const KEY='eletrica-de-ouro-v1';
-let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, notes:{}, plan:{}, rep:{}, marks:{}, chute:{}, redo:{}, snotes:{}, act:{}, pv:{}, fx:{}, updated:0};
+let S = {v:1, ans:{}, cards:{}, read:{}, best:{}, sims:[], recal:{}, vf:{}, notes:{}, plan:{}, rep:{}, marks:{}, chute:{}, redo:{}, snotes:{}, act:{}, pv:{}, fx:{}, ct:{}, updated:0};
 try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
-function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red','fx'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
+function fix(){ ['vf','notes','plan','rep','recal','best','cards','read','ans','marks','chute','redo','snotes','act','pv','red','fx','ct'].forEach(k=>{ if(!S[k]||typeof S[k]!=='object') S[k]={}; }); if(!Array.isArray(S.sims)) S.sims=[]; }
 fix();
 /* Questões com números novos (js/gerador.js): o id G2:<gerador>:<semente> reconstrói a questão, que entra em Q para o
    caderno de erros, o Refazer e o Revisar depois funcionarem como com as do banco. */
@@ -711,6 +713,8 @@ let dbRef=null, saveTimer=null, saving=false, dirty=false;
 function markDel(path,gone){ S.del=S.del||{}; S.del[JSON.stringify(path.map(String))]=gone?Date.now():-Date.now(); }
 /* Exercícios de fixação da Teoria (js/calc.js): cada resposta é S.fx[chave] = {k, t}; apagar vira exclusão para a sincronização respeitar. */
 window.EDO_FX={ get:k=>(S.fx&&S.fx[k])||null, set:(k,v)=>{ S.fx[k]={k:v,t:Date.now()}; markDel(['fx',k],false); save(); }, clear:ks=>{ ks.forEach(k=>{ if(S.fx[k]){ delete S.fx[k]; markDel(['fx',k],true); } }); save(); } };
+/* Contas passo a passo (js/contas.js): S.ct[id] = {s: acertos seguidos, n: tentativas, t}. */
+window.EDO_CT={ get:k=>(S.ct&&S.ct[k])||null, set:(k,v)=>{ S.ct[k]={s:v.s,n:v.n,t:Date.now()}; markDel(['ct',k],false); save(); } };
 function save(){
   S.updated=Date.now();
   try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
@@ -865,7 +869,7 @@ function vLinhas(){
       </div>
       <div class="panel atalhos"><div class="eyebrow">atalhos</div>
         <button class="at" data-at="aq">${atIc('aq')}Aquecimento de 10 questões</button><button class="at" data-at="sim">${atIc('sim')}Simulado</button><button class="at" data-at="err">${atIc('err')}Caderno de erros</button>
-        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="aul">${atIc('aul')}Aulas em vídeo</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
+        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="aul">${atIc('aul')}Aulas em vídeo</button><button class="at" data-at="ct">${atIc('ct')}Contas passo a passo</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
     </aside>
   </section>
   <div class="sec-title"><h2>O mapa das linhas</h2><span class="eyebrow">${open.length} ${open.length===1?'estação':'estações'} · ${plural(DATA.questions.length,'questão','questões')} · ${plural(DATA.vf.length,'afirmação','afirmações')} V ou F</span></div>
@@ -876,7 +880,7 @@ function vLinhas(){
         return `<button class="st ${cls}" data-m="${m.id}" title="${esc(m.title)}">${m.faixa==='A'?'<span class="fa">A</span>':''}<span class="c"></span><span class="code">${m.id}</span><span class="t">${esc(m.title.split(/[:(]/)[0])}</span></button>`}).join('')}</div></div>`:'<p class="soon-line">Estações em breve.</p>'}</div>`}).join('')}
   <div class="legend"><span><i></i>não iniciado</span><span><i style="background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)"></i>em andamento</span><span><i style="background:var(--muted)"></i>concluído</span><span><i style="box-shadow:0 0 0 2px var(--ok)"></i>tudo certo</span><span><i style="box-shadow:0 0 0 2px var(--bad)"></i>menos de 2 de 3</span><span><b class="chip A">A</b> pesou mais em 2023</span></div>`;
   app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
-  app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),bib:()=>go('biblioteca'),aul:()=>go('aulas'),ban:()=>go('bancada')})[b.dataset.at]());
+  app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),ct:()=>go('biblioteca',{s:'contas'}),bib:()=>go('biblioteca'),aul:()=>go('aulas'),ban:()=>go('bancada')})[b.dataset.at]());
   app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
   if($('#vPl')) $('#vPl').onclick=()=>go('plano');
   if(pday&&planDone(pday).done===pday.tasks.length&&!S.plan['fim|'+pday.d]){ S.plan['fim|'+pday.d]=true; save(); toast('Dia fechado. Bom trabalho.'); const h=app.querySelector('.hoje'); if(h) document.dispatchEvent(new CustomEvent('edo:celebrate',{detail:h})); }
@@ -1320,7 +1324,7 @@ function vPainel(){
     const fallback=()=>{ ta.hidden=false; ta.focus(); ta.select(); $('#cpst').textContent='Não consegui copiar sozinho: o texto está selecionado abaixo, copie manualmente.'; };
     try{ navigator.clipboard.writeText(txt).then(()=>{ $('#cpst').textContent='Copiado. Cole na conversa com o tutor.'; },fallback); }catch(e){ fallback(); } };
   app.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>go('mod',{id:b.dataset.m,tab:'teoria'}));
-  $('#reset').onclick=()=>{ const b=$('#reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Toque de novo para confirmar'; $('#rs').textContent='Isso apaga respostas, cartões e simulados.'; return; } S={v:1,ans:{},cards:{},read:{},best:{},sims:[],recal:{},vf:{},notes:{},plan:{},rep:{},marks:{},chute:{},redo:{},snotes:{},act:{},pv:{},fx:{},updated:0,reset:Date.now()}; save(); toast('Progresso apagado'); render(); };
+  $('#reset').onclick=()=>{ const b=$('#reset'); if(!b.dataset.c){ b.dataset.c=1; b.textContent='Toque de novo para confirmar'; $('#rs').textContent='Isso apaga respostas, cartões e simulados.'; return; } S={v:1,ans:{},cards:{},read:{},best:{},sims:[],recal:{},vf:{},notes:{},plan:{},rep:{},marks:{},chute:{},redo:{},snotes:{},act:{},pv:{},fx:{},ct:{},updated:0,reset:Date.now()}; save(); toast('Progresso apagado'); render(); };
 }
 
 /* ================= v2: novos recursos ================= */
@@ -1444,8 +1448,8 @@ function vBib(){
   param=param||{};
   const s=(param&&param.s)||'formulas';
   app.innerHTML=`<div class="sec-title"><h2>Biblioteca</h2><span class="eyebrow">materiais para consulta e revisão</span></div>
-    ${subtabs([['formulas','Formulário'],['anc','Números-âncora'],['nr10','NR-10 lado a lado'],['simb','Simbologia'],['glos','Glossário'],['metodo','Método']],s,k=>{param={s:k}; vBib();})}<div id="host"></div>`;
-  ({formulas:bForm,anc:bAnc,nr10:bNR10,simb:()=>bForm('M1'),glos:bGlos,metodo:vMetodo}[s]||bForm)();
+    ${subtabs([['formulas','Formulário'],['contas','Contas passo a passo'],['anc','Números-âncora'],['nr10','NR-10 lado a lado'],['simb','Simbologia'],['glos','Glossário'],['metodo','Método']],s,k=>{param={s:k}; vBib();})}<div id="host"></div>`;
+  ({contas:()=>CONTAS.montar(host(),{r:param&&param.r,mod:param&&param.mod}),formulas:bForm,anc:bAnc,nr10:bNR10,simb:()=>bForm('M1'),glos:bGlos,metodo:vMetodo}[s]||bForm)();
   twScroll(host().querySelectorAll('.tw'));
 }
 /* Formulário geral: primeiro as fórmulas gerais (DATA.formulas, as que servem a mais de uma estação), depois as de cada
@@ -1454,10 +1458,13 @@ function fItem(f,k){ return typeof f==='string'?f:`<p><b>${f.titulo||f.nome||k||
 function bForm(so){
   const mods=DATA.modules.filter(m=>!m.emBreve&&Array.isArray(m.formulas)&&m.formulas.length&&(!so||m.id===so));
   const gerais=so?[]:Object.entries(DATA.formulas||{});
-  host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3>${stationBtn(m.id)}</div><div class="prose estacao eq-grid" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
+  host().innerHTML=gerais.length||mods.length?`<div style="display:grid;gap:14px">${gerais.length?`<div class="panel"><h3 style="font-size:19px;font-weight:800">Fórmulas gerais</h3><div class="prose" style="max-width:none">${gerais.map(([k,f])=>fItem(f,k)).join('')}</div></div>`:''}${mods.map(m=>`<div class="panel lc-${m.line}"><div class="row" style="justify-content:space-between"><h3 style="font-size:19px;font-weight:800">${m.id} · ${esc(m.title)}</h3><span>${ctBtn(m.id)}${stationBtn(m.id)}</span></div><div class="prose estacao eq-grid" style="max-width:none">${m.formulas.map(f=>fItem(f)).join('')}</div></div>`).join('')}</div>`
     :'<p class="empty">O formulário geral chega junto com as estações: cada fórmula com o nome e a unidade de cada símbolo.</p>';
   bindStations(host());
+  host().querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>go('biblioteca',{s:'contas',mod:b.dataset.ct}));
 }
+/* Botão "Contas passo a passo" no Formulário de cada estação: abre Biblioteca → Contas já filtrada. */
+function ctBtn(id){ const n=window.CONTAS?CONTAS.lista().filter(r=>r.mod===id).length:0; return n?`<button class="btn" data-ct="${id}">Contas passo a passo (${n})</button> `:''; }
 function glossItems(){ return DATA.bib.glos.slice().sort((a,b)=>strip(a.t).localeCompare(strip(b.t),'pt')); }
 function bGlos(){
   const qy=param.q||'', L=param.L||'all';
@@ -1526,7 +1533,7 @@ function sparkSvg(vals,labels,desc){
     <line class="gl" x1="${P}" x2="${W-P}" y1="${H-B}" y2="${H-B}"/><path class="ar" d="${area}" fill="url(#spg)"/><path class="ln" pathLength="1" d="${d}"/><circle class="dt" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/>
     <text x="${P}" y="${H-3}">${labels[0]}</text><text x="${W-P}" y="${H-3}" text-anchor="end">${labels[1]}</text></svg>`;
 }
-const AT_ICON={aq:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',sim:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',err:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',bib:'<path d="M5 4h4v16H5zM10 4h4v16h-4z"/>',aul:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>',ban:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-1.4 1.4a4 4 0 0 1-4.2.9L7 20.7a2 2 0 0 1-2.8-2.8l7.1-7.1a4 4 0 0 1 .9-4.2z"/>',car:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'};
+const AT_ICON={ct:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/>',aq:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',sim:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',err:'<path d="M4 4h16v16H4zM8 9h8M8 13h8M8 17h5"/>',bib:'<path d="M5 4h4v16H5zM10 4h4v16h-4z"/>',aul:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>',ban:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-1.4 1.4a4 4 0 0 1-4.2.9L7 20.7a2 2 0 0 1-2.8-2.8l7.1-7.1a4 4 0 0 1 .9-4.2z"/>',car:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'};
 const atIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${AT_ICON[k]}</svg>`;
 function planDone(p){ let d=0; p.tasks.forEach((t,i)=>{ if(taskDone(p,i)) d++; }); return {done:d,n:p.tasks.length}; }
 function taskLabel(t){ if(t.k==='mod'){ const m=M[t.a]; return `${m.id} · ${m.title} <span class="muted">(teoria, cartões, V ou F e ${m.qs.length} questões)</span>`; } return esc(t.t); }
@@ -1581,6 +1588,7 @@ function buildIndex(){
     m.resumo.forEach(r=>IDX.push({g:'Glossário',t:strip(r[0]),txt:strip(r[1]),act:()=>go('biblioteca',{s:'glos',q:strip(r[0])})}));
   });
   DATA.questions.forEach(q=>IDX.push({g:'Questões',t:`Questão ${q.n} · ${q.mod||(q.kind==='simulado'?'simulado':'reforço')}`,txt:strip(q.base.join(' ')+' '+q.cmd),act:()=> q.mod&&M[q.mod]? go('mod',{id:q.mod,tab:'q'}) : go('treino',{s:'sim'})}));
+  if(window.CONTAS) CONTAS.lista().forEach(r=>IDX.push({g:'Contas',t:r.nome,txt:strip(r.f+' '+r.lembrar+' '+r.arm.join(' ')),act:()=>go('biblioteca',{s:'contas',r:r.id})}));
   DATA.vf.forEach(v=>IDX.push({g:'V ou F',t:`Estação ${v.mod}`,txt:strip(v.s),act:()=>go('mod',{id:v.mod,tab:'vf'})}));
   IDX.forEach(x=>x.n=norm(x.t+' '+x.txt));
 }
@@ -1852,9 +1860,9 @@ setInterval(()=>{ pomoTick(); simPill(); if(document.visibilityState==='visible'
 
 /* ---- link direto (#plano, #arena, #E1…) ---- */
 (()=>{ const h=(location.hash||'').slice(1); if(!h) return;
-  const views={bancada:'bancada',linhas:'linhas',provas:'provas',aulas:'aulas',biblioteca:'biblioteca',arena:'arena',treino:'treino',plano:'plano',painel:'painel',erros:'treino',simulado:'treino',formulas:'biblioteca',glossario:'biblioteca'};
+  const views={bancada:'bancada',linhas:'linhas',provas:'provas',aulas:'aulas',biblioteca:'biblioteca',arena:'arena',treino:'treino',plano:'plano',painel:'painel',erros:'treino',simulado:'treino',formulas:'biblioteca',glossario:'biblioteca',contas:'biblioteca'};
   if(M[h.toUpperCase()]&&!M[h.toUpperCase()].emBreve){ view='mod'; param={id:h.toUpperCase(),tab:'teoria'}; }
-  else if(views[h]){ view=views[h]; param= h==='erros'?{s:'erros'}: h==='simulado'?{s:'sim'}: h==='formulas'?{s:'formulas'}: h==='glossario'?{s:'glos'}: null; }
+  else if(views[h]){ view=views[h]; param= h==='erros'?{s:'erros'}: h==='simulado'?{s:'sim'}: h==='formulas'?{s:'formulas'}: h==='contas'?{s:'contas'}: h==='glossario'?{s:'glos'}: null; }
 })();
 pomoPaint();
 /* ================= Bancada: o simulador de OS mora em bancada/ ================= */

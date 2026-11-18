@@ -31,7 +31,7 @@ function mergeS(a, b) {
   const out = Object.assign({}, bNewer ? a : b, bNewer ? b : a);
   out.v = 1;
   out.ans = byT(true)(a.ans, b.ans);
-  for (const k of ['vf', 'recal', 'redo', 'fx']) out[k] = byT(false)(a[k], b[k]);
+  for (const k of ['vf', 'recal', 'redo', 'fx', 'ct']) out[k] = byT(false)(a[k], b[k]);
   for (const k of ['read', 'best', 'act']) out[k] = byMax(a[k], b[k]);
   out.cards = byKey(a.cards, b.cards, (p, q) => (q.due || '') !== (p.due || '') ? ((q.due || '') > (p.due || '') ? q : p) : ((q.box || 0) > (p.box || 0) ? q : p));
   for (const k of ['marks', 'chute', 'rep', 'plan', 'notes', 'snotes']) out[k] = byNewer(a[k], b[k]);

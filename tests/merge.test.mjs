@@ -9,7 +9,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'merge.js'), 'utf8'), ctx, { filename: 'merge.js' });
 const mergeS = (a, b) => JSON.parse(JSON.stringify(ctx.mergeS(a, b)));
-const base = o => ({ v: 1, ans: {}, cards: {}, read: {}, best: {}, sims: [], recal: {}, vf: {}, notes: {}, plan: {}, rep: {}, marks: {}, chute: {}, redo: {}, fx: {}, snotes: {}, act: {}, pv: {}, updated: 0, ...o });
+const base = o => ({ v: 1, ans: {}, cards: {}, read: {}, best: {}, sims: [], recal: {}, vf: {}, notes: {}, plan: {}, rep: {}, marks: {}, chute: {}, redo: {}, fx: {}, ct: {}, snotes: {}, act: {}, pv: {}, updated: 0, ...o });
 
 const tests = {
   'ans: fica a primeira tentativa (menor t)': () => {

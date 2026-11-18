@@ -531,6 +531,46 @@ async function testFixacao(browser) {
   check(!errs.length, `fixação: erro de página: ${errs.join(' | ')}`);
   await ctx.close();
 }
+/* Contas passo a passo (Biblioteca → Contas): lista, passos que aparecem um a um, treino que conta acertos seguidos e persiste. */
+async function testContas(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_ + '#contas'); await page.waitForTimeout(600);
+  const n = await page.locator('.ct-card').count();
+  check(n >= 28, `contas: ${n} receitas na lista (esperado 28 ou mais)`);
+  await page.locator('.ct-chip[data-f="E3"]').click(); await page.waitForTimeout(150);
+  const nE3 = await page.locator('.ct-card').count(); check(nE3 >= 4 && nE3 < n, `contas: filtro E3 mostrou ${nE3} de ${n}`);
+  await page.locator('.ct-chip[data-f="todas"]').click();
+  await page.locator('.ct-card[data-r="pot-resistor"]').click(); await page.waitForTimeout(250);
+  check(await page.locator('.ct-passos li:not([hidden])').count() === 1, 'contas: deveria começar com 1 passo visível');
+  await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.waitForTimeout(200);
+  check(await page.locator('.ct-passos li:not([hidden])').count() === 4 && /2\.200/.test(await page.locator('.ct-res').textContent()), 'contas: 4 passos e resultado 2.200 W depois de avançar');
+  await page.locator('input[data-k="V"]').fill('110'); await page.waitForTimeout(150);
+  check(/550/.test(await page.locator('.ct-res').textContent()), 'contas: mudar V para 110 deveria dar 550 W (era ' + await page.locator('.ct-res').textContent() + ')');
+  check(await page.locator('.ct-passos li:not([hidden])').count() === 4, 'contas: mudar o número não deveria esconder os passos já abertos');
+  await page.locator('.ct-modo button[data-m="treino"]').click(); await page.waitForTimeout(200);
+  const certo = async () => page.evaluate(() => { const r = CONTAS.receita('pot-resistor'); const v = {}; document.querySelectorAll('#ctc input[data-k]').forEach(i => v[i.dataset.k] = CONTAS.numero(i.value)); return String(CONTAS.calcular(r, v).r[0][1]); });
+  for (let i = 0; i < 3; i++) {
+    await page.locator('#cti').fill(await certo()); await page.locator('#ctf button[type=submit]').click(); await page.waitForTimeout(200);
+    check(await page.locator('.ct-vered.ok').count() === 1, `contas: resposta certa ${i + 1} não foi aceita`);
+    if (i < 2) { await page.locator('#ctp').click(); await page.waitForTimeout(150); }
+  }
+  let st = await page.evaluate(() => S.ct['pot-resistor']); check(st && st.s === 3 && st.n === 3, 'contas: S.ct deveria ter 3 seguidas e 3 tentativas: ' + JSON.stringify(st));
+  await page.locator('#ctp').click(); await page.locator('#cti').fill('1'); await page.locator('#ctf button[type=submit]').click(); await page.waitForTimeout(150);
+  check(await page.locator('.ct-vered.no').count() === 1, 'contas: resposta errada deveria ser recusada');
+  st = await page.evaluate(() => S.ct['pot-resistor']); check(st.s === 0 && st.n === 4, 'contas: o erro deveria zerar a sequência: ' + JSON.stringify(st));
+  await page.reload(); await page.waitForTimeout(600); await page.goto(URL_ + '#contas'); await page.waitForTimeout(500);
+  check(await page.evaluate(() => !!(S.ct && S.ct['pot-resistor'] && S.ct['pot-resistor'].n === 4)), 'contas: o treino não ficou guardado depois de recarregar');
+  await page.evaluate(() => { S.ct['ohm'] = { s: 3, n: 3, t: Date.now() }; save(); go('biblioteca', { s: 'contas' }); }); await page.waitForTimeout(300);
+  check(await page.locator('.ct-card.dom').count() === 1, 'contas: uma conta com 3 seguidas deveria aparecer como dominada');
+  await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(400);
+  await page.locator('[data-ct="E3"]').first().click(); await page.waitForTimeout(300);
+  check(await page.locator('.ct-chip.on[data-f="E3"]').count() === 1 && await page.locator('.ct-card').count() >= 4, 'contas: o botão do Formulário deveria abrir as contas já filtradas por E3');
+  await page.evaluate(() => go('linhas')); await page.waitForTimeout(300);
+  const busca = await page.evaluate(() => { buildIndex(); return IDX.filter(x => x.g === 'Contas').length; }); check(busca >= 28, `contas: ${busca} entradas na busca`);
+  check(!errs.length, `contas: erro de página: ${errs.join(' | ')}`);
+  await ctx.close();
+}
 /* Aulas em vídeo: três cartões, arquivos servidos (o Chromium do teste não decodifica H.264, então só vê-se o elemento e o arquivo), sem erro de página. */
 async function testAulas(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
@@ -1055,6 +1095,7 @@ try {
   await run('design', testDesign);
   await run('aulas', testAulas);
   await run('fixacao', testFixacao);
+  await run('contas', testContas);
   await run('reading', testReading);
   await run('home', testHome);
   await run('lines', testLines);

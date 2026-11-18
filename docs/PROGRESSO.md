@@ -81,3 +81,5 @@ Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fá
 2026-11-17 (v2): `css/polish.css` refeito: neutros quentes no claro, grafite em degraus no escuro, anel de 1px no lugar de borda, ouro só como cor de marca, Próximo passo chapado, raio 8-10px. Referências: Vercel, Linear, Notion, Stripe. `VER` 2026-11-17.2; npm test verde. Sem revisão independente de outra sessão.
 
 2026-11-17: exercícios de fixação da Teoria guardam a resposta (S.fx, sincroniza e respeita exclusão) e ganham o botão "Refazer a seção" (2 toques). VER 2026-11-17.1.
+
+2026-11-17: Biblioteca → Contas passo a passo (29 contas, Treinar com 3 acertos seguidos = dominada, S.ct), botão no Formulário de cada estação, atalho na home, busca; animações de acerto/erro nas alternativas. VER 2026-11-17.2.
