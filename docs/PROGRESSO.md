@@ -89,3 +89,4 @@ Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fá
 2026-11-19: painéis animados em CA e do capacitor, pausa, pulso por passo, contagem do resultado; Treinar sem vazar por proporção. VER 2026-11-19.2.
 
 2026-11-19: aba Contas: treino misto, revisão espaçada, diagnóstico de erro, dicas, busca, cálculo mental, 4 contas novas (3 de prova real). VER 2026-11-19.3.
+2026-11-19 (noite): +30 questões de Instalações/NBR 5410 (banco 779, revisão Opus aplicada), modo "Riscar alternativas" e regra do erro no cartão. VER 2026-11-19.5.

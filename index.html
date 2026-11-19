@@ -242,6 +242,12 @@ td{border-bottom:1px solid var(--rule);padding:8px 10px;vertical-align:top}
 .alt.wrong{border-color:var(--bad);background:var(--bad-soft)}
 .alt.wrong .L{background:var(--bad);color:var(--on-color)}
 .alt.dim{opacity:.55}
+.alt.cut{opacity:.55;background:var(--sunk)}
+.alt.cut>span:last-child{text-decoration:line-through}
+.cutbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.cutb[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.regra{margin-top:12px;display:grid;gap:6px}
+.regra textarea{min-height:88px}
 .alt .old{font-family:var(--mono);font-size:10.5px;color:var(--bad);display:block;margin-top:4px}
 .fb{margin-top:12px;border-radius:8px;padding:12px 14px;font-size:14.5px}
 .fb.trap{background:var(--warn-soft);color:var(--ink);border-left:4px solid var(--warn)}
@@ -988,9 +994,23 @@ async function askTutor(out,prompt){
 /* ---------- question card ---------- */
 /* Figura da questão (SVG só com classes s-*, as mesmas da teoria): o invólucro .estacao aplica os estilos dos dois temas. */
 function qFig(q){ return `<div class="estacao qfig"><figure>${q.fig}</figure></div>`; }
+/* Treino de eliminação: o que o aluno riscou na 1ª resposta (S.ans[id].el = letras) contra o gabarito. */
+function elimLine(q){
+  const a=S.ans[q.id]; if(!a||!a.el) return '';
+  const ls=a.el.split(''), certa=ls.includes(q.ans), erradas=ls.filter(k=>k!==q.ans);
+  const lista=ls.join(', ');
+  return certa
+    ? `<div class=\"fb no elim\"><strong>Você riscou a correta (${q.ans}).</strong> Antes de riscar, ache o motivo de a alternativa estar errada; sem motivo, não risque.${erradas.length?` As outras riscadas (${erradas.join(', ')}) estavam erradas.`:''}</div>`
+    : `<div class=\"fb ok elim\"><strong>Você riscou ${lista}: ${ls.length>1?'todas estavam erradas':'estava errada'}.</strong> Eliminar assim aumenta a chance mesmo quando você não sabe a certa.</div>`;
+}
+function elimStats(){
+  let riscadas=0, certas=0, questoes=0, quase=0;
+  Object.entries(S.ans).forEach(([id,a])=>{ if(!a||!a.el) return; const q=Q[id]; if(!q) return; const ls=a.el.split(''); questoes++; riscadas+=ls.length; const ok=ls.filter(k=>k!==q.ans).length; certas+=ok; if(ok<ls.length) quase++; });
+  return {riscadas,certas,questoes,erradas:quase};
+}
 function questionCard(el,q,opts={}){
   const prev=S.ans[q.id];
-  const st={tries:[],locked:false};
+  const st={tries:[],locked:false,cut:new Set(),cutMode:false}; /* cut: alternativas riscadas antes de responder (treino de eliminação) */
   el.dataset.qid=q.id;
   const L='ABCDE';
   function paint(){
@@ -1001,7 +1021,8 @@ function questionCard(el,q,opts={}){
       ${q.src?`<div class="qsrc">(${q.src})</div>`:''}
       ${q.fig?qFig(q):''}
       <p class="cmd">${q.cmd}</p>
-      <div class="alts">${q.alts.map((a,i)=>{const k=L[i]; let c=''; if(reveal){ c = k===q.ans?'right':(st.tries.includes(k)?'wrong':'dim'); } else if(st.tries.includes(k)) c='wrong';
+      ${reveal||opts.riscar===false?'':`<div class="cutbar"><button class="chipbtn cutb" aria-pressed="${st.cutMode}">${st.cutMode?'Riscando: toque no que está errado':'Riscar alternativas'}</button><span class="muted" style="font-size:12.5px">${st.cut.size?`${st.cut.size} riscada${st.cut.size>1?'s':''}. `:''}Na prova não há desconto por erro: elimine o que sabe que está errado e marque entre as que sobram.</span></div>`}
+      <div class="alts">${q.alts.map((a,i)=>{const k=L[i]; let c=''; if(reveal){ c = k===q.ans?'right':(st.tries.includes(k)?'wrong':'dim'); } else if(st.tries.includes(k)) c='wrong'; else if(st.cut.has(k)) c='cut';
         return `<button class="alt ${c}" data-k="${k}" ${reveal||st.tries.includes(k)?'disabled':''}><span class="L">${k}</span><span>${a}</span></button>`}).join('')}</div>
       <div class="fbz"></div></div>`;
     const fbz=el.querySelector('.fbz');
@@ -1013,20 +1034,23 @@ function questionCard(el,q,opts={}){
       const first=st.tries[0]; const okFirst=first===q.ans;
       fbz.innerHTML=`<div class="fb ${okFirst?'ok':'no'}"><strong>${okFirst?'Certa de primeira.':(st.tries.includes(q.ans)?'Certa na segunda tentativa. Conta como erro na sua estatística.':'Gabarito: '+q.ans+'.')}</strong> ${okFirst?'':'Leia o porquê de cada alternativa.'}</div>
         <div class="ex">${L.split('').map(k=>`<div class="${k===q.ans?'c':''}"><span class="L">${k}</span><span>${q.ex[k]||''}${q.erros&&q.erros[k]&&DATA.erros&&DATA.erros[q.erros[k]]?`<span class="tg">${esc(DATA.erros[q.erros[k]].n)}</span>`:q.traps[k]?`<span class="tg">${TRAPS[q.traps[k]].name}</span>`:''}</span></div>`).join('')}</div>
+        ${elimLine(q)}${!okFirst&&opts.regra!==false?`<div class="regra"><label class="eyebrow" for="rg-${esc(q.id)}">a regra que teria evitado este erro (em uma frase, sua)</label><textarea id="rg-${esc(q.id)}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[q.id]||'')}</textarea></div>`:''}
         <div class="meta">Item ${esc(q.hab)} do edital · dificuldade ${esc(q.dif)}${prev&&opts.showPrev!==false?` · primeira resposta registrada: ${prev.first} (${prev.ok?'certa':'errada'})`:''}</div>
         <div class="qtools"><button class="chipbtn mk" aria-pressed="${!!S.marks[q.id]}">${S.marks[q.id]?'★ marcada para revisar':'☆ revisar depois'}</button>${S.ans[q.id]&&S.ans[q.id].ok?`<button class="chipbtn ch" aria-pressed="${!!S.chute[q.id]}">${S.chute[q.id]?'chute: vai para o caderno de erros':'acertei no chute'}</button>`:''}</div>
         <div class="row" style="margin-top:10px">${prev?'<button class="btn redo">Tentar de novo (não muda a estatística)</button>':''}<button class="btn tex tutor-only">Explique de outro jeito</button></div><div class="tx"></div>`;
       const mk=fbz.querySelector('.mk'); mk.onclick=()=>{ S.marks[q.id]=!S.marks[q.id]; if(!S.marks[q.id]) delete S.marks[q.id]; markDel(['marks',q.id],!S.marks[q.id]); save(); paint(); };
       const ch=fbz.querySelector('.ch'); if(ch) ch.onclick=()=>{ S.chute[q.id]=!S.chute[q.id]; if(!S.chute[q.id]) delete S.chute[q.id]; markDel(['chute',q.id],!S.chute[q.id]); save(); paint(); };
-      const rd=fbz.querySelector('.redo'); if(rd) rd.onclick=()=>{ st.tries=[]; st.locked=false; paint(); };
+      const rd=fbz.querySelector('.redo'); if(rd) rd.onclick=()=>{ st.tries=[]; st.locked=false; st.cut=new Set(); st.cutMode=false; paint(); };
+      const rg=fbz.querySelector('.regra textarea'); if(rg){ let tmr; rg.addEventListener('input',()=>{ clearTimeout(tmr); tmr=setTimeout(()=>{ S.notes[q.id]=rg.value.trim(); save(); },700); }); }
       const tb=fbz.querySelector('.tex'); if(tb) tb.onclick=()=>askTutor(fbz.querySelector('.tx'),`Você é um tutor para a prova da Transpetro (Cesgranrio, Manutenção – Elétrica) falando com o estudante, em português do Brasil, texto simples sem markdown, até 150 palavras. Explique de um jeito diferente e mais concreto por que a alternativa ${q.ans} é a correta${first!==q.ans?` e por que a ${first}, que ele marcou, está errada`:''}. Confira as contas. Não invente fatos além do material.\n\nTexto-base: ${strip(q.base.join(' '))}\nFonte: ${strip(q.src)}\nComando: ${strip(q.cmd)}\nAlternativas: ${q.alts.map((a,i)=>L[i]+') '+strip(a)).join(' | ')}\nGabarito comentado: ${L.split('').map(k=>k+': '+strip(q.ex[k]||'')).join(' | ')}`);
     }
-    el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>pick(b.dataset.k));
+    el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(st.cutMode){ if(st.cut.has(k)) st.cut.delete(k); else st.cut.add(k); paint(); const nb=el.querySelector(`.alt[data-k="${k}"]`); if(nb) nb.focus(); } else pick(k); });
+    const cb=el.querySelector('.cutb'); if(cb) cb.onclick=()=>{ st.cutMode=!st.cutMode; paint(); const b2=el.querySelector('.cutb'); if(b2) b2.focus(); };
     if(q.fig&&window.montarCalculadoras) montarCalculadoras(el); /* figura larga: botão "Ampliar a figura" no celular */
   }
   function pick(k){
     st.tries.push(k);
-    if(st.tries.length===1 && !S.ans[q.id]){ S.ans[q.id]=ansRec(q,k,opts.src||'estudo'); if(isGen(q.id)) Q[q.id]=q; bump(); save(); }
+    if(st.tries.length===1 && !S.ans[q.id]){ S.ans[q.id]=ansRec(q,k,opts.src||'estudo'); if(st.cut.size) S.ans[q.id].el=[...st.cut].sort().join(''); if(isGen(q.id)) Q[q.id]=q; bump(); save(); }
     if(k===q.ans || st.tries.length>=2){ st.locked=true; opts.onDone&&opts.onDone(st.tries[0]===q.ans); }
     paint();
   }
@@ -1437,7 +1461,7 @@ function vErros(){
   const counts={}; wrong.forEach(x=>{const k=kOf(x); counts[k]=(counts[k]||0)+1;});
   const list=wrong.filter(x=>f==='todos'||kOf(x)===f);
   const names=new Proxy({},{get:(_,k)=>erroNome(String(k))});
-  host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Todo erro de primeira tentativa entra aqui, junto com os acertos que você marcou como chute. Para cada um, escreva a <strong>regra</strong> que teria evitado o erro, em uma frase. Na véspera, você relê só as regras.</p>
+  host().innerHTML=`<p style="font-family:var(--read);font-size:16px;max-width:68ch;margin-top:0">Todo erro de primeira tentativa entra aqui, junto com os acertos que você marcou como chute. Para cada um, escreva a <strong>regra</strong> que teria evitado o erro, em uma frase. Na véspera, você relê só as regras.</p>${(()=>{ const e=elimStats(); return e.questoes?`<p class=\"muted\" style=\"font-size:13.5px;max-width:68ch\">Eliminação: em ${e.questoes} questões você riscou ${e.riscadas} alternativas e ${e.certas} estavam erradas (${Math.round(100*e.certas/e.riscadas)}%).${e.erradas?` Em ${e.erradas} delas você riscou a correta: antes de riscar, procure o motivo.`:''}</p>`:''; })()}
     ${wrong.length?`<div class="filters"><button class="chipbtn" data-f="todos" ${f==='todos'?'style="background:var(--ink);color:var(--surface)"':''}>todos (${wrong.length})</button>${Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<button class="chipbtn" data-f="${k}" ${f===k?'style="background:var(--ink);color:var(--surface)"':''}>${esc(names[k])} (${n})</button>`).join('')}</div>
     <div id="el"></div>`:'<p class="empty">Nenhum erro registrado ainda. Faça as questões das estações ou um simulado.</p>'}
     ${Object.keys(S.notes).filter(k=>S.notes[k]).length?`<div class="sec-title"><h2>Suas regras</h2><span class="eyebrow">para reler na véspera</span></div><div class="panel"><ol style="font-family:var(--read);font-size:16px;margin:0;padding-left:22px">${Object.entries(S.notes).filter(([,v])=>v).map(([k,v])=>`<li style="margin-bottom:6px">${esc(v)} <span class="mono muted" style="font-size:11px">(${esc(Q[k]?Q[k].n:k)})</span></li>`).join('')}</ol></div>`:''}`;
@@ -1446,7 +1470,7 @@ function vErros(){
   list.forEach(([id,a])=>{ const q=Q[id]; const d=document.createElement('details'); d.className='err';
     d.innerHTML=`<summary><span class="chip" style="background:var(--bad-soft);color:var(--bad)">${esc(names[kOf([id,a])])}</span>${q.mod&&M[q.mod]?stationBtn(q.mod):''}<b>${esc(q.n)}</b><span style="font-family:var(--read)">${strip(q.cmd).slice(0,90)}…</span><span class="mono muted" style="font-size:12px">sua: ${a.first} · gab: ${q.ans}</span>${S.notes[id]?'<span class="done-mark">● regra escrita</span>':''}${S.redo[id]?`<span class="mono" style="font-size:11px;color:${S.redo[id].ok?'var(--ok)':'var(--bad)'}">refeita: ${S.redo[id].ok?'acertou':'errou de novo'}</span>`:''}</summary><div class="inner"><div class="qq"></div><label class="eyebrow" for="n-${id}">a regra que teria evitado este erro</label><textarea id="n-${id}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[id]||'')}</textarea></div>`;
     el.appendChild(d); bindStations(d);
-    d.addEventListener('toggle',()=>{ if(d.open && !d.dataset.ok){ d.dataset.ok=1; questionCard(d.querySelector('.qq'),q,{}); } });
+    d.addEventListener('toggle',()=>{ if(d.open && !d.dataset.ok){ d.dataset.ok=1; questionCard(d.querySelector('.qq'),q,{regra:false}); } });
     const ta=d.querySelector('textarea'); let tm; ta.addEventListener('input',()=>{ clearTimeout(tm); tm=setTimeout(()=>{ S.notes[id]=ta.value.trim(); save(); },700); });
   });
 }

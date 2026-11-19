@@ -531,6 +531,45 @@ async function testFixacao(browser) {
   check(!errs.length, `fixação: erro de página: ${errs.join(' | ')}`);
   await ctx.close();
 }
+/* Treino de eliminação e regra do erro no cartão de questão: riscar alternativas, gravar o que foi riscado na 1ª resposta, mostrar o veredito e guardar a regra escrita. */
+async function testRiscar(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_); await page.waitForTimeout(400);
+  await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(700);
+  const cards = page.locator('[data-qid]');
+  check(await cards.count() >= 2, 'riscar: a aba Questões deveria ter 2 cartões ou mais');
+  const info = i => page.evaluate(n => { const el = document.querySelectorAll('[data-qid]')[n], id = el.dataset.qid, q = Q[id]; return { id, ans: q.ans, outras: 'ABCDE'.split('').filter(k => k !== q.ans) }; }, i);
+  /* 1) riscar duas erradas e acertar */
+  const a = await info(0), c0 = cards.nth(0);
+  await c0.locator('.cutb').click();
+  await c0.locator(`.alt[data-k="${a.outras[0]}"]`).click();
+  await c0.locator(`.alt[data-k="${a.outras[1]}"]`).click();
+  check(await c0.locator('.alt.cut').count() === 2, 'riscar: duas alternativas deveriam ficar riscadas');
+  check(await c0.locator('.alt.wrong, .alt.right').count() === 0, 'riscar: riscar não pode contar como resposta');
+  await c0.locator('.cutb').click();
+  await c0.locator(`.alt[data-k="${a.ans}"]`).click(); await page.waitForTimeout(200);
+  let st = await page.evaluate(id => ({ el: S.ans[id].el, ok: S.ans[id].ok }), a.id);
+  check(st.ok && st.el === [a.outras[0], a.outras[1]].sort().join(''), `riscar: S.ans.el = ${st.el}`);
+  check(/todas estavam erradas/.test(await c0.locator('.elim').textContent()), 'riscar: o veredito deveria dizer que todas as riscadas estavam erradas');
+  check(await c0.locator('.regra').count() === 0, 'riscar: acerto de primeira não pede regra');
+  /* 2) riscar a correta, errar e escrever a regra */
+  const b = await info(1), c1 = cards.nth(1);
+  await c1.locator('.cutb').click();
+  await c1.locator(`.alt[data-k="${b.ans}"]`).click();
+  await c1.locator('.cutb').click();
+  await c1.locator(`.alt[data-k="${b.outras[0]}"]`).click(); await page.waitForTimeout(150);
+  await c1.locator(`.alt[data-k="${b.ans}"]`).click(); await page.waitForTimeout(200);
+  check(/riscou a correta/.test(await c1.locator('.elim').textContent()), 'riscar: deveria avisar que a correta foi riscada');
+  await c1.locator('.regra textarea').fill('conferir linha ou fase'); await page.waitForTimeout(1000);
+  st = await page.evaluate(id => S.notes[id], b.id);
+  check(st === 'conferir linha ou fase', `riscar: regra gravada em S.notes = ${st}`);
+  await page.evaluate(() => go('treino', { s: 'erros' })); await page.waitForTimeout(600);
+  const txt = await page.evaluate(() => document.body.innerText);
+  check(/Eliminação: em 2 questões você riscou 3 alternativas e 2 estavam erradas/.test(txt), 'riscar: o caderno de erros deveria resumir a eliminação');
+  check(!errs.length, `riscar: erro de página: ${errs.join(' | ')}`);
+  await ctx.close();
+}
 /* Contas passo a passo (Biblioteca → Contas): lista, passos que aparecem um a um, treino que conta acertos seguidos e persiste. */
 async function testContas(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
@@ -1137,6 +1176,7 @@ try {
   await run('design', testDesign);
   await run('aulas', testAulas);
   await run('fixacao', testFixacao);
+  await run('riscar', testRiscar);
   await run('contas', testContas);
   await run('reading', testReading);
   await run('home', testHome);
