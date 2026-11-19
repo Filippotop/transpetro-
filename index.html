@@ -658,12 +658,14 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="js/calc.js"></script>
 <script src="js/gerador.js"></script>
 <script src="js/contas.js"></script>
+<script src="js/contas-extra.js"></script>
 <script src="js/contas-fig.js"></script>
 <script src="js/contas-fig2.js"></script>
 <script src="js/contas-fig3.js"></script>
 <script src="js/contas-fig4.js"></script>
 <script src="js/contas-fig5.js"></script>
 <script src="js/contas-fig6.js"></script>
+<script src="js/contas-fig7.js"></script>
 <script src="merge.js"></script>
 <script>
 const DATA = window.DATA;
@@ -719,8 +721,8 @@ let dbRef=null, saveTimer=null, saving=false, dirty=false;
 function markDel(path,gone){ S.del=S.del||{}; S.del[JSON.stringify(path.map(String))]=gone?Date.now():-Date.now(); }
 /* Exercícios de fixação da Teoria (js/calc.js): cada resposta é S.fx[chave] = {k, t}; apagar vira exclusão para a sincronização respeitar. */
 window.EDO_FX={ get:k=>(S.fx&&S.fx[k])||null, set:(k,v)=>{ S.fx[k]={k:v,t:Date.now()}; markDel(['fx',k],false); save(); }, clear:ks=>{ ks.forEach(k=>{ if(S.fx[k]){ delete S.fx[k]; markDel(['fx',k],true); } }); save(); } };
-/* Contas passo a passo (js/contas.js): S.ct[id] = {s: acertos seguidos, n: tentativas, t}. */
-window.EDO_CT={ get:k=>(S.ct&&S.ct[k])||null, set:(k,v)=>{ S.ct[k]={s:v.s,n:v.n,t:Date.now()}; markDel(['ct',k],false); save(); } };
+/* Contas passo a passo (js/contas.js): S.ct[id] = {s: acertos seguidos, n: tentativas, b: caixa de revisão 0-4, due: próxima revisão, t}. */
+window.EDO_CT={ get:k=>(S.ct&&S.ct[k])||null, set:(k,v)=>{ S.ct[k]={s:v.s,n:v.n,b:v.b||0,due:v.due==null?null:v.due,t:Date.now()}; markDel(['ct',k],false); save(); } };
 function save(){
   S.updated=Date.now();
   try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
@@ -833,7 +835,7 @@ function vLinhas(){
   nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${plural(PESO23[m.id]||0,'questão','questões')} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
-  tasks.push({ic:'↺',t:'Aquecimento: 10 questões dos seus pontos fracos',s:'Mistura estações de propósito (intercalar rende mais que estudar em bloco). 40 minutos, sem consulta; corrija depois.',act:()=>{ SIM=null; go('treino',{s:'sim',foco:'fracos',n:10}); }});
+  tasks.push({ic:'↺',t:'Aquecimento: 10 questões dos seus pontos fracos',s:'Mistura estações de propósito (em matemática, misturar tipos de problema rendeu mais que estudar em bloco num ensaio com turmas). 40 minutos, sem consulta; corrija depois.',act:()=>{ SIM=null; go('treino',{s:'sim',foco:'fracos',n:10}); }});
   tasks.push({ic:'⚒',t:'Bancada: atenda uma ordem de serviço',s:'Meça, desenergize pela NR-10 e diagnostique o defeito. É a teoria aplicada na prática.',act:()=>go('bancada')});
   const bankAns=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a);
   const tot=DATA.questions.length, done=bankAns.length, ok=bankAns.filter(a=>a.ok).length;
@@ -875,7 +877,7 @@ function vLinhas(){
       </div>
       <div class="panel atalhos"><div class="eyebrow">atalhos</div>
         <button class="at" data-at="aq">${atIc('aq')}Aquecimento de 10 questões</button><button class="at" data-at="sim">${atIc('sim')}Simulado</button><button class="at" data-at="err">${atIc('err')}Caderno de erros</button>
-        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="aul">${atIc('aul')}Aulas em vídeo</button><button class="at" data-at="ct">${atIc('ct')}Contas passo a passo</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
+        <button class="at" data-at="car">${atIc('car')}Cartões de véspera</button><button class="at" data-at="aul">${atIc('aul')}Aulas em vídeo</button><button class="at" data-at="ct">${atIc('ct')}Contas passo a passo${window.CONTAS&&CONTAS.devidas().length?' ('+CONTAS.devidas().length+' para revisar)':''}</button><button class="at" data-at="bib">${atIc('bib')}Biblioteca</button><button class="at" data-at="ban">${atIc('ban')}Bancada</button></div>
     </aside>
   </section>
   <div class="sec-title"><h2>O mapa das linhas</h2><span class="eyebrow">${open.length} ${open.length===1?'estação':'estações'} · ${plural(DATA.questions.length,'questão','questões')} · ${plural(DATA.vf.length,'afirmação','afirmações')} V ou F</span></div>

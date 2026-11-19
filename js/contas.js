@@ -3,7 +3,7 @@
    com os números e as armadilhas de unidade. Dois modos: "Ver os passos" (muda os números e os passos se recalculam) e
    "Treinar" (sorteia números, você faz a conta, confere e só então vê os passos).
    window.CONTAS = {lista, receita(id), calcular(r, v), sortear(r), montar(host, {r}), confere(r, v, texto)}.
-   O que o aluno acerta fica em S.ct[id] = {s: acertos seguidos, n: tentativas, t}, pela ponte window.EDO_CT do index.html.
+   O que o aluno acerta fica em S.ct[id] = {s: acertos seguidos, n: tentativas, b: caixa 0-4, due: próxima revisão, t}, pela ponte window.EDO_CT do index.html.
    Teste: tests/contas.test.mjs (cada receita com os valores de exemplo e com 300 sorteios). */
 (function (W) {
   'use strict';
@@ -329,7 +329,7 @@
   C({ id: 'projeto', mod: 'I1', nome: 'Corrente de projeto e escolha do disjuntor (monofásico)',
     f: '<var>I</var><sub>b</sub> = <var>P</var> / (<var>V</var>·cos φ);  <var>I</var><sub>b</sub> ≤ <var>I</var><sub>n</sub> ≤ <var>I</var><sub>z</sub>',
     lembrar: 'Ib é a corrente que o circuito realmente puxa. Trifásico: Ib = P/(√3·V·cos φ). O disjuntor (In) fica no valor padronizado igual ou logo acima de Ib e abaixo da capacidade do condutor (Iz): Ib ≤ In ≤ Iz. Valores padrão: 10, 16, 20, 25, 32, 40, 50, 63 A…',
-    campos: [{ k: 'P', rot: 'Potência', un: 'W', v: 2200, s: [1500, 2200, 3300, 4400, 5500] }, { k: 'V', rot: 'Tensão', un: 'V', v: 220, s: [127, 220] }, { k: 'fp', rot: 'Fator de potência', un: '', v: 0.8, s: [0.8, 0.9, 1] }],
+    campos: [{ k: 'P', rot: 'Potência', un: 'W', v: 2200, s: [1500, 2200, 3300, 4400, 5500] }, { k: 'V', rot: 'Tensão', un: 'V', v: 220, s: [127, 220] }, { k: 'fp', rot: 'Fator de potência', un: '', v: 0.8, s: [0.7, 0.8, 0.9] }],
     calc: function (v) {
       var Ib = v.P / (v.V * v.fp), In = PADRAO.filter(function (x) { return x >= Ib; })[0];
       return { p: [
@@ -376,6 +376,7 @@
     f: '<var>M</var> = <var>C</var>·(1 + <var>i</var>)<sup><var>n</var></sup>',
     lembrar: 'Compostos: a taxa incide sobre o montante do mês anterior. Taxa e tempo têm de usar a mesma unidade (2 % a.m. com <var>n</var> em meses). Juros = <var>M</var> − <var>C</var>.',
     campos: [{ k: 'C', rot: 'Capital', un: 'R$', v: 1000, s: [1000, 2000, 5000] }, { k: 'i', rot: 'Taxa', un: '% por período', v: 2, s: [1, 2, 3, 5] }, { k: 'n', rot: 'Períodos', un: '', v: 12, s: [2, 3, 6, 12] }],
+    bom: function (v) { return v.i * v.n >= 24; }, /* só no sorteio do Treinar: com taxa e prazo pequenos, juros simples e compostos quase coincidem */
     calc: function (v) {
       var f = Math.pow(1 + v.i / 100, v.n), M = v.C * f;
       return { p: [
@@ -479,7 +480,7 @@
         else v[c.k] = c.s ? c.s[Math.floor(Math.random() * c.s.length)] : c.v;
       });
       var res = r.calc(v);
-      if ((!r.valido || r.valido(v)) && isFinite(res.r[0][1]) && res.r[0][1] > 0 && JSON.stringify(v) !== JSON.stringify(exemplo(r))) return v;
+      if ((!r.valido || r.valido(v)) && (!r.bom || r.bom(v)) && isFinite(res.r[0][1]) && res.r[0][1] > 0 && JSON.stringify(v) !== JSON.stringify(exemplo(r))) return v;
     }
     return exemplo(r);
   }
@@ -497,6 +498,20 @@
     return Math.abs(x - alvo) <= Math.max(0.01 * Math.abs(alvo), 1e-9);
   }
   W.CONTAS = { lista: function () { return L.slice(); }, receita: function (id) { return porId[id] || null; }, calcular: function (r, v) { return r.calc(v); }, exemplo: exemplo, sortear: sortear, confere: confere, numero: numero, mods: MODS, fmt: g };
+  /* receitas extras (js/contas-extra.js) e erros típicos de cada conta */
+  var ERR = {};
+  W.CONTAS.add = function (r) { L.push(r); porId[r.id] = r; };
+  W.CONTAS.erros = function (m) { for (var k in m) ERR[k] = m[k]; };
+  W.CONTAS.listaErros = function (r, v) { var f = ERR[r.id]; if (!f) return []; var ok = r.calc(v).r[0][1]; return f(v).filter(function (e) { return isFinite(e[1]) && Math.abs(e[1] - ok) > 0.015 * Math.abs(ok); }); };
+  /* Que erro foi? Compara a resposta digitada com as respostas erradas típicas (±1,5 %) e com erros de potência de dez. */
+  W.CONTAS.diagnostico = function (r, v, texto) {
+    var x = numero(texto), alvo = r.calc(v).r[0][1]; if (!isFinite(x)) return null;
+    var l = W.CONTAS.listaErros(r, v);
+    for (var i = 0; i < l.length; i++) if (Math.abs(x - l[i][1]) <= Math.max(0.015 * Math.abs(l[i][1]), 1e-9)) return { tipo: 'erro', rot: l[i][0] };
+    var q = Math.abs(x / alvo), f = [1000, 100, 10];
+    if (alvo) for (var j = 0; j < f.length; j++) if (Math.abs(q - f[j]) <= 0.02 * f[j] || Math.abs(q - 1 / f[j]) <= 0.02 / f[j]) return { tipo: 'potencia', fator: f[j] };
+    return { tipo: 'nenhum' };
+  };
 
   /* ================= interface ================= */
   var $ = function (s, el) { return (el || document).querySelector(s); };
@@ -547,39 +562,160 @@
       requestAnimationFrame(passo);
     });
   }
+  /* ---------- revisão espaçada (Leitner) e treino misto ---------- */
+  var DIA = 864e5, INT = [0, 1, 3, 7, 14]; /* dias até a próxima revisão por "caixa" 0..4 */
+  var dueDe = function (x) { return x.due != null ? x.due : (x.t || 0) + DIA; };
+  var devida = function (id) { var x = ct().get(id); return !!(x && x.n && dueDe(x) <= Date.now()); };
+  W.CONTAS.devida = devida;
+  W.CONTAS.devidas = function () { return L.filter(function (r) { return devida(r.id); }); };
+  /* n contas para uma sessão: primeiro as que venceram a revisão (mais atrasadas antes), depois as nunca treinadas (embaralhadas),
+     depois as de caixa mais baixa. A ordem final evita duas contas seguidas da mesma estação (treino intercalado). */
+  W.CONTAS.misto = function (n) {
+    var venc = [], novas = [], resto = [];
+    L.forEach(function (r) { var x = ct().get(r.id); if (!x || !x.n) novas.push(r); else if (devida(r.id)) venc.push([dueDe(x), r]); else resto.push([x.b || 0, r]); });
+    venc.sort(function (a, b) { return a[0] - b[0]; }); resto.sort(function (a, b) { return a[0] - b[0]; });
+    for (var q = novas.length - 1; q > 0; q--) { var w = Math.floor(Math.random() * (q + 1)), tmp = novas[q]; novas[q] = novas[w]; novas[w] = tmp; }
+    var ord = venc.map(function (a) { return a[1]; }).concat(novas, resto.map(function (a) { return a[1]; })), pool = [], cont = {}, out = [];
+    ord.forEach(function (r) { if (pool.length < n && (cont[r.mod] || 0) < 2) { pool.push(r); cont[r.mod] = (cont[r.mod] || 0) + 1; } }); /* no máximo 2 por estação */
+    ord.forEach(function (r) { if (pool.length < n && pool.indexOf(r) < 0) pool.push(r); }); /* ord já põe as vencidas antes das novas */
+    while (pool.length) {
+      var ult = out.length ? out[out.length - 1].mod : null, resta = {}, i = -1, melhor = -1;
+      pool.forEach(function (r) { resta[r.mod] = (resta[r.mod] || 0) + 1; });
+      pool.forEach(function (r, j) { if (r.mod !== ult && resta[r.mod] > melhor) { melhor = resta[r.mod]; i = j; } }); /* a estação que mais sobra, diferente da última */
+      out.push(pool.splice(i < 0 ? 0 : i, 1)[0]);
+    }
+    return out;
+  };
+  /* dias até a próxima revisão na caixa b, no máximo 20 % do tempo que falta para a prova (a revisão cabe antes dela) */
+  var diasMax = function (b) {
+    var d = INT[b]; if (typeof EXAM === 'undefined' || !EXAM) return d;
+    var falta = (EXAM.getTime() - Date.now()) / DIA; return Math.max(1, Math.min(d, Math.floor(0.2 * falta)));
+  };
+  var diasTxt = function (b) { var d = diasMax(b); return d <= 0 ? 'hoje' : d === 1 ? 'amanhã' : 'em ' + d + ' dias'; };
+  /* Texto de apoio vaza o resultado? (para as dicas do Treinar) */
+  function vazaTexto(html, alvo) {
+    var d = document.createElement('div'); d.innerHTML = html; var txt = d.textContent, a = g(alvo), i = txt.indexOf(a);
+    if (a.length < 2) return false;
+    while (i >= 0) { var p = txt[i - 1] || ' ', q = txt[i + a.length] || ' '; if (!/[0-9,.]/.test(p) && !/[0-9,]/.test(q)) return true; i = txt.indexOf(a, i + 1); }
+    return false;
+  }
+
+  /* ---------- Cálculo mental: valores para decorar e treino rápido (as contas da prova fecham sem calculadora) ---------- */
+  var MENTAL_TAB = [
+    ['√2', '1,41', 'pico = 1,41 × eficaz'], ['√3', '1,73', 'trifásico: 380 ÷ 220 = 1,73'], ['1/√3', '0,577', '380 V ÷ √3 = 220 V'],
+    ['√3/2', '0,866', 'cos 30° e sen 60°'], ['1/√2', '0,707', 'cos 45° e sen 45°'], ['π', '3,14', '2π = 6,28; ω = 2π·60 ≈ 377 rad/s'],
+    ['e⁻¹', '0,368', 'RC: em 1τ carregou 63,2 % e sobram 36,8 %'], ['1 cv', '736 W', '1 HP = 746 W'], ['1 kWh', '3,6 MJ', '1 kW durante 3600 s'], ['9550', '≈ 9549 (60·1000 / 2π)', 'T (N·m) = 9550 · P (kW) / n (rpm)']
+  ];
+  var MENTAL_FP = [[0.6, '1,33'], [0.7, '1,02'], [0.8, '0,75'], [0.85, '0,62'], [0.9, '0,48'], [0.92, '0,43'], [0.95, '0,33'], [1, '0']];
+  var MENTAL_ANG = [['30°', '0,5', '0,866', '0,577'], ['45°', '0,707', '0,707', '1'], ['60°', '0,866', '0,5', '1,73']];
+  var MENTAL_Q = [[11, 121], [12, 144], [13, 169], [14, 196], [15, 225], [16, 256], [20, 400], [22, 484], [25, 625]];
+  var MENTAL_DRILL = [
+    function () { var k = [100, 200, 380, 440][Math.floor(Math.random() * 4)]; return ['√3 · ' + k + ' ≈', R3 * k]; },
+    function () { var k = [220, 380, 440, 660][Math.floor(Math.random() * 4)]; return [k + ' ÷ √3 ≈', k / R3]; },
+    function () { var k = [100, 127, 220][Math.floor(Math.random() * 3)]; return ['√2 · ' + k + ' ≈', Math.SQRT2 * k]; },
+    function () { var f = [50, 60][Math.floor(Math.random() * 2)]; return ['2π · ' + f + ' (rad/s) ≈', 2 * Math.PI * f]; },
+    function () { var q = MENTAL_FP[Math.floor(Math.random() * 7)]; return ['tg φ quando cos φ = ' + String(q[0]).replace('.', ',') + ' ≈', numero(q[1])]; },
+    function () { var k = [5, 12, 24][Math.floor(Math.random() * 3)]; return ['63,2 % de ' + k + ' V ≈', 0.632 * k]; },
+    function () { var q = MENTAL_Q[Math.floor(Math.random() * MENTAL_Q.length)]; return [q[0] + '² =', q[1], 0]; },
+    function () { var k = [2, 5, 10][Math.floor(Math.random() * 3)]; return [k + ' cv em watts ≈', 736 * k, 0.004]; },
+    function () { var f = [50, 60][Math.floor(Math.random() * 2)], p = [2, 4, 6, 8][Math.floor(Math.random() * 4)]; return ['velocidade síncrona com ' + f + ' Hz e ' + p + ' polos (rpm) =', 120 * f / p, 0]; }
+  ];
+
+  var norm = function (s) { return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); };
+  var plain = function (h) { var d = document.createElement('div'); d.innerHTML = h; return d.textContent; };
+
   function montar(host, opt) {
     opt = opt || {};
-    var filtro = opt.mod || 'todas', aberto = opt.r || null;
+    var filtro = opt.mod || 'todas', aberto = opt.r || null, busca = '', ses = null;
+    var CH = [['todas', 'Todas'], ['revisar', 'Para revisar'], ['prova', 'Caiu em prova'], ['mental', 'Cálculo mental']].concat(MODS.map(function (m) { return [m, m]; }));
+    function passa(r) {
+      if (filtro === 'revisar' && !devida(r.id)) return false;
+      if (filtro === 'prova' && !r.prova) return false;
+      if (MODS.indexOf(filtro) >= 0 && r.mod !== filtro) return false;
+      if (busca && norm(r.nome + ' ' + plain(r.f) + ' ' + r.mod + ' ' + (r.prova || '')).indexOf(norm(busca)) < 0) return false;
+      return true;
+    }
+    function cartao(r) {
+      var x = ct().get(r.id), dv = devida(r.id);
+      return '<button type="button" class="ct-card' + (dominada(r.id) ? ' dom' : '') + (dv ? ' rev' : '') + '" data-r="' + r.id + '"><span class="ct-tag">' + r.mod + (r.prova ? ' · <i class="ct-badge">★ caiu em prova</i>' : '') + '</span><b>' + esc(r.nome) + '</b><span class="ct-fm">' + r.f + '</span>'
+        + '<span class="ct-st">' + (dominada(r.id) ? 'Dominada' : x && x.n ? x.s + ' de 3 seguidas' : 'Ainda não treinada') + (dv ? ' · revisar hoje' : '') + '</span></button>';
+    }
+    function pintaGrid() {
+      var its = L.filter(passa), gr = $('#ctgrid', host);
+      gr.innerHTML = its.length ? its.map(cartao).join('') : '<p class="ct-vazio">' + (filtro === 'revisar' ? 'Nada para revisar hoje. Treine uma conta nova ou faça o treino misto.' : 'Nenhuma conta com esse filtro ou busca.') + '</p>';
+      gr.querySelectorAll('.ct-card').forEach(function (b) { b.onclick = function () { aberto = b.dataset.r; detalhe(); window.scrollTo({ top: 0 }); }; });
+    }
     function lista() {
-      var dom = L.filter(function (r) { return dominada(r.id); }).length;
+      if (filtro === 'mental') return mental();
+      var dom = L.filter(function (r) { return dominada(r.id); }).length, dev = W.CONTAS.devidas().length;
       host.innerHTML = '<div class="ct">'
-        + '<p class="ct-lede">Cada conta com a fórmula, o jeito de lembrar, o passo a passo com os números e a armadilha de unidade. Abra uma, mude os números e veja a conta se refazer. Depois use <b>Treinar</b>: você faz a conta antes de ver os passos. Três acertos seguidos e a conta fica marcada como dominada.</p>'
+        + '<p class="ct-lede">Cada conta com a fórmula, o jeito de lembrar, a figura, o passo a passo com os números e as armadilhas. Abra uma, mude os números e veja a conta se refazer. Depois use <b>Treinar</b>: você faz a conta antes de ver os passos, e o app diz que erro foi, se você errou de um jeito comum. Três acertos seguidos e a conta fica dominada. Cada acerto adia a próxima revisão (1, 3, 7 e depois 14 dias, sempre antes da prova); errou, volta hoje.</p>'
         + '<div class="ct-prog"><span class="eyebrow">dominadas</span><b>' + dom + '<small>/' + L.length + '</small></b><i><u style="width:' + Math.round(dom / L.length * 100) + '%"></u></i></div>'
-        + '<div class="ct-chips" role="group" aria-label="Filtrar por estação">' + ['todas'].concat(MODS).map(function (m) { return '<button type="button" class="ct-chip' + (m === filtro ? ' on' : '') + '" data-f="' + m + '" aria-pressed="' + (m === filtro) + '">' + (m === 'todas' ? 'Todas' : m) + '</button>'; }).join('') + '</div>'
-        + '<div class="ct-grid">' + L.filter(function (r) { return filtro === 'todas' || r.mod === filtro; }).map(function (r) {
-          var x = ct().get(r.id);
-          return '<button type="button" class="ct-card' + (dominada(r.id) ? ' dom' : '') + '" data-r="' + r.id + '"><span class="ct-tag">' + r.mod + '</span><b>' + esc(r.nome) + '</b><span class="ct-fm">' + r.f + '</span>'
-            + '<span class="ct-st">' + (dominada(r.id) ? 'Dominada' : x ? x.s + ' de 3 seguidas' : 'Ainda não treinada') + '</span></button>';
-        }).join('') + '</div></div>';
+        + '<div class="ct-bar"><button type="button" class="btn primary" id="ctm">Treino misto de 5 contas' + (dev ? ' · ' + dev + ' para revisar' : '') + '</button><input type="search" id="cts" class="ct-busca" placeholder="Buscar conta (ex.: √3, trafo, queda)" aria-label="Buscar conta" value="' + esc(busca) + '" autocomplete="off"></div>'
+        + '<div class="ct-chips" role="group" aria-label="Filtrar">' + CH.map(function (m) { return '<button type="button" class="ct-chip' + (m[0] === filtro ? ' on' : '') + '" data-f="' + m[0] + '" aria-pressed="' + (m[0] === filtro) + '">' + m[1] + (m[0] === 'revisar' && dev ? ' (' + dev + ')' : '') + '</button>'; }).join('') + '</div>'
+        + '<div class="ct-grid" id="ctgrid"></div></div>';
       host.querySelectorAll('.ct-chip').forEach(function (b) { b.onclick = function () { filtro = b.dataset.f; lista(); }; });
-      host.querySelectorAll('.ct-card').forEach(function (b) { b.onclick = function () { aberto = b.dataset.r; detalhe(); window.scrollTo({ top: 0 }); }; });
+      $('#cts', host).oninput = function () { busca = this.value; pintaGrid(); };
+      $('#ctm', host).onclick = iniciarSessao;
+      pintaGrid();
+    }
+    /* ----- Cálculo mental ----- */
+    function mental() {
+      var acertos = 0, tot = 0, cur = null;
+      host.innerHTML = '<div class="ct"><button type="button" class="ct-back" id="ctb">← Todas as contas</button>'
+        + '<div class="ct-head"><span class="ct-tag">sem calculadora</span><h3>Cálculo mental: valores para decorar</h3></div>'
+        + '<p class="ct-lede">Muitas contas das provas reais da banca fecham com números redondos: a Transpetro 2023, por exemplo, tem questões de queda de tensão e de soma de senóides que se resolvem de cabeça com os valores abaixo. (Confira no seu edital e no cartão de confirmação se a calculadora é permitida: se for, estes valores servem para conferir a ordem de grandeza.)</p>'
+        + '<div class="ct-mt"><table class="ct-tab"><caption>Raízes, π e constantes</caption><tbody>' + MENTAL_TAB.map(function (t) { return '<tr><th scope="row">' + t[0] + '</th><td>' + t[1] + '</td><td>' + t[2] + '</td></tr>'; }).join('') + '</tbody></table>'
+        + '<table class="ct-tab"><caption>Fator de potência → tg φ</caption><thead><tr><th>cos φ</th><th>tg φ</th></tr></thead><tbody>' + MENTAL_FP.map(function (t) { return '<tr><td>' + String(t[0]).replace('.', ',') + '</td><td>' + t[1] + '</td></tr>'; }).join('') + '</tbody></table>'
+        + '<table class="ct-tab"><caption>Ângulos notáveis</caption><thead><tr><th>φ</th><th>sen</th><th>cos</th><th>tg</th></tr></thead><tbody>' + MENTAL_ANG.map(function (t) { return '<tr><td>' + t[0] + '</td><td>' + t[1] + '</td><td>' + t[2] + '</td><td>' + t[3] + '</td></tr>'; }).join('') + '</tbody></table>'
+        + '<table class="ct-tab"><caption>Quadrados que aparecem</caption><tbody>' + MENTAL_Q.map(function (t) { return '<tr><td>' + t[0] + '²</td><td>' + t[1] + '</td></tr>'; }).join('') + '</tbody></table></div>'
+        + '<div class="ct-treino"><span class="eyebrow">treino rápido (aceita 2 % de erro nas aproximações; contas exatas, só o valor exato)</span><p class="ct-enun" id="ctq"></p><form class="ct-resp" id="ctf"><label><span>Sua resposta</span><input type="text" inputmode="decimal" autocomplete="off" id="cti" placeholder="ex.: 173"></label><button class="btn primary" type="submit">Conferir</button></form><div id="ctv" aria-live="polite"></div><p class="ct-placar" id="ctp"></p></div></div>';
+      $('#ctb', host).onclick = function () { filtro = 'todas'; lista(); window.scrollTo({ top: 0 }); };
+      function nova() { cur = MENTAL_DRILL[Math.floor(Math.random() * MENTAL_DRILL.length)](); $('#ctq', host).textContent = cur[0]; $('#cti', host).value = ''; $('#cti', host).readOnly = false; $('#ctv', host).innerHTML = ''; $('#cti', host).focus(); cur.feito = false; }
+      $('#ctf', host).onsubmit = function (e) {
+        e.preventDefault();
+        if (cur.feito) { nova(); return; }
+        var x = numero($('#cti', host).value); if (!isFinite(x)) { $('#ctv', host).innerHTML = '<p class="ct-aviso">Digite um número.</p>'; return; }
+        var tol = cur[2] == null ? 0.02 : cur[2], ok = Math.abs(x - cur[1]) <= tol * Math.abs(cur[1]) + 1e-9; cur.feito = true; tot++; if (ok) acertos++;
+        $('#cti', host).readOnly = true;
+        $('#ctv', host).innerHTML = '<div class="ct-vered ' + (ok ? 'ok' : 'no') + ' novo" role="status"><b>' + (ok ? 'Certo.' : 'Não bateu.') + '</b> ' + (ok ? 'Valor: ' : 'Era cerca de ') + g(cur[1]) + '.</div>';
+        $('#ctp', host).textContent = acertos + ' de ' + tot + ' certas nesta sessão. Aperte Conferir de novo ou Enter para a próxima.';
+      };
+      nova();
+    }
+    /* ----- Treino misto ----- */
+    function iniciarSessao() {
+      var fila = W.CONTAS.misto(5); if (!fila.length) return;
+      ses = { fila: fila.map(function (r) { return r.id; }), i: 0, res: [] }; aberto = ses.fila[0]; detalhe(); window.scrollTo({ top: 0 });
+    }
+    function resumo() {
+      var n = ses.res.length, ok = ses.res.filter(function (x) { return x.ok; }).length, erradas = ses.res.filter(function (x) { return x.q === 'errado'; }).length, comDica = ses.res.filter(function (x) { return x.q === 'certo com dicas'; }).length;
+      host.innerHTML = '<div class="ct"><div class="ct-head"><span class="ct-tag">treino misto</span><h3>Resultado: ' + ok + ' de ' + n + '</h3></div>'
+        + '<div class="ct-res" id="ctres0"><div><span>Acertos de primeira</span><b>' + ok + ' <small>de ' + n + '</small></b></div></div>'
+        + '<ul class="ct-sum">' + ses.res.map(function (x) { var r = porId[x.id]; return '<li class="' + (x.ok ? 'ok' : 'no') + '"><b>' + (x.ok ? '✓' : '✗') + '</b> ' + esc(r.nome) + ' <small>(' + x.q + ')</small></li>'; }).join('') + '</ul>'
+        + (erradas || comDica ? '<p class="ct-lede">' + (erradas ? 'As que você errou voltam hoje em "Para revisar". ' : '') + (comDica ? 'As que você acertou com 2 ou mais dicas voltam amanhã. ' : '') + 'Abra cada uma no modo <b>Ver os passos</b> antes de tentar de novo.</p>' : '<p class="ct-lede">Tudo certo de primeira. Cada conta volta para revisão mais adiante (1, 3, 7 ou 14 dias, sempre antes da prova).</p>')
+        + '<div class="ct-bt"><button type="button" class="btn primary" id="cto">Outra sessão de 5</button><button type="button" class="btn" id="ctl">Voltar à lista</button></div></div>';
+      $('#cto', host).onclick = iniciarSessao; $('#ctl', host).onclick = function () { ses = null; aberto = null; lista(); window.scrollTo({ top: 0 }); };
+      if (ok === n && n >= 3) document.dispatchEvent(new CustomEvent('edo:celebrate', { detail: $('#ctres0', host) }));
     }
     function detalhe() {
-      var r = porId[aberto]; if (!r) { aberto = null; return lista(); }
-      var v = exemplo(r), modo = 'ver', vistos = 1, tento = null, jaContou = false; /* tento: {v, feito, certo} */
-      host.innerHTML = '<div class="ct ct-det">'
-        + '<button type="button" class="ct-back" id="ctb">← Todas as contas</button>'
-        + '<div class="ct-head"><span class="ct-tag">' + esc(nomeMod(r.mod)) + '</span><h3>' + esc(r.nome) + '</h3></div>'
+      var r = porId[aberto]; if (!r) { aberto = null; ses = null; return lista(); }
+      var v = exemplo(r), modo = ses ? 'treino' : 'ver', vistos = 1, tento = ses ? { v: sortear(r), feito: false, dicas: 0 } : null, jaContou = false;
+      host.innerHTML = '<div class="ct ct-det" data-r="' + r.id + '">'
+        + '<button type="button" class="ct-back" id="ctb">' + (ses ? '← Encerrar o treino misto' : '← Todas as contas') + '</button>'
+        + (ses ? '<p class="ct-sess">Treino misto · conta ' + (ses.i + 1) + ' de ' + ses.fila.length + '</p>' : '')
+        + '<div class="ct-head"><span class="ct-tag">' + esc(nomeMod(r.mod)) + (r.prova ? ' · <i class="ct-badge">★ ' + esc(r.prova) + '</i>' : '') + '</span><h3>' + esc(r.nome) + '</h3></div>'
         + '<div class="ct-formula" aria-label="Fórmula">' + r.f + '</div>'
-        + '<div class="ct-lembrar"><span class="eyebrow">como lembrar</span><p>' + r.lembrar + '</p></div>'
-        + '<div class="ct-modo" role="tablist"><button type="button" role="tab" class="on" data-m="ver">Ver os passos</button><button type="button" role="tab" data-m="treino">Treinar</button></div>'
+        + (ses ? '' : '<div class="ct-lembrar"><span class="eyebrow">como lembrar</span><p>' + r.lembrar + '</p></div>')
+        + (ses ? '' : '<div class="ct-modo" role="tablist"><button type="button" role="tab" class="on" data-m="ver">Ver os passos</button><button type="button" role="tab" data-m="treino">Treinar</button></div>')
         + '<div id="ctc"></div></div>';
-      $('#ctb', host).onclick = function () { aberto = null; lista(); window.scrollTo({ top: 0 }); };
-      host.querySelectorAll('.ct-modo button').forEach(function (b) { b.onclick = function () { modo = b.dataset.m; host.querySelectorAll('.ct-modo button').forEach(function (x) { x.classList.toggle('on', x === b); }); if (modo === 'treino') { tento = { v: sortear(r), feito: false }; } corpo(); }; });
+      $('#ctb', host).onclick = function () { aberto = null; ses = null; lista(); window.scrollTo({ top: 0 }); };
+      host.querySelectorAll('.ct-modo button').forEach(function (b) { b.onclick = function () { modo = b.dataset.m; host.querySelectorAll('.ct-modo button').forEach(function (x) { x.classList.toggle('on', x === b); }); if (modo === 'treino') { tento = { v: sortear(r), feito: false, dicas: 0 }; } corpo(); }; });
       function campos(vv, trava) {
         return '<div class="ct-campos">' + r.campos.map(function (c) {
           if (c.sel) return '<label class="ct-c"><span>' + esc(c.rot) + '</span><select data-k="' + c.k + '"' + (trava ? ' disabled' : '') + '>' + c.sel.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === vv[c.k] ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select></label>';
-          return '<label class="ct-c"><span>' + esc(c.rot) + '</span><span class="ct-in"><input type="text" inputmode="decimal" autocomplete="off" data-k="' + c.k + '" value="' + String(vv[c.k]).replace('.', ',') + '"' + (trava ? ' readonly' : '') + '>' + (c.un ? '<em>' + esc(c.un) + '</em>' : '') + '</span></label>';
+          var nud = trava || !c.s || c.s.length < 2 ? '' : '<button type="button" class="ct-nud" data-k="' + c.k + '" data-d="-1" aria-label="Valor anterior de ' + esc(c.rot) + '">−</button><button type="button" class="ct-nud" data-k="' + c.k + '" data-d="1" aria-label="Próximo valor de ' + esc(c.rot) + '">+</button>';
+          return '<div class="ct-c"><label for="ci-' + c.k + '">' + esc(c.rot) + '</label><span class="ct-in"><input type="text" id="ci-' + c.k + '" inputmode="decimal" autocomplete="off" data-k="' + c.k + '" value="' + String(vv[c.k]).replace('.', ',') + '"' + (trava ? ' readonly' : '') + '>' + (c.un ? '<em>' + esc(c.un) + '</em>' : '') + nud + '</span></div>';
         }).join('') + '</div>';
       }
       function passos(res, n) {
@@ -604,25 +740,61 @@
           };
           var revela = function (tudo) { var ls = host.querySelectorAll('.ct-passos li.on'); var last = ls[ls.length - 1]; if (last && !tudo) last.classList.add('novo'); if (tudo) ls.forEach(function (l, i) { l.style.animationDelay = (i * 70) + 'ms'; l.classList.add('novo'); }); var rs = $('.ct-res', host); if (rs) rs.classList.add('novo'); };
           c.querySelectorAll('input,select').forEach(function (el) { el.oninput = el.onchange = function () { var k = el.dataset.k, cmp = r.campos.filter(function (x) { return x.k === k; })[0]; if (cmp.sel) v[k] = el.value; else { var x = numero(el.value); if (isFinite(x)) v[k] = x; } pintar(); }; });
+          /* − e + andam pelos valores típicos da conta */
+          c.querySelectorAll('.ct-nud').forEach(function (bt) {
+            bt.onclick = function () {
+              var k = bt.dataset.k, cmp = r.campos.filter(function (x) { return x.k === k; })[0], d = +bt.dataset.d;
+              var lv = cmp.s.concat([cmp.v]).filter(function (x, i, a) { return a.indexOf(x) === i; }).sort(function (a, b) { return a - b; });
+              var nx = d > 0 ? lv.filter(function (x) { return x > v[k]; })[0] : lv.filter(function (x) { return x < v[k]; }).pop();
+              if (nx == null) return;
+              v[k] = nx; c.querySelector('input[data-k="' + k + '"]').value = String(nx).replace('.', ','); pintar();
+            };
+          });
           pintar(); revela();
         } else {
           var t = tento, res = r.calc(t.v), un = res.r[0][2];
+          var dicas = [['A fórmula', r.f], ['Como lembrar', r.lembrar], ['Cuidado', '<ul>' + r.arm.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul>']];
           c.innerHTML = '<div class="cf" id="ctfig" role="group" aria-label="Figura do circuito"></div><p class="ct-enun">Sorteei estes valores. Faça a conta no papel e digite o primeiro resultado (<b>' + esc(res.r[0][0]) + '</b>' + (un ? ', em ' + esc(un) : '') + ').</p>' + campos(t.v, true)
-            + '<form class="ct-resp" id="ctf"><label><span>Sua resposta</span><input type="text" inputmode="decimal" autocomplete="off" id="cti" placeholder="ex.: 12,5"></label><button class="btn primary" type="submit">Conferir</button></form><div id="ctv"></div>';
+            + '<form class="ct-resp" id="ctf"><label><span>Sua resposta</span><input type="text" inputmode="decimal" autocomplete="off" id="cti" placeholder="ex.: 12,5"></label><button class="btn primary" type="submit">Conferir</button></form>'
+            + '<div class="ct-dicas"><button type="button" class="btn" id="ctd">Dica (1 de 3)</button><div id="ctdt" aria-live="polite"></div></div><div id="ctv"></div>';
           figura($('#ctfig', host), r, t.v, res, false, 0);
+          var mostraDicas = function () {
+            var h = ''; for (var i = 0; i < t.dicas; i++) { var d = dicas[i]; h += '<div class="ct-dica"><span class="eyebrow">dica ' + (i + 1) + ' · ' + d[0] + '</span>' + (vazaTexto(d[1], res.r[0][1]) ? '<p>Esta dica daria a resposta de bandeja com esses números: pule.</p>' : '<p>' + d[1] + '</p>') + '</div>'; }
+            if (t.dicas >= 2) h += '<p class="ct-nota">Com 2 ou mais dicas, o acerto não conta para dominar a conta.</p>';
+            $('#ctdt', host).innerHTML = h;
+            var bd = $('#ctd', host); if (t.dicas >= 3 || t.feito) bd.hidden = true; else bd.textContent = 'Dica (' + (t.dicas + 1) + ' de 3)';
+          };
+          $('#ctd', host).onclick = function () { if (t.feito || t.dicas >= 3) return; t.dicas++; mostraDicas(); };
           $('#ctf', host).onsubmit = function (e) {
             e.preventDefault(); if (t.feito) return;
-            var ok = confere(r, t.v, $('#cti', host).value);
+            var txt = $('#cti', host).value, ok = confere(r, t.v, txt);
             if (ok === null) { $('#ctv', host).innerHTML = '<p class="ct-aviso">Digite um número (use vírgula ou ponto para decimais).</p>'; return; }
-            t.feito = true; $('#cti', host).readOnly = true; figura($('#ctfig', host), r, t.v, res, true, 0);
-            var ant = ct().get(r.id) || { s: 0, n: 0 }, s = ok ? ant.s + 1 : 0, ja = ant.s >= 3;
-            ct().set(r.id, { s: s, n: ant.n + 1 });
-            $('#ctv', host).innerHTML = '<div class="ct-vered ' + (ok ? 'ok' : 'no') + '" role="status"><b>' + (ok ? 'Certo.' : 'Não bateu.') + '</b> ' + (ok ? (s >= 3 ? 'Conta dominada: 3 acertos seguidos.' : s + ' de 3 acertos seguidos.') : 'A resposta era ' + (un === 'R$' ? rs(res.r[0][1]) : g(res.r[0][1]) + (un ? ' ' + esc(un) : '')) + '. A sequência volta a zero.') + '</div>'
-              + passos(res, 99) + resultado(res) + arm() + '<div class="ct-bt"><button type="button" class="btn primary" id="ctp">Sortear outro</button></div>';
+            t.feito = true; $('#cti', host).readOnly = true; $('#ctd', host).hidden = true; figura($('#ctfig', host), r, t.v, res, true, 0);
+            var ant = ct().get(r.id) || { s: 0, n: 0, b: 0 }, ajuda = t.dicas >= 2, now = Date.now();
+            var cedo = !!(ant.n && dueDe(ant) > now), d0 = new Date(now); d0.setHours(0, 0, 0, 0);
+            var s = ok ? (ajuda ? ant.s : ant.s + 1) : 0, ja = ant.s >= 3, bx = ok ? (ajuda ? (ant.b || 0) : Math.min(4, (ant.b || 0) + 1)) : 0, due = ok ? d0.getTime() + (ajuda ? 1 : diasMax(bx)) * DIA : now;
+            if (ok && cedo && !ajuda) { s = ant.s; bx = ant.b || 0; due = dueDe(ant); } /* acerto antes de a revisão vencer: pratica, mas não sobe de caixa nem adia */
+            ct().set(r.id, { s: s, n: ant.n + 1, b: bx, due: due });
+            if (ses) ses.res.push({ id: r.id, ok: ok && !ajuda, q: ok ? (ajuda ? 'certo com dicas' : 'certo') : 'errado' });
+            var alvoTxt = un === 'R$' ? rs(res.r[0][1]) : g(res.r[0][1]) + (un ? ' ' + esc(un) : ''), msg;
+            if (ok) msg = ajuda ? 'Certo, mas com 2 ou mais dicas: não conta para dominar. Volta amanhã.' : (s >= 3 ? 'Conta dominada: 3 acertos seguidos. Revisão ' + diasTxt(bx) + '.' : (cedo ? s + ' de 3 acertos seguidos (a revisão ainda não tinha vencido: vale como prática, a data não muda).' : s + ' de 3 acertos seguidos. Revisão ' + diasTxt(bx) + '.'));
+            else {
+              var dg = W.CONTAS.diagnostico(r, t.v, txt), det = '';
+              if (dg && dg.tipo === 'erro') det = ' <span class="ct-diag">Sua resposta (<b>' + esc(txt.trim()) + '</b>) bate com o que dá quando você <b>' + esc(dg.rot) + '</b>.</span>';
+              else if (dg && dg.tipo === 'potencia') det = ' <span class="ct-diag">Sua resposta difere da certa por um fator de ' + dg.fator + ' (ou 1/' + dg.fator + '): confira o prefixo (mili, quilo, mega) e a unidade.</span>';
+              else det = ' <span class="ct-diag">Não bate com os erros mais comuns desta conta: refaça pelos passos abaixo.</span>';
+              msg = 'A resposta era ' + alvoTxt + '.' + det + ' A sequência volta a zero; a conta volta hoje em "Para revisar".';
+            }
+            var prox = ses ? (ses.i + 1 < ses.fila.length ? 'Próxima conta (' + (ses.i + 2) + ' de ' + ses.fila.length + ')' : 'Ver o resultado') : 'Sortear outro';
+            $('#ctv', host).innerHTML = '<div class="ct-vered ' + (ok ? 'ok' : 'no') + '" role="status"><b>' + (ok ? 'Certo.' : 'Não bateu.') + '</b> ' + msg + '</div>'
+              + passos(res, 99) + resultado(res) + arm() + '<div class="ct-bt"><button type="button" class="btn primary" id="ctp">' + prox + '</button></div>';
             host.querySelectorAll('.ct-passos li').forEach(function (l, i) { l.style.animationDelay = (i * 80) + 'ms'; l.classList.add('novo'); });
             var vd = $('.ct-vered', host); if (vd) vd.classList.add('novo'); contar($('#ctv', host));
-            if (ok && s >= 3 && !ja) document.dispatchEvent(new CustomEvent('edo:celebrate', { detail: vd }));
-            $('#ctp', host).onclick = function () { tento = { v: sortear(r), feito: false }; corpo(); };
+            if (ok && !ajuda && s >= 3 && !ja && !ses) document.dispatchEvent(new CustomEvent('edo:celebrate', { detail: vd }));
+            $('#ctp', host).onclick = function () {
+              if (ses) { ses.i++; if (ses.i >= ses.fila.length) { resumo(); window.scrollTo({ top: 0 }); return; } aberto = ses.fila[ses.i]; detalhe(); window.scrollTo({ top: 0 }); return; }
+              tento = { v: sortear(r), feito: false, dicas: 0 }; corpo();
+            };
           };
           var inp = $('#cti', host); if (inp && matchMedia('(hover:hover)').matches) inp.focus();
         }

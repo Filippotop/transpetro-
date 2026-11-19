@@ -553,6 +553,7 @@ async function testContas(browser) {
   for (let i = 0; i < 3; i++) {
     await page.locator('#cti').fill(await certo()); await page.locator('#ctf button[type=submit]').click(); await page.waitForTimeout(200);
     check(await page.locator('.ct-vered.ok').count() === 1, `contas: resposta certa ${i + 1} não foi aceita`);
+    await page.evaluate(() => { S.ct['pot-resistor'].due = Date.now() - 1000; }); /* simula a revisão vencida: acerto antes do prazo não sobe de caixa */
     if (i < 2) { await page.locator('#ctp').click(); await page.waitForTimeout(150); }
   }
   let st = await page.evaluate(() => S.ct['pot-resistor']); check(st && st.s === 3 && st.n === 3, 'contas: S.ct deveria ter 3 seguidas e 3 tentativas: ' + JSON.stringify(st));
@@ -580,6 +581,35 @@ async function testContas(browser) {
   check(await page.locator('.ct-chip.on[data-f="E3"]').count() === 1 && await page.locator('.ct-card').count() >= 4, 'contas: o botão do Formulário deveria abrir as contas já filtradas por E3');
   await page.evaluate(() => go('linhas')); await page.waitForTimeout(300);
   const busca = await page.evaluate(() => { buildIndex(); return IDX.filter(x => x.g === 'Contas').length; }); check(busca >= 28, `contas: ${busca} entradas na busca`);
+  /* busca, treino misto, dicas, diagnóstico do erro e cálculo mental */
+  await page.evaluate(() => { S.ct = {}; save(); go('biblioteca', { s: 'contas' }); }); await page.waitForTimeout(300);
+  const todas = await page.locator('.ct-card').count();
+  await page.locator('#cts').fill('trifas'); await page.waitForTimeout(150);
+  const filtradas = await page.locator('.ct-card').count(); check(filtradas >= 1 && filtradas < todas, `contas: a busca "trifas" deveria filtrar (${filtradas} de ${todas})`);
+  await page.locator('#cts').fill(''); await page.locator('.ct-chip[data-f="prova"]').click(); await page.waitForTimeout(150);
+  check(await page.locator('.ct-card').count() === 3, 'contas: o filtro "Caiu em prova" deveria mostrar as 3 contas vindas de provas reais');
+  await page.locator('.ct-chip[data-f="todas"]').click();
+  await page.locator('#ctm').click(); await page.waitForTimeout(400);
+  check(/Treino misto · conta 1 de 5/.test(await page.locator('.ct-sess').textContent()), 'contas: o treino misto deveria abrir a conta 1 de 5');
+  for (let i = 0; i < 5; i++) {
+    if (i === 0) { /* primeira: erro típico → o app diz qual foi; antes, duas dicas */
+      await page.locator('#ctd').click(); await page.locator('#ctd').click(); await page.waitForTimeout(150);
+      check(await page.locator('.ct-dica').count() === 2 && /não conta para dominar/.test(await page.locator('#ctdt').textContent()), 'contas: duas dicas deveriam aparecer com o aviso de que não contam');
+    }
+    const lerV = () => page.evaluate(() => { const r = CONTAS.receita(document.querySelector('.ct-det').dataset.r), v = {}; document.querySelectorAll('#ctc input[data-k]').forEach(el => v[el.dataset.k] = CONTAS.numero(el.value)); document.querySelectorAll('#ctc select[data-k]').forEach(el => v[el.dataset.k] = el.value); return { id: r.id, v }; });
+    const texto = await page.evaluate(({ id, v, erro }) => { const r = CONTAS.receita(id); if (erro) { const l = CONTAS.listaErros(r, v); return l.length ? String(l[0][1]) : '0'; } return String(CONTAS.calcular(r, v).r[0][1]); }, { ...(await lerV()), erro: i === 0 });
+    await page.locator('#cti').fill(texto); await page.locator('#ctf button[type=submit]').click(); await page.waitForTimeout(200);
+    if (i === 0) check(/bate com o que dá quando você/.test(await page.locator('.ct-vered').textContent()), 'contas: o erro típico deveria ser diagnosticado: ' + await page.locator('.ct-vered').textContent());
+    else check(await page.locator('.ct-vered.ok').count() === 1, `contas: a resposta certa da conta ${i + 1} do treino misto não foi aceita`);
+    await page.locator('#ctp').click(); await page.waitForTimeout(250);
+  }
+  check(/Resultado: 4 de 5/.test(await page.locator('.ct-head h3').textContent()), 'contas: o resumo deveria dar 4 de 5: ' + await page.locator('.ct-head h3').textContent());
+  const rev = await page.evaluate(() => CONTAS.devidas().length); check(rev >= 1, 'contas: a conta errada deveria voltar em "Para revisar" (' + rev + ')');
+  await page.locator('#ctl').click(); await page.waitForTimeout(200);
+  check(/para revisar/.test(await page.locator('#ctm').textContent()), 'contas: o botão do treino misto deveria contar as contas para revisar');
+  await page.locator('.ct-chip[data-f="mental"]').click(); await page.waitForTimeout(200);
+  check(await page.locator('.ct-tab').count() >= 4 && await page.locator('#ctq').textContent() !== '', 'contas: o cálculo mental deveria mostrar as tabelas e uma pergunta');
+  const pq = await page.evaluate(() => 0); void pq;
   check(!errs.length, `contas: erro de página: ${errs.join(' | ')}`);
   await ctx.close();
 }

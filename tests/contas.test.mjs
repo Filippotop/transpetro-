@@ -12,8 +12,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = vm.createContext({ console }); ctx.window = ctx;
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas.js'), 'utf8'), ctx, { filename: 'contas.js' });
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas-extra.js'), 'utf8'), ctx, { filename: 'contas-extra.js' });
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas-fig.js'), 'utf8'), ctx, { filename: 'contas-fig.js' });
-for (const n of [2, 3, 4, 5, 6]) vm.runInContext(fs.readFileSync(path.join(ROOT, `js/contas-fig${n}.js`), 'utf8'), ctx, { filename: `contas-fig${n}.js` });
+for (const n of [2, 3, 4, 5, 6, 7]) vm.runInContext(fs.readFileSync(path.join(ROOT, `js/contas-fig${n}.js`), 'utf8'), ctx, { filename: `contas-fig${n}.js` });
 const CT = ctx.CONTAS, FIG = ctx.CONTASFIG;
 const L = CT.lista();
 
@@ -25,6 +26,7 @@ const ESPERADO = {
   fp: 40 * (Math.tan(Math.acos(0.8)) - Math.tan(Math.acos(0.95))), trifasica: R3 * 380 * 10 * 0.8, ligacao: 380 / R3,
   wattimetros: 4000, trafo: 1, rendimento: 9000 / 9500 * 100, escorregamento: 1800, 'motor-corrente': 7500 / (R3 * 380 * 0.9 * 0.85),
   conjugado: 7500 / (2 * Math.PI * 1740 / 60), 'estrela-triangulo': 20, projeto: 12.5, queda: 2 * 0.0172 * 30 * 20 / 4, ma420: 5,
+  'queda-unit': 27.5, 'soma-senoides': 50, bateria: 0.2, 'pico-eficaz': 127 * Math.SQRT2,
   juros: 1000 * 1.02 ** 12, desconto: 144, regra3: 2 * 0 + 4 * 12 / 6, bhaskara: 3, combinacao: 56, prefixos: 0.047
 };
 
@@ -38,7 +40,8 @@ const tests = {
       assert.ok(r.arm.length >= 1 && r.campos.length >= 1, r.id);
       for (const c of r.campos) assert.ok(c.sel ? c.sel.some(o => o[0] === c.v) : (typeof c.v === 'number' && c.s.length >= 1), r.id + ' campo ' + c.k);
     }
-    assert.ok(L.length >= 28, 'receitas: ' + L.length);
+    assert.ok(L.length >= 33, 'receitas: ' + L.length);
+    assert.equal(L.filter(r => r.prova).length, 3, 'contas com origem em prova real');
     for (const id of Object.keys(ESPERADO)) assert.ok(L.some(r => r.id === id), 'falta ' + id);
     for (const r of L) assert.ok(r.id in ESPERADO, 'sem valor esperado para ' + r.id);
   },
@@ -98,6 +101,34 @@ tests['toda conta tem figura; 200 sorteios × (resultado visível ou não): SVG 
       }
     }
   }
+};
+tests['toda conta tem erros típicos que diferem da resposta certa; o diagnóstico acerta o erro e a potência de dez'] = () => {
+  for (const r of L) for (let i = 0; i < 200; i++) {
+    const v = i ? CT.sortear(r) : CT.exemplo(r), l = CT.listaErros(r, v), alvo = CT.calcular(r, v).r[0][1];
+    assert.ok(l.length >= 1, `${r.id}: nenhum erro típico válido com ${JSON.stringify(v)}`);
+    for (const [rot, x] of l) { assert.ok(rot.length > 8 && Number.isFinite(x), `${r.id}: ${rot}`); assert.ok(Math.abs(x - alvo) > 0.015 * Math.abs(alvo)); }
+    const [rot, x] = l[0], dg = CT.diagnostico(r, v, String(x).replace('.', ','));
+    assert.ok(dg && dg.tipo === 'erro', `${r.id}: o diagnóstico não reconheceu o erro "${rot}" (${x})`);
+    const dp = CT.diagnostico(r, v, String(alvo * 1000).replace('.', ','));
+    assert.ok(dp && (dp.tipo === 'potencia' || dp.tipo === 'erro'), r.id + ': ×1000 não reconhecido');
+    assert.equal(CT.diagnostico(r, v, 'abc'), null);
+  }
+};
+tests['revisão espaçada e treino misto: contas vencidas primeiro, sem repetir, sem duas seguidas da mesma estação'] = () => {
+  const store = {}; ctx.EDO_CT = { get: k => store[k] || null, set: (k, v) => { store[k] = Object.assign({}, v, { t: Date.now() }); } };
+  assert.equal(CT.devidas().length, 0);
+  const a = L[0].id, b = L[1].id, c = L[2].id;
+  ctx.EDO_CT.set(a, { s: 1, n: 1, b: 1, due: Date.now() - 1000 });      /* venceu */
+  ctx.EDO_CT.set(b, { s: 3, n: 3, b: 4, due: Date.now() + 14 * 864e5 }); /* só daqui a 14 dias */
+  ctx.EDO_CT.set(c, { s: 0, n: 1, b: 0, due: Date.now() });              /* errou agora: vence já */
+  assert.equal(JSON.stringify(CT.devidas().map(r => r.id).sort()), JSON.stringify([a, c].sort()));
+  for (let k = 0; k < 50; k++) {
+    const m = CT.misto(5); assert.equal(m.length, 5); assert.equal(new Set(m.map(r => r.id)).size, 5);
+    assert.ok([a, c].every(id => m.some(r => r.id === id)), 'as vencidas entram na sessão');
+    assert.ok(!m.some(r => r.id === b), 'a que só vence em 14 dias fica de fora quando há contas novas');
+    for (let i = 1; i < m.length; i++) assert.notEqual(m[i].mod, m[i - 1].mod, 'duas seguidas da mesma estação');
+  }
+  delete ctx.EDO_CT;
 };
 let failed = 0;
 for (const [name, fn] of Object.entries(tests)) { try { fn(); } catch (e) { failed++; console.error(`✗ ${name}\n  ${e.message.split('\n')[0]}`); } }
