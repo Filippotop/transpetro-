@@ -26,7 +26,7 @@ const ESPERADO = {
   fp: 40 * (Math.tan(Math.acos(0.8)) - Math.tan(Math.acos(0.95))), trifasica: R3 * 380 * 10 * 0.8, ligacao: 380 / R3,
   wattimetros: 4000, trafo: 1, rendimento: 9000 / 9500 * 100, escorregamento: 1800, 'motor-corrente': 7500 / (R3 * 380 * 0.9 * 0.85),
   conjugado: 7500 / (2 * Math.PI * 1740 / 60), 'estrela-triangulo': 20, projeto: 12.5, queda: 2 * 0.0172 * 30 * 20 / 4, ma420: 5,
-  'queda-unit': 27.5, 'soma-senoides': 50, bateria: 0.2, 'pico-eficaz': 127 * Math.SQRT2,
+  'queda-unit': 27.5, 'soma-senoides': 50, bateria: 0.4, 'pico-eficaz': 127 * Math.SQRT2,
   juros: 1000 * 1.02 ** 12, desconto: 144, regra3: 2 * 0 + 4 * 12 / 6, bhaskara: 3, combinacao: 56, prefixos: 0.047
 };
 

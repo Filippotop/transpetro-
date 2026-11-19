@@ -95,13 +95,14 @@
 
   /* ---------- resistência interna de uma bateria (Transpetro 2023, q. 49) ---------- */
   reg('bateria', function (v, k) {
-    var B = H, qd = v.E - v.V, r = qd / v.I, out = '', yT = 72, yB = 178;
+    var B = H, r = (v.V1 - v.V2) / (v.I2 - v.I1), E0 = v.V1 + r * v.I1; v = { E: E0, V: v.V1, I: v.I1, V2: v.V2, I2: v.I2 }; /* mostra a 1ª leitura; E sai das duas */
+    var qd = v.E - v.V, out = '', yT = 72, yB = 178;
     /* bateria real: E em série com r, dentro de um retângulo tracejado */
     out += '<rect x="12" y="36" width="158" height="170" rx="6" fill="none" stroke-dasharray="5 4" style="stroke:var(--muted);stroke-width:1.5"/>';
     out += B.t(91, 198, 'bateria real', { c: 'tm' });
     out += B.w([[80, 118], [80, yT], [96, yT]], { c: 'hot', s: '1' }) + B.w([[140, yT], [170, yT]], { c: 'hot', s: '1' });
     out += B.w([[80, 132], [80, yB], [170, yB]], { c: 'hot', s: '1' });
-    out += B.bat(80, 125, 'E', g(v.E) + ' V', '1');
+    out += B.bat(80, 125, 'E', k.ver ? g(v.E) + ' V' : '?', '1');
     out += B.res(118, yT, 'h', 'r = ' + B.ans(k, g(r) + ' Ω'), 'E − V = ' + B.ans(k, g(qd) + ' V'), '1 2');
     /* circuito externo: voltímetro nos terminais, amperímetro em série, resistor variável */
     out += B.w([[170, yT], [228, yT]], { c: 'hot' }) + B.w([[252, yT], [280, yT], [280, 93]], { c: 'hot', s: '2' });
@@ -114,13 +115,13 @@
     var h = 214;
     if (k.ver) {
       var x0 = 30, Wd = 300, seg = clamp(Wd * qd / v.E, 5, Wd), wv = Wd - seg;
-      out += B.t(x0, 232, 'E, sem carga: ' + g(v.E) + ' V', { a: 'start', c: 'tm', s: '1' }) + B.bar(x0, 238, Wd, 12, 1, '', '1');
+      out += B.t(x0, 232, 'E, sem carga: ' + B.ans(k, g(v.E) + ' V'), { a: 'start', c: 'tm', s: '1' }) + B.bar(x0, 238, Wd, 12, 1, '', '1');
       out += B.t(x0, 272, 'V nos terminais: ' + g(v.V) + ' V', { a: 'start', c: 'tm', s: '3' });
       out += rect(x0, 278, wv, 12, 'bar ok', '3') + rect(x0 + wv, 278, seg, 12, 'bar bad', '1 2');
       out += B.t(x0 + Wd, 310, 'queda interna E − V = ' + g(qd) + ' V', { a: 'end', c: 'tg', s: '1 2' });
       h = 326;
     }
-    return B.svg(360, h, out, 'Bateria real: fonte ideal de ' + g(v.E) + ' volts em série com a resistência interna r, dentro de um retângulo tracejado. Ligada a um resistor variável, com um amperímetro em série medindo ' + g(v.I) + ' ampères e um voltímetro nos terminais medindo ' + g(v.V) + ' volts. A tensão que falta, E menos V, cai dentro da bateria, em r.');
+    return B.svg(360, h, out, 'Bateria real: fonte ideal E em série com a resistência interna r, dentro de um retângulo tracejado. Ligada a um resistor variável, com um amperímetro em série e um voltímetro nos terminais (mostra a 1ª leitura: ' + g(v.I) + ' ampères e ' + g(v.V) + ' volts). A tensão que falta, E menos V, cai dentro da bateria, em r.');
   });
 
   /* ---------- valor eficaz, de pico e pico a pico ---------- */

@@ -44,20 +44,22 @@
     },
     arm: ['Somar os picos (30 + 40 = 70) só vale se estiverem em fase (δ = 0°).', 'π/2 rad = 90°: os fasores ficam em quadratura (cos = 0, sen = 1).'] });
 
-  C.add({ id: 'bateria', mod: 'E1', prova: 'Transpetro 2023, questão 49', nome: 'Resistência interna de uma bateria',
-    f: '<var>r</var> = (<var>E</var> − <var>V</var>) / <var>I</var>',
-    lembrar: 'A bateria real é uma fonte ideal <var>E</var> em série com uma resistência interna <var>r</var>. Com carga, parte da tensão cai dentro dela: <var>V</var> = <var>E</var> − <var>r</var>·<var>I</var>. O voltímetro nos terminais mede <var>V</var>; o amperímetro mede <var>I</var> (instrumentos considerados ideais).',
-    campos: [{ k: 'E', rot: 'Tensão em aberto E (sem carga)', un: 'V', v: 12, s: [12, 24] }, { k: 'V', rot: 'Tensão nos terminais com carga', un: 'V', v: 11.4, s: [11.4, 11.5, 11.2, 23] }, { k: 'I', rot: 'Corrente medida', un: 'A', v: 3, s: [2, 3, 4, 5] }],
+  C.add({ id: 'bateria', mod: 'E1', prova: 'Transpetro 2023, questão 49', nome: 'Resistência interna de uma bateria (duas leituras)',
+    f: '<var>r</var> = (<var>V</var><sub>1</sub> − <var>V</var><sub>2</sub>) / (<var>I</var><sub>2</sub> − <var>I</var><sub>1</sub>)',
+    lembrar: 'A bateria real é uma fonte ideal <var>E</var> em série com uma resistência interna <var>r</var>: com carga, <var>V</var> = <var>E</var> − <var>r</var>·<var>I</var>. A prova dá duas leituras do voltímetro e do amperímetro (variando o resistor) e NÃO dá o <var>E</var>: subtraindo as duas equações, o <var>E</var> some e sobra <var>r</var>. Quanto mais corrente, mais a tensão cai. (Instrumentos considerados ideais.)',
+    campos: [{ k: 'V1', rot: '1ª leitura: tensão', un: 'V', v: 11.2, s: [11.2, 11.5, 11.4] }, { k: 'I1', rot: '1ª leitura: corrente', un: 'A', v: 2, s: [1, 2] },
+             { k: 'V2', rot: '2ª leitura: tensão', un: 'V', v: 10.8, s: [10.8, 10.5, 11, 11.1] }, { k: 'I2', rot: '2ª leitura: corrente', un: 'A', v: 3, s: [3, 4, 5] }],
     calc: function (v) {
-      var qd = v.E - v.V, r = qd / v.I, Rc = v.V / v.I;
+      var dV = v.V1 - v.V2, dI = v.I2 - v.I1, r = dV / dI, E = v.V1 + r * v.I1;
       return { p: [
-        S('Quanto a tensão caiu dentro da bateria', '<var>E</var> − <var>V</var> = ' + g(v.E) + ' − ' + g(v.V) + ' = ' + u(qd, 'V')),
-        S('Resistência interna', '<var>r</var> = (<var>E</var> − <var>V</var>) / <var>I</var> = ' + g(qd) + ' / ' + g(v.I) + ' = ' + b(r, 'Ω')),
-        S('Resistência da carga (confira)', '<var>R</var> = <var>V</var>/<var>I</var> = ' + g(v.V) + ' / ' + g(v.I) + ' = ' + u(Rc, 'Ω') + ', bem maior que <var>r</var> = ' + g(r) + ' Ω')
-      ], r: [['Resistência interna', r, 'Ω'], ['Resistência da carga', Rc, 'Ω']] };
+        S('Quanto a tensão caiu entre as leituras', '<var>V</var><sub>1</sub> − <var>V</var><sub>2</sub> = ' + g(v.V1) + ' − ' + g(v.V2) + ' = ' + u(dV, 'V')),
+        S('Quanto a corrente subiu', '<var>I</var><sub>2</sub> − <var>I</var><sub>1</sub> = ' + g(v.I2) + ' − ' + g(v.I1) + ' = ' + u(dI, 'A')),
+        S('Resistência interna', '<var>r</var> = ' + g(dV) + ' / ' + g(dI) + ' = ' + b(r, 'Ω') + ' (cada ampère a mais derruba ' + g(r) + ' V dentro da bateria)'),
+        S('Confira achando o <var>E</var>', '<var>E</var> = <var>V</var><sub>1</sub> + <var>r</var>·<var>I</var><sub>1</sub> = ' + g(v.V1) + ' + ' + g(r) + '·' + g(v.I1) + ' = ' + u(E, 'V') + '; com a 2ª leitura: ' + g(v.V2) + ' + ' + g(r) + '·' + g(v.I2) + ' = ' + u(v.V2 + r * v.I2, 'V') + ' (tem de dar o mesmo)')
+      ], r: [['Resistência interna', r, 'Ω'], ['Tensão em aberto E', E, 'V']] };
     },
-    arm: ['V/I dá a resistência da CARGA, e não a interna.', 'E é a tensão medida com o circuito aberto, e não a nominal (12 V é o nome da bateria). Com duas leituras do resistor variável, (V₁, I₁) e (V₂, I₂): r = (V₁ − V₂)/(I₂ − I₁).'],
-    valido: function (v) { return v.V < v.E && (v.E - v.V) / v.I < 1; } });
+    arm: ['V/I dá a resistência da CARGA, e não a interna.', 'Os 12 V da bateria são o nome dela: não use como E. Com duas leituras, o E nem precisa entrar na conta (r = ΔV/ΔI). Se a prova der uma leitura só e o E em aberto, aí r = (E − V)/I.', 'No numerador, a leitura de MAIOR tensão menos a de menor; no denominador, a de MAIOR corrente menos a de menor (tensão cai quando a corrente sobe).'],
+    valido: function (v) { var r = (v.V1 - v.V2) / (v.I2 - v.I1); return v.V1 > v.V2 && v.I2 > v.I1 && r > 0.05 && r < 1; } });
 
   C.add({ id: 'pico-eficaz', mod: 'E2', nome: 'Valor eficaz, de pico e pico a pico',
     f: '<var>V</var><sub>p</sub> = √2 · <var>V</var><sub>ef</sub>;  <var>V</var><sub>pp</sub> = 2 · <var>V</var><sub>p</sub>',
@@ -108,7 +110,7 @@
     prefixos: function (v) { var e = { M: 6, k: 3, m: -3, u: -6, n: -9 }[v.pf], e2 = { M: 3, k: 6, m: -6, u: -3, n: -6 }[v.pf]; return [['andou a vírgula para o lado errado', v.x * Math.pow(10, -e)], ['confundiu com o prefixo vizinho (mili↔micro, quilo↔mega…)', v.x * Math.pow(10, e2)]]; },
     'queda-unit': function (v) { var I = v.S / v.V, km = v.pc / 100 * v.V / (v.dVu * I); return [['deixou em km (esqueceu o ×1000)', km], ['multiplicou por 2 (ida e volta), que a tabela já inclui', km * 1000 / 2], ['usou o % como se fossem volts (ΔV = ' + v.pc + ' V)', v.pc / (v.dVu * I) * 1000]]; },
     'soma-senoides': function (v) { var c = Math.cos(v.d * Math.PI / 180), Vp = Math.sqrt(v.A * v.A + v.B * v.B + 2 * v.A * v.B * c); return [['somou os picos (A + B), como se estivessem em fase', v.A + v.B], ['usou Pitágoras como se fossem 90° (só vale em quadratura)', Math.sqrt(v.A * v.A + v.B * v.B)], ['subtraiu os picos', Math.abs(v.A - v.B)], ['deu o valor eficaz (pico/√2)', Vp / Math.SQRT2], ['trocou o sinal do termo 2AB·cos δ na lei dos cossenos', Math.sqrt(Math.abs(v.A * v.A + v.B * v.B - 2 * v.A * v.B * c))]]; },
-    bateria: function (v) { return [['calculou a resistência da carga (V/I)', v.V / v.I], ['dividiu E pela corrente (resistência total r + R)', v.E / v.I], ['multiplicou em vez de dividir: (E − V)·I', (v.E - v.V) * v.I]]; },
+    bateria: function (v) { return [['calculou a resistência da carga (V₁/I₁)', v.V1 / v.I1], ['somou em vez de subtrair as leituras', (v.V1 + v.V2) / (v.I1 + v.I2)], ['inverteu a razão (ΔI/ΔV)', (v.I2 - v.I1) / (v.V1 - v.V2)], ['usou os 12 V nominais como E com a 1ª leitura', (12 - v.V1) / v.I1]]; },
     'pico-eficaz': function (v) { return [['dividiu por √2 em vez de multiplicar', v.Vef / Math.SQRT2], ['multiplicou por 2 em vez de √2', 2 * v.Vef], ['deu o pico a pico (2√2·V)', 2 * Math.SQRT2 * v.Vef], ['usou √3 no lugar de √2', R3 * v.Vef]]; }
   };
   /* erros adicionais (revisão independente): somam-se aos acima */
