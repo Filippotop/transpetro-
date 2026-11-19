@@ -16,6 +16,11 @@
       + '<animate attributeName="height" from="0" to="' + f1(h) + '" dur="0.5s" begin="' + (delay || 0).toFixed(2) + 's" fill="freeze"/>'
       + '<animate attributeName="y" from="' + f1(yb) + '" to="' + f1(yb - h) + '" dur="0.5s" begin="' + (delay || 0).toFixed(2) + 's" fill="freeze"/></rect>';
   }
+  /* Treinar: contorno tracejado de tamanho FIXO com "?" no lugar de uma grandeza que é resultado */
+  function ph(x, y, w, h, s, q) {
+    return '<rect x="' + f1(x) + '" y="' + f1(y) + '" width="' + f1(w) + '" height="' + f1(h) + '" rx="3" stroke-dasharray="4 3"' + A(s)
+      + ' style="fill:none;stroke:var(--muted);stroke-width:1.5"/>' + (q === false ? '' : H.t(x + w / 2, y + h / 2 + 4, '?', { c: 'tm', s: s }));
+  }
   var rs = function (x) { return 'R$\u00a0' + Number(x).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
   var sup = function (n) { return String(n).replace(/-/g, '⁻').replace(/[0-9]/g, function (d) { return '⁰¹²³⁴⁵⁶⁷⁸⁹'.charAt(+d); }); };
 
@@ -38,9 +43,13 @@
     var x0 = 30, Wd = 300, seg = Math.max(5, Wd * dV / v.V), wOk = Wd - seg;
     out += B.t(x0, 220, 'Na fonte: ' + g(v.V) + ' V', { a: 'start', s: '3' });
     out += B.bar(x0, 226, Wd, 14, 1, '', '3');
-    out += B.t(x0, 262, 'Na carga: ' + B.ans(k, g(Vc) + ' V'), { a: 'start', s: '2 3' });
-    out += B.bar(x0, 268, wOk, 14, 1, 'ok', '2 3') + rect(x0 + wOk, 268, seg, 14, 'bar bad', '2 3');
-    out += B.line(x0 + Wd - seg / 2, 284, x0 + Wd - seg / 2, 290, { c: 'dim', s: '2 3' });
+    if (k.ver) {
+      out += B.t(x0, 262, 'Na carga: ' + g(Vc) + ' V', { a: 'start', s: '2 3' });
+      out += B.bar(x0, 268, wOk, 14, 1, 'ok', '2 3') + rect(x0 + wOk, 268, seg, 14, 'bar bad', '2 3');
+      out += B.line(x0 + Wd - seg / 2, 284, x0 + Wd - seg / 2, 290, { c: 'dim', s: '2 3' });
+    } else {
+      out += B.t(x0, 262, 'Na carga: ?', { a: 'start', s: '2 3' }) + ph(x0, 268, Wd, 14, '2 3') + B.t(x0 + Wd, 262, 'fora de escala', { a: 'end', c: 'tm' });
+    }
     out += B.t(x0 + Wd, 304, 'queda ΔV = ' + B.ans(k, g(dV) + ' V (' + g(pc) + ' %)'), { a: 'end', c: 'tg', s: '2 3 4' });
     out += B.ca(324);
     return B.svg(360, 346, out, 'Circuito monofásico: fonte de ' + g(v.V) + ' volts, dois condutores (ida e volta) de ' + g(v.L) + ' metros e seção de ' + g(v.S) + ' mm², cada um com resistência de ' + g(Rw) + ' ohms, alimentando uma carga de ' + g(v.I) + ' ampères. A tensão na carga é menor que a da fonte; a diferença é a queda de tensão, que conta a ida e a volta.');
@@ -58,8 +67,9 @@
         if (!k.anim) return rect(xx, yBot - fh, tw, fh, 'bar', '1 2');
         return '<rect class="bar" x="' + xx + '" y="' + yBot + '" width="' + tw + '" height="0" rx="3" data-s="1 2"><animate attributeName="height" from="0" to="' + f1(fh) + '" dur="0.6s" fill="freeze"/><animate attributeName="y" from="' + yBot + '" to="' + f1(yBot - fh) + '" dur="0.6s" fill="freeze"/></rect>';
       };
-      out += (k.ver ? fill(tL) : '') + fill(tR);
+      out += k.ver ? fill(tL) + fill(tR) : '';
     }
+    if (!k.ver) out += ph(tR, yTop, tw, hh, '1 2', false);
     /* marcas de ¼, ½ e ¾ só depois da resposta: antes, dariam a leitura direta */
     if (k.ver) [0.25, 0.5, 0.75].forEach(function (f) { var y = yBot - f * hh; out += B.line(tL - 5, y, tL, y, { c: 'dim' }) + B.line(tR + tw, y, tR + tw + 5, y, { c: 'dim' }); });
     out += B.line(tL + tw, yTop, tR, yTop, { d: '2 4', c: 'dim' }) + B.line(tL + tw, yBot, tR, yBot, { d: '2 4', c: 'dim' });
@@ -68,15 +78,17 @@
     out += B.line(352, yTop, 352, yBot, { c: 'dim', s: '2' }) + B.line(347, yTop, 352, yTop, { c: 'dim' }) + B.line(347, yBot, 352, yBot, { c: 'dim' });
     out += B.t(346, 107, 'faixa útil', { a: 'end', c: 'tm', s: '2' }) + B.t(346, 125, '16 mA', { a: 'end', c: 'tm', s: '2' });
     /* ponteiro */
-    out += (k.ver ? B.line(tL + tw, yP, tR, yP, { c: 'hot', s: '2 3' }) + '<circle class="pt" cx="' + (tL + tw) + '" cy="' + f1(yP) + '" r="4" data-s="3"/>' : '') + '<circle class="pt" cx="' + tR + '" cy="' + f1(yP) + '" r="4" data-s="2"/>';
-    out += B.t(145, yP - 8, 'I = ' + g(v.I) + ' mA', { s: '1 2' }) + B.t(145, yP + 14, 'x = ' + B.ans(k, g(x)), { c: 'tg', s: '3' });
+    var yL = k.ver ? yP : yTop + 60;   /* Treinar: textos em altura fixa (a posição seria a resposta) */
+    if (k.ver) out += B.line(tL + tw, yP, tR, yP, { c: 'hot', s: '2 3' }) + '<circle class="pt" cx="' + (tL + tw) + '" cy="' + f1(yP) + '" r="4" data-s="3"/><circle class="pt" cx="' + tR + '" cy="' + f1(yP) + '" r="4" data-s="2"/>';
+    out += B.t(145, yL - 8, 'I = ' + g(v.I) + ' mA', { s: '1 2' }) + B.t(145, yL + 14, 'x = ' + B.ans(k, g(x)), { c: 'tg', s: '3' });
+    if (!k.ver) out += B.t(145, yL + 32, 'fora de escala', { c: 'tm' });
     /* laço transmissor → CLP */
     out += rect(14, 230, 126, 46, 'sh', '', '', 4) + B.t(77, 257, 'Transmissor') + rect(220, 230, 126, 46, 'sh', '', '', 4) + B.t(283, 257, 'CLP');
     out += B.w([[140, 240], [220, 240]], { c: 'hot' }) + B.w([[220, 266], [140, 266]], { c: 'hot' });
     out += B.arrow(165, 240, 195, 240) + B.t(180, 258, 'laço', { c: 'tm' });
     out += B.flow('M140,240 H220 V266 H140', B.rate(v.I, 20), k.anim, 4);
     out += B.t(180, 300, '0 mA = laço aberto (cabo rompido)', { c: 'tm' });
-    return B.svg(360, 310, out, 'Medidor vertical: o processo vai de ' + g(v.mn) + ' a ' + g(v.mx) + ', correspondendo a 4 mA (zero) e 20 mA (fundo de escala), uma faixa de 16 mA. A corrente lida é ' + g(v.I) + ' mA, que corresponde a ' + g(fr * 100) + ' por cento da faixa. O transmissor envia a corrente ao CLP por um laço de dois fios.');
+    return B.svg(360, 310, out, 'Medidor vertical: o processo vai de ' + g(v.mn) + ' a ' + g(v.mx) + ', correspondendo a 4 mA (zero) e 20 mA (fundo de escala), uma faixa de 16 mA. A corrente lida é ' + g(v.I) + ' mA' + (k.ver ? ', que corresponde a ' + g(fr * 100) + ' por cento da faixa' : '') + '. O transmissor envia a corrente ao CLP por um laço de dois fios.');
   });
 
   /* ---------- juros compostos ---------- */
@@ -86,6 +98,15 @@
     var val = function (t) { return Math.pow(1 + i, t); };
     var X = function (t) { return x0 + Wd * t / n; };
     var Y = function (r) { return yb - hh * r / f; };
+    if (!k.ver) {
+      /* Treinar: só C (barra fixa) e um contorno "?" para M; nada à escala do fator (1+i)^n */
+      var hc = 36, yc = yb - hc;
+      out += B.line(x0 - 4, yb, x0 + Wd + 6, yb) + B.line(x0, yc, x0 + Wd, yc, { d: '4 4', c: 'dim', s: '1' });
+      out += rect(x0, yc, 30, hc, 'bar dim', '2') + ph(x0 + Wd - 30, yb - 100, 30, 100, '3 4');
+      out += B.t(x0 + 15, yb + 16, '0', { c: 'tm' }) + B.t(x0 + Wd, yb + 16, n + (n === 1 ? ' período' : ' períodos'), { a: 'end', c: 'tm' });
+      out += B.t(x0 + 36, yc - 7, 'C = ' + rs(v.C), { a: 'start', c: 'tg', s: '3' });
+      out += B.t(x0 + Wd - 36, yb - 100 + 14, 'M = ?', { a: 'end', c: 'tg', s: '3' }) + B.t(180, yb - 60, 'fora de escala', { c: 'tm' });
+    } else {
     /* linha de referência no nível de C e eixo */
     out += B.line(x0, Y(1), x0 + Wd, Y(1), { d: '4 4', c: 'dim', s: '1' }) + B.line(x0 - 4, yb, x0 + Wd + 6, yb);
     if (!many) {
@@ -112,11 +133,14 @@
     }
     out += B.t(x0 + Wd, yb + 16, n + (n === 1 ? ' período' : ' períodos'), { a: 'end', c: 'tm' });
     out += B.t(x0, Y(1) - 7, 'C = ' + rs(v.C), { a: 'start', c: 'tg', s: '3' });
-    out += B.t(x0 + Wd, Y(f) - 8, 'M = ' + B.ans(k, rs(M)), { a: 'end', c: 'tg', s: '3' });
+    out += B.t(x0 + Wd, Y(f) - 8, 'M = ' + rs(M), { a: 'end', c: 'tg', s: '3' });
+    }
     out += B.t(180, 232, 'fator (1 + i)<tspan baseline-shift="super" font-size="72%">n</tspan> = (1 + ' + g(i) + ')<tspan baseline-shift="super" font-size="72%">' + n + '</tspan> = ' + B.ans(k, g(f)), { c: 't', s: '2' });
     out += B.t(180, 252, 'juros J = M − C = ' + B.ans(k, rs(M - v.C)), { c: 'tg', s: '4' });
+    if (k.ver) {
     out += rect(36, 268, 14, 8, 'bar', '', '', 2) + B.t(56, 277, 'compostos (taxa sobre o montante)', { a: 'start', c: 'tm' });
     out += '<line class="w dim" x1="36" y1="292" x2="50" y2="292" stroke-dasharray="3 3"/>' + B.t(56, 296, 'juros simples (linha reta, menor)', { a: 'start', c: 'tm' });
+    }
     return B.svg(360, 306, out, 'Gráfico do capital de R$ ' + g(v.C) + ' a ' + g(v.i) + ' por cento por período durante ' + n + ' períodos. A cada período a taxa incide sobre o montante anterior e o crescimento acelera; os juros simples, em linha reta, ficariam abaixo.');
   });
 
@@ -125,21 +149,25 @@
     var B = H, a = 1 - v.d1 / 100, b2 = 1 - v.d2 / 100, f = a * b2, P1 = v.P * a, P2 = v.P * f, out = '';
     var yb = 150, hm = 110, bw = 60, xs = [30, 150, 270];
     var hs = [hm, hm * a, hm * f].map(function (h) { return Math.max(2, h); });
+    var tr = !k.ver;   /* Treinar: só o preço inicial à escala; os demais em contorno fixo */
 
     out += B.line(10, yb, 350, yb);
-    out += vbar(xs[0], yb, bw, hs[0], 'bar dim', '1', k.anim, 0) + vbar(xs[1], yb, bw, hs[1], 'bar', '1 2', k.anim, 0.2) + vbar(xs[2], yb, bw, hs[2], 'bar ok', '2 3', k.anim, 0.4);
-    out += B.t(xs[0] + bw / 2, yb - hs[0] - 7, rs(v.P), { c: 't' }) + B.t(xs[1] + bw / 2, yb - hs[1] - 7, B.ans(k, rs(P1)), { s: '1' }) + B.t(xs[2] + bw / 2, yb - hs[2] - 7, B.ans(k, rs(P2)), { c: 'tg', s: '3' });
+    if (tr) out += vbar(xs[0], yb, bw, hs[0], 'bar dim', '1', k.anim, 0) + ph(xs[1], yb - 90, bw, 90, '1 2') + ph(xs[2], yb - 70, bw, 70, '2 3');
+    else out += vbar(xs[0], yb, bw, hs[0], 'bar dim', '1', k.anim, 0) + vbar(xs[1], yb, bw, hs[1], 'bar', '1 2', k.anim, 0.2) + vbar(xs[2], yb, bw, hs[2], 'bar ok', '2 3', k.anim, 0.4);
+    var yl = tr ? [yb - hs[0] - 7, yb - 97, yb - 77] : [yb - hs[0] - 7, yb - hs[1] - 7, yb - hs[2] - 7];
+    out += B.t(xs[0] + bw / 2, yl[0], rs(v.P), { c: 't' }) + (tr ? '' : B.t(xs[1] + bw / 2, yl[1], rs(P1), { s: '1' }) + B.t(xs[2] + bw / 2, yl[2], rs(P2), { c: 'tg', s: '3' }));
     out += B.t(xs[0] + bw / 2, yb + 16, 'inicial', { c: 'tm' }) + B.t(xs[1] + bw / 2, yb + 16, 'após 1º', { c: 'tm' }) + B.t(xs[2] + bw / 2, yb + 16, 'após 2º', { c: 'tm' });
     out += B.arrow(94, 100, 146, 100, { s: '1' }) + B.t(120, 92, '× ' + g(a), { s: '1' }) + B.t(120, 118, '−' + g(v.d1) + ' %', { c: 'tm', s: '1' });
     out += B.arrow(214, 100, 266, 100, { s: '1' }) + B.t(240, 92, '× ' + g(b2), { s: '1' }) + B.t(240, 118, '−' + g(v.d2) + ' %', { c: 'tm', s: '1' });
     out += B.t(180, 186, 'fator total = ' + g(a) + ' · ' + g(b2) + ' = ' + B.ans(k, g(f)), { c: 'tg', s: '2' });
     /* comparação: desconto total real × soma ingênua */
     var Wd = 300, real = (1 - f) * 100, soma = v.d1 + v.d2, sc = Wd / (Math.max(soma, real) * 1.08);
-    out += B.t(30, 214, 'Desconto total certo: ' + B.ans(k, g(real) + ' %'), { a: 'start', c: 't', s: '4' });
-    out += rect(30, 220, Math.max(2, real * sc), 14, 'bar ok', '4');
+    if (tr) sc = 230 / soma;
+    out += B.t(30, 214, 'Desconto total certo' + (tr ? '' : ': ' + B.ans(k, g(real) + ' %')), { a: 'start', c: 't', s: '4' });
+    out += tr ? ph(30, 220, 170, 14, '4') : rect(30, 220, Math.max(2, real * sc), 14, 'bar ok', '4');
     out += B.t(30, 256, 'Soma ingênua (errado): ' + g(soma) + ' %', { a: 'start', c: 't', s: '4' });
     out += rect(30, 262, Math.max(2, soma * sc), 14, 'bar bad', '4');
-    out += B.line(30 + real * sc, 234, 30 + real * sc, 270, { d: '3 3', c: 'dim', s: '4' });
+    if (!tr) out += B.line(30 + real * sc, 234, 30 + real * sc, 270, { d: '3 3', c: 'dim', s: '4' });
     return B.svg(360, 290, out, 'Preço inicial de R$ ' + g(v.P) + ' com descontos sucessivos de ' + g(v.d1) + ' por cento e depois ' + g(v.d2) + ' por cento. O segundo desconto incide sobre o preço já reduzido, por isso o desconto total não é a soma ' + g(soma) + ' por cento.');
   });
 
@@ -155,7 +183,7 @@
     out += B.t(8, 64, 'grandeza 1', { a: 'start', c: 'tm' }) + B.t(8, 134, 'grandeza 2', { a: 'start', c: 'tm' });
     out += cell(0, 0, 'a = ' + g(v.a), '2') + cell(0, 1, 'c = ' + g(v.c), '2') + cell(1, 0, 'b = ' + g(v.b), '2') + cell(1, 1, 'x = ' + B.ans(k, g(x)), '3', 'tg');
     out += B.arrow(169, 60, 231, 60, { s: '1' }) + B.t(200, 50, '× ' + g(v.c) + '/' + g(v.a), { s: '1' }) + B.t(200, 76, sobe ? 'sobe' : 'desce', { c: 'tm', s: '1' });
-    out += B.arrow(169, 130, 231, 130, { s: '1' }) + B.t(200, 120, '× ' + (dir ? g(v.c) + '/' + g(v.a) : g(v.a) + '/' + g(v.c)), { s: '1' }) + B.t(200, 146, sobeX ? 'sobe' : 'desce', { c: 'tm', s: '1' });
+    out += B.arrow(169, 130, 231, 130, { s: '1' }) + B.t(200, 120, k.ver ? '× ' + (dir ? g(v.c) + '/' + g(v.a) : g(v.a) + '/' + g(v.c)) : '× ?', { s: '1' }) + B.t(200, 146, sobeX ? 'sobe' : 'desce', { c: 'tm', s: '1' });
     if (dir) {
       out += B.line(150, 84, 250, 106, { d: '4 3', c: 'hot', s: '2' }) + B.line(150, 106, 250, 84, { d: '4 3', c: 'hot', s: '2' });
     } else {
@@ -164,7 +192,7 @@
     }
     out += B.t(180, 182, dir ? 'DIRETA: as duas sobem (ou descem) juntas' : 'INVERSA: uma sobe, a outra desce', { c: 'tg', s: '1' });
     out += B.t(180, 202, dir ? 'a / b = c / x   (produtos cruzados: b·c = a·x)' : 'a · b = c · x   (o produto não muda)', { s: '2' });
-    out += B.t(180, 224, 'x = ' + (dir ? 'b·c / a = ' + g(v.b) + ' · ' + g(v.c) + ' / ' + g(v.a) : 'a·b / c = ' + g(v.a) + ' · ' + g(v.b) + ' / ' + g(v.c)) + ' = ' + B.ans(k, g(x)), { c: 'tg', s: '3' });
+    out += B.t(180, 224, k.ver ? 'x = ' + (dir ? 'b·c / a = ' + g(v.b) + ' · ' + g(v.c) + ' / ' + g(v.a) : 'a·b / c = ' + g(v.a) + ' · ' + g(v.b) + ' / ' + g(v.c)) + ' = ' + B.ans(k, g(x)) : 'x = ?', { c: 'tg', s: '3' });
     return B.svg(360, 238, out, 'Regra de três ' + (dir ? 'direta' : 'inversa') + ': na grandeza 1, de ' + g(v.a) + ' para ' + g(v.c) + '; na grandeza 2, de ' + g(v.b) + ' para x. ' + (dir ? 'As duas grandezas variam no mesmo sentido: x = b·c/a.' : 'Quando uma sobe a outra desce e o produto se mantém: x = a·b/c.'));
   });
 
@@ -184,6 +212,17 @@
     var sg = function (t, first) { return (t < 0 ? ' − ' : first ? '' : ' + ') + (Math.abs(t) === 1 && first !== 2 ? '' : g(Math.abs(t))); };
     var eq = 'y = ' + (a < 0 ? '−' : '') + (Math.abs(a) === 1 ? '' : g(Math.abs(a))) + 'x²' + (b ? (b < 0 ? ' − ' : ' + ') + (Math.abs(b) === 1 ? '' : g(Math.abs(b))) + 'x' : '') + (c ? (c < 0 ? ' − ' : ' + ') + g(Math.abs(c)) : '');
     out += B.t(px0, 16, eq, { a: 'start', c: 't' }) + B.t(px1, 16, a > 0 ? 'a > 0: abre para cima' : 'a < 0: abre para baixo', { a: 'end', c: 'tm' });
+    if (!k.ver) {
+      /* Treinar: forma genérica (só o sentido de a); sem eixo x, sem raízes, sem vértice à escala */
+      var gp = [], gs = a > 0 ? 1 : -1;
+      for (var gi = 0; gi <= 60; gi++) { var gt = -1 + 2 * gi / 60; gp.push(f1(180 + 90 * gt) + ',' + f1(125 + gs * (-70 + 70 * gt * gt) * -1)); }
+      out += B.line(180, py0, 180, py1, { d: '3 4', c: 'dim', s: '4' });
+      out += '<polyline class="curva' + (k.anim ? ' draw' : '') + '" points="' + gp.join(' ') + '" data-s="1 3"/>';
+      out += B.t(180, 232, 'forma genérica, fora de escala', { c: 'tm' });
+      out += B.t(180, 258, 'Δ = b² − 4ac = ' + (b < 0 ? '(' + g(b) + ')' : g(b)) + '² − 4 · ' + g(a) + ' · ' + g(c) + ' = ?', { c: 'tg', s: '1' });
+      out += B.t(180, 278, '?', { c: 't', s: '1 2' });
+      return B.svg(360, 290, out, 'Parábola ' + eq + ', ' + (a > 0 ? 'aberta para cima' : 'aberta para baixo') + ', desenhada fora de escala. Calcule o discriminante e as raízes.');
+    }
     var cid = 'cfbh';
     out += '<clipPath id="' + cid + '"><rect x="' + px0 + '" y="' + (py0 - 4) + '" width="' + (px1 - px0) + '" height="' + (py1 - py0 + 8) + '"/></clipPath>';
     /* eixos */
@@ -241,15 +280,15 @@
       var l0 = lab(0), l1 = lab(1);
       out += chip(30, 132, l0, '1') + chip(56, 132, l1, '1') + B.t(92, 149, '≠', { c: 't big', s: '1' }) + chip(106, 132, l1, '1') + chip(132, 132, l0, '1');
       out += chip(200, 132, l0, '2') + chip(226, 132, l1, '2') + B.t(262, 149, '=', { c: 't big', s: '2' }) + chip(276, 132, l1, '2') + chip(302, 132, l0, '2');
-      out += B.t(92, 176, l0 + l1 + ' ≠ ' + l1 + l0 + ': 2 arranjos', { c: 'tm', s: '1' }) + B.t(270, 176, l0 + l1 + ' = ' + l1 + l0 + ': 1 combinação', { c: 'tm', s: '2' });
+      out += B.t(92, 176, l0 + l1 + ' ≠ ' + l1 + l0 + (k.ver ? ': 2 arranjos' : ''), { c: 'tm', s: '1' }) + B.t(270, 176, l0 + l1 + ' = ' + l1 + l0 + (k.ver ? ': 1 combinação' : ''), { c: 'tm', s: '2' });
     } else {
       out += B.t(92, 150, 'com p = ' + g(p) + ' a ordem', { c: 'tm' }) + B.t(92, 168, 'não muda nada', { c: 'tm' }) + B.t(270, 150, 'arranjo = combinação', { c: 'tm' });
     }
     var prod = []; for (var m = 0; m < p; m++) prod.push(n - m);
     var ptxt = p > 5 ? prod.slice(0, 3).join(' · ') + ' · … · ' + prod[p - 1] : prod.join(' · ');
-    out += B.t(180, 208, 'A = ' + ptxt + ' = ' + B.ans(k, g(Ar)), { c: 'tg', s: '1' });
-    out += B.t(180, 228, 'C = A / p! = A / ' + g(pf) + ' = ' + B.ans(k, g(Cb)), { c: 'tg', s: '2' });
-    out += B.t(180, 248, 'cada grupo de p vale p! = ' + g(pf) + ' ordens', { c: 'tm', s: '2' });
+    out += B.t(180, 208, k.ver ? 'A = ' + ptxt + ' = ' + g(Ar) : 'A = arranjo = ?', { c: 'tg', s: '1' });
+    out += B.t(180, 228, 'C = A / p! = ' + B.ans(k, 'A / ' + g(pf) + ' = ' + g(Cb)), { c: 'tg', s: '2' });
+    out += B.t(180, 248, 'cada grupo de p vale p! = ' + B.ans(k, g(pf)) + ' ordens', { c: 'tm', s: '2' });
     return B.svg(360, 260, out, 'De ' + g(n) + ' elementos, escolher ' + g(p) + '. No arranjo a ordem conta (AB é diferente de BA); na combinação não conta (AB é igual a BA), então divide-se o arranjo por p fatorial, que é ' + g(pf) + '.');
   });
 
@@ -270,13 +309,15 @@
     out += B.t(cxs[ci], top(ci) - 8, g(v.x) + ' ' + pnome, { c: 'tg', s: '1' });
     /* seta: a vírgula anda ci → unidade */
     var ya = 192, xa = cxs[ci], xu = cxs[2], casas = Math.abs(exp), dirt = xu > xa ? 1 : -1;
-    out += B.line(xa, yb, xa, ya, { d: '2 3', c: 'dim', s: '3' }) + B.line(xu, yb, xu, ya, { d: '2 3', c: 'dim', s: '3' });
-    out += B.arrow(xa, ya, xu - dirt * 6, ya, { s: '3' });
-    for (var d = 1; d <= casas; d++) out += '<circle cx="' + f1(xa + (xu - xa) * (d - 0.5) / casas) + '" cy="' + ya + '" r="2.6" style="fill:var(--gold)" data-s="3"/>';
-    if (k.anim) out += '<circle r="5" class="dot" style="fill:var(--bad)"><animateMotion dur="3s" repeatCount="indefinite" path="M' + f1(xa) + ',' + (ya - 10) + ' L' + f1(xu) + ',' + (ya - 10) + '"/></circle>';
-    out += B.t(180, 214, 'a vírgula anda ' + casas + ' casas para a ' + (exp < 0 ? 'ESQUERDA' : 'DIREITA'), { c: 'tg', s: '3' });
-    out += B.t(180, 240, g(v.x) + ' ' + pnome + ' = ' + g(v.x) + ' · 10' + sup(exp) + ' = ' + B.ans(k, g(val)), { c: 't', s: '2' });
+    if (k.ver) {
+      out += B.line(xa, yb, xa, ya, { d: '2 3', c: 'dim', s: '3' }) + B.line(xu, yb, xu, ya, { d: '2 3', c: 'dim', s: '3' });
+      out += B.arrow(xa, ya, xu - dirt * 6, ya, { s: '3' });
+      for (var d = 1; d <= casas; d++) out += '<circle cx="' + f1(xa + (xu - xa) * (d - 0.5) / casas) + '" cy="' + ya + '" r="2.6" style="fill:var(--gold)" data-s="3"/>';
+      if (k.anim) out += '<circle r="5" class="dot" style="fill:var(--bad)"><animateMotion dur="3s" repeatCount="indefinite" path="M' + f1(xa) + ',' + (ya - 10) + ' L' + f1(xu) + ',' + (ya - 10) + '"/></circle>';
+    }
+    out += B.t(180, 214, k.ver ? 'a vírgula anda ' + casas + ' casas para a ' + (exp < 0 ? 'ESQUERDA' : 'DIREITA') : 'a vírgula anda ? casas', { c: 'tg', s: '3' });
+    out += B.t(180, 240, k.ver ? g(v.x) + ' ' + pnome + ' = ' + g(v.x) + ' · 10' + sup(exp) + ' = ' + B.ans(k, g(val)) : g(v.x) + ' ' + (pnome || 'unidade') + ' = ? (unidade base)', { c: 't', s: '2' });
     out += B.t(180, 258, exp < 0 ? 'prefixo pequeno: o número fica menor' : 'prefixo grande: o número fica maior', { c: 'tm', s: '3' });
-    return B.svg(360, 270, out, 'Escada de prefixos: mega 10 elevado a 6, quilo 10 elevado a 3, unidade, mili 10 elevado a menos 3, micro 10 elevado a menos 6 e nano 10 elevado a menos 9. O valor ' + g(v.x) + ' está no degrau ' + (sym || 'unidade') + '; para chegar à unidade base a vírgula anda ' + casas + ' casas para a ' + (exp < 0 ? 'esquerda' : 'direita') + '.');
+    return B.svg(360, 270, out, 'Escada de prefixos: mega 10 elevado a 6, quilo 10 elevado a 3, unidade, mili 10 elevado a menos 3, micro 10 elevado a menos 6 e nano 10 elevado a menos 9. O valor ' + g(v.x) + ' está no degrau ' + (sym || 'unidade') + (k.ver ? '; para chegar à unidade base a vírgula anda ' + casas + ' casas para a ' + (exp < 0 ? 'esquerda' : 'direita') : '; converta para a unidade base') + '.');
   });
 })(window);

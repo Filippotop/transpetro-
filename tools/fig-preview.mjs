@@ -24,9 +24,9 @@ for (const [w, h, th] of [[390, 900, 'dark'], [900, 900, 'light']]) {
     if (!await fig.count() || await fig.isHidden()) { console.log(w, id, modo, 'SEM FIGURA'); continue; }
     await fig.screenshot({ path: `${out}/${id}-${modo}-${w}.png` });
     const bad = await p.evaluate(() => {
-      const ts = [...document.querySelectorAll('#ctfig text')].map(e => ({ t: e.textContent, r: e.getBoundingClientRect() })).filter(x => x.r.width > 0);
-      const o = []; for (let i = 0; i < ts.length; i++) for (let j = i + 1; j < ts.length; j++) { const a = ts[i].r, c = ts[j].r; const ox = Math.min(a.right, c.right) - Math.max(a.left, c.left), oy = Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top); if (ox > 3 && oy > 3) o.push(`"${ts[i].t}" × "${ts[j].t}"`); }
-      const s = document.querySelector('#ctfig svg'), sr = s.getBoundingClientRect(), fora = ts.filter(x => x.r.left < sr.left - 1 || x.r.right > sr.right + 1 || x.r.top < sr.top - 1 || x.r.bottom > sr.bottom + 1).map(x => x.t);
+      const ts = [...document.querySelectorAll('#ctfig text')].map(e => ({ t: e.textContent, r: e.getBoundingClientRect(), s: e.ownerSVGElement })).filter(x => x.r.width > 0);
+      const o = []; for (let i = 0; i < ts.length; i++) for (let j = i + 1; j < ts.length; j++) { if (ts[i].s !== ts[j].s) continue; const a = ts[i].r, c = ts[j].r; const ox = Math.min(a.right, c.right) - Math.max(a.left, c.left), oy = Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top); if (ox > 3 && oy > 3) o.push(`"${ts[i].t}" × "${ts[j].t}"`); }
+      const fora = ts.filter(x => { const sr = x.s.getBoundingClientRect(); return x.r.left < sr.left - 1 || x.r.right > sr.right + 1 || x.r.top < sr.top - 1 || x.r.bottom > sr.bottom + 1; }).map(x => x.t);
       return { o, fora };
     });
     if (bad.o.length || bad.fora.length) console.log(w, th, id, modo, 'TEXTOS SOBREPOSTOS:', bad.o.join('; '), '| FORA DA FIGURA:', bad.fora.join('; '));

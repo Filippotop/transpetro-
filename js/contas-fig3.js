@@ -10,6 +10,12 @@
     var mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2, ang = Math.atan2(q[1] - p[1], q[0] - p[0]) * 180 / Math.PI;
     return H.w([p, q], { c: hot ? 'hot' : '', s: s }) + '<rect class="sh" x="-22" y="-8" width="44" height="16" rx="2" transform="translate(' + f1(mx) + ',' + f1(my) + ') rotate(' + f1(ang) + ')"' + A(s) + '/>';
   }
+  /* Treinar: contorno tracejado de tamanho FIXO com "?" no lugar de uma grandeza que é resultado */
+  function ph(x, y, w, h, s, q) {
+    return '<rect x="' + f1(x) + '" y="' + f1(y) + '" width="' + f1(w) + '" height="' + f1(h) + '" rx="3" stroke-dasharray="4 3"' + A(s)
+      + ' style="fill:none;stroke:var(--muted);stroke-width:1.5"/>' + (q === false ? '' : H.t(x + w / 2, y + h / 2 + 4, '?', { c: 'tm', s: s }));
+  }
+  function rect3(x, y, w, h, cls, s) { return '<rect class="' + cls + '" x="' + f1(x) + '" y="' + f1(y) + '" width="' + f1(Math.max(1, w)) + '" height="' + h + '" rx="3"' + A(s) + '/>'; }
   /* rótulo de duas linhas: símbolo em cima, valor embaixo */
   function lab2(x, y, sym, val, a, s, c) {
     return H.t(x, y, sym, { a: a, s: s, c: c || 't' }) + H.t(x, y + 20, val, { a: a, s: s, c: c || 't' });
@@ -45,7 +51,7 @@
     out += H.t(270, 216, 'V_L = ' + g(VL) + ' V', { c: 't' });
     /* rodapé: onde o √3 aparece */
     out += H.t(90, 240, 'Y: √3 divide a tensão', { c: 'tm', s: '1' }) + H.t(270, 240, 'Δ: √3 divide a corrente', { c: 'tm', s: '2' });
-    out += H.t(180, 262, 'S = 3·V_f·I_f = ' + g(S) + ' VA nas duas', { c: 'tm', s: '3' });
+    out += H.t(180, 262, 'S = 3·V_f·I_f = ' + H.ans(k, g(S) + ' VA') + ' nas duas', { c: 'tm', s: '3' });
     out += H.t(180, 280, 'mas em Δ cada fase recebe √3 vezes mais tensão', { c: 'tm', s: '3' });
     out += H.flow('M90,14 L90,134', H.rate(IL, 60), k.anim, 4) + H.flow('M270,54 L201,174', H.rate(iD, 60), k.anim, 3);
     return H.svg(360, 292, out, 'Duas ligações da mesma carga trifásica com tensão de linha de ' + g(VL) + ' volts e corrente de linha de ' + g(IL) + ' ampères. Estrela: a tensão de fase é a de linha dividida por raiz de três e a corrente de fase é a de linha. Triângulo: a tensão de fase é a de linha e a corrente de fase é a de linha dividida por raiz de três.');
@@ -76,12 +82,20 @@
     out += H.t(30, 214, 'traço grosso = bobina de corrente (em série)', { a: 'start', c: 'tm' });
     /* barra: W1 + W2 */
     var by = 226, bx = 30, bw = 300, tot = W1 + Math.max(W2, 0), sc = bw / tot, w1 = W1 * sc;
+    if (!k.ver) {
+      /* Treinar: só os dados (cada leitura em escala comum, em linhas separadas); a soma P fica oculta */
+      var sc2 = 190 / Math.max(Math.abs(W1), Math.abs(W2), 1e-9);
+      out += rect3(bx, 220, Math.abs(W1) * sc2, 10, 'bar', '1') + H.t(bx + Math.abs(W1) * sc2 + 6, 229, 'W_1', { a: 'start', c: 'tm' });
+      out += rect3(bx, 234, Math.abs(W2) * sc2, 10, W2 >= 0 ? 'bar ok' : 'bar bad', '1') + H.t(bx + Math.abs(W2) * sc2 + 6, 243, W2 >= 0 ? 'W_2' : 'W_2 (negativa)', { a: 'start', c: 'tm' });
+      out += ph(bx, 250, 300, 12, '1');
+    } else {
     out += '<g' + A('1') + '><rect class="bar" x="' + bx + '" y="' + by + '" width="' + f1(w1) + '" height="14" rx="3"/>';
     if (W2 >= 0) out += '<rect class="bar ok" x="' + f1(bx + w1) + '" y="' + by + '" width="' + f1(W2 * sc) + '" height="14" rx="3"/>';
     else out += '<rect class="bar bad" x="' + f1(bx + w1 + W2 * sc) + '" y="' + by + '" width="' + f1(-W2 * sc) + '" height="14" rx="3"/>';
     out += '</g>';
     if (W2 >= 0) out += H.t(bx + w1 / 2, by + 32, 'W_1', { c: 'tm' }) + H.t(bx + w1 + W2 * sc / 2, by + 32, 'W_2', { c: 'tm' });
     else out += H.t(bx, by + 32, 'W_2 < 0: a parte vermelha é subtraída de W_1', { a: 'start', c: 'tm' });
+    }
     out += H.t(180, 282, 'P = W_1 + W_2 = ' + H.ans(k, g(P) + ' W'), { c: 'tg', s: '1' });
     out += H.t(180, 302, 'tg φ = √3·(W_1 − W_2)/P = ' + H.ans(k, g(t)), { c: 'tm', s: '2' });
     out += H.t(180, 322, 'φ = ' + H.ans(k, g(fi * 180 / Math.PI) + '°') + '   cos φ = ' + H.ans(k, g(fp)), { c: 'tg', s: '3' });
@@ -93,6 +107,7 @@
     var Ps = v.Ps, Pfe = v.Pfe, Pcu = v.Pcu, perd = Pfe + Pcu, Pe = Ps + perd, eta = Ps / Pe * 100, out = '';
     var Hin = 104, y0 = 34, xa = 76, xb = 136, xc = 240;
     var hfe = Math.max(Hin * Pfe / Pe, 4), hcu = Math.max(Hin * Pcu / Pe, 4), hs = Hin - hfe - hcu;
+    if (!k.ver) { hs = 60; hfe = 22; hcu = 22; }   /* Treinar: proporções neutras, fora de escala */
     var ys = y0, yfe = y0 + hs, ycu = yfe + hfe;                 /* segmentos na entrada */
     var ts = y0, tfe = y0 + hs + 24, tcu = tfe + hfe + 22;        /* destinos à direita */
     function band(a, h, b, cor, s) {
@@ -110,10 +125,11 @@
     /* η: barra de 100 % com a parte útil */
     var by = 224, bw = 300, ew = bw * eta / 100;
     out += '<rect class="bar dim" x="30" y="' + by + '" width="' + bw + '" height="14" rx="3"/>';
-    out += '<rect class="bar ok" x="30" y="' + by + '" width="' + f1(ew) + '" height="14" rx="3"' + A('3') + '>' + (k.anim ? '<animate attributeName="width" from="0" to="' + f1(ew) + '" dur="1.1s" fill="freeze"/>' : '') + '</rect>';
+    if (k.ver) out += '<rect class="bar ok" x="30" y="' + by + '" width="' + f1(ew) + '" height="14" rx="3"' + A('3') + '>' + (k.anim ? '<animate attributeName="width" from="0" to="' + f1(ew) + '" dur="1.1s" fill="freeze"/>' : '') + '</rect>';
+    else out += ph(30, by, bw, 14, '3') + H.t(330, 212, 'fluxo fora de escala', { a: 'end', c: 'tm' });
     out += H.t(30, by + 32, '0', { a: 'start', c: 'tm' }) + H.t(330, by + 32, '100 %', { a: 'end', c: 'tm' });
     out += H.t(180, 282, 'η = P_s / P_ent = ' + H.ans(k, g(eta) + ' %'), { c: 'tg', s: '3' });
-    out += H.t(180, 302, 'perdas = ' + g(perd) + ' W (ferro + cobre)', { c: 'tm', s: '1' });
+    out += H.t(180, 302, 'perdas = ' + H.ans(k, g(perd) + ' W') + ' (ferro + cobre)', { c: 'tm', s: '1' });
     return H.svg(360, 312, out, 'Diagrama de fluxo de potência: entra potência, sai ' + g(Ps) + ' watts úteis e se perdem ' + g(Pfe) + ' watts no ferro e ' + g(Pcu) + ' watts no cobre. O rendimento é a saída dividida pela entrada.');
   });
 
@@ -126,7 +142,9 @@
       var an = i * 360 / v.p - 90, a = an * Math.PI / 180;
       out += '<rect x="' + f1(cx + 56 * Math.cos(a) - 6) + '" y="' + f1(cy + 56 * Math.sin(a) - 6) + '" width="12" height="12" rx="2" transform="rotate(' + f1(an + 90) + ' ' + f1(cx + 56 * Math.cos(a)) + ' ' + f1(cy + 56 * Math.sin(a)) + ')" style="fill:' + (i % 2 ? 'var(--ink)' : 'var(--gold)') + '"/>';
     }
-    var ps = clamp(2.6 * 1800 / ns, 1.4, 6), pr = ps * ns / n, anim = function (T) { return k.anim ? '<animateTransform attributeName="transform" type="rotate" from="0 ' + cx + ' ' + cy + '" to="360 ' + cx + ' ' + cy + '" dur="' + T.toFixed(2) + 's" repeatCount="indefinite"/>' : ''; };
+    var ps = clamp(2.6 * 1800 / ns, 1.4, 6), pr = ps * ns / n;
+    if (!k.ver) { ps = 3; pr = 3.4; }   /* Treinar: rotor só "um pouco mais lento", sem razão de períodos real */
+    var anim = function (T) { return k.anim ? '<animateTransform attributeName="transform" type="rotate" from="0 ' + cx + ' ' + cy + '" to="360 ' + cx + ' ' + cy + '" dur="' + T.toFixed(2) + 's" repeatCount="indefinite"/>' : ''; };
     /* campo girante (seta dourada) */
     out += '<g' + A('1') + '><line class="ar hot" x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + (cy - 46) + '" marker-end="url(#cfa)" style="stroke:var(--gold)"/>' + anim(ps) + '</g>';
     /* rotor */
@@ -136,10 +154,16 @@
     out += H.t(188, 176, g(v.p) + ' polos, ' + g(v.f) + ' Hz', { a: 'start', c: 'tm', s: '1' });
     /* barras de rotação */
     var bx = 30, bw = 300, rw = bw * n / ns;
+    if (!k.ver) {
+      out += H.t(bx, 198, 'n_s (síncrona)', { a: 'start', c: 'tm', s: '1' }) + ph(bx, 204, bw, 14, '1');
+      out += H.t(bx, 238, 'n (rotor)', { a: 'start', c: 'tm', s: '2' }) + ph(bx, 244, bw, 14, '2');
+      out += H.t(bx + bw, 238, 'fora de escala', { a: 'end', c: 'tm' });
+    } else {
     out += H.t(bx, 198, 'n_s (síncrona)', { a: 'start', c: 'tm', s: '1' }) + '<rect class="bar" x="' + bx + '" y="204" width="' + bw + '" height="14" rx="3" style="fill:var(--gold)"' + A('1') + '/>';
     out += H.t(bx, 238, 'n (rotor)', { a: 'start', c: 'tm', s: '2' });
     out += '<rect class="bar ok" x="' + bx + '" y="244" width="' + f1(rw) + '" height="14" rx="3"' + A('2') + '/><rect class="bar bad" x="' + f1(bx + rw) + '" y="244" width="' + f1(bw - rw) + '" height="14" rx="3"' + A('2 3') + '/>';
     out += H.t(bx + bw, 238, 'n_s − n', { a: 'end', c: 'tm', s: '2' });
+    }
     out += H.t(180, 288, 'n_s − n = ' + H.ans(k, g(ns - n) + ' rpm'), { c: 't', s: '2' });
     out += H.t(180, 310, 's = (n_s − n)/n_s = ' + H.ans(k, g(s) + ' %'), { c: 'tg', s: '3' });
     return H.svg(360, 322, out, 'Motor de indução de ' + g(v.p) + ' polos em ' + g(v.f) + ' hertz: o campo girante do estator gira a ' + g(ns) + ' rpm e o rotor a ' + g(n) + ' rpm, um pouco mais devagar. A diferença entre as duas, em proporção da síncrona, é o escorregamento: ' + g(s) + ' por cento.');
@@ -157,13 +181,16 @@
     out += H.flow('M20,' + ys[0] + ' H250', H.rate(I, 80), k.anim, 4);
     /* barras de potência: S ⊃ P_ent ⊃ P_u */
     var wS = bw, wP = bw * v.fp, wU = wP * v.eta, bx = 30;
+    if (!k.ver) { wS = 300; wP = 250; wU = 200; }   /* Treinar: larguras fixas; S e P_ent só em contorno tracejado */
     function barra(y, wt, wa, ca, cb, s) {
       var gr = function (w) { return k.anim ? '<animate attributeName="width" from="0" to="' + f1(w) + '" dur="0.9s" fill="freeze"/>' : ''; };
       return '<rect class="bar ' + cb + '" x="' + bx + '" y="' + y + '" width="' + f1(wt) + '" height="14" rx="3"' + A(s) + '/><rect class="bar ' + ca + '" x="' + bx + '" y="' + y + '" width="' + f1(wa) + '" height="14" rx="3"' + A(s) + '>' + gr(wa) + '</rect>';
     }
-    out += H.t(bx, 134, 'S = ' + H.ans(k, g(Sa) + ' VA'), { a: 'start', s: '4' }) + barra(140, wS, wP, '', 'dim', '4');
-    out += H.t(bx + bw, 134, 'cinza: S − P (não é Q)', { a: 'end', c: 'tm', s: '4' });
-    out += H.t(bx, 180, 'P_ent = S·cos φ = ' + H.ans(k, g(Pe) + ' W'), { a: 'start', s: '2' }) + barra(186, wP, wU, 'ok', 'bad', '2');
+    var phb = function (y, w, s) { return '<rect x="' + bx + '" y="' + y + '" width="' + w + '" height="14" rx="3" stroke-dasharray="4 3"' + A(s) + ' style="fill:none;stroke:var(--muted);stroke-width:1.5"/>' + H.t(bx + w / 2, y + 11, '?', { c: 'tm', s: s }); };
+    out += H.t(bx, 134, 'S = ' + H.ans(k, g(Sa) + ' VA'), { a: 'start', s: '4' }) + (k.ver ? barra(140, wS, wP, '', 'dim', '4') : phb(140, wS, '4'));
+    if (k.ver) out += H.t(bx + bw, 134, 'cinza: S − P (não é Q)', { a: 'end', c: 'tm', s: '4' });
+    else out += H.t(bx + bw, 134, 'fora de escala', { a: 'end', c: 'tm' });
+    out += H.t(bx, 180, 'P_ent = S·cos φ = ' + H.ans(k, g(Pe) + ' W'), { a: 'start', s: '2' }) + (k.ver ? barra(186, wP, wU, 'ok', 'bad', '2') : phb(186, wP, '2'));
     out += H.t(bx, 226, 'P_u = ' + g(v.Pu) + ' kW = ' + g(Pw) + ' W (eixo)', { a: 'start', s: '1' }) + barra(232, wU, wU, 'ok', 'ok', '1');
     out += H.t(180, 270, 'cos φ = ' + g(v.fp) + '   η = ' + g(v.eta) + '   √3·V·η·cos φ = ' + H.ans(k, g(den)), { c: 'tm', s: '3' });
     out += H.t(180, 292, 'I = S / (√3·V) = ' + H.ans(k, g(I) + ' A'), { c: 'tg', s: '4' });
@@ -211,15 +238,17 @@
     function barra(x, y, frac, cls, s) { return '<rect class="bar dim" x="' + x + '" y="' + y + '" width="' + bw + '" height="14" rx="3"/><rect class="bar ' + cls + '" x="' + x + '" y="' + y + '" width="' + f1(bw * frac) + '" height="14" rx="3"' + A(s) + '>' + gr(bw * frac) + '</rect>'; }
     out += H.t(x1, 146, 'corrente de linha', { a: 'start', c: 'tm', s: '1' }) + H.t(x2, 146, 'corrente de linha', { a: 'start', c: 'tm', s: '1' });
     out += H.t(x1, 166, 'I_{Δ} = ' + g(Ip) + ' A', { a: 'start', s: '1' }) + H.t(x2, 166, 'I_Y = ' + H.ans(k, g(Ip / 3) + ' A'), { a: 'start', s: '1' });
-    out += barra(x1, 172, 1, 'bad', '1') + barra(x2, 172, 1 / 3, 'ok', '1');
-    out += H.t(x2 + bw - 6, 183, '÷ 3', { a: 'end', c: 'tm', s: '1' });
+    out += k.ver ? barra(x1, 172, 1, 'bad', '1') + barra(x2, 172, 1 / 3, 'ok', '1') + H.t(x2 + bw - 6, 183, '÷ 3', { a: 'end', c: 'tm', s: '1' })
+      : barra(x1, 172, 1, 'bad', '1') + ph(x2, 172, bw, 14, '1');
     out += H.t(x1, 210, 'conjugado de partida', { a: 'start', c: 'tm', s: '2' }) + H.t(x2, 210, 'conjugado de partida', { a: 'start', c: 'tm', s: '2' });
     out += H.t(x1, 230, 'T_{Δ} = ' + g(Tp) + ' N·m', { a: 'start', s: '2' }) + H.t(x2, 230, 'T_Y = ' + H.ans(k, g(Tp / 3) + ' N·m'), { a: 'start', s: '2' });
-    out += barra(x1, 236, 1, 'ok', '2') + barra(x2, 236, 1 / 3, 'bad', '2');
-    out += H.t(x2 + bw - 6, 247, '÷ 3', { a: 'end', c: 'tm', s: '2' });
-    out += H.t(180, 280, 'tensão na fase ÷ √3  →  (1/√3)² = 1/3', { c: 'tm', s: '3' });
-    out += H.t(180, 298, 'corrente e conjugado caem a 1/3 (não a 1/√3)', { c: 'tm', s: '3' });
-    return H.svg(360, 308, out, 'Comparação da partida direta em triângulo e da partida em estrela. Em triângulo a corrente de linha é ' + g(Ip) + ' ampères e o conjugado ' + g(Tp) + ' newtons-metro. Em estrela cada fase recebe a tensão de linha dividida por raiz de três, e tanto a corrente de linha quanto o conjugado caem a um terço: ' + g(Ip / 3) + ' ampères e ' + g(Tp / 3) + ' newtons-metro.');
+    out += k.ver ? barra(x1, 236, 1, 'ok', '2') + barra(x2, 236, 1 / 3, 'bad', '2') + H.t(x2 + bw - 6, 247, '÷ 3', { a: 'end', c: 'tm', s: '2' })
+      : barra(x1, 236, 1, 'ok', '2') + ph(x2, 236, bw, 14, '2');
+    if (k.ver) {
+      out += H.t(180, 280, 'tensão na fase ÷ √3  →  (1/√3)² = 1/3', { c: 'tm', s: '3' });
+      out += H.t(180, 298, 'corrente e conjugado caem a 1/3 (não a 1/√3)', { c: 'tm', s: '3' });
+    }
+    return H.svg(360, 308, out, 'Comparação da partida direta em triângulo e da partida em estrela. Em triângulo a corrente de linha é ' + g(Ip) + ' ampères e o conjugado ' + g(Tp) + ' newtons-metro. Em estrela cada fase recebe a tensão de linha dividida por raiz de três' + (k.ver ? ', e tanto a corrente de linha quanto o conjugado caem a um terço: ' + g(Ip / 3) + ' ampères e ' + g(Tp / 3) + ' newtons-metro.' : '. Calcule a corrente e o conjugado na partida em estrela.'));
   });
 
   /* ---------- corrente de projeto e disjuntor ---------- */
@@ -237,16 +266,22 @@
     /* régua de correntes */
     var x0 = 20, imax = In * 1.4, sc = 300 / imax, xb = x0 + Ib * sc, xn = x0 + In * sc, yr = 190;
     var grow = function (x, w, cls, s) { return '<rect class="bar ' + cls + '" x="' + f1(x) + '" y="' + yr + '" width="' + f1(Math.max(w, 0)) + '" height="14" rx="3"' + A(s) + '/>'; };
-    out += grow(x0, xb - x0, '', '1') + grow(xb, xn - xb, 'ok', '2') + grow(xn, x0 + 300 - xn, 'dim', '3');
-    out += H.arrow(x0 + 300, yr + 7, 342, yr + 7, { s: '3' });
-    out += H.line(xb, 160, xb, yr, { d: '3 3', c: 'dim', s: '1' }) + H.node(xb, yr);
-    out += H.t(clamp(xb, 50, 292), 154, 'I_b = ' + H.ans(k, g(Ib) + ' A'), { s: '1' });
-    out += H.line(xn, yr + 14, xn, yr + 24, { c: 'dim', s: '2' });
-    out += H.t(clamp(xn, 50, 292), yr + 40, 'I_n = ' + H.ans(k, g(In) + ' A'), { s: '2' });
+    if (k.ver) {
+      out += grow(x0, xb - x0, '', '1') + grow(xb, xn - xb, 'ok', '2') + grow(xn, x0 + 300 - xn, 'dim', '3');
+      out += H.arrow(x0 + 300, yr + 7, 342, yr + 7, { s: '3' });
+      out += H.line(xb, 160, xb, yr, { d: '3 3', c: 'dim', s: '1' }) + H.node(xb, yr);
+      out += H.t(clamp(xb, 50, 292), 154, 'I_b = ' + g(Ib) + ' A', { s: '1' });
+      out += H.line(xn, yr + 14, xn, yr + 24, { c: 'dim', s: '2' });
+      out += H.t(clamp(xn, 50, 292), yr + 40, 'I_n = ' + g(In) + ' A', { s: '2' });
+    } else {
+      /* Treinar: régua sem marcadores de I_b e I_n (posições dependem do resultado) */
+      out += ph(x0, yr, 300, 14, '1', false) + H.arrow(x0 + 300, yr + 7, 342, yr + 7, { s: '3' });
+      out += H.t(90, 154, 'I_b = ?', { s: '1' }) + H.t(190, yr + 40, 'I_n = ?', { s: '2' }) + H.t(340, yr + 40, 'fora de escala', { a: 'end', c: 'tm' });
+    }
     out += H.t(302, 176, 'I_z ≥ I_n', { c: 'tm', s: '3' });
-    out += H.t(x0, yr + 40, '0', { a: 'start', c: 'tm' }).replace('x="20"', 'x="20"');
+    out += H.t(x0, yr + 40, '0', { a: 'start', c: 'tm' });
     out += H.t(180, 254, 'I_b ≤ I_n ≤ I_z', { c: 'tg', s: '3' });
-    out += H.t(180, 276, 'verde: folga do disjuntor · cinza: o cabo aguenta', { c: 'tm', s: '3' });
+    if (k.ver) out += H.t(180, 276, 'verde: folga do disjuntor · cinza: o cabo aguenta', { c: 'tm', s: '3' });
     out += H.t(180, 296, 'se I_n < I_b o disjuntor desarma sem defeito', { c: 'tm' }).replace('class="tm"', 'class="tm" style="fill:var(--bad)"');
     return H.svg(360, 306, out, 'Circuito monofásico de ' + g(v.V) + ' volts com carga de ' + g(v.P) + ' watts e fator de potência ' + g(v.fp) + ': fonte, disjuntor, cabo e carga. A régua de correntes mostra que a corrente de projeto Ib fica abaixo ou igual à corrente do disjuntor In, que fica abaixo ou igual à capacidade do cabo Iz.');
   });

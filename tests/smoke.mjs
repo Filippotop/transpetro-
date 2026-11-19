@@ -543,7 +543,7 @@ async function testContas(browser) {
   await page.locator('.ct-chip[data-f="todas"]').click();
   await page.locator('.ct-card[data-r="pot-resistor"]').click(); await page.waitForTimeout(250);
   check(await page.locator('.ct-passos li:not([hidden])').count() === 1, 'contas: deveria começar com 1 passo visível');
-  await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.waitForTimeout(200);
+  await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.waitForTimeout(900);
   check(await page.locator('.ct-passos li:not([hidden])').count() === 4 && /2\.200/.test(await page.locator('.ct-res').textContent()), 'contas: 4 passos e resultado 2.200 W depois de avançar');
   await page.locator('input[data-k="V"]').fill('110'); await page.waitForTimeout(150);
   check(/550/.test(await page.locator('.ct-res').textContent()), 'contas: mudar V para 110 deveria dar 550 W (era ' + await page.locator('.ct-res').textContent() + ')');
@@ -564,7 +564,7 @@ async function testContas(browser) {
   await page.evaluate(() => { S.ct['ohm'] = { s: 3, n: 3, t: Date.now() }; save(); go('biblioteca', { s: 'contas' }); }); await page.waitForTimeout(300);
   check(await page.locator('.ct-card.dom').count() === 1, 'contas: uma conta com 3 seguidas deveria aparecer como dominada');
   await page.evaluate(() => go('biblioteca', { s: 'contas', r: 'rc' })); await page.waitForTimeout(400);
-  check(await page.locator('#ctfig svg').count() === 1 && await page.locator('#ctfig svg animateMotion').count() > 0, 'contas: a figura da conta rc deveria ter SVG com pontos animados');
+  check(await page.locator('#ctfig svg').count() === 2 && await page.locator('#ctfig svg animateMotion').count() > 0 && await page.locator('#ctfig .cf-pp').count() === 1, 'contas: a figura da conta rc deveria ter SVG com pontos animados');
   await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.waitForTimeout(200);
   check(await page.locator('#ctfig .hl').count() > 0, 'contas: abrir o passo 3 deveria acender elementos da figura');
   await page.locator('input[data-k="R"]').fill('4700'); await page.waitForTimeout(200);
@@ -573,7 +573,7 @@ async function testContas(browser) {
   check(/\?/.test(await page.locator('#ctfig').textContent()), 'contas: no Treinar a figura deveria mostrar ? no lugar do resultado');
   const ctx2 = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block', reducedMotion: 'reduce' }); const p2 = await ctx2.newPage();
   await p2.goto(URL_ + '#contas'); await p2.waitForTimeout(500); await p2.evaluate(() => go('biblioteca', { s: 'contas', r: 'rc' })); await p2.waitForTimeout(400);
-  check(await p2.locator('#ctfig svg').count() === 1 && await p2.locator('#ctfig svg animateMotion').count() === 0, 'contas: com "reduzir movimento" a figura deveria vir completa e parada');
+  check(await p2.locator('#ctfig svg').count() === 2 && await p2.locator('#ctfig svg').locator('animateMotion,animateTransform,animate').count() === 0 && await p2.locator('#ctfig .cf-pp').count() === 0, 'contas: com "reduzir movimento" a figura deveria vir completa e parada');
   await ctx2.close();
   await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(400);
   await page.locator('[data-ct="E3"]').first().click(); await page.waitForTimeout(300);

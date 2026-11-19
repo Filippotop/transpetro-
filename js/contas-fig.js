@@ -9,10 +9,13 @@
    Estilos em css/contas.css (.cf ...). Convenção do circuito: corrente convencional, do + da fonte para a carga. */
 (function (W) {
   'use strict';
-  var REG = {};
+  var REG = {}, REG2 = {};
   var g = function (x) { return W.CONTAS ? W.CONTAS.fmt(x) : String(x); };
   var ATTR = function (s) { return s ? ' data-s="' + s + '"' : ''; };
   var CLS = function (c) { return c ? ' ' + c : ''; };
+  /* ponta de seta: cfa (dourada), cfa-b, cfa-c, cfa-k (corrente, terceira fase, tinta) */
+  var MK = function (c) { return '<marker id="cfa' + (c ? '-' + c : '') + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9z" class="ah' + (c ? ' ' + c : '') + '"/></marker>'; };
+  var MKU = function (c) { return 'url(#cfa' + (/^(b|c|k)$/.test(c || '') ? '-' + c : '') + ')'; };
   /* texto com subscrito: "V_L" → V com L baixo; "V_{ab}" → V com ab baixo. */
   function tx(s) {
     return String(s).replace(/_\{([^}]+)\}/g, '<tspan baseline-shift="sub" font-size="72%">$1</tspan>').replace(/_(\w+)/g, '<tspan baseline-shift="sub" font-size="72%">$1</tspan>');
@@ -22,7 +25,7 @@
     /* moldura: largura, altura do viewBox, corpo, descrição */
     svg: function (w, h, body, alt) {
       return '<svg class="cf-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + String(alt || '').replace(/"/g, '&quot;') + '" xmlns="http://www.w3.org/2000/svg">'
-        + '<defs><marker id="cfa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9z" class="ah"/></marker></defs>' + body + '</svg>';
+        + '<defs>' + MK('') + MK('b') + MK('c') + MK('k') + '</defs>' + body + '</svg>';
     },
     /* texto: opts {a: 'start'|'middle'|'end', c: classe (t, tm, tg), s: passo} */
     t: function (x, y, s, o) { o = o || {}; return '<text x="' + x + '" y="' + y + '" text-anchor="' + (o.a || 'middle') + '" class="' + (o.c || 't') + '"' + ATTR(o.s) + '>' + tx(s) + '</text>'; },
@@ -30,7 +33,7 @@
     w: function (pts, o) { o = o || {}; return '<polyline class="w' + CLS(o.c) + '" points="' + pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' ') + '"' + (o.d ? ' stroke-dasharray="' + o.d + '"' : '') + ATTR(o.s) + '/>'; },
     line: function (x1, y1, x2, y2, o) { o = o || {}; return '<line class="w' + CLS(o.c) + '" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"' + (o.d ? ' stroke-dasharray="' + o.d + '"' : '') + ATTR(o.s) + '/>'; },
     /* seta (corrente, grandeza): do ponto 1 ao 2 */
-    arrow: function (x1, y1, x2, y2, o) { o = o || {}; return '<line class="ar' + CLS(o.c) + '" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" marker-end="url(#cfa)"' + ATTR(o.s) + '/>'; },
+    arrow: function (x1, y1, x2, y2, o) { o = o || {}; return '<line class="ar' + CLS(o.c) + '" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" marker-end="' + MKU(o.c) + '"' + ATTR(o.s) + '/>'; },
     node: function (x, y) { return '<circle class="nd" cx="' + x + '" cy="' + y + '" r="3.2"/>'; },
     /* resistor (retângulo) centrado em (x,y); o = 'h' | 'v'; rótulo ao lado */
     res: function (x, y, o, lab, sub, s) {
@@ -85,9 +88,11 @@
   W.CONTASFIG = {
     H: H,
     reg: function (id, fn) { REG[id] = fn; },
+    /* segundo painel da conta (ondas, fasores, gráficos que se mexem): mesma assinatura de reg; vem abaixo da figura principal */
+    reg2: function (id, fn) { REG2[id] = fn; },
     tem: function (id) { return !!REG[id]; },
     ids: function () { return Object.keys(REG); },
-    html: function (id, v, k) { return REG[id] ? REG[id](v, k || {}) : ''; }
+    html: function (id, v, k) { return REG[id] ? REG[id](v, k || {}) + (REG2[id] ? REG2[id](v, k || {}) : '') : ''; }
   };
 
   /* ================= figuras de referência ================= */
@@ -128,7 +133,7 @@
     out += B.w([[70, 48], [70, 30], [280, 30], [280, 50]], { c: 'hot' }) + B.w([[280, 90], [280, 108], [70, 108], [70, 88]], { c: 'hot' });
     out += B.bat(70, 68, 'V', g(v.V) + ' V', '1') + B.res(175, 30, 'h', '', '', '2');
     out += B.t(175, 16, 'R = ' + g(v.R) + ' Ω', { s: '2' }) + B.cap(280, 70, 'v', 'C', g(v.C) + ' µF', '1');
-    out += (k.anim ? '<g><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.8;1" dur="6s" repeatCount="indefinite"/>' : '')
+    out += (k.anim ? '<g><animate attributeName="opacity" values="1;0.37;0.14;0.05;0.02;0" keyTimes="0;0.2;0.4;0.6;0.8;1" dur="5s" repeatCount="indefinite"/>' : '')
       + B.flow('M70,66 V30 H280 V60', B.rate(1, 4), k.anim, 4) + B.flow('M280,82 V108 H70 V80', B.rate(1, 4), k.anim, 4)
       + (k.anim ? '</g>' : '');
     out += B.t(175, 124, 'a corrente começa em V/R e cai a zero', { c: 'tm', s: '3 4' });

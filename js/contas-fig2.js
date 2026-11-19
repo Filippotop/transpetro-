@@ -47,12 +47,14 @@
     }
     out += col(40, 140, 'V_1', v.V1, I1, 'plaqueta', '1') + col(220, 320, 'V_2', v.V2, I2, 'ligado', '2');
     var base = 282, hm = 100, mxP = Math.max(v.P1, P2), h1 = hm * v.P1 / mxP, h2 = hm * P2 / mxP;
+    if (!k.ver) { h1 = h2 = 60; } /* Treinar: a altura de P_2 não pode ser medida; altura fixa para as duas */
     function bar(cx, h, cls, s) {
       var a = k.anim ? '<animate attributeName="height" from="0" to="' + h.toFixed(1) + '" dur="0.8s" fill="freeze"/><animate attributeName="y" from="' + base + '" to="' + (base - h).toFixed(1) + '" dur="0.8s" fill="freeze"/>' : '';
       return '<rect class="bar' + (cls ? ' ' + cls : '') + '" x="' + (cx - 25) + '" y="' + (base - h).toFixed(1) + '" width="50" height="' + h.toFixed(1) + '" rx="3" data-s="' + s + '">' + a + '</rect>';
     }
     out += B.line(20, base, 340, base, { c: 'dim' });
-    out += bar(85, h1, 'dim', '1') + bar(275, h2, '', '2');
+    out += bar(85, h1, 'dim', '1');
+    out += k.ver ? bar(275, h2, '', '2') : '<rect x="250" y="' + (base - h2) + '" width="50" height="' + h2 + '" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4" data-s="2"/>' + B.t(275, base - h2 / 2 + 5, '?', { c: 't big', s: '2' });
     out += B.t(85, base - h1 - 8, 'P_1 = ' + g(v.P1) + ' W', { s: '1' }) + B.t(275, base - h2 - 8, 'P_2 = ' + B.ans(k, g(P2) + ' W'), { c: 'tg', s: '2' });
     out += B.t(180, 218, '(V_2/V_1)²', { c: 'tm', s: '3' }) + B.t(180, 242, '= ' + B.ans(k, g(v.V2 * v.V2 / (v.V1 * v.V1))), { s: '3' });
     out += B.arrow(125, 256, 235, 256, { s: '3' });
@@ -72,9 +74,10 @@
     out += B.arrow(175, 26, 235, 26, { s: '2' }) + B.t(205, 16, 'I = ' + B.ans(k, g(I) + ' A'), { c: 'tg', s: '2' });
     var x0 = 40, w = 280, fw = w * v.R1 / Rt, by = 196;
     out += B.t(x0, by - 8, 'V_1 = ' + B.ans(k, g(I * v.R1) + ' V'), { a: 'start', s: '4' }) + B.t(x0 + w, by - 8, 'V_2 = ' + B.ans(k, g(I * v.R2) + ' V'), { a: 'end', c: 'tg', s: '3 4' });
-    out += '<rect class="bar dim" x="' + x0 + '" y="' + by + '" width="' + fw.toFixed(1) + '" height="24" rx="3" data-s="4"/><rect class="bar" x="' + (x0 + fw).toFixed(1) + '" y="' + by + '" width="' + (w - fw).toFixed(1) + '" height="24" rx="3" data-s="3 4"/>';
+    out += k.ver ? '<rect class="bar dim" x="' + x0 + '" y="' + by + '" width="' + fw.toFixed(1) + '" height="24" rx="3" data-s="4"/><rect class="bar" x="' + (x0 + fw).toFixed(1) + '" y="' + by + '" width="' + (w - fw).toFixed(1) + '" height="24" rx="3" data-s="3 4"/>'
+      : '<rect x="' + x0 + '" y="' + by + '" width="' + w + '" height="24" rx="3" fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4" data-s="3 4"/>' + B.t(x0 + w / 2, by + 17, '?', { c: 't big', s: '3 4' });
     out += B.t(180, 250, 'V = ' + g(v.V) + ' V = V_1 + V_2', { c: 'tm', s: '4' });
-    out += B.t(180, 270, 'a barra divide na razão ' + g(v.R1) + ' : ' + g(v.R2) + ' (R_1 : R_2)', { c: 'tm', s: '1' });
+    out += B.t(180, 270, k.ver ? 'a barra divide na razão ' + g(v.R1) + ' : ' + g(v.R2) + ' (R_1 : R_2)' : 'a fonte se divide entre R_1 e R_2: quanto em cada um?', { c: 'tm', s: '1' });
     out += B.flow('M75,98 V40 H270 V160 H75 V110', 0.5, k.anim, 5);
     return B.svg(360, 282, out, 'Divisor de tensão: fonte de ' + g(v.V) + ' volts com R1 de ' + g(v.R1) + ' ohms em série com R2 de ' + g(v.R2) + ' ohms; um voltímetro mede a tensão em R2. A mesma corrente passa pelos dois, e a tensão se divide na proporção das resistências.');
   });
@@ -103,6 +106,7 @@
     out += B.arrow(135, 88, 135, 118, { s: '3' }) + B.t(143, 107, 'I', { a: 'start', c: 'tg', s: '3' });
     out += B.flow('M40,92 V44 H135 V164 H40 V100', B.rate(I, 20), k.anim, 5);
     var y0 = 200, x0 = 205, sc = Math.min(90 / v.R, 100 / X), rl = Math.max(14, v.R * sc), xl = Math.max(14, X * sc);
+    if (!k.ver) { rl = 96; xl = 72; } /* Treinar: triângulo neutro 4:3 (X_L, Z e φ são resultados) */
     var bx = x0 + rl, ty = y0 - xl, zl = Math.hypot(rl, xl), r = Math.min(26, zl * 0.5);
     out += B.line(x0, y0, bx, y0, { c: 'thick', s: '2' }) + B.line(bx, y0, bx, ty, { c: 'thick', s: '1' }) + B.line(x0, y0, bx, ty, { c: 'hot thick', s: '2' });
     out += '<path class="w" d="M' + (x0 + r) + ' ' + y0 + ' A' + r + ' ' + r + ' 0 0 0 ' + P(x0 + r * rl / zl, y0 - r * xl / zl) + '" data-s="4"/>';
@@ -110,6 +114,7 @@
     out += B.t(bx + 8, (y0 + ty) / 2 - 2, 'X_L', { a: 'start', s: '1' }) + B.t(bx + 8, (y0 + ty) / 2 + 16, B.ans(k, g(X) + ' Ω'), { a: 'start', c: 'tm', s: '1' });
     out += B.t(x0 + rl / 2 - 8, (y0 + ty) / 2 - 10, 'Z = ' + B.ans(k, g(Z) + ' Ω'), { a: 'end', c: 'tg', s: '2' });
     out += B.t(x0 + rl / 2, y0 + 38, 'φ = ' + B.ans(k, f1(fi) + '°'), { s: '4' });
+    if (!k.ver) out += B.t(x0 + rl / 2, y0 + 56, 'triângulo fora de escala', { c: 'tm' });
     out += B.t(180, 276, 'I = V/Z = ' + (k.ver ? g(v.V) + ' / ' + g(Z) + ' Ω = ' + g(I) + ' A' : '?'), { c: 'tg', s: '3' });
     out += B.ca(298, v.f);
     return B.svg(360, 318, out, 'Circuito RL série com fonte de ' + g(v.V) + ' volts, ' + g(v.f) + ' hertz, resistor de ' + g(v.R) + ' ohms e indutor de ' + g(v.L) + ' henries. À direita, o triângulo de impedâncias: a resistência é um cateto, a reatância indutiva o outro e a impedância Z a hipotenusa, com o ângulo φ.');
@@ -119,6 +124,7 @@
   reg('triangulo', function (v, k) {
     var B = H, S = v.V * v.I, Pp = S * v.fp, Q = S * Math.sqrt(Math.max(0, 1 - v.fp * v.fp)), fi = Math.acos(clamp(v.fp, 0, 1)), out = '';
     var ox = 70, y0 = 196, sc = Math.min(170 / Pp, 130 / Math.max(Q, 1e-9)), pl = Pp * sc, ql = Math.max(Q * sc, 2), ex = ox + pl, ty = y0 - ql, r = 34;
+    if (!k.ver) { pl = 140; ql = 105; ex = ox + pl; ty = y0 - ql; fi = Math.atan2(ql, pl); } /* Treinar: 4:3 neutro, o ângulo e Q são resultados */
     out += B.t(180, 20, 'V = ' + g(v.V) + ' V   I = ' + g(v.I) + ' A', { s: '1' });
     out += B.line(ox, y0, ex, y0, { c: 'thick', s: '2 5' }) + B.line(ex, y0, ex, ty, { c: 'thick', s: '3 4 5' }) + B.line(ox, y0, ex, ty, { c: 'hot thick', s: '1 5' });
     out += '<path class="w" d="M' + (ex - 8) + ' ' + y0 + ' v-8 h8" data-s="5"/>';
@@ -129,7 +135,7 @@
     out += B.t(mx, y0 + 18, 'P = ' + B.ans(k, g(Pp) + ' W'), { s: '2' });
     out += B.t(ex + 8, my + 4, 'Q = ' + B.ans(k, g(Q) + ' var'), { a: 'start', s: '4' });
     out += B.t(180, y0 + 44, 'cos φ = P / S = ' + g(v.fp), { c: 'tg', s: '2' });
-    out += B.t(180, y0 + 62, 'φ = ' + f1(fi / rad) + '°   (S² = P² + Q²)', { c: 'tm', s: '3 5' });
+    out += B.t(180, y0 + 62, k.ver ? 'φ = ' + f1(fi / rad) + '°   (S² = P² + Q²)' : 'triângulo fora de escala   (S² = P² + Q²)', { c: 'tm', s: '3 5' });
     return B.svg(360, 270, out, 'Triângulo de potências com tensão de ' + g(v.V) + ' volts, corrente de ' + g(v.I) + ' ampères e fator de potência ' + g(v.fp) + ': a potência ativa P é o cateto horizontal, a reativa Q o vertical, a aparente S a hipotenusa, e o cosseno do ângulo φ é P sobre S.');
   });
 
@@ -140,6 +146,7 @@
     out += B.w([[120, 20], [120, 28]], { c: 'hot' }) + B.w([[120, 72], [120, 80]], { c: 'hot' }) + B.w([[230, 20], [230, 45]], { c: 'hot', s: '4' }) + B.w([[230, 55], [230, 80]], { c: 'hot', s: '4' });
     out += B.node(120, 20) + B.node(120, 80) + B.ac(40, 50) + B.res(120, 50, 'v', 'carga', 'P = ' + g(v.P) + ' kW', '1') + B.cap(230, 50, 'v', 'banco', 'Q_c = ' + B.ans(k, g(Qc) + ' kvar'), '4');
     var ox = 50, y0 = 222, sc = Math.min(150 / v.P, 100 / (v.P * t1)), pl = v.P * sc, q1 = v.P * t1 * sc, q2 = v.P * t2 * sc, ex = ox + pl, r1 = 60, r2 = 40;
+    if (!k.ver) { pl = 150; q1 = 100; q2 = 50; ex = ox + pl; f1r = Math.atan2(q1, pl); f2r = Math.atan2(q2, pl); } /* Treinar: formas neutras (tg φ e Q_c são resultados) */
     var ay = y0 - q1, by = y0 - q2;
     out += B.line(ox, y0, ex, y0, { c: 'thick' }) + B.line(ox, y0, ex, ay, { c: 'thick dim', s: '1' }) + B.line(ox, y0, ex, by, { c: 'thick', s: '2' });
     out += '<line x1="' + ex + '" y1="' + y0 + '" x2="' + ex + '" y2="' + by.toFixed(1) + '" class="w thick" data-s="2"/>';
@@ -153,8 +160,9 @@
     out += B.t(180, y0 + 40, 'FP atual: cos φ_1 = ' + g(v.fp1) + '  →  tg φ_1 = ' + B.ans(k, g(t1)), { s: '1' });
     out += B.t(180, y0 + 62, 'FP desejado: cos φ_2 = ' + g(v.fp2) + '  →  tg φ_2 = ' + B.ans(k, g(t2)), { s: '2' });
     out += B.t(180, y0 + 84, 'Q_c = P·(tg φ_1 − tg φ_2) = ' + B.ans(k, g(Qc) + ' kvar'), { c: 'tg', s: '3 4' });
-    out += B.ca(y0 + 106);
-    return B.svg(360, 354, out, 'Correção do fator de potência: carga de ' + g(v.P) + ' quilowatts com fator de potência ' + g(v.fp1) + ', que se quer elevar a ' + g(v.fp2) + '. Dois triângulos de potência sobre a mesma potência ativa; o trecho de reativo entre eles é o que o banco de capacitores, ligado em paralelo com a carga, retira. Q_c = P·(tg φ1 − tg φ2).');
+    if (!k.ver) out += B.t(180, y0 + 102, 'triângulos fora de escala', { c: 'tm' });
+    out += B.ca(y0 + (k.ver ? 106 : 124));
+    return B.svg(360, k.ver ? 354 : 372, out, 'Correção do fator de potência: carga de ' + g(v.P) + ' quilowatts com fator de potência ' + g(v.fp1) + ', que se quer elevar a ' + g(v.fp2) + '. Dois triângulos de potência sobre a mesma potência ativa; o trecho de reativo entre eles é o que o banco de capacitores, ligado em paralelo com a carga, retira. Q_c = P·(tg φ1 − tg φ2).');
   });
 
   /* ---------- trifásica equilibrada em estrela ---------- */
@@ -167,7 +175,7 @@
       out += B.ac(62, y) + B.res(270, y, 'h', '', '', '2');
       out += B.t(104, y - 7, nm[i], { c: 'tm' });
     }
-    out += B.t(270, 34, 'Z', { c: 'tm', s: '2' }) + B.t(270, 72, 'cos φ = ' + g(v.fp), { c: 'tm', s: '3' });
+    out += B.t(270, 34, 'Z', { c: 'tm', s: '2' }) + B.t(282, 72, 'cos φ = ' + g(v.fp), { c: 'tm', s: '3' });
     out += B.arrow(150, 54, 150, 96, { s: '1' }) + B.arrow(150, 96, 150, 54, { s: '1' }) + B.t(158, 80, 'V_L = ' + g(v.VL) + ' V', { a: 'start', s: '1' });
     out += B.arrow(176, 38, 226, 38, { s: '1' }) + B.t(201, 26, 'I_L = ' + g(v.IL) + ' A', { c: 'tg', s: '1' });
     out += B.flow('M30,50 H320', B.rate(v.IL, 30), k.anim, 4) + B.flow('M320,100 H30', B.rate(v.IL / 2, 30), k.anim, 3) + B.flow('M320,150 H30', B.rate(v.IL / 2, 30), k.anim, 3);

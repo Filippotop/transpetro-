@@ -113,3 +113,24 @@
   :root:not([data-motion="off"]) .cf .curva.draw{stroke-dasharray:600;stroke-dashoffset:600;animation:cfDraw 2.2s .2s ease-out forwards}
 }
 @keyframes cfDraw{to{stroke-dashoffset:0}}
+
+/* segundo painel, cores extras e controles das figuras */
+:root{--cf-b:#2b6cb0;--cf-c:#2f855a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--cf-b:#63b3ed;--cf-c:#68d391}}
+:root[data-theme="dark"]{--cf-b:#63b3ed;--cf-c:#68d391}
+.cf .w.b,.cf .ar.b{stroke:var(--cf-b)}
+.cf .w.c,.cf .ar.c{stroke:var(--cf-c)}
+.cf .w.thick.b{stroke:var(--cf-b)}
+.cf .area{fill:color-mix(in srgb,var(--gold) 22%,transparent);stroke:none}
+.cf .area.b{fill:color-mix(in srgb,var(--cf-b) 22%,transparent)}
+.cf svg + svg{margin-top:6px;border-top:1px dashed var(--rule);padding-top:6px}
+.cf-pp{display:block;margin:4px auto 2px;min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--rule);background:var(--sunk);color:var(--muted);font:600 13px var(--mono);cursor:pointer;transition:transform .15s,color .15s}
+.cf-pp:hover{color:var(--ink)}
+.cf-pp:active{transform:scale(.97)}
+@media (prefers-reduced-motion:no-preference){
+  :root:not([data-motion="off"]) .cf .hl.pop:not([transform]){transform-box:fill-box;transform-origin:center;animation:cfPop .6s cubic-bezier(.2,.9,.3,1.3)}
+}
+@keyframes cfPop{0%{transform:scale(1)}40%{transform:scale(1.13)}100%{transform:scale(1)}}
+.cf .ah.b{fill:var(--cf-b)}
+.cf .ah.c{fill:var(--cf-c)}
+.cf .ah.k{fill:var(--ink)}

@@ -512,9 +512,40 @@
     if (!W.CONTASFIG || !W.CONTASFIG.tem(r.id)) { el.hidden = true; return; }
     el.hidden = false;
     var chave = JSON.stringify(v) + '|' + ver;
-    if (el.dataset.k !== chave) { el.dataset.k = chave; el.innerHTML = W.CONTASFIG.html(r.id, v, { r: res, ver: ver, anim: animOk() }); }
-    var sv = el.querySelector('svg'); if (sv && !ver) sv.setAttribute('aria-label', 'Figura do circuito desta conta. O resultado fica oculto até você conferir a resposta.');
-    el.querySelectorAll('[data-s]').forEach(function (e) { var n = String(passo); e.classList.toggle('hl', passo > 0 && (' ' + e.getAttribute('data-s') + ' ').indexOf(' ' + n + ' ') >= 0); });
+    if (el.dataset.k !== chave) { el.dataset.k = chave; el.innerHTML = W.CONTASFIG.html(r.id, v, { r: res, ver: ver, anim: animOk() }); controle(el); }
+    if (!ver) el.querySelectorAll('svg').forEach(function (sv) { sv.setAttribute('aria-label', 'Figura desta conta. O resultado fica oculto até você conferir a resposta.'); });
+    el.querySelectorAll('[data-s]').forEach(function (e) {
+      var n = String(passo), era = e.classList.contains('hl'), agora = passo > 0 && (' ' + e.getAttribute('data-s') + ' ').indexOf(' ' + n + ' ') >= 0;
+      e.classList.toggle('hl', agora);
+      if (agora && !era && animOk()) { e.classList.remove('pop'); void e.getBoundingClientRect(); e.classList.add('pop'); } /* o que o passo acabou de acender dá um pulso */
+    });
+  }
+  /* Botão pausar/retomar o movimento da figura (preferência da tela: vale para as próximas figuras). */
+  var PAUSA = false;
+  function controle(el) {
+    var velho = el.querySelector('.cf-pp'); if (velho) velho.remove();
+    var movendo = el.querySelector('animateMotion,animateTransform,animate');
+    if (PAUSA) el.querySelectorAll('svg').forEach(function (s) { if (s.pauseAnimations) s.pauseAnimations(); });
+    if (!movendo) return;
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'cf-pp'; b.setAttribute('aria-pressed', PAUSA);
+    var rot = function () { b.textContent = PAUSA ? '▶ Retomar o movimento' : '⏸ Pausar o movimento'; b.setAttribute('aria-pressed', PAUSA); };
+    b.onclick = function () { PAUSA = !PAUSA; rot(); el.querySelectorAll('svg').forEach(function (s) { if (PAUSA) { if (s.pauseAnimations) s.pauseAnimations(); } else if (s.unpauseAnimations) s.unpauseAnimations(); }); };
+    rot(); el.appendChild(b);
+  }
+  /* O resultado "sobe" até o valor (0,5 s), só com movimento permitido; o texto final é sempre o valor exato. */
+  function contar(raiz) {
+    if (!raiz || !animOk()) return;
+    raiz.querySelectorAll('.ct-res b[data-v]').forEach(function (b) {
+      var to = +b.dataset.v, din = b.dataset.r === '1', t0 = performance.now(), no = b.firstChild, pq = b.querySelector('small');
+      if (!no || no.nodeType !== 3) return;
+      var fmt = function (x) { return din ? rs(x) : g(x); };
+      var passo = function (agora) {
+        var p = Math.min(1, (agora - t0) / 480), val = p < 1 ? to * (1 - Math.pow(1 - p, 3)) : to;
+        no.nodeValue = fmt(val) + (pq ? ' ' : '');
+        if (p < 1 && b.isConnected) requestAnimationFrame(passo); else no.nodeValue = fmt(to) + (pq ? ' ' : '');
+      };
+      requestAnimationFrame(passo);
+    });
   }
   function montar(host, opt) {
     opt = opt || {};
@@ -535,7 +566,7 @@
     }
     function detalhe() {
       var r = porId[aberto]; if (!r) { aberto = null; return lista(); }
-      var v = exemplo(r), modo = 'ver', vistos = 1, tento = null; /* tento: {v, feito, certo} */
+      var v = exemplo(r), modo = 'ver', vistos = 1, tento = null, jaContou = false; /* tento: {v, feito, certo} */
       host.innerHTML = '<div class="ct ct-det">'
         + '<button type="button" class="ct-back" id="ctb">← Todas as contas</button>'
         + '<div class="ct-head"><span class="ct-tag">' + esc(nomeMod(r.mod)) + '</span><h3>' + esc(r.nome) + '</h3></div>'
@@ -554,7 +585,7 @@
       function passos(res, n) {
         return '<ol class="ct-passos">' + res.p.map(function (p, i) { return '<li class="' + (i < n ? 'on' : '') + '"' + (i < n ? '' : ' hidden') + '><span class="ct-n">' + (i + 1) + '</span><div><b>' + p.t + '</b><p>' + p.e + '</p></div></li>'; }).join('') + '</ol>';
       }
-      function resultado(res) { return '<div class="ct-res">' + res.r.map(function (x) { return '<div><span>' + esc(x[0]) + '</span><b>' + (x[2] === 'R$' ? rs(x[1]) : g(x[1]) + (x[2] ? ' <small>' + esc(x[2]) + '</small>' : '')) + '</b></div>'; }).join('') + '</div>'; }
+      function resultado(res) { return '<div class="ct-res">' + res.r.map(function (x) { return '<div><span>' + esc(x[0]) + '</span><b data-v="' + x[1] + '" data-r="' + (x[2] === 'R$' ? 1 : 0) + '">' + (x[2] === 'R$' ? rs(x[1]) : g(x[1]) + (x[2] ? ' <small>' + esc(x[2]) + '</small>' : '')) + '</b></div>'; }).join('') + '</div>'; }
       function arm() { return '<div class="ct-arm"><span class="eyebrow">cuidado</span><ul>' + r.arm.map(function (a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>'; }
       function corpo() {
         var c = $('#ctc', host);
@@ -566,6 +597,7 @@
             var ok = res2 && res2.r.every(function (x) { return isFinite(x[1]); }) && (!r.valido || r.valido(v));
             if (ok) figura($('#ctfig', host), r, v, res2, vistos >= res2.p.length, Math.min(vistos, res2.p.length)); else $('#ctfig', host).hidden = true;
             $('#ctr', host).innerHTML = ok ? passos(res2, vistos) + '<div class="ct-bt"><button type="button" class="btn" id="ctn"' + (vistos >= res2.p.length ? ' hidden' : '') + '>Próximo passo (' + Math.min(vistos + 1, res2.p.length) + ' de ' + res2.p.length + ')</button><button type="button" class="btn" id="cta"' + (vistos >= res2.p.length ? ' hidden' : '') + '>Mostrar tudo</button></div>' + (vistos >= res2.p.length ? resultado(res2) + arm() : '') : '<p class="ct-aviso">Esses valores não formam um caso válido para esta conta (confira os campos). Volte a um exemplo: ' + '<button type="button" class="btn" id="ctx">Restaurar o exemplo</button></p>';
+            if (ok && vistos >= res2.p.length && !jaContou) { jaContou = true; contar($('#ctr', host)); }
             var n = $('#ctn', host), a = $('#cta', host), x = $('#ctx', host);
             if (n) n.onclick = function () { vistos++; pintar(); revela(); }; if (a) a.onclick = function () { vistos = 99; pintar(); revela(true); };
             if (x) x.onclick = function () { v = exemplo(r); corpo(); };
@@ -588,7 +620,7 @@
             $('#ctv', host).innerHTML = '<div class="ct-vered ' + (ok ? 'ok' : 'no') + '" role="status"><b>' + (ok ? 'Certo.' : 'Não bateu.') + '</b> ' + (ok ? (s >= 3 ? 'Conta dominada: 3 acertos seguidos.' : s + ' de 3 acertos seguidos.') : 'A resposta era ' + (un === 'R$' ? rs(res.r[0][1]) : g(res.r[0][1]) + (un ? ' ' + esc(un) : '')) + '. A sequência volta a zero.') + '</div>'
               + passos(res, 99) + resultado(res) + arm() + '<div class="ct-bt"><button type="button" class="btn primary" id="ctp">Sortear outro</button></div>';
             host.querySelectorAll('.ct-passos li').forEach(function (l, i) { l.style.animationDelay = (i * 80) + 'ms'; l.classList.add('novo'); });
-            var vd = $('.ct-vered', host); if (vd) vd.classList.add('novo');
+            var vd = $('.ct-vered', host); if (vd) vd.classList.add('novo'); contar($('#ctv', host));
             if (ok && s >= 3 && !ja) document.dispatchEvent(new CustomEvent('edo:celebrate', { detail: vd }));
             $('#ctp', host).onclick = function () { tento = { v: sortear(r), feito: false }; corpo(); };
           };

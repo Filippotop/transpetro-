@@ -13,7 +13,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = vm.createContext({ console }); ctx.window = ctx;
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas.js'), 'utf8'), ctx, { filename: 'contas.js' });
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas-fig.js'), 'utf8'), ctx, { filename: 'contas-fig.js' });
-for (const n of [2, 3, 4]) vm.runInContext(fs.readFileSync(path.join(ROOT, `js/contas-fig${n}.js`), 'utf8'), ctx, { filename: `contas-fig${n}.js` });
+for (const n of [2, 3, 4, 5, 6]) vm.runInContext(fs.readFileSync(path.join(ROOT, `js/contas-fig${n}.js`), 'utf8'), ctx, { filename: `contas-fig${n}.js` });
 const CT = ctx.CONTAS, FIG = ctx.CONTASFIG;
 const L = CT.lista();
 

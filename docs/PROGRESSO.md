@@ -85,3 +85,5 @@ Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fá
 2026-11-17: Biblioteca → Contas passo a passo (29 contas, Treinar com 3 acertos seguidos = dominada, S.ct), botão no Formulário de cada estação, atalho na home, busca; animações de acerto/erro nas alternativas. VER 2026-11-17.2.
 
 2026-11-19: figuras SVG animadas nas 29 contas (js/contas-fig*.js, tools/fig-preview.mjs), acendem por passo, Treinar sem vazar resultado. VER 2026-11-19.1.
+
+2026-11-19: painéis animados em CA e do capacitor, pausa, pulso por passo, contagem do resultado; Treinar sem vazar por proporção. VER 2026-11-19.2.
