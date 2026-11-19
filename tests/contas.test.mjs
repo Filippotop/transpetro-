@@ -12,7 +12,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = vm.createContext({ console }); ctx.window = ctx;
 vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas.js'), 'utf8'), ctx, { filename: 'contas.js' });
-const CT = ctx.CONTAS;
+vm.runInContext(fs.readFileSync(path.join(ROOT, 'js/contas-fig.js'), 'utf8'), ctx, { filename: 'contas-fig.js' });
+for (const n of [2, 3, 4]) vm.runInContext(fs.readFileSync(path.join(ROOT, `js/contas-fig${n}.js`), 'utf8'), ctx, { filename: `contas-fig${n}.js` });
+const CT = ctx.CONTAS, FIG = ctx.CONTASFIG;
 const L = CT.lista();
 
 /* valor esperado do 1º resultado com os valores de exemplo (calculado aqui, à parte) */
@@ -76,6 +78,27 @@ const tests = {
   }
 };
 
+const vazou = (txt, alvo) => { let i = txt.indexOf(alvo); while (i >= 0) { const a = txt[i - 1] || ' ', b = txt[i + alvo.length] || ' '; if (!/[0-9,.]/.test(a) && !/[0-9,]/.test(b)) return true; i = txt.indexOf(alvo, i + 1); } return false; };
+tests['toda conta tem figura; 200 sorteios × (resultado visível ou não): SVG bem formado, sem NaN, sem vazar o resultado no Treinar'] = () => {
+  for (const r of L) {
+    assert.ok(FIG.tem(r.id), 'sem figura: ' + r.id);
+    for (let i = 0; i < 200; i++) {
+      const v = i ? CT.sortear(r) : CT.exemplo(r), res = CT.calcular(r, v);
+      for (const ver of [true, false]) {
+        const s = FIG.html(r.id, v, { r: res, ver, anim: i % 2 === 0 });
+        assert.ok(s.startsWith('<svg') && s.endsWith('</svg>'), r.id + ': não é um SVG');
+        assert.ok(!/NaN|undefined|Infinity/.test(s), `${r.id}: NaN/undefined com ${JSON.stringify(v)} ver=${ver}`);
+        assert.ok(/aria-label="[^"]{20,}/.test(s), r.id + ': sem descrição');
+        const o = (s.match(/<(?!\/)[a-zA-Z]+/g) || []).length, c = (s.match(/<\/[a-zA-Z]+>/g) || []).length, sc = (s.match(/\/>/g) || []).length;
+        assert.equal(o, c + sc, `${r.id}: tags desbalanceadas`);
+        if (!ver) { /* o resultado numérico não pode aparecer: nenhum texto contém o valor do 1º resultado formatado */
+          const alvo = CT.fmt(res.r[0][1]); const textos = (s.match(/>[^<]+</g) || []).join(' ');
+          if (alvo.length >= 3 && !Object.values(v).some(x => CT.fmt(Number(x)) === alvo)) assert.ok(!vazou(textos, alvo), `${r.id}: vazou o resultado ${alvo} no Treinar (${JSON.stringify(v)})`);
+        }
+      }
+    }
+  }
+};
 let failed = 0;
 for (const [name, fn] of Object.entries(tests)) { try { fn(); } catch (e) { failed++; console.error(`✗ ${name}\n  ${e.message.split('\n')[0]}`); } }
 if (failed) { console.error(`contas: ${failed} de ${Object.keys(tests).length} falharam`); process.exit(1); }

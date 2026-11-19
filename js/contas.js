@@ -423,7 +423,7 @@
     campos: [{ k: 'a', rot: 'a', un: '', v: 1, s: [1, 2] }, { k: 'b', rot: 'b', un: '', v: -5, s: [-9, -7, -5, -3] }, { k: 'c', rot: 'c', un: '', v: 6, s: [2, 3, 4, 6, 10] }],
     calc: function (v) {
       var D = v.b * v.b - 4 * v.a * v.c, p;
-      if (D < 0) return { p: [S('Calcule o discriminante', 'Δ = ' + g(v.b) + '² − 4 · ' + g(v.a) + ' · ' + g(v.c) + ' = ' + g(D)), S('Conclusão', 'Δ negativo: não há raiz real.')], r: [['Discriminante Δ', D, '']] };
+      if (D < 0) return { p: [S('Calcule o discriminante', 'Δ = ' + (v.b < 0 ? '(' + g(v.b) + ')' : g(v.b)) + '² − 4 · ' + g(v.a) + ' · ' + g(v.c) + ' = ' + g(D)), S('Conclusão', 'Δ negativo: não há raiz real.')], r: [['Discriminante Δ', D, '']] };
       var x1 = (-v.b + Math.sqrt(D)) / (2 * v.a), x2 = (-v.b - Math.sqrt(D)) / (2 * v.a);
       p = [
         S('Discriminante', 'Δ = <var>b</var>² − 4<var>a</var><var>c</var> = ' + g(v.b * v.b) + ' − ' + g(4 * v.a * v.c) + ' = ' + g(D)),
@@ -505,6 +505,17 @@
   var dominada = function (id) { var x = ct().get(id); return !!(x && x.s >= 3); };
   var nomeMod = function (m) { var M = W.M || {}; return (M[m] && M[m].title) ? m + ' · ' + M[m].title.split(/[:(]/)[0] : m; };
 
+  var animOk = function () { return !matchMedia('(prefers-reduced-motion: reduce)').matches && document.documentElement.dataset.motion !== 'off'; };
+  /* Figura da conta (js/contas-fig.js): refaz o SVG quando mudam os valores ou o "mostrar resultado"; a cada passo só acende o que ele usa. */
+  function figura(el, r, v, res, ver, passo) {
+    if (!el) return;
+    if (!W.CONTASFIG || !W.CONTASFIG.tem(r.id)) { el.hidden = true; return; }
+    el.hidden = false;
+    var chave = JSON.stringify(v) + '|' + ver;
+    if (el.dataset.k !== chave) { el.dataset.k = chave; el.innerHTML = W.CONTASFIG.html(r.id, v, { r: res, ver: ver, anim: animOk() }); }
+    var sv = el.querySelector('svg'); if (sv && !ver) sv.setAttribute('aria-label', 'Figura do circuito desta conta. O resultado fica oculto até você conferir a resposta.');
+    el.querySelectorAll('[data-s]').forEach(function (e) { var n = String(passo); e.classList.toggle('hl', passo > 0 && (' ' + e.getAttribute('data-s') + ' ').indexOf(' ' + n + ' ') >= 0); });
+  }
   function montar(host, opt) {
     opt = opt || {};
     var filtro = opt.mod || 'todas', aberto = opt.r || null;
@@ -549,10 +560,11 @@
         var c = $('#ctc', host);
         if (modo === 'ver') {
           var res = r.calc(v);
-          c.innerHTML = campos(v) + '<div id="ctr"></div>';
+          c.innerHTML = '<div class="cf" id="ctfig" role="group" aria-label="Figura do circuito"></div>' + campos(v) + '<div id="ctr"></div>';
           var pintar = function () {
             var res2; try { res2 = r.calc(v); } catch (e) { res2 = null; }
             var ok = res2 && res2.r.every(function (x) { return isFinite(x[1]); }) && (!r.valido || r.valido(v));
+            if (ok) figura($('#ctfig', host), r, v, res2, vistos >= res2.p.length, Math.min(vistos, res2.p.length)); else $('#ctfig', host).hidden = true;
             $('#ctr', host).innerHTML = ok ? passos(res2, vistos) + '<div class="ct-bt"><button type="button" class="btn" id="ctn"' + (vistos >= res2.p.length ? ' hidden' : '') + '>Próximo passo (' + Math.min(vistos + 1, res2.p.length) + ' de ' + res2.p.length + ')</button><button type="button" class="btn" id="cta"' + (vistos >= res2.p.length ? ' hidden' : '') + '>Mostrar tudo</button></div>' + (vistos >= res2.p.length ? resultado(res2) + arm() : '') : '<p class="ct-aviso">Esses valores não formam um caso válido para esta conta (confira os campos). Volte a um exemplo: ' + '<button type="button" class="btn" id="ctx">Restaurar o exemplo</button></p>';
             var n = $('#ctn', host), a = $('#cta', host), x = $('#ctx', host);
             if (n) n.onclick = function () { vistos++; pintar(); revela(); }; if (a) a.onclick = function () { vistos = 99; pintar(); revela(true); };
@@ -563,13 +575,14 @@
           pintar(); revela();
         } else {
           var t = tento, res = r.calc(t.v), un = res.r[0][2];
-          c.innerHTML = '<p class="ct-enun">Sorteei estes valores. Faça a conta no papel e digite o primeiro resultado (<b>' + esc(res.r[0][0]) + '</b>' + (un ? ', em ' + esc(un) : '') + ').</p>' + campos(t.v, true)
+          c.innerHTML = '<div class="cf" id="ctfig" role="group" aria-label="Figura do circuito"></div><p class="ct-enun">Sorteei estes valores. Faça a conta no papel e digite o primeiro resultado (<b>' + esc(res.r[0][0]) + '</b>' + (un ? ', em ' + esc(un) : '') + ').</p>' + campos(t.v, true)
             + '<form class="ct-resp" id="ctf"><label><span>Sua resposta</span><input type="text" inputmode="decimal" autocomplete="off" id="cti" placeholder="ex.: 12,5"></label><button class="btn primary" type="submit">Conferir</button></form><div id="ctv"></div>';
+          figura($('#ctfig', host), r, t.v, res, false, 0);
           $('#ctf', host).onsubmit = function (e) {
             e.preventDefault(); if (t.feito) return;
             var ok = confere(r, t.v, $('#cti', host).value);
             if (ok === null) { $('#ctv', host).innerHTML = '<p class="ct-aviso">Digite um número (use vírgula ou ponto para decimais).</p>'; return; }
-            t.feito = true; $('#cti', host).readOnly = true;
+            t.feito = true; $('#cti', host).readOnly = true; figura($('#ctfig', host), r, t.v, res, true, 0);
             var ant = ct().get(r.id) || { s: 0, n: 0 }, s = ok ? ant.s + 1 : 0, ja = ant.s >= 3;
             ct().set(r.id, { s: s, n: ant.n + 1 });
             $('#ctv', host).innerHTML = '<div class="ct-vered ' + (ok ? 'ok' : 'no') + '" role="status"><b>' + (ok ? 'Certo.' : 'Não bateu.') + '</b> ' + (ok ? (s >= 3 ? 'Conta dominada: 3 acertos seguidos.' : s + ' de 3 acertos seguidos.') : 'A resposta era ' + (un === 'R$' ? rs(res.r[0][1]) : g(res.r[0][1]) + (un ? ' ' + esc(un) : '')) + '. A sequência volta a zero.') + '</div>'

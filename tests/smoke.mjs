@@ -563,6 +563,18 @@ async function testContas(browser) {
   check(await page.evaluate(() => !!(S.ct && S.ct['pot-resistor'] && S.ct['pot-resistor'].n === 4)), 'contas: o treino não ficou guardado depois de recarregar');
   await page.evaluate(() => { S.ct['ohm'] = { s: 3, n: 3, t: Date.now() }; save(); go('biblioteca', { s: 'contas' }); }); await page.waitForTimeout(300);
   check(await page.locator('.ct-card.dom').count() === 1, 'contas: uma conta com 3 seguidas deveria aparecer como dominada');
+  await page.evaluate(() => go('biblioteca', { s: 'contas', r: 'rc' })); await page.waitForTimeout(400);
+  check(await page.locator('#ctfig svg').count() === 1 && await page.locator('#ctfig svg animateMotion').count() > 0, 'contas: a figura da conta rc deveria ter SVG com pontos animados');
+  await page.locator('#ctn').click(); await page.locator('#ctn').click(); await page.waitForTimeout(200);
+  check(await page.locator('#ctfig .hl').count() > 0, 'contas: abrir o passo 3 deveria acender elementos da figura');
+  await page.locator('input[data-k="R"]').fill('4700'); await page.waitForTimeout(200);
+  check(/0,4/.test(await page.locator('#ctfig').textContent()) || /4\.700/.test(await page.locator('#ctfig').textContent()), 'contas: a figura deveria usar o novo R (4.700)');
+  await page.locator('.ct-modo button[data-m="treino"]').click(); await page.waitForTimeout(300);
+  check(/\?/.test(await page.locator('#ctfig').textContent()), 'contas: no Treinar a figura deveria mostrar ? no lugar do resultado');
+  const ctx2 = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block', reducedMotion: 'reduce' }); const p2 = await ctx2.newPage();
+  await p2.goto(URL_ + '#contas'); await p2.waitForTimeout(500); await p2.evaluate(() => go('biblioteca', { s: 'contas', r: 'rc' })); await p2.waitForTimeout(400);
+  check(await p2.locator('#ctfig svg').count() === 1 && await p2.locator('#ctfig svg animateMotion').count() === 0, 'contas: com "reduzir movimento" a figura deveria vir completa e parada');
+  await ctx2.close();
   await page.evaluate(() => go('biblioteca', { s: 'formulas' })); await page.waitForTimeout(400);
   await page.locator('[data-ct="E3"]').first().click(); await page.waitForTimeout(300);
   check(await page.locator('.ct-chip.on[data-f="E3"]').count() === 1 && await page.locator('.ct-card').count() >= 4, 'contas: o botão do Formulário deveria abrir as contas já filtradas por E3');
