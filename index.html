@@ -657,6 +657,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 <script src="data/estacoes/C1.js"></script>
 <script src="data/embreve.js"></script>
 <script src="data/questoes.js"></script>
+<script src="data/figresp.js"></script>
 <script src="data/provas.js"></script>
 <script src="data/biblioteca.js"></script>
 <script src="data/nr10.js"></script>
@@ -994,6 +995,8 @@ async function askTutor(out,prompt){
 /* ---------- question card ---------- */
 /* Figura da questão (SVG só com classes s-*, as mesmas da teoria): o invólucro .estacao aplica os estilos dos dois temas. */
 function qFig(q){ return `<div class="estacao qfig"><figure>${q.fig}</figure></div>`; }
+/* circuito resolvido (só na resposta): data/figresp.js, gerado por tools/figresp.mjs */
+function qFigResp(q){ const s=DATA.figResp&&DATA.figResp[q.id]; return s?`<div class="estacao qfig qresp"><figure><figcaption>o circuito resolvido</figcaption>${s}</figure></div>`:''; }
 /* Treino de eliminação: o que o aluno riscou na 1ª resposta (S.ans[id].el = letras) contra o gabarito. */
 function elimLine(q){
   const a=S.ans[q.id]; if(!a||!a.el) return '';
@@ -1033,11 +1036,13 @@ function questionCard(el,q,opts={}){
     if(reveal){
       const first=st.tries[0]; const okFirst=first===q.ans;
       fbz.innerHTML=`<div class="fb ${okFirst?'ok':'no'}"><strong>${okFirst?'Certa de primeira.':(st.tries.includes(q.ans)?'Certa na segunda tentativa. Conta como erro na sua estatística.':'Gabarito: '+q.ans+'.')}</strong> ${okFirst?'':'Leia o porquê de cada alternativa.'}</div>
+        ${qFigResp(q)}
         <div class="ex">${L.split('').map(k=>`<div class="${k===q.ans?'c':''}"><span class="L">${k}</span><span>${q.ex[k]||''}${q.erros&&q.erros[k]&&DATA.erros&&DATA.erros[q.erros[k]]?`<span class="tg">${esc(DATA.erros[q.erros[k]].n)}</span>`:q.traps[k]?`<span class="tg">${TRAPS[q.traps[k]].name}</span>`:''}</span></div>`).join('')}</div>
         ${elimLine(q)}${!okFirst&&opts.regra!==false?`<div class="regra"><label class="eyebrow" for="rg-${esc(q.id)}">a regra que teria evitado este erro (em uma frase, sua)</label><textarea id="rg-${esc(q.id)}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[q.id]||'')}</textarea></div>`:''}
         <div class="meta">Item ${esc(q.hab)} do edital · dificuldade ${esc(q.dif)}${prev&&opts.showPrev!==false?` · primeira resposta registrada: ${prev.first} (${prev.ok?'certa':'errada'})`:''}</div>
         <div class="qtools"><button class="chipbtn mk" aria-pressed="${!!S.marks[q.id]}">${S.marks[q.id]?'★ marcada para revisar':'☆ revisar depois'}</button>${S.ans[q.id]&&S.ans[q.id].ok?`<button class="chipbtn ch" aria-pressed="${!!S.chute[q.id]}">${S.chute[q.id]?'chute: vai para o caderno de erros':'acertei no chute'}</button>`:''}</div>
         <div class="row" style="margin-top:10px">${prev?'<button class="btn redo">Tentar de novo (não muda a estatística)</button>':''}<button class="btn tex tutor-only">Explique de outro jeito</button></div><div class="tx"></div>`;
+      if(window.montarCalculadoras&&fbz.querySelector('.qresp')) montarCalculadoras(fbz); /* circuito resolvido: botão "Ampliar a figura" no celular */
       const mk=fbz.querySelector('.mk'); mk.onclick=()=>{ S.marks[q.id]=!S.marks[q.id]; if(!S.marks[q.id]) delete S.marks[q.id]; markDel(['marks',q.id],!S.marks[q.id]); save(); paint(); };
       const ch=fbz.querySelector('.ch'); if(ch) ch.onclick=()=>{ S.chute[q.id]=!S.chute[q.id]; if(!S.chute[q.id]) delete S.chute[q.id]; markDel(['chute',q.id],!S.chute[q.id]); save(); paint(); };
       const rd=fbz.querySelector('.redo'); if(rd) rd.onclick=()=>{ st.tries=[]; st.locked=false; st.cut=new Set(); st.cutMode=false; paint(); };

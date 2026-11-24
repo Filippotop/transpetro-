@@ -285,6 +285,34 @@ if (fs.existsSync(path.join(ROOT, 'js/gerador.js'))) {
   }
 }
 
+/* Circuito resolvido na resposta (data/figresp.js, gerado por tools/figresp.mjs): uma figura por questão existente, só
+   com classes s-* e sem cor fixa; só aparece na resposta (index.html), nunca no enunciado. */
+{
+  const FR = DATA.figResp || {};
+  check(Object.keys(FR).length > 0, 'data/figresp.js vazio ou não carregado (DATA.figResp)');
+  check(DATA_FILES.includes('data/figresp.js') && DATA_FILES.indexOf('data/figresp.js') > DATA_FILES.indexOf('data/questoes.js'), 'index.html precisa carregar data/figresp.js depois de data/questoes.js');
+  check(SW.includes("'data/figresp.js'"), "offline: data/figresp.js fora da lista de arquivos do sw.js");
+  const porId = Object.fromEntries(BANCO.map(q => [q.id, q])), ids = new Set();
+  for (const [id, svg] of Object.entries(FR)) {
+    const where = `figura de resposta ${id}`;
+    check(!!porId[id], `${where}: não há questão com esse id`);
+    check(/^<svg viewBox="[-\d. ]+" role="img" aria-label="[^"]{20,}">[\s\S]*<\/svg>$/.test(svg), `${where}: precisa de <svg viewBox role="img" aria-label> com descrição`);
+    const b = svg.match(FIXED); check(!b, `${where}: cor fixa "${b && b[0]}"`);
+    check(!/class="(?!s-)[^"]*"/.test(svg.replace(/class="s-[^"]*"/g, '')), `${where}: classe sem o prefixo s-`);
+    check(!/<style|style=/.test(svg), `${where}: style dentro da figura`);
+    for (const [, id] of svg.matchAll(/\sid="([^"]+)"/g)) check(/^fr[\w]+-/.test(id) && !ids.has(id), `${where}: id "${id}" fora do padrão fr…- ou repetido em outra figura`), ids.add(id);
+    for (const [, id] of svg.matchAll(/url\(#([^)]+)\)/g)) check(svg.includes(`id="${id}"`), `${where}: url(#${id}) sem o id dentro da figura`);
+    check(!/NaN|undefined|\[object/.test(svg), `${where}: valor inválido no desenho`);
+    const w = wellFormed(svg); check(!w, `${where}: mal formada (${w})`);
+  }
+  const os = await import('node:os'), { execFileSync } = await import('node:child_process');
+  const gerado = path.join(os.tmpdir(), 'figresp-' + process.pid + '.js');
+  try {
+    execFileSync(process.execPath, [path.join(ROOT, 'tools/figresp.mjs'), '--saida', gerado], { cwd: ROOT, stdio: 'pipe' });
+    check(fs.readFileSync(gerado, 'utf8') === read('data/figresp.js'), 'data/figresp.js desatualizado: rode node tools/figresp.mjs e faça commit do resultado');
+  } finally { fs.rmSync(gerado, { force: true }); }
+}
+
 if (fails.length) { console.error(`questões FALHOU (${fails.length}):\n- ` + fails.slice(0, 80).join('\n- ') + (fails.length > 80 ? `\n… e mais ${fails.length - 80}` : '')); process.exit(1); }
 const porMod = {}; for (const q of BANCO) porMod[q.mod] = (porMod[q.mod] || 0) + 1;
 console.log(`questões OK: ${BANCO.length} do banco (${Object.entries(porMod).map(([k, v]) => k + ' ' + v).join(', ')}), ${BANCO.filter(q => q.conta).length} com conta recalculada, ${BANCO.filter(q => q.fig).length} com figura; ${nGer} geradores × 100 sorteios válidos`);

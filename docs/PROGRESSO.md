@@ -20,6 +20,10 @@ Ondas seguintes (spec, seção 3):
 - **Onda 3:** N1 ✅, I3 ✅ e I2 ✅.
 - **Onda 4:** Matemática (X1–X3) e recalibração do Plano e do Painel.
 
+## Circuito resolvido nas respostas (2026-11-24)
+
+`data/figresp.js` (gerado por `tools/figresp.mjs` a partir de `tools/figresp/*.mjs`) traz o circuito de cada questão que tem um, desenhado já resolvido, mostrado só na resposta (`qFigResp` em `index.html`; botão "Ampliar a figura" no celular). Cobertura: E1, E2, E3, C1, M1 (comandos, reaproveitando CMD1/CMD2 do banco), M2, M3, I1, I2, I3, A1 e A2. Ficam sem figura as questões de teoria, norma, lógica/Karnaugh, Português, Matemática e as de NR-10. **Não cobertos:** as questões dos geradores de números novos (`js/gerador.js`), a aba Provas (questões reais em imagem) e as perguntas de comando/CLP em escada que não usam o diagrama de partida direta/reversão. Revisão independente das figuras ainda pendente (conferidas só por mim, olhando as folhas de contato e recalculando os números da explicação).
+
 ## Decisões já tomadas (não reabrir sem motivo)
 
 - **Data da prova:** **06/12/2026**. O edital original (Anexo V) dizia 29/11; a retificação publicada no DOU de 10/09/2026 e a nota da própria Transpetro (transpetro.com.br, "alterações em cronograma") adiaram para 06/12 (cartão de confirmação 01/12, gabaritos 07/12, recursos 07 e 08/12). Notícias de 11/11 (Agência Brasil, O Globo) confirmam. Alguns sites ainda citam 29/11 por engano. O app dizia 29/11 até 14/11/2026.

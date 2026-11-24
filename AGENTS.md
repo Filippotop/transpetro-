@@ -36,6 +36,15 @@ npx serve .                               # e abra http://localhost:3000/
 
 `npm test` roda os testes de sincronização, do service worker, das estações (`tests/estacoes.test.mjs`) e de fumaça no navegador (`tests/smoke.mjs`, com axe WCAG AA em 3 tamanhos × 2 temas e offline), e depois os da Bancada. O smoke aceita `ONLY=calc` (e outros filtros; veja o início de `tests/smoke.mjs`) para rodar só uma parte.
 
+## Circuito resolvido na resposta (`data/figresp.js`)
+
+Na resposta de uma questão que envolve um circuito, o app mostra o circuito já resolvido (valores, correntes e tensões), logo depois do "Certa de primeira"/"Gabarito" e antes do porquê de cada alternativa. O enunciado não muda (se já tinha figura, ela continua lá).
+
+- As figuras ficam em `tools/figresp/<estação>.mjs` (chave = id da questão, ex. `BQ-f-t4-1`); a biblioteca de desenho é `tools/figresp/lib.mjs` (escada de resistores, ponte, trifásico, transformador, ponte retificadora, amp-op, transistor). `node tools/figresp.mjs` gera `data/figresp.js`. **Não edite `data/figresp.js` à mão.**
+- Só classes `s-*` (sem cor fixa), `role="img"` e `aria-label` descritivo; `tests/questoes.test.mjs` confere isso, que o id existe e que o arquivo está em dia.
+- Conferir a olho: `node tools/figresp-prev.mjs E1` (folha de contato em PNG, `--claro` para o tema claro).
+- Questão sem circuito (teoria, norma, conta sem esquema, Português, Matemática) fica sem figura de propósito. Os números das figuras são os da explicação da questão: se mudar a questão, mude a figura.
+
 ## Como funciona uma estação
 
 - Os **aprofundamentos HTML** do estudante estão em `fontes/` (teoria, figuras SVG, quadros de fórmula `.eq`, calculadoras, exercícios comentados).
