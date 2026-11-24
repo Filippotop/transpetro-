@@ -495,7 +495,12 @@
   function confere(r, v, texto) {
     var x = numero(texto), alvo = r.calc(v).r[0][1];
     if (!isFinite(x)) return null;
-    return Math.abs(x - alvo) <= Math.max(0.01 * Math.abs(alvo), 1e-9);
+    var tol = Math.max(0.01 * Math.abs(alvo), 1e-9);
+    if (Math.abs(x - alvo) <= tol) return true;
+    /* \"1.376\" lido como mil trezentos e setenta e seis (milhar) ou como 1,376 (ponto decimal): aceita as duas leituras */
+    var s = String(texto).trim().replace(/\s/g, '');
+    if (/^-?\d{1,3}\.\d{3}$/.test(s)) { var y = parseFloat(s); if (isFinite(y) && Math.abs(y - alvo) <= tol) return true; }
+    return false;
   }
   W.CONTAS = { lista: function () { return L.slice(); }, receita: function (id) { return porId[id] || null; }, calcular: function (r, v) { return r.calc(v); }, exemplo: exemplo, sortear: sortear, confere: confere, numero: numero, mods: MODS, fmt: g };
   /* receitas extras (js/contas-extra.js) e erros típicos de cada conta */

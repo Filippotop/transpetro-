@@ -35,9 +35,9 @@
     dia('11-18', 'qua', 'Matemática 1: números, proporções, porcentagem e juros (4 em 2023)', [
       M('X1'), T('novos', null, 'Treino: 10 questões de números novos (as de Matemática, se aparecerem)'), T('game', 'vf', 'Arena: V ou F relâmpago')]),
     dia('11-19', 'qui', 'Matemática 2: funções, equações e geometria (4 em 2023)', [
-      M('X2'), T('sim', 'MT', 'Simulado de Matemática: 20 questões, 40 minutos (zerar Matemática elimina; o corte é 5 de 10)'), T('game', 'unid', 'Arena: Grandeza e unidade')]),
+      M('X2'), T('sim', 'MT', 'Simulado de Matemática: 20 questões, 40 minutos (zerar Matemática elimina; o corte é de 50% somando Matemática e Português, 10 de 20)'), T('game', 'unid', 'Arena: Grandeza e unidade')]),
     dia('11-20', 'sex', 'CA, fasores e impedância (3 questões em 2023)', [
-      M('E2'), T('sim', 'PT', 'Simulado de Português: 20 questões, 40 minutos (o corte é 5 de 10)'), T('game', 'formula', 'Arena: Qual é a fórmula?')]),
+      M('E2'), T('sim', 'PT', 'Simulado de Português: 20 questões, 40 minutos (zerar Português elimina; o corte é de 50% somando Português e Matemática, 10 de 20)'), T('game', 'formula', 'Arena: Qual é a fórmula?')]),
     dia('11-21', 'sáb', 'Motores e proteção (M3) e probabilidade e estatística (X3), 2 questões cada em 2023', [
       M('M3'), M('X3'), T('bancada', null, 'Bancada: uma ordem de serviço de motor ou de comando')]),
     dia('11-22', 'dom', 'Eletrônica (A1) e medidas, retificadores e baterias (I3), 2 questões cada em 2023', [

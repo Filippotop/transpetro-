@@ -66,6 +66,7 @@ const tests = {
     const r = L.find(x => x.id === 'pot-resistor'), v = CT.exemplo(r); /* 2200 W */
     for (const t of ['2200', '2.200', '2.200,0', '2 200', '2205', '2 200 W']) assert.equal(CT.confere(r, v, t), true, t);
     for (const t of ['2300', '220', '22000']) assert.equal(CT.confere(r, v, t), false, t);
+    { const rf = CT.receita('fio'), vf = { rho: 0.0172, L: 200, S: 2.5 }; const alvo = CT.calcular(rf, vf).r[0][1]; const s3 = String(Math.round(alvo * 1000) / 1000); if (/^\d\.\d{3}$/.test(s3)) assert.equal(CT.confere(rf, vf, s3), true, 'ponto decimal com 3 casas: ' + s3); }
     assert.equal(CT.confere(r, v, 'abc'), null);
     const o = L.find(x => x.id === 'ohm'); assert.equal(CT.confere(o, CT.exemplo(o), '5,0'), true); assert.equal(CT.confere(o, CT.exemplo(o), '5.0'), true);
   },

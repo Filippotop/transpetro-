@@ -45,7 +45,7 @@ for (const k of Object.keys(ERR)) if (!ERROS[k]) throw new Error('erros.mjs: fal
 
 const XFILES = {};
 for (const est of ['E1', 'E2', 'E3', 'M1', 'M2', 'I1', 'M3', 'A1', 'A2', 'I2', 'I3', 'N1', 'X1', 'X2', 'X3', 'P1', 'C1']) {
-  for (const suf of ['x', 'z']) { /* <ID>x.mjs e <ID>z.mjs: duas levas de questões extras, com ids próprios (y1… e z1…) */
+  for (const suf of ['x', 'z', 'w']) { /* <ID>x.mjs e <ID>z.mjs: duas levas de questões extras, com ids próprios (y1… e z1…) */
     const f = path.join(ROOT, 'tools/banco', est + suf + '.mjs');
     if (!fs.existsSync(f)) continue;
     const RX = (await import(pathToFileURL(f))).default;
@@ -228,6 +228,7 @@ function emitLista(est, lista) {
     out.push({
       id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: MODS[q.mod || est].vol, mod: q.mod || est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
       alts: q.o, ans, ex, traps, erros, hab: q.h, dif: { f: 'fácil', m: 'média', d: 'difícil' }[q.d],
+      ...(q.figSvg ? { fig: svgClasses(typeof q.figSvg === 'function' ? q.figSvg() : q.figSvg).replace(/[\r\n]+/g, '') } : {}), /* figSvg: figura própria da questão extra (tools/banco/figlib.mjs) */
       ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
     });
   }

@@ -413,6 +413,7 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .totop{position:fixed;z-index:24;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 12px;font-family:var(--mono);font-size:12px;cursor:pointer}
 .qtools{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .qtools button[aria-pressed="true"]{background:var(--gold-soft);color:var(--gold-ink);border-color:var(--gold)}
+.sync.bad{color:var(--bad);font-weight:700}
 .nextstep{margin-top:8px;border:2px solid var(--ok);background:var(--ok-soft);border-radius:var(--r);padding:16px;display:grid;gap:10px}
 .nextstep b{font-size:17px}
 input[type=text],input[type=password],input[type=number],input[type=email],input:not([type]),select{width:100%;font:inherit;font-size:var(--fs-3);padding:var(--sp-3) var(--sp-3);border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--surface);color:var(--ink)}
@@ -732,7 +733,7 @@ window.EDO_FX={ get:k=>(S.fx&&S.fx[k])||null, set:(k,v)=>{ S.fx[k]={k:v,t:Date.n
 window.EDO_CT={ get:k=>(S.ct&&S.ct[k])||null, set:(k,v)=>{ S.ct[k]={s:v.s,n:v.n,b:v.b||0,due:v.due==null?null:v.due,t:Date.now()}; markDel(['ct',k],false); save(); } };
 function save(){
   S.updated=Date.now();
-  try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); if(saveFail){ saveFail=false; setSync('salvo neste aparelho'); } }catch(e){ if(!saveFail){ saveFail=true; setSync(''); try{ toast('NÃO SALVO: a memória do navegador está cheia. Abra Aa → Copiar ou importar progresso e guarde o código.'); }catch(e2){} } }
   dirty=true; clearTimeout(saveTimer); saveTimer=setTimeout(flush,1200);
   if(window.onSaved) window.onSaved();
 }
@@ -743,7 +744,9 @@ async function flush(){
   catch(e){ setSync('salvo neste aparelho'); }
   saving=false; if(dirty) flush();
 }
-function setSync(t){ $('#sync').textContent=t; }
+let saveFail=false; /* true quando o localStorage recusou gravar: o selo deixa de dizer "salvo" */
+function setSync(t){ const el=$('#sync'); if(!el) return; if(saveFail){ el.textContent='NÃO SALVO: memória cheia (Aa → Copiar progresso)'; el.classList.add('bad'); } else { el.textContent=t; el.classList.remove('bad'); } }
+try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){} /* pede ao navegador para não apagar o progresso */
 (async()=>{
   try{
     if(!window.claude||!window.claude.use) return;
@@ -837,13 +840,14 @@ function ring(area,name,st,what='das questões feitas'){ const p=st.n?Math.round
 function vLinhas(){
   const nm=nextModules(2); const due=dueCards().length; const pday=planToday();
   const rc=DATA.recal.find(r=>!S.recal[r.vol+r.num]);
-  const tasks=[];
+  const tasks=[]; let nx=null;
   const last=lsGet('edo-last'); if(last&&M[last.id]&&!M[last.id].emBreve){ const lm=M[last.id], ls=modStats(lm.id); if(ls.done<ls.n) tasks.push({lc:lm.line,ic:'▸',t:`Continuar: ${lm.id} · ${lm.title}`,s:`Você parou em ${({teoria:'Teoria',formulas:'Fórmulas',resumo:'Cartões-resumo',vf:'V ou F',q:'Questões',tutor:'Tutor',notas:'Anotações'})[last.tab]||'Teoria'} · ${ls.done}/${ls.n} questões`,act:()=>go('mod',{id:lm.id,tab:last.tab})}); }
   nm.forEach(m=>{const s=modStats(m.id); tasks.push({lc:m.line,ic:m.id,t:`${m.id} · ${m.title}`,s: s.read? `Teoria lida. Faltam ${s.n-s.done} de ${s.n} questões.` : `Faixa ${m.faixa} · ${plural(PESO23[m.id]||0,'questão','questões')} em 2023 · itens ${m.itens}`,act:()=>go('mod',{id:m.id,tab:s.read?'q':'teoria'})});});
   if(DATA.cards.length) tasks.push({ic:'◷',t:`Revisar ${Math.min(15,due)} cartões de véspera`,s:due? `${due} cartões vencidos hoje. Leva uns 6 minutos.`:'Nenhum cartão vencido. Volte amanhã.',act:()=>go('game',{g:'cards'}),done:!due});
   if(rc) tasks.push({ic:'↺',t:`Refazer o seu erro na questão ${rc.num} de 2023`,s:`${rc.subj}: tente de novo e faça a questão de reforço.`,act:()=>go('treino',{s:'recal'})});
   tasks.push({ic:'↺',t:'Aquecimento: 10 questões dos seus pontos fracos',s:'Mistura estações de propósito (em matemática, misturar tipos de problema rendeu mais que estudar em bloco num ensaio com turmas). 40 minutos, sem consulta; corrija depois.',act:()=>{ SIM=null; go('treino',{s:'sim',foco:'fracos',n:10}); }});
-  tasks.push({ic:'⚒',t:'Bancada: atenda uma ordem de serviço',s:'Meça, desenergize pela NR-10 e diagnostique o defeito. É a teoria aplicada na prática.',act:()=>go('bancada')});
+  /* o "Próximo passo" segue o plano do dia (a primeira tarefa ainda aberta); sem plano, a primeira da lista */
+  { const pi=pday?pday.tasks.findIndex((t,i)=>!taskDone(pday,i)&&taskGo(t)):-1; nx=pi>=0?{t:'Do plano de hoje: '+strip(taskLabel(pday.tasks[pi])),s:pday.foco+'. É a primeira tarefa do dia que ainda está aberta.',act:taskGo(pday.tasks[pi])}:(tasks[0]||null); }
   const bankAns=Object.entries(S.ans).filter(([id])=>!isGen(id)).map(([,a])=>a);
   const tot=DATA.questions.length, done=bankAns.length, ok=bankAns.filter(a=>a.ok).length;
   const mastered=Object.values(S.cards).filter(c=>c.box>=3).length;
@@ -864,7 +868,7 @@ function vLinhas(){
       <h2>${done===0?'Comece pela estação que mais pesou na prova de 2023.':'Continue de onde parou. A ordem abaixo já considera seus erros.'}</h2>
       ${done===0?'<p class="lead">A missão escolhe as estações pelo peso de cada item do edital na prova de 2023 e pelo que você errou aqui. Itens que caíram mais vêm primeiro.</p>':''}
       ${tmin}${hoje}
-      ${tasks.length?`<button class="next ${tasks[0].lc?'lc-'+tasks[0].lc:''}" data-i="0"><span class="eyebrow">Próximo passo</span><b>${esc(tasks[0].t)}</b><small>${esc(tasks[0].s)}</small><span class="cta">Começar ${ICON.go}</span></button>`:''}
+      ${nx?`<button class="next ${nx.lc?'lc-'+nx.lc:''}" data-nx="1"><span class="eyebrow">Próximo passo</span><b>${esc(nx.t)}</b><small>${esc(nx.s)}</small><span class="cta">Começar ${ICON.go}</span></button>`:''}
       <div class="tasks">${tasks.map((t,i)=>i===0?'':`<button class="task ${t.done?'done':''} ${t.lc?'lc-'+t.lc:''}" data-i="${i}"><span class="ic">${TASK_IC[t.ic]||esc(t.ic)}</span><span><b>${esc(t.t)}</b><small>${esc(t.s)}</small></span><span class="go" aria-hidden="true">${ICON.go}</span></button>`).join('')}</div>
     </div>
     <aside class="side-home">
@@ -894,7 +898,8 @@ function vLinhas(){
         const s=modStats(m.id); const cls=[s.done===s.n&&s.n?'done':(s.done||s.read?'part':''), s.done===s.n&&s.n?(s.ok/s.n<0.67?'weak':(s.ok===s.n?'strong':'')):''].join(' ');
         return `<button class="st ${cls}" data-m="${m.id}" title="${esc(m.title)}">${m.faixa==='A'?'<span class="fa">A</span>':''}<span class="c"></span><span class="code">${m.id}</span><span class="t">${esc(m.title.split(/[:(]/)[0])}</span></button>`}).join('')}</div></div>`:'<p class="soon-line">Estações em breve.</p>'}</div>`}).join('')}
   <div class="legend"><span><i></i>não iniciado</span><span><i style="background:linear-gradient(90deg,var(--muted) 50%,transparent 50%)"></i>em andamento</span><span><i style="background:var(--muted)"></i>concluído</span><span><i style="box-shadow:0 0 0 2px var(--ok)"></i>tudo certo</span><span><i style="box-shadow:0 0 0 2px var(--bad)"></i>menos de 2 de 3</span><span><b class="chip A">A</b> pesou mais em 2023</span></div>`;
-  app.querySelectorAll('.task,.next').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
+  app.querySelectorAll('.task').forEach(b=>b.onclick=()=>tasks[+b.dataset.i].act());
+  const nb=app.querySelector('.next'); if(nb) nb.onclick=()=>nx.act();
   app.querySelectorAll('[data-at]').forEach(b=>b.onclick=()=>({aq:()=>{SIM=null;go('treino',{s:'sim',foco:'fracos',n:10});},sim:()=>{SIM=null;go('treino',{s:'sim'});},err:()=>go('treino',{s:'erros'}),car:()=>go('game',{g:'cards'}),ct:()=>go('biblioteca',{s:'contas'}),bib:()=>go('biblioteca'),aul:()=>go('aulas'),ban:()=>go('bancada')})[b.dataset.at]());
   app.querySelectorAll('.ptk').forEach(b=>b.onclick=()=>{ const g=taskGo(pday.tasks[+b.dataset.pt]); if(g) g(); });
   if($('#vPl')) $('#vPl').onclick=()=>go('plano');
@@ -1703,8 +1708,10 @@ function popPrefs(){
     <div><div class="eyebrow" style="margin-bottom:6px">animações</div>${seg('motion',[['auto','Automático'],['full','Completas'],['light','Leves'],['off','Desligadas']],prefs.motion)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Automático usa as leves em aparelhos fracos. Com “reduzir movimento” ligado no aparelho, ficam desligadas.</p></div>
     <div><div class="eyebrow" style="margin-bottom:6px">rolagem suave (só com mouse)</div>${seg('smooth',[['off','Desligada'],['on','Ligada']],prefs.smooth)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Suaviza a roda do mouse. Se a rolagem travar, desligue.</p></div>
     <div><div class="eyebrow" style="margin-bottom:6px">fundo 3D (pesado)</div>${seg('bg',[['off','Desligado'],['on','Ligado']],prefs.bg)}<p class="muted" style="font-size:12.5px;margin:6px 0 0">Fluido colorido em WebGL, a meia resolução. Gasta bateria; não use em aparelho fraco.</p></div>
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0" id="verTxt">Versão do app: verificando…</p>
     <div class="row"><button class="btn" id="syncBtn">Copiar ou importar progresso</button><button class="btn" id="keysBtn">Ver atalhos de teclado</button><button class="btn" id="pc">Fechar</button></div>`;
   p.querySelectorAll('[data-seg] button').forEach(b=>b.onclick=()=>{ const k=b.parentElement.dataset.seg; let v=b.dataset.v; if(k==='scale'||k==='goal') v=+v; if(k==='sound') v=v==='true'; prefs[k]=v; savePrefs(); updateGoal(); popPrefs(); });
+  (async()=>{ const v=$('#verTxt'); if(!v) return; try{ const ks=(await caches.keys()).filter(k=>k.startsWith('edo-shell-')).map(k=>k.slice(10)).sort(); v.textContent='Versão do app instalada: '+(ks.pop()||'sem cache (primeira visita)'); }catch(e){ v.textContent='Versão do app: não disponível neste navegador'; } })();
   $('#keysBtn').onclick=()=>{ popKind=null; openPop('keys'); }; $('#pc').onclick=closePop;
   $('#syncBtn').onclick=()=>{ popKind=null; openPop('sync'); };
 }

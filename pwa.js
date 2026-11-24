@@ -92,7 +92,7 @@
       const post=()=>{ const w=reg.active||navigator.serviceWorker.controller; if(w) w.postMessage({type:'warm'}); };
       const warm=()=>{ if(!N_IMGS){ warmed=true; try{ setSync('funciona offline'); }catch(e){} return; } mayWarm().then(ok=>ok?post():askWarm(post)); };
       if(reg.active) warm(); else navigator.serviceWorker.addEventListener('controllerchange',warm,{once:true});
-      reg.addEventListener('updatefound',()=>{ const nw=reg.installing; if(!nw) return; nw.addEventListener('statechange',()=>{ if(nw.state==='activated'&&navigator.serviceWorker.controller) say(`<span>Nova versão do app disponível.</span><button class="btn gold" id="pwaRl">Atualizar</button>`); const b=document.getElementById('pwaRl'); if(b) b.onclick=()=>location.reload(); }); });
+      reg.addEventListener('updatefound',()=>{ const nw=reg.installing; if(!nw) return; nw.addEventListener('statechange',()=>{ if(nw.state==='activated'&&navigator.serviceWorker.controller) say(`<span>Nova versão do app disponível.</span><button class="btn gold" id="pwaRl">Atualizar</button>`,0,true); const b=document.getElementById('pwaRl'); if(b) b.onclick=()=>location.reload(); }); });
     }).catch(()=>{});
     navigator.serviceWorker.addEventListener('message',e=>{ const d=e.data||{};
       if(d.type==='warm-progress'&&!d.done){ say(`<span>Baixando as provas para usar sem internet: ${d.have}/${d.total}</span>`); }

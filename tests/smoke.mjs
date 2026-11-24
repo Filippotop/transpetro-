@@ -531,6 +531,28 @@ async function testFixacao(browser) {
   check(!errs.length, `fixação: erro de página: ${errs.join(' | ')}`);
   await ctx.close();
 }
+/* Memória cheia: se o localStorage recusar gravar, o selo não pode dizer "salvo"; o menu Aa mostra a versão instalada; o Próximo passo segue o plano do dia. */
+async function testQuota(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_); await page.waitForTimeout(500);
+  check(!/NÃO SALVO/.test(await page.locator('#sync').textContent()), 'quota: o selo começa dizendo NÃO SALVO');
+  await page.evaluate(() => { const o = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === 'eletrica-de-ouro-v1') throw new DOMException('cheio', 'QuotaExceededError'); return o.call(this, k, v); }; save(); });
+  await page.waitForTimeout(300);
+  const sel = await page.locator('#sync').textContent();
+  check(/NÃO SALVO/.test(sel), `quota: com a memória cheia o selo diz "${sel}"`);
+  await page.evaluate(() => { Storage.prototype.setItem = Object.getPrototypeOf(localStorage) === Storage.prototype ? Storage.prototype.setItem : Storage.prototype.setItem; });
+  await page.locator('#prefsBtn').click(); await page.waitForTimeout(300);
+  check(/Versão do app/.test(await page.locator('#verTxt').textContent()), 'quota: o menu Aa não mostra a versão do app');
+  await page.keyboard.press('Escape');
+  await page.evaluate(() => go('linhas')); await page.waitForTimeout(500);
+  const nx = await page.evaluate(() => { const n = document.querySelector('.next'); const h = document.querySelector('.hoje'); return { next: n ? n.innerText : '', hoje: h ? h.innerText : '' }; });
+  check(!/Bancada: atenda/.test(document_text(nx.next)), 'quota: a Bancada não deve ser o próximo passo fixo');
+  check(!nx.hoje || /Do plano de hoje/.test(nx.next), `quota: com plano do dia o Próximo passo deveria vir do plano: "${nx.next.slice(0, 80)}"`);
+  check(!errs.length, `quota: erro de página: ${errs.join(' | ')}`);
+  await ctx.close();
+}
+const document_text = s => String(s || '');
 /* Treino de eliminação e regra do erro no cartão de questão: riscar alternativas, gravar o que foi riscado na 1ª resposta, mostrar o veredito e guardar a regra escrita. */
 async function testRiscar(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
@@ -1176,6 +1198,7 @@ try {
   await run('design', testDesign);
   await run('aulas', testAulas);
   await run('fixacao', testFixacao);
+  await run('quota', testQuota);
   await run('riscar', testRiscar);
   await run('contas', testContas);
   await run('reading', testReading);

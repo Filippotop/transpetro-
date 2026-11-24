@@ -59,7 +59,7 @@ const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs
 const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
 /* 205 do banco do estudante (158 das apostilas + 47 do banco) + as das estações escritas para o app (origem e:): M3,
    com os 30 exercícios da Teoria e 4 extras. */
-const NOVAS_QS = { E1: 10, E2: 8, E3: 14, M1: 4, M2: 10, I1: 42, M3: 42, A1: 42, A2: 44, I2: 38, I3: 38, N1: 45, X1: 48, X2: 42, X3: 43, P1: 64, C1: 40 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
+const NOVAS_QS = { E1: 10, E2: 8, E3: 40, M1: 4, M2: 10, I1: 42, M3: 42, A1: 42, A2: 44, I2: 38, I3: 38, N1: 45, X1: 48, X2: 42, X3: 43, P1: 84, C1: 40 }, N_NOVAS = Object.values(NOVAS_QS).reduce((a, b) => a + b, 0);
 check(BANCO.length === 205 + N_NOVAS, `banco: ${BANCO.length} questões (esperado ${205 + N_NOVAS}: 158 das apostilas + 47 do banco + ${N_NOVAS} das estações novas)`);
 for (const [m, n] of Object.entries(NOVAS_QS)) { const k = BANCO.filter(q => q.origem.startsWith('e:' + m + ':')).length; check(k === n, `banco: ${k} questões da estação ${m} (esperado ${n})`); }
 const ids = new Set(), origens = new Set(), markerIds = new Map();
@@ -117,7 +117,7 @@ for (const q of BANCO) {
 }
 /* As questões das apostilas são também os exercícios da Teoria: alternativas e gabarito iguais nos dois lugares. */
 let semExercicio = 0;
-for (const q of BANCO.filter(q => /^(a|e):/.test(q.origem) && !/^e:\w+:[xyz]\d+$/.test(q.origem))) {
+for (const q of BANCO.filter(q => /^(a|e):/.test(q.origem) && !/^e:\w+:[xyzw]\d+$/.test(q.origem))) {
   const m = MODS[q.mod]; if (!m || !m.html) continue;
   const ex = [...m.html.matchAll(/<li class="exq" data-a="(\d)"><p class="exq-s">([\s\S]*?)<\/p>\n<ol class="exq-o">([\s\S]*?)<\/ol>/g)].find(x => text(x[2]) === text(q.cmd));
   if (!ex) { semExercicio++; continue; } /* enunciado ajustado só na aba Questões (fix.s) */

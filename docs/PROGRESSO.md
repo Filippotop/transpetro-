@@ -94,3 +94,4 @@ Questões no nível da prova (2026-11-15): +144 questões (735 no banco: 236 fá
 
 2026-11-19: aba Contas: treino misto, revisão espaçada, diagnóstico de erro, dicas, busca, cálculo mental, 4 contas novas (3 de prova real). VER 2026-11-19.3.
 2026-11-19 (noite): +30 questões de Instalações/NBR 5410 (banco 779, revisão Opus aplicada), modo "Riscar alternativas" e regra do erro no cartão. VER 2026-11-19.5.
+2026-11-24: análise crítica (2 revisores Opus); +26 questões de E3 (12 com figura) e +20 de Português com texto longo (banco 825); aviso de NÃO SALVO, versão no menu Aa, Próximo passo = plano do dia. VER 2026-11-24.1.
