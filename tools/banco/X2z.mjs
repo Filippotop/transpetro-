@@ -1,0 +1,75 @@
+/* Questões extras da estação X2 (geometria plana e espacial, Mat 9 e 10). Rascunhos revisados pelo Opus, integrados em 2026-11-25. Ids z1…z5 = RS-Mat9-1…5; z6…z10 = RS-Mat10-1…5. */
+export default {
+  extra: [
+    // RS-Mat9-1
+    { id: "z1", mod: "X2", d: "f", h: "Mat 9", tag: "Geometria plana: relações métricas no triângulo retângulo",
+      s: "Um triângulo retângulo tem catetos de 6 cm e 8 cm. A altura relativa à hipotenusa desse triângulo, em centímetros, mede",
+      o: ["3,6 cm", "4,8 cm", "5 cm", "6 cm", "7 cm"], a: 1,
+      c: "Correta. Hipotenusa a = √(6² + 8²) = 10 cm. A área calculada pelos catetos (6·8/2) é igual à calculada pela hipotenusa (10·h/2), logo h = 6·8/10 = 4,8 cm.",
+      w: { A: "3,6 cm é a projeção do cateto de 6 cm sobre a hipotenusa (6²/10). Projeção não é altura: a altura sai da igualdade entre as duas áreas.", C: "5 cm é a mediana relativa à hipotenusa (metade dela). Mediana e altura não coincidem neste triângulo.", D: "6 cm é o cateto menor. Ele é a altura relativa ao outro cateto, não à hipotenusa.", E: "7 cm é a média aritmética dos catetos, (6 + 8)/2, que não tem relação com a altura." },
+      conta: ["6*8/((6**2+8**2)**0.5)"], src: "" },
+    // RS-Mat9-2
+    { id: "z2", mod: "X2", d: "m", h: "Mat 9", tag: "Geometria plana: losango, perímetro e Pitágoras",
+      s: "As diagonais de um losango medem 12 cm e 16 cm. O perímetro desse losango, em centímetros, é",
+      o: ["28", "96", "56", "40", "24"], a: 3,
+      c: "Correta. As diagonais se cortam ao meio, formando catetos de 6 e 8 cm. Lado = √(6² + 8²) = 10 cm; perímetro = 4·10 = 40 cm.",
+      w: { A: "28 é a soma das diagonais (12 + 16). A soma não é o perímetro: falta achar a medida do lado.", B: "96 é a área do losango (12·16/2). Área não é perímetro.", C: "56 = 2·(12 + 16): trata as diagonais como lados de um retângulo. No losango as diagonais se cortam ao meio e formam triângulos retângulos.", E: "24 = 4·6: usou a metade da diagonal menor como se fosse o lado, sem aplicar Pitágoras." },
+      conta: ["4*(6**2+8**2)**0.5"], src: "" },
+    // RS-Mat9-3
+    { id: "z3", mod: "X2", d: "m", h: "Mat 9", tag: "Geometria plana: trapézio retângulo, Pitágoras e área",
+      s: "Um terreno tem a forma de trapézio retângulo. As bases medem 9 m e 3 m, e o lado oblíquo, 10 m. A área desse terreno, em metros quadrados, é",
+      o: ["48", "96", "60", "36", "24"], a: 0,
+      c: "Correta. A altura é o cateto de um triângulo retângulo cuja hipotenusa é o lado oblíquo (10 m) e o outro cateto é a diferença das bases (9 − 3 = 6 m). h = √(10² − 6²) = 8 m. Área = (9 + 3)/2 · 8 = 48 m².",
+      w: { B: "96 = (9 + 3)·8: esqueceu de dividir por 2, que faz parte da fórmula (B + b)·h/2.", C: "60 = (9 + 3)/2 · 10: usou o lado oblíquo como altura. Ele não é perpendicular às bases.", D: "36 = (9 + 3)/2 · 6: usou a diferença das bases como altura, sem aplicar Pitágoras.", E: "24 = (9 + 3)·8/4: dividiu por 4 em vez de por 2." },
+      conta: ["(9+3)/2*(10**2-(9-3)**2)**0.5"], src: "" },
+    // RS-Mat9-4
+    { id: "z4", mod: "X2", d: "d", h: "Mat 9", tag: "Geometria plana: área de caminho (faixa) em retângulo",
+      s: "Um pátio retangular de 20 m por 15 m tem um caminho de 2 m de largura, em volta, por dentro do pátio. A área do caminho, em metros quadrados, é",
+      o: ["176", "300", "124", "140", "66"], a: 2,
+      c: "Correta. Área do caminho = área total − área interna = 300 − 176 = 124 m². Confere pelas faixas: 2·(20·2) + 2·(11·2) = 80 + 44 = 124.",
+      w: { A: "176 = (20 − 4)·(15 − 4) = 16·11 é a área que sobra dentro do caminho. A pergunta é sobre o caminho.", B: "300 = 20·15 é a área total do pátio, e não a do caminho.", D: "140 = 2·(20·2) + 2·(15·2): conta os quatro cantos (quadrados de 2 × 2 m) duas vezes, pois as faixas se sobrepõem neles. 140 − 124 = 16 = 4 cantos × 4 m².", E: "66 = 300 − (20 − 2)·(15 − 2): descontou a largura do caminho de um lado só. O caminho fica dos dois lados, então cada dimensão diminui 4 m." },
+      conta: ["20*15-(20-4)*(15-4)"], src: "" },
+    // RS-Mat9-5
+    { id: "z5", mod: "X2", d: "f", h: "Mat 9", tag: "Geometria plana: Pitágoras aplicado a escada apoiada na parede",
+      s: "Uma escada de 10 m está apoiada em uma parede vertical, com o pé a 6 m da parede, e seu topo alcança 8 m de altura. Se o pé da escada for afastado até 8 m da parede, sem mudar o comprimento da escada, o topo descerá, em metros,",
+      o: ["4", "6", "8", "10", "2"], a: 4,
+      c: "Correta. Nova altura: h² = 10² − 8² = 36, h = 6 m. Descida: 8 − 6 = 2 m.",
+      w: { A: "4 m = 10 − 6: subtraiu a nova altura do comprimento da escada, em vez de subtraí-la da altura inicial (8 m).", B: "6 m é a altura do topo depois do afastamento, e não o quanto ele desce: 8 − 6 = 2 m.", C: "8 m é a altura inicial do topo, e não a descida.", D: "10 m é o comprimento da escada, que não muda." },
+      conta: ["(10**2-6**2)**0.5-(10**2-8**2)**0.5"], src: "" },
+    // RS-Mat10-1
+    { id: "z6", mod: "X2", d: "f", h: "Mat 10", tag: "Geometria espacial: área total de cilindro",
+      s: "Uma lata cilíndrica tem raio da base de 5 cm e altura de 10 cm. Adotando π = 3, a área total da lata (lateral mais as duas bases), em centímetros quadrados, é",
+      o: ["300", "150", "1.200", "225", "450"], a: 4,
+      c: "Correta. A_total = 2πr(r + h) = 2·3·5·(5 + 10) = 450 cm².",
+      w: { A: "300 = 2πrh: é só a área lateral (2·3·5·10).", B: "150 = 2πr²: são só as duas bases.", C: "1.200 = 2·3·10·20: usou 10 cm (o diâmetro) como raio.", D: "225 = π·r·(r + h) = 3·5·15: esqueceu o fator 2 da fórmula 2πr(r + h) e chegou à metade da área total." },
+      conta: ["2*3*5*(5+10)"], src: "" },
+    // RS-Mat10-2
+    { id: "z7", mod: "X2", d: "m", h: "Mat 10", tag: "Geometria espacial: área lateral de cone",
+      s: "Um cone circular reto tem raio da base de 3 cm e altura de 4 cm. Adotando π = 3, a área lateral desse cone, em centímetros quadrados, é",
+      o: ["36", "72", "45", "90", "27"], a: 2,
+      c: "Correta. Geratriz g = √(3² + 4²) = 5 cm. Área lateral = π·r·g = 3·3·5 = 45 cm².",
+      w: { A: "36 = π·r·h = 3·3·4: usou a altura no lugar da geratriz.", B: "72 = π·r·(r + g) = 3·3·8: calculou a área total (com a base), e não a lateral.", D: "90 = 3·6·5: usou o diâmetro (6 cm) como se fosse o raio.", E: "27 = π·r² = 3·9: é só a área da base do cone." },
+      conta: ["3*3*(3**2+4**2)**0.5"], src: "" },
+    // RS-Mat10-3
+    { id: "z8", mod: "X2", d: "m", h: "Mat 10", tag: "Geometria espacial: volume de prisma de base triangular",
+      s: "A base de um prisma reto é um triângulo retângulo de catetos 6 cm e 8 cm, e a altura do prisma é 10 cm. O volume do prisma, em centímetros cúbicos, é",
+      o: ["480", "240", "120", "24", "2.400"], a: 1,
+      c: "Correta. Área da base = 6·8/2 = 24 cm²; volume = 24·10 = 240 cm³.",
+      w: { A: "480 = 6·8·10: esqueceu de dividir a área da base por 2 (área do triângulo = 6·8/2).", C: "120: dividiu por 2 duas vezes, na área da base e de novo no volume.", D: "24 é só a área da base: esqueceu de multiplicar pela altura do prisma.", E: "2.400 = 24·10·10: multiplicou também pela hipotenusa (10 cm), que não é a altura do prisma." },
+      conta: ["6*8/2*10"], src: "" },
+    // RS-Mat10-4
+    { id: "z9", mod: "X2", d: "m", h: "Mat 10", tag: "Geometria espacial: como o volume do cilindro muda",
+      s: "O volume de um cilindro circular reto é V. Se o raio da base dobrar e a altura for reduzida à metade, mantendo o formato cilíndrico, o novo volume será",
+      o: ["V", "4V", "V/2", "2V", "8V"], a: 3,
+      c: "Correta. V = πr²h. Novo volume: π(2r)²·(h/2) = 4πr²·h/2 = 2πr²h = 2V.",
+      w: { A: "V: pensou que os efeitos se compensam (dobra × metade = 1), esquecendo que o raio entra elevado ao quadrado.", B: "4V: dobrou o raio e esqueceu a metade da altura: (2)² · 1 = 4.", C: "V/2: trocou os fatores, com o raio pela metade e a altura dobrada: (1/2)²·2 = 1/2.", E: "8V: tratou o raio como se entrasse ao cubo (2³ = 8) e ignorou a altura." },
+      conta: ["(2*3)**2*(5/2)/(3**2*5)"], src: "" },
+    // RS-Mat10-5
+    { id: "z10", mod: "X2", d: "f", h: "Mat 10", tag: "Geometria espacial: volume de pirâmide",
+      s: "Uma pirâmide reta tem base quadrada de lado 6 cm e altura de 9 cm. Seu volume, em centímetros cúbicos, é",
+      o: ["108", "324", "162", "216", "36"], a: 0,
+      c: "Correta. V = (1/3)·A_base·h = (1/3)·36·9 = 108 cm³.",
+      w: { B: "324 = 36·9: esqueceu o fator 1/3, que é o que diferencia a pirâmide do prisma de mesma base e altura.", C: "162 = 36·9/2: usou 1/2 em vez de 1/3.", D: "216 = 6³: calculou o volume de um cubo de aresta 6 cm.", E: "36 é só a área da base: esqueceu a altura e o fator 1/3." },
+      conta: ["(1/3)*36*9"], src: "" },
+  ],
+};
