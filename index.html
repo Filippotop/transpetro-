@@ -584,6 +584,8 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 }
 @media (max-width:700px){
   nav.tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;padding:6px 2px;min-height:44px;flex:1 1 0;min-width:44px}
+  /* 8 abas não cabem com 44 px de largura em 320 a 380 px (a fonte do Linux é mais larga e o CI pegou): nesses aparelhos volta ao tamanho antigo, só mantendo os 44 px de altura */
+  @media (max-width:380px){ nav.tabs button{min-width:0;font-size:10.5px} }
   nav.tabs .ni{display:block;width:21px;height:21px}
   .bL{width:52px;height:52px}
   .qimg{padding:8px;border-radius:10px}
