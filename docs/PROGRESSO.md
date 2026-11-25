@@ -1,6 +1,6 @@
 # Progresso (atualizado a cada tarefa concluída)
 
-Última atualização: 2026-11-14. T1–T6, M3, A2, N1, A1, I3, I2, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus; A1, I3 e I2 por uma passada em Opus, só leitura). Matemática completa (X1–X3). Todas as estações do edital estão no app; o que resta é a avaliação do estudante e o estudo.
+Última atualização: 2026-11-25 (edital consolidado até o DOU de 10/11/2026 conferido: Anexo IV da Ênfase 8 sem mudança, prova 06/12, corte 7.1.4.3 = 50% da Fase 1, 50% da Fase 2 somada e nota zero em qualquer geral; figuras de resposta revisadas por segunda leitura e 5 corrigidas). T1–T6, M3, A2, N1, A1, I3, I2, X1, X2 e X3 concluídas e revisadas (X2 e X3 revisadas por duas passadas em Sonnet, não em Opus; A1, I3 e I2 por uma passada em Opus, só leitura). Matemática completa (X1–X3). Todas as estações do edital estão no app; o que resta é a avaliação do estudante e o estudo.
 
 ## Onda 1 (plano: `docs/superpowers/plans/2026-10-24-eletrica-de-ouro-onda1.md`)
 

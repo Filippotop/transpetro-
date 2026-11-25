@@ -7,7 +7,7 @@ Leia este arquivo inteiro antes de mexer em qualquer coisa. Depois leia **`docs/
 **Elétrica de Ouro** é um app de estudo (PWA estático, sem build, em português do Brasil) para a prova da **Transpetro 2026**:
 - Edital nº 03, banca **Cesgranrio**, nível médio, **Ênfase 8: Manutenção – Elétrica**;
 - prova em **06/12/2026**, com 40 questões específicas + 10 de Português + 10 de Matemática;
-- é eliminado quem faz menos de 50% em cada bloco ou zera Português ou Matemática.
+- é eliminado quem faz menos de 50% da Fase 1 (40 específicas), menos de 50% da Fase 2 (20 gerais, Português e Matemática somados) ou zera Português ou Matemática (edital, subitem 7.1.4.3; conferido em 25/11/2026 no edital consolidado até o DOU de 10/11/2026).
 
 O app é um **clone do app Humanas de Ouro** do mesmo estudante (`Filippotop/humanas-de-ouro`). O visual, a navegação e as ferramentas são os mesmos; o conteúdo é de Elétrica e Matemática. A pasta `bancada/` tem um simulador separado (ordens de serviço com instrumentos virtuais e NR-10), aberto pela aba Bancada.
 
