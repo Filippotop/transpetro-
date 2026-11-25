@@ -80,12 +80,18 @@
     try{ if((await (await caches.open('edo-provas-v1')).keys()).length>=N_IMGS) return true; }catch(e){} /* quem já tinha baixado antes desta versão */
     return false;
   }
+  /* Conta os dias em que o app foi aberto (chave nova edo-visitas: {n, d}). */
+  const VISITAS='edo-visitas', WARM_ADIADO='edo-warm-adiado';
+  const visitas=(()=>{ try{ const v=JSON.parse(localStorage.getItem(VISITAS))||{}; const hoje=new Date().toDateString(); if(v.d!==hoje){ v.n=(+v.n||0)+1; v.d=hoje; localStorage.setItem(VISITAS,JSON.stringify(v)); } return +v.n||1; }catch(e){ return 1; } })();
   function askWarm(go){
-    let later=0; try{ later=+localStorage.getItem(WARM_LATER)||0; }catch(e){}
-    if(Date.now()-later<864e5) return;
+    let later=0, adiado=0; try{ later=+localStorage.getItem(WARM_LATER)||0; adiado=+localStorage.getItem(WARM_ADIADO)||0; }catch(e){}
+    if(Date.now()-later<864e5 || Date.now()-adiado<864e5) return;
+    /* Não cobre o cartão PRÓXIMO PASSO na primeira abertura: pergunta depois da 1ª questão respondida ou na 2ª visita. */
+    let respondeu=false; try{ respondeu=typeof S!=='undefined'&&countRec(S)>0; }catch(e){}
+    if(!respondeu && visitas<2) return;
     say(`<span>Baixar as provas (${WARM_MB} MB) para usar sem internet? Prefira o Wi-Fi.</span><button class="btn gold" id="pwaWarm">Baixar</button><button class="btn" id="pwaWarmNo">Depois</button>`,0,true);
     document.getElementById('pwaWarm').onclick=()=>{ try{ localStorage.setItem(WARM_OK,'1'); }catch(e){} unstick(); go(); };
-    document.getElementById('pwaWarmNo').onclick=()=>{ try{ localStorage.setItem(WARM_LATER,Date.now()); }catch(e){} unstick(); };
+    document.getElementById('pwaWarmNo').onclick=()=>{ try{ localStorage.setItem(WARM_ADIADO,Date.now()); }catch(e){} unstick(); };
   }
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').then(reg=>{

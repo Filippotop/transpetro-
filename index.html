@@ -166,7 +166,7 @@ main{padding-block:22px 80px}
 .mod-head h1{font-size:clamp(26px,4.5vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
 .mod-head .note{font-family:var(--read);color:var(--muted);margin-top:6px;max-width:70ch}
 .back{background:none;border:0;color:var(--muted);cursor:pointer;padding:0;margin-bottom:12px;font-family:var(--mono);font-size:12px}
-.subtabs{display:flex;gap:6px;border-bottom:1px solid var(--rule);margin-bottom:18px;overflow-x:auto}
+.subtabs{display:flex;flex-wrap:wrap;gap:6px;border-bottom:1px solid var(--rule);margin-bottom:18px}
 .subtabs button{background:none;border:0;border-bottom:3px solid transparent;padding:10px 12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
 .subtabs button[aria-current="true"]{color:var(--ink);border-color:var(--lc,var(--gold))}
 .prose{font-family:var(--read);font-size:calc(17px*var(--scale));line-height:1.62;max-width:70ch}
@@ -249,7 +249,7 @@ td{border-bottom:1px solid var(--rule);padding:8px 10px;vertical-align:top}
 .regra{margin-top:12px;display:grid;gap:6px}
 .regra textarea{min-height:88px}
 .alt .old{font-family:var(--mono);font-size:10.5px;color:var(--bad);display:block;margin-top:4px}
-.fb{margin-top:12px;border-radius:8px;padding:12px 14px;font-size:14.5px}
+.fb{margin-top:12px;border-radius:8px;padding:12px 14px;font-size:14.5px;scroll-margin-bottom:104px}
 .fb.trap{background:var(--warn-soft);color:var(--ink);border-left:4px solid var(--warn)}
 .fb.ok{background:var(--ok-soft);border-left:4px solid var(--ok)}
 .fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
@@ -337,7 +337,7 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .tlr .d{width:14px;height:14px;border-radius:50%;background:var(--lc);margin-top:4px}
 .tlr .e{font-family:var(--read);font-size:16px;line-height:1.4}
 .tlr .e small{display:block;font-family:var(--mono);font-size:11px;color:var(--muted)}
-.chipbtn{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:3px 9px;font-family:var(--mono);font-size:11px;cursor:pointer;white-space:nowrap}
+.chipbtn{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:3px 9px;font-family:var(--mono);font-size:12px;cursor:pointer;white-space:nowrap;min-height:44px;box-sizing:border-box;display:inline-flex;align-items:center}
 .chipbtn:hover{border-color:var(--ink)}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
 .filters input{font:inherit;padding:7px 12px;border-radius:999px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);min-width:0;flex:1 1 200px;max-width:340px}
@@ -369,8 +369,9 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .day.today{background:var(--gold-soft);border-radius:var(--r);padding:14px;border-bottom:0}
 .day .dl{font-family:var(--mono);font-size:13px;font-weight:600}
 .day .dl small{display:block;color:var(--muted);font-weight:400}
-.ptask{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;padding:5px 0}
-.ptask input{width:18px;height:18px;accent-color:var(--gold)}
+.ptask{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:0}
+.ptask>label{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;min-width:0}
+.ptask input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:var(--gold)}
 .ptask .out{font-family:var(--mono);font-size:10px;background:var(--sunk);border-radius:4px;padding:1px 5px;margin-left:6px;color:var(--muted)}
 .ptask.done span.tx2{text-decoration:line-through;color:var(--muted)}
 .res{display:grid;gap:8px}
@@ -388,7 +389,7 @@ form.search input{width:100%;font:inherit;font-size:14px;padding:7px 12px;border
 .err summary{cursor:pointer;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .err .inner{padding:0 14px 14px}
 .tools{display:flex;gap:6px;align-items:center}
-.tool{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 10px;font-family:var(--mono);font-size:12px;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.tool{border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:5px 10px;font-family:var(--mono);font-size:12px;cursor:pointer;white-space:nowrap;color:var(--ink);min-height:44px;min-width:44px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center}
 .tool:hover{border-color:var(--ink)}
 .tool.on{background:var(--gold);color:var(--bg);border-color:var(--gold)}
 .tool.done{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
@@ -422,7 +423,7 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px soli
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 .q.kbd-active{outline:2px dashed var(--gold);outline-offset:3px}
 @media (max-width:700px){
-  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--rule);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));justify-content:space-between;gap:2px;overflow:visible}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--rule);padding:6px max(0px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(0px,env(safe-area-inset-left,0px));justify-content:space-between;gap:0;overflow:visible}
   nav.tabs button{flex:1;padding:8px 2px;font-size:12px;border-radius:10px}
   main{padding-bottom:120px}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
@@ -432,10 +433,10 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px soli
   form.search.open{display:block}
   .sbtn{display:inline-block}
   .sync{display:none}
-  .bar{gap:6px 8px;padding-block:8px}
+  .bar{gap:4px 8px;padding-block:4px}
   .brand{font-size:16px;gap:8px}
   .brand .dot{width:20px;height:20px}
-  .count{margin-left:auto;order:1;font-size:11px;padding:4px 9px}
+  .count{margin-left:auto;order:1;font-size:12px;padding:4px 9px}
   .count .cl{display:none}
   .tools{order:2;flex-basis:100%;margin-left:0;overflow-x:auto;scrollbar-width:none;justify-content:space-between}
   .tools::-webkit-scrollbar{display:none}
@@ -582,7 +583,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
   nav.tabs button[aria-current="true"]{flex-grow:2.4}
 }
 @media (max-width:700px){
-  nav.tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10.5px;padding:6px 4px;min-height:46px;flex:1 1 0;min-width:0}
+  nav.tabs button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;padding:6px 2px;min-height:44px;flex:1 1 0;min-width:44px}
   nav.tabs .ni{display:block;width:21px;height:21px}
   .bL{width:52px;height:52px}
   .qimg{padding:8px;border-radius:10px}
@@ -592,6 +593,7 @@ select{font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--r
 
 .pin{display:block;margin-top:6px;font:inherit;font-size:16px;padding:9px 12px;border-radius:10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:6px 22px}
+@media (max-width:374px){ nav.tabs button{min-width:0} } /* abaixo de 375 px as 8 abas não cabem com 44 px de largura: aqui a largura cai e a altura fica em 44 px */
 .prow{display:grid;grid-template-columns:40px repeat(5,1fr);gap:5px;align-items:center;padding:3px 0;border-bottom:1px solid var(--rule)}
 .prow>span{font-size:13px;font-weight:600}
 .prow button{height:38px;border-radius:999px;border:1.5px solid var(--rule);background:var(--surface);color:var(--ink);font-family:var(--mono);font-weight:600;font-size:14px;cursor:pointer;transition:background .12s}
@@ -1054,7 +1056,7 @@ function questionCard(el,q,opts={}){
       const rg=fbz.querySelector('.regra textarea'); if(rg){ let tmr; rg.addEventListener('input',()=>{ clearTimeout(tmr); tmr=setTimeout(()=>{ S.notes[q.id]=rg.value.trim(); save(); },700); }); }
       const tb=fbz.querySelector('.tex'); if(tb) tb.onclick=()=>askTutor(fbz.querySelector('.tx'),`Você é um tutor para a prova da Transpetro (Cesgranrio, Manutenção – Elétrica) falando com o estudante, em português do Brasil, texto simples sem markdown, até 150 palavras. Explique de um jeito diferente e mais concreto por que a alternativa ${q.ans} é a correta${first!==q.ans?` e por que a ${first}, que ele marcou, está errada`:''}. Confira as contas. Não invente fatos além do material.\n\nTexto-base: ${strip(q.base.join(' '))}\nFonte: ${strip(q.src)}\nComando: ${strip(q.cmd)}\nAlternativas: ${q.alts.map((a,i)=>L[i]+') '+strip(a)).join(' | ')}\nGabarito comentado: ${L.split('').map(k=>k+': '+strip(q.ex[k]||'')).join(' | ')}`);
     }
-    el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(st.cutMode){ if(st.cut.has(k)) st.cut.delete(k); else st.cut.add(k); paint(); const nb=el.querySelector(`.alt[data-k="${k}"]`); if(nb) nb.focus(); } else pick(k); });
+    el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(st.cutMode){ if(st.cut.has(k)) st.cut.delete(k); else st.cut.add(k); paint(); const nb=el.querySelector(`.alt[data-k="${k}"]`); if(nb) nb.focus(); } else { pick(k); const fb=el.querySelector('.fb'); if(fb) fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); } });
     const cb=el.querySelector('.cutb'); if(cb) cb.onclick=()=>{ st.cutMode=!st.cutMode; paint(); const b2=el.querySelector('.cutb'); if(b2) b2.focus(); };
     if(q.fig&&window.montarCalculadoras) montarCalculadoras(el); /* figura larga: botão "Ampliar a figura" no celular */
   }
@@ -1599,7 +1601,7 @@ function vPlano(){
   const tot=DATA.plan.reduce((a,p)=>a+p.tasks.length,0), done=DATA.plan.reduce((a,p)=>a+planDone(p).done,0);
   const td=isoToday();
   const dayRow=p=>{const pd=planDone(p); return `<div class="day ${p.d===td?'today':''}" id="d-${p.d}"><div class="dl">${p.l}<small>${p.d===td?'hoje':(p.d<td?'passou':'')}</small><small>${pd.done}/${pd.n}</small></div><div><b style="font-size:16px">${esc(p.foco)}</b>
-      ${p.tasks.map((t,i)=>`<div class="ptask ${taskDone(p,i)?'done':''}"><input type="checkbox" id="pt-${p.d}-${i}" data-k="${p.d}|${i}" ${taskDone(p,i)?'checked':''} ${(t.k==='mod'&&modStats(t.a).done===modStats(t.a).n)||(t.k==='prova'&&taskDone(p,i))?'disabled':''}><label for="pt-${p.d}-${i}"><span class="tx2">${taskLabel(t)}</span>${t.k==='out'?'<span class="out">fora do app</span>':''}</label>${taskGo(t)?`<button class="chipbtn" data-i="${p.d}|${i}">abrir</button>`:'<span></span>'}</div>`).join('')}</div></div>`};
+      ${p.tasks.map((t,i)=>`<div class="ptask ${taskDone(p,i)?'done':''}"><label for="pt-${p.d}-${i}"><input type="checkbox" id="pt-${p.d}-${i}" data-k="${p.d}|${i}" ${taskDone(p,i)?'checked':''} ${(t.k==='mod'&&modStats(t.a).done===modStats(t.a).n)||(t.k==='prova'&&taskDone(p,i))?'disabled':''}><span class="tx2">${taskLabel(t)}</span>${t.k==='out'?'<span class="out">fora do app</span>':''}</label>${taskGo(t)?`<button class="chipbtn" data-i="${p.d}|${i}">abrir</button>`:'<span></span>'}</div>`).join('')}</div></div>`};
   const prova=`<div class="day"><div class="dl">dom 06/12<small>prova</small></div><div><b style="font-size:16px">Prova Transpetro · Cesgranrio</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">40 questões específicas e 20 gerais (10 de Português e 10 de Matemática). Data da retificação do edital (DOU de 10/09/2026). O cartão de confirmação, com local e horário, sai em 1º/12.</p></div></div>`;
   app.innerHTML=`<div class="sec-title"><h2>Plano até a prova</h2><span class="eyebrow">${done} de ${tot} tarefas · ${daysLeft()} dias</span></div>
     ${DATA.plan.length?`<div class="panel" style="margin-bottom:14px"><div class="stat" style="border:0;padding:0"><div class="bar2"><i style="width:${pct(done,tot)}%"></i></div></div>
