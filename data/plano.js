@@ -50,7 +50,7 @@
 
     /* ---- Fase 2: simulado e pontos fracos (25 a 27/11) ---- */
     dia('11-25', 'qua', 'Simulado completo e correção', [
-      T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas'), T('erros', null, 'Caderno de erros: a regra de cada erro do simulado'),
+      T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas; pode fazer em dois blocos de 15 questões, com pausa'), T('erros', null, 'Caderno de erros: a regra de cada erro do simulado'),
       T('painel', null, 'Painel: abra as estações de "Reabra primeiro"')]),
     dia('11-26', 'qui', 'Pontos fracos 1: o que mais pesa (potência e trifásicos)', [
       R('E3', 'Reabra a E3 (8 questões em 2023) na aba Questões e refaça as que errou; releia só as seções dessas questões'),
@@ -80,10 +80,12 @@
     dia('12-02', 'qua', 'Segunda passada 3: Matemática e Português', [
       R('X1', 'Reabra a X1: juros, porcentagem e proporção, refaça as erradas'),
       R('P1', 'Reabra a P1: crase, concordância, pontuação e coesão, refaça as erradas'),
-      T('sim', 'MT', 'Simulado de Matemática: 20 questões, 40 minutos')]),
+      T('sim', 'MT', 'Simulado de Matemática: 20 questões, 40 minutos'),
+      R('X3', 'Reabra a X3 (estatística, probabilidade e logaritmo): refaça só as que errou, 10 minutos')]),
     dia('12-03', 'qui', 'Último simulado completo', [
       T('sim', 'tudo', 'Simulado de 30 questões (2 horas), todas as linhas, com relógio'), T('erros', null, 'Caderno de erros: a regra de cada erro'),
-      T('bib', 'nr10', 'Biblioteca: NR-10 lado a lado, de novo')]),
+      T('bib', 'nr10', 'Biblioteca: NR-10 lado a lado, de novo'),
+      R('X2', 'Reabra a X2 (Matemática) na aba Questões: refaça só as que errou, 10 minutos')]),
     dia('12-04', 'sex', 'Fechar as contas', [
       T('refazer', null, 'Treino: refazer os erros'), T('bib', 'formulas', 'Biblioteca: formulário inteiro, dizendo o nome e a unidade de cada símbolo'),
       T('bib', 'anc', 'Biblioteca: números-âncora, tampando a coluna da direita'), T('game', 'cards', 'Arena: cartões de véspera')]),

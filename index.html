@@ -1239,7 +1239,7 @@ function vSim(){
 const PESO_DIVIDIDO={E1:2,E2:2,M2:2,M3:2,I1:2,I2:2,A1:2,A2:2};
 function simCotas(pool,n,foco){
   const disp={}; pool.forEach(q=>{ if(q.mod&&M[q.mod]) disp[q.mod]=(disp[q.mod]||0)+1; });
-  const peso=id=>(M[id].peso2023||0)/(PESO_DIVIDIDO[id]||1);
+  const peso=id=>PESO23[id]||0; /* questões de 2023 mapeadas à estação (mapa2023): já é por estação, sem dividir */
   const reparte=(ids,k)=>{ ids=ids.filter(id=>peso(id)>0&&disp[id]); const out={}; ids.forEach(id=>out[id]=0); let falta=k;
     while(falta>0){ const vivos=ids.filter(id=>out[id]<disp[id]); if(!vivos.length) break; const tot=vivos.reduce((a,id)=>a+peso(id),0);
       const alvo=vivos.map(id=>[id,falta*peso(id)/tot]); let dado=0;
