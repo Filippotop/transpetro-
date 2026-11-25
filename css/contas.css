@@ -5,7 +5,7 @@
 .ct-prog b{font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
 .ct-prog small{color:var(--muted);font-size:14px}
 .ct-prog i{flex:1 1 120px;height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;align-self:center}
-.ct-prog u{display:block;height:100%;background:var(--gold);border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.ct-prog u{display:block;height:100%;background:var(--gold);border-radius:99px;transform-origin:left;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .ct-chips{display:flex;flex-wrap:wrap;gap:6px}
 .ct-chip{min-height:36px;padding:0 12px;border-radius:99px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);font:600 13px var(--mono);cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
 .ct-chip:active{transform:scale(.96)}
@@ -16,7 +16,7 @@
 .ct-card:active{transform:scale(.98)}
 .ct-card b{font-size:15.5px;line-height:1.3}
 .ct-card.dom{border-color:var(--ok)}
-.ct-tag{font:600 11px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.ct-tag{font:600 12px var(--display);color:var(--muted);}
 .ct-fm{font-size:13px;color:var(--muted);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ct-st{font:600 11.5px var(--mono);color:var(--muted)}
 .ct-card.dom .ct-st{color:var(--ok)}
@@ -48,7 +48,7 @@
 .ct-bt .btn,.ct-aviso .btn{min-height:44px}
 .ct-res{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0}
 .ct-res>div{flex:1 1 180px;padding:14px 16px;border-radius:12px;background:color-mix(in srgb,var(--gold) 14%,var(--surface));border:1px solid var(--gold)}
-.ct-res span{display:block;font:600 11.5px var(--mono);letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.ct-res span{display:block;font:600 12px var(--display);color:var(--muted);}
 .ct-res b{font:800 28px var(--mono);font-variant-numeric:tabular-nums}
 .ct-res small{font-size:14px;color:var(--muted);font-weight:600}
 .ct-arm{padding:12px 14px;border-radius:12px;border:1px dashed var(--rule)}
@@ -57,7 +57,7 @@
 .ct-resp{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:6px 0}
 .ct-resp label{flex:1 1 200px;display:grid;gap:4px;font-size:12.5px;color:var(--muted);font-weight:600}
 .ct-resp input{border:1px solid var(--rule);border-radius:10px;background:var(--surface);padding:0 12px}
-.ct-resp input:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
+.ct-resp input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
 .ct-vered{padding:12px 14px;border-radius:12px;font-size:16px;margin:6px 0}
 .ct-vered.ok{background:var(--ok-soft);border:1px solid var(--ok)}
 .ct-vered.no{background:var(--bad-soft);border:1px solid var(--bad)}
@@ -144,7 +144,7 @@
 .ct-card.rev{border-color:var(--gold)}
 .ct-card.rev .ct-st::before{content:'● ';color:var(--gold)}
 .ct-vazio{grid-column:1/-1;margin:8px 0;color:var(--muted)}
-.ct-sess{margin:0;font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ct-sess{margin:0;font:600 12px var(--display);color:var(--muted)}
 .ct-nud{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--rule);background:var(--sunk);color:var(--ink);font:700 17px var(--mono);cursor:pointer;transition:transform .12s}
 .ct-nud:active{transform:scale(.92)}
 .ct-in{gap:6px}
@@ -162,7 +162,7 @@
 .ct-sum small{color:var(--muted)}
 .ct-mt{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;align-items:start}
 .ct-tab{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
-.ct-tab caption{caption-side:top;text-align:left;font:700 12px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:2px 2px 6px}
+.ct-tab caption{caption-side:top;text-align:left;font:700 12px var(--display);color:var(--muted);padding:2px 2px 6px}
 .ct-tab th,.ct-tab td{padding:8px 10px;border-top:1px solid var(--rule);text-align:left;vertical-align:top}
 .ct-tab tr:first-child th,.ct-tab tr:first-child td,.ct-tab thead th{border-top:0}
 .ct-tab th{font:700 14px var(--mono);white-space:nowrap;background:var(--sunk);color:var(--ink)}

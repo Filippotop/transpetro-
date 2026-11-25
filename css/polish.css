@@ -93,7 +93,6 @@ html{scrollbar-color:color-mix(in srgb,var(--muted) 45%,transparent) transparent
 .fb.trap,.fb.ok,.fb.no,.fechado,.verdict,.verdict.no,.box{border-left:0;border-radius:var(--r-sm);box-shadow:0 0 0 1px color-mix(in srgb,var(--tone) 38%,transparent)}
 .fb.trap{--tone:var(--warn)} .fb.ok,.fechado,.verdict{--tone:var(--ok)} .fb.no,.verdict.no{--tone:var(--bad)} .box{--tone:var(--bx)}
 .box{border-left-color:var(--bx)} /* largura 0, mas a cor do tipo continua legível ao teste e a leitores de estilo */
-.fb strong:first-child::before,.fechado b:first-child::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--tone);margin-right:8px;vertical-align:.1em}
 .estacao .eq,.node .nb{border:1px solid color-mix(in srgb,var(--lc,var(--f)) 30%,var(--rule));border-radius:var(--r-sm)}
 .estacao .exq-g p{border-left:0;border-radius:var(--r-sm);box-shadow:0 0 0 1px color-mix(in srgb,var(--ok) 35%,transparent)}
 .estacao .exq.feita:not(.certa) .exq-g p{box-shadow:0 0 0 1px color-mix(in srgb,var(--bad) 35%,transparent)}

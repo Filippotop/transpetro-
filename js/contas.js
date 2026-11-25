@@ -655,7 +655,7 @@
       var dom = L.filter(function (r) { return dominada(r.id); }).length, dev = W.CONTAS.devidas().length;
       host.innerHTML = '<div class="ct">'
         + '<p class="ct-lede">Cada conta com a fórmula, o jeito de lembrar, a figura, o passo a passo com os números e as armadilhas. Abra uma, mude os números e veja a conta se refazer. Depois use <b>Treinar</b>: você faz a conta antes de ver os passos, e o app diz que erro foi, se você errou de um jeito comum. Três acertos seguidos e a conta fica dominada. Cada acerto adia a próxima revisão (1, 3, 7 e depois 14 dias, sempre antes da prova); errou, volta hoje.</p>'
-        + '<div class="ct-prog"><span class="eyebrow">dominadas</span><b>' + dom + '<small>/' + L.length + '</small></b><i><u style="width:' + Math.round(dom / L.length * 100) + '%"></u></i></div>'
+        + '<div class="ct-prog"><span class="eyebrow">dominadas</span><b>' + dom + '<small>/' + L.length + '</small></b><i><u style="transform:scaleX(' + (dom / L.length).toFixed(3) + ')"></u></i></div>'
         + '<div class="ct-bar"><button type="button" class="btn primary" id="ctm">Treino misto de 5 contas' + (dev ? ' · ' + dev + ' para revisar' : '') + '</button><input type="search" id="cts" class="ct-busca" placeholder="Buscar conta (ex.: √3, trafo, queda)" aria-label="Buscar conta" value="' + esc(busca) + '" autocomplete="off"></div>'
         + '<div class="ct-chips" role="group" aria-label="Filtrar">' + CH.map(function (m) { return '<button type="button" class="ct-chip' + (m[0] === filtro ? ' on' : '') + '" data-f="' + m[0] + '" aria-pressed="' + (m[0] === filtro) + '">' + m[1] + (m[0] === 'revisar' && dev ? ' (' + dev + ')' : '') + '</button>'; }).join('') + '</div>'
         + '<div class="ct-grid" id="ctgrid"></div></div>';

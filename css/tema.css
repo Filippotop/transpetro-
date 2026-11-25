@@ -19,7 +19,7 @@
 
 /* Cartões de número: rótulo pequeno em cima (monoespaçada), número grande embaixo. */
 .stat{display:flex;flex-direction:column;gap:2px;padding:14px 16px}
-.stat .l{order:-1;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat .l{order:-1;font-family:var(--display);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat .n{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.1}
 .stat .bar2{order:3}
 
@@ -29,7 +29,7 @@
 .spark .ar{stroke:none}
 .spark .dt{fill:var(--gold)}
 .spark .gl{stroke:var(--rule);stroke-width:1}
-.spark text{font-family:var(--mono);font-size:10px;fill:var(--muted);letter-spacing:.06em}
+.spark text{font-family:var(--mono);font-size:10px;fill:var(--muted);}
 html[data-fx]:not([data-fx="off"]) .spark .ln{stroke-dasharray:1;stroke-dashoffset:1;animation:edo-draw 1.1s .25s cubic-bezier(.4,0,.2,1) forwards}
 html[data-fx]:not([data-fx="off"]) .spark .ar{opacity:0;animation:edo-fade .6s .9s ease forwards}
 html[data-fx]:not([data-fx="off"]) .spark .dt{opacity:0;animation:edo-fade .3s 1.2s ease forwards}
