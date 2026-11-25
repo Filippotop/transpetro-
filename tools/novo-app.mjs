@@ -20,7 +20,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const USO = 'uso: node tools/novo-app.mjs --nome "Química de Ouro" --slug quimica-de-ouro --prefixo qdo --dest C:/caminho --prova 2027-03-10 --banca X --cargo Y [--concurso "Petrobras"] [--curto Química] [--url https://...]';
-const die = msg => { console.error('novo-app: ' + msg); process.exit(1); };
+/* CRIEI: esta execução criou o destino. Se algo falhar depois, o destino é removido, para a reexecução não responder "nada a fazer". */
+let CRIEI = false;
+const die = (msg, codigo = 1) => { console.error('novo-app: ' + msg); if (CRIEI) fs.rmSync(DEST, { recursive: true, force: true }); process.exit(codigo); };
 
 function parseArgs(argv) {
   const o = {};
@@ -39,20 +41,30 @@ const obrig = ['nome', 'slug', 'prefixo', 'dest', 'prova', 'banca', 'cargo'];
 const falt = obrig.filter(k => !a[k]);
 if (falt.length) die(`faltam: ${falt.map(k => '--' + k).join(', ')}\n${USO}`);
 if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(a.slug)) die('--slug: minúsculas, números e hífen (ex.: quimica-de-ouro)');
-if (!/^[a-z]{2,8}$/.test(a.prefixo)) die('--prefixo: de 2 a 8 letras minúsculas (ex.: qdo)');
+if (!/^[a-z]{3}$/.test(a.prefixo)) die('--prefixo: exatamente 3 letras minúsculas (ex.: qdo). O index.html corta o nome do cache com slice(10), que só vale para prefixo de 3 letras.');
+for (const k of ['nome', 'banca', 'cargo', 'concurso', 'curto']) if (a[k] !== undefined && (!a[k].trim() || /[\x00-\x1f\x7f]/.test(a[k]))) die(`--${k}: texto vazio ou com quebra de linha/controle`);
+if (a.url !== undefined && !/^https?:\/\/[A-Za-z0-9._~\/:-]+\/?$/.test(a.url)) die('--url: só http(s)://endereço, com letras, números e . _ ~ / : - (sem espaço nem aspas)');
 if (['edo', 'hdo'].includes(a.prefixo)) die('--prefixo: edo e hdo são dos apps Elétrica de Ouro e Humanas de Ouro');
 if (!/^\d{4}-\d{2}-\d{2}$/.test(a.prova) || Number.isNaN(Date.parse(a.prova + 'T00:00:00Z'))) die('--prova: data AAAA-MM-DD válida (ex.: 2027-03-10)');
 if (a.slug === 'eletrica-de-ouro' || a.slug === 'humanas-de-ouro') die('--slug: já é o de outro app');
 
+/* Escape de texto digitado (nome, banca, cargo, concurso, curto). Vai para HTML, atributos, strings JS, comentários e template
+   literals dos arquivos do motor. As entidades cobrem todos esses contextos ( & < > " ' ` $ \ * ): nada digitado vira código.
+   Efeito: um texto com ' ou & aparece como entidade no código gerado e como caractere na tela. */
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;', '$': '&#36;', '\\': '&#92;', '*': '&#42;' };
+const seguro = s => String(s).replace(/[&<>"'`$\\*]/g, c => ESC[c]);
+
 /* ---------- valores derivados ---------- */
 const DEST = path.resolve(a.dest);
+const REL = path.relative(ROOT, DEST);
+if (REL === '' || (REL.split(path.sep)[0] !== '..' && !path.isAbsolute(REL))) die(`--dest ${DEST} está dentro do repositório do motor (${ROOT}). Gere fora dele (ex.: C:/Users/User/meu-app); o repo, .git e node_modules são proibidos.`);
 const NOME = a.nome.trim();
 const SLUG = a.slug;
 const PRE = a.prefixo + '-';
 const PRIMEIRA = NOME.split(/\s+/)[0];
 const CURTO = a.curto || PRIMEIRA;
 const RESTO = NOME.slice(PRIMEIRA.length).trim();
-const BRAND_HTML = RESTO ? `${CURTO} <em>${RESTO}</em>` : CURTO;
+const BRAND_HTML = RESTO ? `${seguro(CURTO)} <em>${seguro(RESTO)}</em>` : seguro(CURTO);
 const BANCA = a.banca.trim();
 const CARGO = a.cargo.trim();
 const CONC = (a.concurso || 'concurso público').trim();
@@ -78,16 +90,16 @@ if (fs.existsSync(DEST)) {
 /* ---------- trocas de identidade (texto), na ordem: o mais específico primeiro ---------- */
 const TROCAS = [
   ['Elétrica <em>de Ouro</em>', BRAND_HTML],
-  ['ELÉTRICA DE OURO', NOME.toUpperCase()],
-  ['Elétrica de Ouro', NOME],
+  ['ELÉTRICA DE OURO', seguro(NOME.toUpperCase())],
+  ['Elétrica de Ouro', seguro(NOME)],
   ['https://filippotop.github.io/transpetro-/', URL_APP],
   ['filippotop.github.io/transpetro-/', URL_APP.replace(/^https?:\/\//, '')],
-  ['Ênfase 8: Manutenção – Elétrica', CARGO],
-  ['Manutenção – Elétrica', CARGO],
-  ['da Transpetro', `${ART} ${CONC}`],
-  ['Transpetro', CONC],
+  ['Ênfase 8: Manutenção – Elétrica', seguro(CARGO)],
+  ['Manutenção – Elétrica', seguro(CARGO)],
+  ['da Transpetro', seguro(`${ART} ${CONC}`)],
+  ['Transpetro', seguro(CONC)],
   ['transpetro', SLUG],
-  ['Cesgranrio', BANCA],
+  ['Cesgranrio', seguro(BANCA)],
   ['Humanas de Ouro', 'o app de origem'],
   ['humanas-de-ouro', 'outro-app'],
   ['Humanas', 'outro app'],
@@ -96,10 +108,13 @@ const TROCAS = [
   ['06/12', PROVA_DM],
   ['2026-12-06', a.prova],
   ['eletrica-de-ouro', SLUG],
-  ['Elétrica', CURTO],
+  ['Elétrica', seguro(CURTO)],
 ];
 /* Prefixo de storage e de cache: edo- (Elétrica) vira o do app novo. Palavra inteira, para não pegar outras. */
 const TROCA_PREFIXO = [/\bedo-/g, PRE];
+
+/* Linha da prova no plano (texto do índice, em template literal): banca, concurso e cargo entram escapados. */
+const PROVA_LINHA = `  const prova=\`<div class="day"><div class="dl">${PROVA_DIA}<small>prova</small></div><div><b style="font-size:16px">${seguro(BANCA)} · ${seguro(CONC)}</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">${seguro(CARGO)}. Data da prova: ${PROVA_BR}.</p></div></div>\`;`;
 
 /* ---------- remoções por âncora: cada uma tem de bater o número de vezes indicado, senão o gerador falha ---------- */
 const REMOVER = [
@@ -118,7 +133,7 @@ const REMOVER = [
   { f: 'index.html', re: /nr10:bNR10,/, n: 1, o: 'subaba NR-10 (rota)' },
   { f: 'index.html', re: /\/\* NR-10 lado a lado[\s\S]*?\n\}\n/, n: 1, o: 'subaba NR-10 (função)' },
   { f: 'index.html', re: /<details style="margin-top:10px"><summary><b>Provas reais anteriores[\s\S]*?<\/details>/, n: 1, o: 'links de provas reais de outra banca' },
-  { f: 'index.html', re: /^  const prova=.*$/m, n: 1, o: 'linha da prova no plano', subst: `  const prova=\`<div class="day"><div class="dl">${PROVA_DIA}<small>prova</small></div><div><b style="font-size:16px">${BANCA} · ${CONC}</b><p class="muted" style="font-family:var(--read);margin:4px 0 0">${CARGO}. Data da prova: ${PROVA_BR}.</p></div></div>\`;` },
+  { f: 'index.html', re: /^  const prova=.*$/m, n: 1, o: 'linha da prova no plano', subst: PROVA_LINHA },
   { f: 'index.html', re: /^const LINES = .*$/m, n: 1, o: 'linhas do mapa (só a EX1)', subst: `const LINES = {E:{name:'Conteúdo',vol:'EL'}};` },
   { f: 'index.html', re: /^const STUDY_LINES = .*$/m, n: 1, o: 'linhas de estudo', subst: `const STUDY_LINES = ['E'];` },
   { f: 'index.html', re: /^const EXAM_NOTE = .*$/m, n: 1, o: 'nota da data da prova', subst: `const EXAM_NOTE = 'data informada na criação do app; confira o edital e o comprovante de inscrição';` },
@@ -152,7 +167,7 @@ function aplicaRemocoes(rel, txt) {
   for (const r of REMOVER.filter(x => x.f === rel)) {
     const achados = txt.match(new RegExp(r.re.source, r.re.flags.includes('g') ? r.re.flags : r.re.flags + 'g')) || [];
     if (achados.length !== r.n) die(`${rel}: "${r.o}" deveria bater ${r.n}x e bateu ${achados.length}x. O motor mudou: atualize REMOVER em tools/novo-app.mjs.`);
-    txt = txt.replace(new RegExp(r.re.source, r.re.flags.includes('g') ? r.re.flags : r.re.flags + 'g'), r.subst ?? '');
+    txt = txt.replace(new RegExp(r.re.source, r.re.flags.includes('g') ? r.re.flags : r.re.flags + 'g'), () => r.subst ?? '');
   }
   return txt;
 }
@@ -250,6 +265,7 @@ function listaRecursiva(dir, base = dir) {
   return out.sort();
 }
 
+CRIEI = true;
 fs.mkdirSync(DEST, { recursive: true });
 const copiados = [];
 for (const rel of COPIAR_ARQUIVOS) {
@@ -290,12 +306,11 @@ escreve('README.md', LEIA);
 escreve('AGENTS.md', AGENTS);
 escreve('PRODUCT.md', PRODUTO);
 escreve('package.json', PACKAGE);
-escreve('.novo-app.json', JSON.stringify(SPEC, null, 2) + '\n');
 
 /* sw.js: lista de arquivos do shell = o que de fato existe no destino; sem Bancada nem fotos de prova. */
 const shellFiles = ['./', ...listaRecursiva(DEST).filter(f => !/^(tests|tools|node_modules|docs)\//.test(f) && !/^(sw\.js|\.novo-app\.json|package(-lock)?\.json|README\.md|AGENTS\.md|PRODUCT\.md)$/.test(f) && !/^\./.test(f))];
 let sw = fs.readFileSync(path.join(DEST, 'sw.js'), 'utf8');
-const fixa = (nome, valor) => { const re = new RegExp(`const ${nome}=\\[[\\s\\S]*?\\];`); if (!re.test(sw)) die(`sw.js: ${nome} não encontrado`); sw = sw.replace(re, `const ${nome}=${valor};`); };
+const fixa = (nome, valor) => { const re = new RegExp(`const ${nome}=\\[[\\s\\S]*?\\];`); if (!re.test(sw)) die(`sw.js: ${nome} não encontrado`); sw = sw.replace(re, () => `const ${nome}=${valor};`); };
 fixa('SHELL_FILES', JSON.stringify(shellFiles));
 fixa('BANCADA_FILES', '[]');
 fixa('IMAGES', '[]');
@@ -309,7 +324,9 @@ for (const f of listaRecursiva(DEST)) {
   if (!TEXTO.test(f) || f === '.novo-app.json') continue;
   fs.readFileSync(path.join(DEST, f), 'utf8').split('\n').forEach((l, i) => { if (PROIBIDAS.test(l) && !/^\s*$/.test(l)) sobras.push(`${f}:${i + 1}: ${l.trim().slice(0, 140)}`); });
 }
-if (sobras.length) { console.error(`novo-app: ${sobras.length} trecho(s) de outra matéria sobraram (corrija TROCAS/REMOVER):\n` + sobras.join('\n')); process.exit(2); }
+if (sobras.length) die(`${sobras.length} trecho(s) de outra matéria sobraram (corrija TROCAS/REMOVER):\n` + sobras.join('\n'), 2);
+/* Só agora o destino é marcado como gerado: uma falha acima deixa o destino removido, nunca "pronto". */
+fs.writeFileSync(MARCA, JSON.stringify(SPEC, null, 2) + '\n');
 
 console.log(`novo-app: ${DEST}`);
 console.log(`  motor: ${copiados.length} arquivos copiados, ${tiradas.length} referências de conteúdo/geradores removidas (${tiradas.join(', ') || '—'})`);

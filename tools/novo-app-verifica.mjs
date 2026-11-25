@@ -16,7 +16,7 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, v, i, all) =>
 const URL_APP = args.url;
 const SAIDA = args.saida;
 const CHROME = args.chrome || process.env.CHROMIUM;
-if (!URL_APP || !SAIDA) { console.error('uso: --url <endereço> --saida <pasta> [--chrome <chrome.exe>]'); process.exit(1); }
+if (!URL_APP || !SAIDA || !args.chave || !args.prefixo) { console.error('uso: --url <endereço> --saida <pasta> --prefixo <ex.: qdo-> --chave <ex.: quimica-de-ouro-v1> [--chrome <chrome.exe>]'); process.exit(1); }
 fs.mkdirSync(SAIDA, { recursive: true });
 
 /* Palavras de outra matéria. Se alguma aparecer no app gerado, algo do Elétrica sobrou. */
@@ -94,7 +94,7 @@ for (const tema of ['dark', 'light']) {
     if (chaves.some(k => /^edo-|eletrica-de-ouro/.test(k))) falha(`[${tema}] gravou chave de outro app: ${chaves.join(', ')}`);
     await page.screenshot({ path: path.join(SAIDA, `${tema}-questao-EX1.png`), fullPage: false });
     t.shot.push(path.join(SAIDA, `${tema}-questao-EX1.png`));
-  } catch (e) { t.questaoNaoTestada = String(e.message).split('\n')[0]; }
+  } catch (e) { t.questaoNaoTestada = String(e.message).split('\n')[0]; falha(`[${tema}] não consegui responder a questão de exemplo: ${t.questaoNaoTestada}`); }
 
   t.erros.forEach(e => falha(`[${tema}] ${e}`));
   t.consoleErros = t.consoleErros.filter(m => !/fonts|googleapis|gstatic/i.test(m));

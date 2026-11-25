@@ -11,9 +11,12 @@ node tools/novo-app.mjs --nome "Química de Ouro" --slug quimica-de-ouro --prefi
 ```
 
 - `--concurso` é o nome sem artigo: sai "da Petrobras" (artigo pelo final do nome; use `--concurso` com cuidado para nomes que não terminam em "a"). Padrão: "do concurso público".
-- `--prefixo`: 2 a 8 letras minúsculas, diferente de `edo` (Elétrica) e `hdo` (Humanas). Vira o prefixo de todas as chaves de `localStorage` e dos caches (`qdo-shell-1`, `qdo-last`…).
+- `--prefixo`: **exatamente 3 letras minúsculas**, diferente de `edo` (Elétrica) e `hdo` (Humanas). Vira o prefixo de todas as chaves de `localStorage` e dos caches (`qdo-shell-1`, `qdo-last`…). O motor corta o nome do cache com `slice(10)` (`index.html`, ~1714), que só dá o nome certo com prefixo de 3 letras (`edo-shell-` tem 10 caracteres); por isso o gerador recusa outro tamanho.
 - `--slug` vira a chave de progresso (`quimica-de-ouro-v1`), o nome do arquivo de exportação e o `package.json`.
+- `--dest` tem de ficar **fora** do repositório do motor (e, portanto, fora de `.git` e `node_modules`); dentro dele, o gerador para com erro (exit 1).
 - Idempotência: rodar de novo com os **mesmos** argumentos no **mesmo** `--dest` não faz nada (exit 0). Outro `--dest` gera arquivos idênticos. Um `--dest` que já existe e não é esse app para (exit 1, sem tocar em nada).
+- Falha no meio (inclusive a checagem de sobras, exit 2): o destino criado nesta execução é **apagado**, e a marca `.novo-app.json` só é gravada no fim, com sucesso. Assim, um app quebrado nunca responde "nada a fazer" na reexecução.
+- Textos digitados (`--nome`, `--banca`, `--cargo`, `--concurso`, `--curto`) não podem ter quebra de linha nem caractere de controle. Dentro do código gerado, `' " ` $ \ * & < >` saem como entidades HTML (ex.: `'` vira `&#39;`); na tela o texto aparece normal. `--url` aceita só `http(s)://` com letras, números e `. _ ~ / : -`.
 - Não há `--com-bancada`: a Bancada é específica da Transpetro e não sai no gerador.
 
 Depois de gerar:
@@ -24,7 +27,7 @@ npm test                  # merge.test.mjs
 npx serve .               # ou: python -m http.server 8000
 ```
 
-Validação num Chrome de verdade (390×844, temas escuro e claro, service worker, estação de exemplo, progresso gravado com o prefixo certo, nenhuma palavra de outra matéria):
+Validação num Chrome de verdade (390×844, temas escuro e claro, service worker, estação de exemplo, progresso gravado com o prefixo certo, nenhuma palavra de outra matéria). `--chave` e `--prefixo` são obrigatórios; sem eles a verificação não roda, e uma questão que não pôde ser respondida conta como falha:
 
 ```bash
 node tools/novo-app-verifica.mjs --url http://localhost:8000/ --saida <pasta> --prefixo qdo- --chave quimica-de-ouro-v1 --chrome "C:/Program Files/Google/Chrome/Application/chrome.exe"
@@ -85,11 +88,21 @@ Sanidade: depois de gerar, o gerador procura `Elétrica|Eletrica|Transpetro|NR-1
 
 ## Limites conhecidos (o que o gerador NÃO troca)
 
+- **`--prefixo` de 3 letras** (ver acima): é uma restrição do motor, não do gerador. Trocar `slice(10)` por algo que leia o nome do cache resolve.
+- **Textos presos à "prova de 2023"**: "Missão de hoje" e a ordem das estações (`index.html` ~868, ~847), Recalibração (~1166, ~1176), Painel (~1550), o aviso do Plano "Primeira passada (16 a 24/11)" (~1606) e a estação "em breve" da aba Provas (~1995). O gerador não troca nenhum desses. O comportamento desses textos com `DATA.mapa2023` vazio não foi testado.
+- **Corte de 50% da Transpetro**: "Corte: 50% em cada bloco" e as regras de eliminação (`index.html` ~877, ~1292, ~1340, ~1848, ~1961–1966, ~2137), baseadas no edital 7.1.4.3 da Cesgranrio. Um app de outra banca mostra esse corte até alguém trocar essas regras.
+- **Horário fixo da prova**: `new Date('AAAA-MM-DDT08:00:00-03:00')` (`index.html` 685). O gerador troca só a data; o horário fica 08:00 em Brasília, e a contagem regressiva usa esse valor.
+- **`npm test` gerado só roda `merge.test.mjs`** (`package.json`). Os testes de contas, estações, questões, biblioteca, smoke e Bancada do Elétrica não são copiados.
 - **Textos de método e de regra da prova** que aparecem nas telas do app gerado: "Específicas" (vol EL), "Na prova não há desconto por erro", "Questões inéditas no formato da prova…", "Aquecimento", "Missão de hoje" (que fala da "prova de 2023"), "Painel" e "Plano" com dicas de estudo. São texto da base, sem a palavra proibida, mas não são genéricos. Revisar a cada app.
 - **Dados vazios por padrão**: `DATA.bib` (fórmulas, unidades, glossário), `DATA.edital`, `DATA.plan`, `DATA.recal`, `DATA.exams` (provas reais), `DATA.mapa2023`. As telas funcionam vazias (o gerador testou), mas a Biblioteca, a Arena e o Painel ficam magros até o conteúdo chegar.
-- **Ícones** do Elétrica (pendente, ver tabela).
+- **Ícones herdados** do Elétrica (pendente, ver tabela): trocar `icons/` antes de publicar.
 - **Primeira carga**: o aviso "Nova versão do app disponível" pode aparecer na 2ª navegação numa mesma sessão (comportamento do `pwa.js`, igual ao Elétrica). Não foi corrigido.
-- **Refator para `window.APP`**: não feito. Preferi trocar identidade por tokens no gerador, para não mexer no `index.html` do Elétrica (~40 pontos). O próximo passo natural é ler nome, prefixo, data e URL de um único `data/app.js`; aí o gerador só escreve esse arquivo.
+- **Parametrização (plano em 4 passos)**. Hoje a identidade é trocada por texto (`TROCAS`/`REMOVER`), o que é frágil. Plano:
+  1. **`data/app.js`** com os valores atuais do Elétrica (nome, slug, prefixo, data da prova, banca, cargo, concurso, URL), sem mudar comportamento.
+  2. **Um consumidor por commit**, cada um lendo de `APP` com fallback para o valor antigo (`index.html`, `sw.js`, `pwa.js`, `gist-sync.js`, `merge.js`…), um commit de cada vez, com `npm test` verde.
+  3. **Textos de método em `APP.regras`** (corte, "prova de 2023", dicas do Plano), para tirar do HTML o que é de cada matéria.
+  4. **O gerador escreve só `app.js`**: sem `TROCAS` de identidade; `REMOVER` fica só para o que não é configuração (bancada, aulas, NR-10).
+  **Passos 2 a 4 só depois de 06/12/2026** (prova do Elétrica): mexer no app durante a semana de prova arrisca o estudo. O passo 1 é seguro antes disso.
 
 ## Como criar uma matéria nova (conteúdo)
 
