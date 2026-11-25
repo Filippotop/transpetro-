@@ -28,7 +28,7 @@ function opa({ kind, r1, rf, r2 = null, r3 = null, vin, vin2 = null, vout, notas
   c.wire([[fx + 36, -40], [fx, -40], [fx, p.inv[1]]]);
   c.wire([[fx, p.inv[1]], [p.inv[0], p.inv[1]]]); c.dot(fx, p.inv[1]);
   if (kind === 'inv') {
-    c.wire([[X0 + 40, p.inv[1]], [fx - 0, p.inv[1]]].map(q => q)); c.sym(r1, X0 + 100, p.inv[1], 0); c.label(r1, X0 + 100, p.inv[1], false);
+    c.wire([[X0 + 128, p.inv[1]], [fx, p.inv[1]]]); c.sym(r1, X0 + 100, p.inv[1], 0); c.label(r1, X0 + 100, p.inv[1], false);
     c.wire([[X0 + 40, p.inv[1]], [X0 + 72, p.inv[1]]]); c.open(X0 + 40, p.inv[1]); lab(vin, X0 + 34, p.inv[1] + 4, 'end');
     c.wire([[p.non[0], p.non[1]], [p.non[0] - 30, p.non[1]], [p.non[0] - 30, p.non[1] + 14]]); c.ground(p.non[0] - 30, p.non[1] + 14);
   } else if (kind === 'non') {
@@ -78,7 +78,7 @@ export default {
   'BQ-e-A1-b2-3': ladder({ aria: 'Regulador Zener com a carga desconectada: toda a corrente do resistor passa pelo Zener, que dissipa o máximo', src: V('', 'Vin'),
     items: [{ s: R('R', '', { n: ['IS'] }) }, { p: [ZD('Zener', '', { i: 'IS (máxima)', rev: true, n: ['dissipação máxima'] })] }, { p: [sw('carga', '', { n: ['desconectada', 'IL = 0'] })] }], note: 'sem carga: IZ = IS − 0 = IS' }),
   /* A1.10 */
-  'BQ-e-A1-b3-1': bjt({ vcc: '15 V', carga: R('RC', '1,5 kΩ', { i: '4 mA', u: '6 V' }), ib: 'IB = 40 µA', notas: ['IC = β·IB = 100·40 µA = 4 mA · VRC = 4 mA·1,5 kΩ = 6 V', 'VCE = 15 − 6 = 9,0 V (região ativa)'], aria: 'Transistor com beta 100, 15 volts e resistor de coletor de 1,5 quilo-ohms com 40 microampères de base: 4 miliampères de coletor e VCE de 9 volts' }),
+  'BQ-e-A1-b3-1': bjt({ vcc: '15 V', carga: R('RC', '1,5 kΩ', { i: '4 mA', u: '6 V' }), sinal: 'base', ib: 'IB = 40 µA', notas: ['IC = β·IB = 100·40 µA = 4 mA · VRC = 4 mA·1,5 kΩ = 6 V', 'VCE = 15 − 6 = 9,0 V (região ativa)'], aria: 'Transistor com beta 100, 15 volts e resistor de coletor de 1,5 quilo-ohms com 40 microampères de base: 4 miliampères de coletor e VCE de 9 volts' }),
   /* A1.11 */
   'BQ-e-A1-b3-2': bjt({ vcc: '12 V', carga: R('carga', '200 Ω', { i: '60 mA', u: '12 V' }), rb: R('RB', '717 Ω'), sinal: '5 V', ib: 'IB = 6 mA', notas: ['IC = 12/200 = 60 mA · IB = IC/10 = 6 mA', 'RB = (5 − 0,7)/6 mA ≈ 717 Ω'], aria: 'Transistor como chave: sinal de 5 volts, resistor de base de 717 ohms, carga de 12 volts e 200 ohms com 60 miliampères' }),
   /* A1.36 */
@@ -93,7 +93,7 @@ export default {
   'BQ-e-A1-y4': opa({ kind: 'dif', r1: R('R1', '10 kΩ'), rf: R('Rf', '40 kΩ'), r2: R('R2', '10 kΩ'), r3: R('R3', '40 kΩ'), vin: 'V1 = 1,2 V', vin2: 'V2 = 1,7 V', vout: 'Vo = 2,0 V', notas: ['V+ = 1,7·40/(10 + 40) = 1,36 V · Vo = 1,36·(1 + 4) − 4·1,2 = 2,0 V'], aria: 'Amplificador diferencial com 10 e 40 quilo-ohms, V1 de 1,2 volt e V2 de 1,7 volt: saída de 2 volts' }),
   /* A1.17 */
   'BQ-e-A1-b5-0': ladder({ aria: 'Filtro passa-baixas RC com 4,7 quilo-ohms e 22 nanofarads: frequência de corte de 1.540 hertz', src: AC('Vin', ''),
-    items: [{ s: R('R', '4,7 kΩ') }, { p: [C('C', '22 nF')] }, { term: ['', '', 'Vout (no capacitor)'] }], note: 'fc = 1/(2π·R·C) = 1/(2π·4.700·22×10⁻⁹) ≈ 1.540 Hz' }),
+    items: [{ s: R('R', '4,7 kΩ') }, { p: [C('C', '22 nF')] }, { term: ['', '', 'Saída (sobre o capacitor)'] }], note: 'fc = 1/(2π·R·C) = 1/(2π·4.700·22×10⁻⁹) ≈ 1.540 Hz' }),
   /* A1.35 */
   'BQ-e-A1-y1': ladder({ aria: 'Regulador Zener de 12 volts e 1,2 watt com 120 ohms em série e carga de 240 ohms: fonte máxima de 30 volts', src: V('', '30 V', { i: '150 mA' }),
     items: [{ s: R('R', '120 Ω', { u: '18 V' }) }, { p: [ZD('Zener', '12 V', { i: '100 mA', rev: true, n: ['P = 1,2 W'] })] }, { p: [R('carga', '240 Ω', { i: '50 mA', u: '12 V' })] }], note: 'IZ máx = 1,2/12 = 100 mA · IL = 50 mA · IR = 150 mA → Vin = 12 + 150 mA·120 = 30 V' }),

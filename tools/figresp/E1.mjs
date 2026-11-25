@@ -21,7 +21,7 @@ export default {
   'BQ-a-T4-b2-2': ladder({ aria: 'Fonte de 24 volts, resistor de 4 ohms em série com 12 ohms em paralelo com 6 ohms; corrente de 1 ampère no de 12 ohms', src: V('', '24 V', { i: '3 A' }),
     items: [{ s: R('R₁', '4 Ω', { u: '12 V' }) }, { p: [R('R₂', '12 Ω', { i: '1 A', u: '12 V' })] }, { p: [R('R₃', '6 Ω', { i: '2 A', u: '12 V' })] }], note: 'Req = 4 + (12∥6) = 4 + 4 = 8 Ω → I = 3 A' }),
   /* E1.9 */
-  'BQ-a-T4-b2-3': ladder({ aria: 'Fonte de corrente de 30 ampères alimentando 10 e 5 ohms em paralelo: 10 ampères no de 10 ohms e 20 no de 5 ohms', src: I('', '30 A'),
+  'BQ-a-T4-b2-3': ladder({ aria: 'Fonte de corrente de 30 ampères alimentando 10 e 5 ohms em paralelo: 10 ampères no de 10 ohms e 20 no de 5 ohms', src: I('', '30 A', { rev: true }),
     items: [{ p: [R('R₁', '10 Ω', { i: '10 A', u: '100 V' })] }, { p: [R('R₂', '5 Ω', { i: '20 A', u: '100 V' })] }], note: 'divisor de corrente: I₁ = 30·5/(10+5) = 10 A' }),
   /* E1.10: ponte de Wheatstone equilibrada */
   'BQ-a-T4-b2-4': bridge({ aria: 'Ponte de Wheatstone equilibrada: R1 de 100 ohms e Rx opostos, R2 de 200 e R3 de 150 ohms opostos; Rx vale 300 ohms', src: V('', 'E'),
@@ -66,8 +66,8 @@ export default {
     items: [{ s: R('', '2 Ω', { i: 'i₁ = 2,5 A', u: '5 V' }), }, { p: [R('', '4 Ω', { i: '1,25 A', u: '5 V' })], n: 'N' }, { p: [Id('', '0,5·i₁', { n: ['= 1,25 A'], rev: false })] }], note: 'LKC no nó: i₁ = V/4 + 0,5·i₁ e i₁ = (10 − V)/2 → V = 5 V' }),
   /* E1.21 */
   'BQ-a-T4-b5-0': stack([
-    { title: 'Circuito (R de 20 Ω retirado = terminais abertos)', c: ladderC({ src: V('', '30 V'), items: [{ s: R('', '10 Ω', { u: '0 V' }) }, { term: ['a', 'b', 'Vth = 20 V'] }] }) },
-    { title: 'Mesmo com R de 20 Ω: divisor 30·20/30 = 20 V', c: ladderC({ src: V('', '30 V', { i: '1 A' }), items: [{ s: R('', '10 Ω', { u: '10 V' }) }, { p: [R('', '20 Ω', { u: '20 V' })] }, { term: ['a', 'b', ''] }] }) },
+    { title: 'Tensão nos terminais do R de 20 Ω (sem carga adicional): divisor 30·20/30 = 20 V', c: ladderC({ src: V('', '30 V', { i: '1 A' }), items: [{ s: R('', '10 Ω', { u: '10 V' }) }, { p: [R('', '20 Ω', { u: '20 V' })] }, { term: ['a', 'b', 'Vth = 20 V'] }] }) },
+    { title: 'Fonte de tensão em curto: 10 Ω em paralelo com 20 Ω', c: ladderC({ src: null, items: [{ p: [R('', '10 Ω')] }, { p: [R('', '20 Ω')] }, { term: ['a', 'b', 'Rth = 200/30 ≈ 6,67 Ω'] }] }) },
     { title: 'Equivalente de Thévenin', c: ladderC({ src: V('Vth', '20 V'), items: [{ s: R('Rth', '6,67 Ω') }, { term: ['a', 'b', ''] }] }) },
   ], 'Divisor com 10 ohms e 20 ohms e seu equivalente de Thévenin de 20 volts e 6,67 ohms'),
   /* E1.22 */
