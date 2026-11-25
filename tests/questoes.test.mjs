@@ -56,7 +56,7 @@ const soNumero = h => /^[\d.,]+(\s*×\s*10\S+)?(∠[−-]?[\d,]+°)?\s*[A-Za-zΩ
 const perto = (a, b) => Math.abs(a - b) <= 0.01 * Math.max(Math.abs(a), Math.abs(b), 1e-12);
 
 /* Letras das alternativas erradas que valem o mesmo número da correta, de propósito (diferem só pelo prefixo da unidade). */
-const PREFIXO_UNIDADE = { 'BQ-e-M2-z1': 'BE', 'BQ-e-M2-z3': 'E' };
+const PREFIXO_UNIDADE = { 'BQ-e-M2-z1': 'BE', 'BQ-e-M2-z3': 'C' };
 /* ---------- banco ---------- */
 const BANCO = [...DATA.questions.filter(q => q.kind === 'banco'), ...(DATA.questoesEmBreve || [])];
 /* 205 do banco do estudante (158 das apostilas + 47 do banco) + as das estações escritas para o app (origem e:): M3,

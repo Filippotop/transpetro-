@@ -262,6 +262,13 @@ if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.jo
     for (const o of [q.ex, q.traps, q.erros]) { const a = o[de], b = o[para]; if (b === undefined) delete o[de]; else o[de] = b; if (a === undefined) delete o[para]; else o[para] = a; }
     q.ans = para;
   };
+  /* Letras já publicadas ficam congeladas (tools/banco/letras-publicadas.json): quem estuda pelo app já respondeu por essas letras, e o
+     histórico guarda a letra marcada. Questão publicada volta à letra de lá (a troca de duas posições é determinística); só as novas
+     entram no equilíbrio. Ao publicar um lote novo, acrescente as letras dele ao arquivo. */
+  const PUBL = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools/banco/letras-publicadas.json'), 'utf8'));
+  let congeladas = 0;
+  for (const q of out) if (PUBL[q.id] && q.ans !== PUBL[q.id]) { troca(q, q.ans, PUBL[q.id]); congeladas++; }
+  if (congeladas) console.log(`letras: ${congeladas} questões já publicadas voltaram à letra publicada`);
   const porMod = {};
   for (const q of out) (porMod[q.mod] = porMod[q.mod] || []).push(q);
   let movidas = 0;
@@ -269,7 +276,7 @@ if (faltam.length) { console.error(`sem revisão (${faltam.length}): ${faltam.jo
     const teto = Math.ceil(qs.length / 5), cont = Object.fromEntries([...L5].map(l => [l, 0]));
     qs.forEach(q => cont[q.ans]++);
     for (const q of qs) {
-      if (cont[q.ans] <= teto || /^[ae]:\w+:b\d+:\d+$/.test(q.origem) || cita(q) || emOrdem(q)) continue; /* os exercícios da Teoria (a: e e:…bN:i) têm gêmeo na Teoria da estação: não mudam */
+      if (PUBL[q.id] || cont[q.ans] <= teto || /^[ae]:\w+:b\d+:\d+$/.test(q.origem) || cita(q) || emOrdem(q)) continue; /* os exercícios da Teoria (a: e e:…bN:i) têm gêmeo na Teoria da estação: não mudam */
       const livres = [...L5].filter(l => cont[l] < teto && l !== q.ans);
       if (!livres.length) continue;
       const menor = Math.min(...livres.map(l => cont[l])), cand = livres.filter(l => cont[l] === menor);
