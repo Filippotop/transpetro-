@@ -20,6 +20,15 @@ Ondas seguintes (spec, seção 3):
 - **Onda 3:** N1 ✅, I3 ✅ e I2 ✅.
 - **Onda 4:** Matemática (X1–X3) e recalibração do Plano e do Painel.
 
+## Rodada de melhorias (2026-11-25), VER 2026-11-25.1
+
+- Banco: 825 → 902 questões (+77 revisadas pelo Opus: N1 +12, M2 +6, M3 +18, X1 +16, X2 +10, P1 +15). Ficaram de fora três de Português com alternativa ambígua (reg1, paron2, paron6). As letras corretas das 825 já publicadas ficam congeladas em `tools/banco/letras-publicadas.json` (o histórico guarda a letra marcada); ao publicar um lote novo, acrescente as letras dele.
+- Figuras de resposta: segunda leitura independente das 147; corrigidas E1 Thévenin (painéis incoerentes), E1 fonte de corrente (sentido), A1 amp-op inversor (fio em curto sobre Ri), base do transistor e um rótulo em inglês.
+- Usabilidade a 390 px: alvos de toque de 44 px (topo, chips, barra inferior, checkboxes do Plano), aviso de download das provas só depois da 1ª questão ou na 2ª visita, feedback de erro visível, subabas sem rolagem escondida.
+- Plano: simulado de 2 h pode ser feito em dois blocos; revisões de X3 (02/12) e X2 (03/12); o simulado usa o `mapa2023` por estação.
+- Base para outras matérias: `tools/novo-app.mjs` e `docs/BASE-REUTILIZAVEL.md` (o motor do Elétrica não foi alterado). Pesquisa e prioridades: `docs/PESQUISA-MELHORIAS.md`.
+- Edital consolidado até o DOU de 10/11/2026 conferido: Anexo IV da Ênfase 8 sem mudança e prova em 06/12.
+
 ## Circuito resolvido nas respostas (2026-11-24)
 
 `data/figresp.js` (gerado por `tools/figresp.mjs` a partir de `tools/figresp/*.mjs`) traz o circuito de cada questão que tem um, desenhado já resolvido, mostrado só na resposta (`qFigResp` em `index.html`; botão "Ampliar a figura" no celular). Cobertura: E1, E2, E3, C1, M1 (comandos, reaproveitando CMD1/CMD2 do banco), M2, M3, I1, I2, I3, A1 e A2. Ficam sem figura as questões de teoria, norma, lógica/Karnaugh, Português, Matemática e as de NR-10. **Não cobertos:** as questões dos geradores de números novos (`js/gerador.js`), a aba Provas (questões reais em imagem) e as perguntas de comando/CLP em escada que não usam o diagrama de partida direta/reversão. Revisão independente das figuras ainda pendente (conferidas só por mim, olhando as folhas de contato e recalculando os números da explicação).

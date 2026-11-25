@@ -30,7 +30,7 @@ export default {
       w: { A: "[formula] Esqueceu o número de espiras: I/l = 2/0,5 = 4 A/m.", B: "[formula] Esqueceu de dividir pelo comprimento: N·I = 2.000 A·e, que é força magnetomotriz, não A/m.", D: "[formula] Dividiu por l² em vez de l: 2.000/0,25 = 8.000 A/m.", E: "[oposto] Inverteu a razão e ainda esqueceu as espiras: l/I = 0,5/2 = 0,25." },
       conta: ["1000*2/0.5"], src: "fontes/circuitos-cc.html (siemens) e fontes/eletromagnetismo-transformadores.html (Wb, T, H, A/m, μ) H = N·I/l não consta nas fontes do repo: confira em livro-texto." },
     // RS-7.2-5
-    { id: "z5", mod: "M2", d: "m", h: "7.2", tag: "Tesla em unidades de base SI",
+    { id: "z5", mod: "M2", d: "m", h: "7.2", tag: "Tesla em newton, ampère e metro",
       s: "Em F = B·I·L, com F em newton, I em ampère e L em metro, a unidade de B é o tesla. Em termos de newton, ampère e metro, 1 T equivale a",
       o: ["N·m/A", "N/(A·m)", "V/m", "A·m/N", "N·A/m"], a: 1,
       c: "Por F = B·I·L, B = F/(I·L), com unidade N/(A·m). Como 1 Wb = 1 V·s, também vale V·s/m² = Wb/m².",
