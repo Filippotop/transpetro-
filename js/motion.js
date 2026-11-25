@@ -25,22 +25,33 @@
     const nx=app.querySelector('.next'), lc=nx&&[...nx.classList].find(c=>c.startsWith('lc-'));
     const live=lc&&app.querySelector('.line.'+lc); if(live) live.classList.add('live');
     const key=document.body.dataset.view; if(key===lastKey) return; lastKey=key; // só ao trocar de tela
+    /* A entrada completa só roda na PRIMEIRA visita de cada tela na sessão: o aluno volta à Início 20-30 vezes por dia e não
+       deve assistir ao mesmo show. Números, anéis e barras só se mexem quando o valor MUDOU desde a última vez que ele os viu. */
+    const seen=window.__edoSeen||(window.__edoSeen=new Set()); let nums={}; try{ nums=JSON.parse(sessionStorage.getItem('edo-nums')||'{}'); }catch(e){}
+    const first=!seen.has(key); seen.add(key);
+    document.body.toggleAttribute('data-seen',!first);
     const vh=innerHeight, all=[...app.querySelectorAll(SEL)].filter(e=>!e.parentElement.closest(SEL));
     /* Só o que está na tela entra animado. Nada fica escondido à espera da rolagem: o axe lê texto com opacidade 0
        como contraste reprovado, e conteúdo invisível por falha de script seria pior que conteúdo sem animação. */
-    const now=all.filter(e=>e.getBoundingClientRect().top<vh).slice(0,30);
-    if(now.length) gsap.from(now,{opacity:0,y:14,duration:.45,ease:'power3.out',stagger:{amount:Math.min(.4,now.length*.05)},clearProps:'opacity,transform'});
-    if(io) all.filter(e=>e.matches('.line')&&!now.includes(e)).forEach(e=>io.observe(e)); // linha fora da tela liga quando aparecer
-    now.filter(e=>e.matches('.line')).forEach((l,i)=>energize(l,.25+i*.12));
-    app.querySelectorAll('.aring circle[stroke-dasharray]').forEach(c=>{
-      const [a,b]=c.getAttribute('stroke-dasharray').split(' ').map(Number);
-      gsap.fromTo(c,{attr:{'stroke-dasharray':'0 '+b}},{attr:{'stroke-dasharray':a+' '+b},duration:1,delay:.2,ease:'power2.out'});
+    const now=all.filter(e=>e.getBoundingClientRect().top<vh).slice(0,12);
+    if(first){
+      if(now.length) gsap.from(now,{opacity:.001,y:8,duration:.32,ease:'power3.out',stagger:{amount:Math.min(.24,now.length*.03)},clearProps:'opacity,transform'});
+      if(io) all.filter(e=>e.matches('.line')&&!now.includes(e)).forEach(e=>io.observe(e)); // linha fora da tela liga quando aparecer
+      now.filter(e=>e.matches('.line')).forEach((l,i)=>energize(l,.15+i*.08));
+    }
+    const mudou=(k,v)=>{ const from=nums[k]; nums[k]=v; if(from==null) return first?0:null; return from===v?null:from; }; // null = não anima; número = valor de partida
+    app.querySelectorAll('.aring circle[stroke-dasharray]').forEach((c,idx)=>{
+      const [a,b]=c.getAttribute('stroke-dasharray').split(' ').map(Number), f=mudou(key+'|ring'+idx,a); if(f==null) return;
+      gsap.fromTo(c,{attr:{'stroke-dasharray':f+' '+b}},{attr:{'stroke-dasharray':a+' '+b},duration:.7,delay:.1,ease:'power2.out'}); });
+    app.querySelectorAll('.bar2 i').forEach((i,idx)=>{
+      const w=parseFloat(i.style.width); if(isNaN(w)||w<=0) return; const f=mudou(key+'|bar'+idx,w); if(f==null||f>=w) return;
+      gsap.fromTo(i,{clipPath:`inset(0 ${100-f/w*100}% 0 0)`},{clipPath:'inset(0 0% 0 0)',duration:.6,delay:.1,ease:'power2.out',clearProps:'clipPath'}); });
+    app.querySelectorAll('.stat .n').forEach(n=>{ // contagem: só inteiros no início do texto, e só quando o valor mudou
+      const tn=n.firstChild; if(!tn||tn.nodeType!==3) return; const m=tn.nodeValue.match(/^(\d+)(%?)$/); if(!m) return;
+      const lab=(n.parentElement.querySelector('.l')||{}).textContent||'', f=mudou(key+'|'+lab,+m[1]); if(f==null||f===+m[1]) return;
+      const o={v:f}; gsap.to(o,{v:+m[1],duration:.6,delay:.1,ease:'power2.out',onUpdate:()=>{tn.nodeValue=Math.round(o.v)+m[2];},onComplete:()=>{tn.nodeValue=m[1]+m[2];}});
     });
-    app.querySelectorAll('.bar2 i').forEach(i=>{ const w=i.style.width; if(w) gsap.fromTo(i,{width:'0%'},{width:w,duration:.9,delay:.2,ease:'power2.out'}); });
-    app.querySelectorAll('.stat .n,.countdown .big').forEach(n=>{ // contagem: só inteiros no início do texto
-      const t=n.firstChild; if(!t||t.nodeType!==3) return; const m=t.nodeValue.match(/^(\d+)(%?)$/); if(!m) return;
-      const to=+m[1], o={v:0}; gsap.to(o,{v:to,duration:.9,delay:.15,ease:'power1.out',onUpdate:()=>{t.nodeValue=Math.round(o.v)+m[2];},onComplete:()=>{t.nodeValue=m[1]+m[2];}});
-    });
+    try{ sessionStorage.setItem('edo-nums',JSON.stringify(nums)); }catch(e){}
   }
 
   function startFull(){
@@ -81,27 +92,29 @@
     undo.push(()=>{ bl.forEach(t=>t.kill()); au.remove(); });
   }
 
-  /* Resposta de uma questão: a certa salta e solta faíscas (modo completo); a errada treme. Lê as classes que o app
-     põe depois do clique; não decide nada. */
+  /* Faíscas: só no acerto de primeira de uma questão difícil (evento edo:hard). O feedback comum de resposta é CSS (motion.css). */
   function sparks(el){
     const r=el.getBoundingClientRect(), x=r.left+r.width/2, y=r.top+r.height/2;
-    for(let i=0;i<12;i++){ const s=document.createElement('i'); s.className='edo-spark'; s.setAttribute('aria-hidden','true');
+    for(let i=0;i<10;i++){ const s=document.createElement('i'); s.className='edo-spark'; s.setAttribute('aria-hidden','true');
       s.style.cssText=`left:${x-3}px;top:${y-3}px;background:var(${i%3?'--gold':'--ok'})`; document.body.append(s);
-      const a=i/12*6.283+Math.random()*.5, d=28+Math.random()*34;
-      gsap.to(s,{x:Math.cos(a)*d,y:Math.sin(a)*d+10,opacity:0,scale:.3,duration:.55+Math.random()*.25,ease:'power2.out',onComplete:()=>s.remove()}); }
+      const a=i/10*6.283+Math.random()*.5, d=22+Math.random()*26;
+      gsap.to(s,{x:Math.cos(a)*d,y:Math.sin(a)*d+10,opacity:0,scale:.3,duration:.45+Math.random()*.2,ease:'power3.out',onComplete:()=>s.remove()}); }
   }
-  document.addEventListener('edo:celebrate',e=>{ if(cur!=='full') return;
-    if(window.confetti){ const cs=getComputedStyle(root), c=['--gold','--e','--i','--m'].map(v=>cs.getPropertyValue(v).trim()).filter(Boolean);
-      const r=e.detail.getBoundingClientRect(); confetti({particleCount:90,spread:75,startVelocity:38,ticks:160,origin:{x:(r.left+r.width/2)/innerWidth,y:Math.min(.8,(r.top+r.height/3)/innerHeight)},colors:c,disableForReducedMotion:true}); }
-    else sparks(e.detail); });
-  document.addEventListener('click',e=>{
-    if(cur==='off') return; const alt=e.target.closest&&e.target.closest('.alt'); if(!alt||!alt.dataset.k) return;
-    const q=alt.closest('.q'), host=q&&q.parentElement, k=alt.dataset.k; if(!host) return;
-    const idx=[...host.children].indexOf(q); // o app redesenha a questão inteira: reencontra pelo lugar
-    requestAnimationFrame(()=>{ const q2=q.isConnected?q:host.isConnected?host.children[idx]:null, a=q2&&q2.querySelector('.alt[data-k="'+k+'"]'); if(!a) return;
-      if(a.classList.contains('right')){ const L=a.querySelector('.L'); gsap.fromTo(L,{scale:.6},{scale:1,duration:.5,ease:'elastic.out(1,.45)',clearProps:'transform'}); if(cur==='full'&&!q2.querySelector('.alt.wrong')) sparks(L); } // faíscas só no acerto de primeira
-      else if(a.classList.contains('wrong')) gsap.fromTo(a,{x:0},{keyframes:{x:[0,-7,6,-4,3,0]},duration:.4,ease:'power1.out',clearProps:'transform'}); });
-  },true); // na captura: o clique do app troca a questão e o alvo sairia da página antes de chegar aqui
+  /* Recompensas: só em momentos raros e uma vez por evento (dia fechado, meta, sequência, acerto difícil). Funcionam no modo
+     leve (o padrão) e no completo; 'off' e reduzir movimento não veem nada, e o texto/toast que explica o momento continua. */
+  const canVibrate=()=>navigator.vibrate&&navigator.userActivation&&navigator.userActivation.hasBeenActive;
+  document.addEventListener('edo:celebrate',e=>{ if(cur==='off') return;
+    const el=e.detail, light=cur!=='full'; el.classList.add('edo-win'); setTimeout(()=>el.classList.remove('edo-win'),1400);
+    if(canVibrate()) try{ navigator.vibrate([12,60,18]); }catch(_){}
+    gsap.delayedCall(.5,()=>{ if(!window.confetti) return sparks(el);
+      const cs=getComputedStyle(root), c=['--gold','--e','--i','--m'].map(v=>cs.getPropertyValue(v).trim()).filter(Boolean), r=el.getBoundingClientRect();
+      confetti({particleCount:light?60:100,spread:70,startVelocity:34,gravity:1.1,ticks:light?120:160,scalar:.9,
+        origin:{x:(r.left+r.width/2)/innerWidth,y:Math.max(.1,Math.min(.8,r.top/innerHeight))},colors:c,disableForReducedMotion:true}); }); });
+  const fire=()=>{ if(cur==='off') return; const b=document.getElementById('goalBtn'); if(!b) return;
+    b.classList.remove('fire'); void b.offsetWidth; b.classList.add('fire'); setTimeout(()=>b.classList.remove('fire'),800);
+    if(canVibrate()) try{ navigator.vibrate(10); }catch(_){} };
+  document.addEventListener('edo:goal',fire); document.addEventListener('edo:streak',fire);
+  document.addEventListener('edo:hard',e=>{ if(cur==='off') return; const L=e.detail.querySelector('.alt.right .L'); if(L) sparks(L); });
 
   // Rolagem suave (Lenis): opção separada, porque sequestra a roda do mouse e pode travar a rolagem em alguns aparelhos.
   let smUndo=null;

@@ -1022,6 +1022,7 @@ function elimStats(){
 }
 function questionCard(el,q,opts={}){
   const prev=S.ans[q.id];
+  let fresh=false; /* true só na pintura disparada por pick(): é a única que anima o retorno da resposta */
   const st={tries:[],locked:false,cut:new Set(),cutMode:false}; /* cut: alternativas riscadas antes de responder (treino de eliminação) */
   el.dataset.qid=q.id;
   const L='ABCDE';
@@ -1035,16 +1036,16 @@ function questionCard(el,q,opts={}){
       <p class="cmd">${q.cmd}</p>
       ${reveal||opts.riscar===false?'':`<div class="cutbar"><button class="chipbtn cutb" aria-pressed="${st.cutMode}">${st.cutMode?'Riscando: toque no que está errado':'Riscar alternativas'}</button><span class="muted" style="font-size:12.5px">${st.cut.size?`${st.cut.size} riscada${st.cut.size>1?'s':''}. `:''}Na prova não há desconto por erro: elimine o que sabe que está errado e marque entre as que sobram.</span></div>`}
       <div class="alts">${q.alts.map((a,i)=>{const k=L[i]; let c=''; if(reveal){ c = k===q.ans?'right':(st.tries.includes(k)?'wrong':'dim'); } else if(st.tries.includes(k)) c='wrong'; else if(st.cut.has(k)) c='cut';
-        return `<button class="alt ${c}" data-k="${k}" ${reveal||st.tries.includes(k)?'disabled':''}><span class="L">${k}</span><span>${a}</span></button>`}).join('')}</div>
+        return `<button class="alt ${c}${fresh&&k===st.tries[st.tries.length-1]?' novo':''}" data-k="${k}" ${reveal||st.tries.includes(k)?'disabled':''}><span class="L">${k}</span><span>${a}</span></button>`}).join('')}</div>
       <div class="fbz"></div></div>`;
     const fbz=el.querySelector('.fbz');
     if(!reveal && st.tries.length===1){
       const k=st.tries[0], tr=q.traps[k];
-      fbz.innerHTML = tr ? `<div class="fb trap"><strong>Armadilha: ${TRAPS[tr].name}.</strong> ${TRAPS[tr].tip} Você tem mais uma tentativa.</div>` : `<div class="fb no"><strong>Ainda não.</strong> Releia o comando, traduza o texto numa frase sua e tente de novo. Você tem mais uma tentativa.</div>`;
+      fbz.innerHTML = tr ? `<div class="fb trap${fresh?' novo':''}"><strong>Armadilha: ${TRAPS[tr].name}.</strong> ${TRAPS[tr].tip} Você tem mais uma tentativa.</div>` : `<div class="fb no${fresh?' novo':''}"><strong>Ainda não.</strong> Releia o comando, traduza o texto numa frase sua e tente de novo. Você tem mais uma tentativa.</div>`;
     }
     if(reveal){
       const first=st.tries[0]; const okFirst=first===q.ans;
-      fbz.innerHTML=`<div class="fb ${okFirst?'ok':'no'}"><strong>${okFirst?'Certa de primeira.':(st.tries.includes(q.ans)?'Certa na segunda tentativa. Conta como erro na sua estatística.':'Gabarito: '+q.ans+'.')}</strong> ${okFirst?'':'Leia o porquê de cada alternativa.'}</div>
+      fbz.innerHTML=`<div class="fb ${okFirst?'ok':'no'}${fresh?' novo':''}"><strong>${okFirst?(q.dif==='difícil'?'Certa de primeira, e era difícil.':'Certa de primeira.'):(st.tries.includes(q.ans)?'Certa na segunda tentativa. Conta como erro na sua estatística.':'Gabarito: '+q.ans+'.')}</strong> ${okFirst?'':'Leia o porquê de cada alternativa.'}</div>
         ${qFigResp(q)}
         <div class="ex">${L.split('').map(k=>`<div class="${k===q.ans?'c':''}"><span class="L">${k}</span><span>${q.ex[k]||''}${q.erros&&q.erros[k]&&DATA.erros&&DATA.erros[q.erros[k]]?`<span class="tg">${esc(DATA.erros[q.erros[k]].n)}</span>`:q.traps[k]?`<span class="tg">${TRAPS[q.traps[k]].name}</span>`:''}</span></div>`).join('')}</div>
         ${elimLine(q)}${!okFirst&&opts.regra!==false?`<div class="regra"><label class="eyebrow" for="rg-${esc(q.id)}">a regra que teria evitado este erro (em uma frase, sua)</label><textarea id="rg-${esc(q.id)}" placeholder="Ex.: em trifásico, conferir se a tensão dada é de linha ou de fase antes de usar √3.">${esc(S.notes[q.id]||'')}</textarea></div>`:''}
@@ -1061,12 +1062,14 @@ function questionCard(el,q,opts={}){
     el.querySelectorAll('.alt:not(:disabled)').forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(st.cutMode){ if(st.cut.has(k)) st.cut.delete(k); else st.cut.add(k); paint(); const nb=el.querySelector(`.alt[data-k="${k}"]`); if(nb) nb.focus(); } else { pick(k); const fb=el.querySelector('.fb'); if(fb) fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); } });
     const cb=el.querySelector('.cutb'); if(cb) cb.onclick=()=>{ st.cutMode=!st.cutMode; paint(); const b2=el.querySelector('.cutb'); if(b2) b2.focus(); };
     if(q.fig&&window.montarCalculadoras) montarCalculadoras(el); /* figura larga: botão "Ampliar a figura" no celular */
+    fresh=false;
   }
   function pick(k){
     st.tries.push(k);
     if(st.tries.length===1 && !S.ans[q.id]){ S.ans[q.id]=ansRec(q,k,opts.src||'estudo'); if(st.cut.size) S.ans[q.id].el=[...st.cut].sort().join(''); if(isGen(q.id)) Q[q.id]=q; bump(); save(); }
     if(k===q.ans || st.tries.length>=2){ st.locked=true; opts.onDone&&opts.onDone(st.tries[0]===q.ans); }
-    paint();
+    fresh=true; paint();
+    if(st.tries.length===1&&k===q.ans&&q.dif==='difícil') document.dispatchEvent(new CustomEvent('edo:hard',{detail:el}));
   }
   if(prev && opts.resume!==false){ st.tries=[prev.first]; if(prev.ok){st.locked=true;} else { st.tries=[prev.first]; } }
   if(prev && !prev.ok && opts.resume!==false){ st.locked=true; }
@@ -1658,7 +1661,9 @@ $('#sform').addEventListener('submit',e=>{ e.preventDefault(); const v=$('#sq').
 function lsGet(k){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } }
 function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
 function lsDel(k){ try{ localStorage.removeItem(k); }catch(e){} }
-function bump(n=1){ const d=isoToday(); S.act[d]=(S.act[d]||0)+n; }
+function bump(n=1){ const d=isoToday(), b=S.act[d]||0, g=prefs.goal||20; S.act[d]=b+n;
+  if(b<g&&b+n>=g) setTimeout(()=>{ toast(`Meta de hoje feita: ${g} atividades.`); document.dispatchEvent(new CustomEvent('edo:goal')); },0);
+  else if(b===0) setTimeout(()=>{ const s=dayStreak(); if(s>=2) document.dispatchEvent(new CustomEvent('edo:streak',{detail:s})); },0); }
 function lastDays(n){ const out=[]; for(let i=n-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); out.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`); } return out; }
 function dayStreak(){ const ds=lastDays(60).reverse(); let i=0; if(!(S.act[ds[0]]>0)) i=1; let n=0; for(;i<ds.length;i++){ if(S.act[ds[i]]>0) n++; else break; } return n; }
 function errList(){

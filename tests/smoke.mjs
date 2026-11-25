@@ -531,6 +531,50 @@ async function testFixacao(browser) {
   check(!errs.length, `fixação: erro de página: ${errs.join(' | ')}`);
   await ctx.close();
 }
+/* Movimento com função (2026-11-25): resposta comum só "tica", marcar/riscar não repete animação, acerto difícil solta faíscas,
+   meta do dia acende a pílula, dia fechado solta confete, e a Início não refaz a entrada na 2ª visita. */
+async function testMovimento(browser) {
+  const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  await ctx.addInitScript(() => { if (!localStorage.getItem('edo-prefs')) localStorage.setItem('edo-prefs', JSON.stringify({ motion: 'full' })); });
+  const page = await ctx.newPage(); const errs = []; page.on('pageerror', e => errs.push(e.message));
+  await page.goto(URL_); await page.waitForTimeout(700);
+  /* 1) a Início só refaz a entrada na 1ª visita da sessão */
+  await page.evaluate(() => go('painel')); await page.waitForTimeout(900);
+  await page.evaluate(() => go('linhas')); await page.waitForTimeout(300);
+  const tw = await page.evaluate(() => window.gsap ? gsap.globalTimeline.getChildren(true, true, false).filter(t => t.repeat() !== -1).length : -1);
+  check(tw === 0, `movimento: a Início não deveria refazer a entrada na 2ª visita (${tw} animações ativas)`);
+  /* 2) questão: acerto comum não solta faíscas; repintura (revisar depois) não anima */
+  await page.evaluate(() => go('mod', { id: 'E1', tab: 'q' })); await page.waitForTimeout(700);
+  const alvo = await page.evaluate(() => { const els = [...document.querySelectorAll('[data-qid]')]; const o = els.map((el, i) => ({ i, q: Q[el.dataset.qid] })); const f = o.find(x => x.q.dif !== 'difícil'); const d = o.find(x => x.q.dif === 'difícil'); return { f: f && { i: f.i, ans: f.q.ans }, d: d && { i: d.i, ans: d.q.ans } }; });
+  const cards = page.locator('[data-qid]');
+  if (alvo.f) {
+    await cards.nth(alvo.f.i).locator(`.alt[data-k="${alvo.f.ans}"]`).click(); await page.waitForTimeout(60);
+    check(await page.locator('.edo-spark').count() === 0, 'movimento: acerto comum não deve soltar faíscas');
+    check(await cards.nth(alvo.f.i).locator('.alt.right.novo').count() === 1, 'movimento: a letra recém-acertada deveria levar .novo');
+    await cards.nth(alvo.f.i).locator('.mk').click(); await page.waitForTimeout(60);
+    check(await cards.nth(alvo.f.i).locator('.novo').count() === 0, 'movimento: "revisar depois" repinta o cartão e não pode reanimar a resposta');
+  }
+  await ctx.close();
+  /* 3) meta do dia e dia fechado, em contexto limpo */
+  const c2 = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
+  await c2.addInitScript(() => { if (!localStorage.getItem('edo-prefs')) localStorage.setItem('edo-prefs', JSON.stringify({ motion: 'full' })); });
+  const p2 = await c2.newPage(); p2.on('pageerror', e => errs.push(e.message));
+  await p2.goto(URL_); await p2.waitForTimeout(600);
+  await p2.evaluate(() => { S.act[isoToday()] = (prefs.goal || 20) - 1; save(); go('mod', { id: 'E1', tab: 'q' }); }); await p2.waitForTimeout(700);
+  const q1 = await p2.evaluate(() => { const el = document.querySelector('[data-qid]'); return { ans: Q[el.dataset.qid].ans }; });
+  await p2.locator('[data-qid]').first().locator(`.alt[data-k="${q1.ans}"]`).click(); await p2.waitForTimeout(150);
+  check(await p2.locator('#goalBtn.fire').count() === 1, 'movimento: bater a meta do dia deveria acender a pílula do cabeçalho');
+  const hb = await p2.evaluate(() => document.querySelector('header.top').getBoundingClientRect().height);
+  check(hb <= 84, `movimento: cabeçalho com ${hb} px durante o efeito (máximo 84)`);
+  await p2.waitForTimeout(900);
+  check(await p2.locator('#goalBtn.fire').count() === 0, 'movimento: o efeito da meta deveria terminar');
+  await p2.evaluate(() => { go('linhas'); }); await p2.waitForTimeout(500);
+  await p2.evaluate(() => { const h = document.querySelector('.hoje'); if (h) document.dispatchEvent(new CustomEvent('edo:celebrate', { detail: h })); }); await p2.waitForTimeout(800);
+  const cv = await p2.evaluate(() => document.querySelectorAll('canvas').length);
+  check(cv >= 1, 'movimento: "dia fechado" deveria soltar confete (canvas)');
+  check(!errs.length, `movimento: erro de página: ${errs.join(' | ')}`);
+  await c2.close();
+}
 /* Memória cheia: se o localStorage recusar gravar, o selo não pode dizer "salvo"; o menu Aa mostra a versão instalada; o Próximo passo segue o plano do dia. */
 async function testQuota(browser) {
   const ctx = await browser.newContext({ viewport: VIEWPORTS['375'], serviceWorkers: 'block' });
@@ -1201,6 +1245,7 @@ try {
   await run('design', testDesign);
   await run('aulas', testAulas);
   await run('fixacao', testFixacao);
+  await run('movimento', testMovimento);
   await run('quota', testQuota);
   await run('riscar', testRiscar);
   await run('contas', testContas);

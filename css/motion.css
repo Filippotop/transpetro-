@@ -6,7 +6,7 @@
 body{background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.4px);background-size:22px 22px}
 
 /* Próximo passo: a cor da linha entra pelo canto e pela borda. */
-.next{position:relative;overflow:hidden;border-left:6px solid var(--lc,var(--gold));
+.next{position:relative;overflow:hidden;
   background:radial-gradient(60% 130% at 100% 0,color-mix(in srgb,var(--lc,var(--gold)) 50%,transparent),transparent 70%),var(--ink)}
 .next .cta svg{transition:transform .2s var(--ease)}
 .next:hover .cta svg,.next:focus-visible .cta svg{transform:translateX(4px)}
@@ -22,22 +22,27 @@ html[data-fx="full"] .line.live .stations::after{content:"";position:absolute;to
   background:linear-gradient(90deg,transparent,color-mix(in srgb,#fff 80%,var(--lc)),transparent);animation:edo-flow 4.5s cubic-bezier(.5,0,.5,1) infinite}
 @keyframes edo-flow{0%{left:44px;opacity:0}8%{opacity:.95}55%{left:calc(100% - 100px);opacity:.95}62%,100%{left:calc(100% - 100px);opacity:0}}
 
-/* Marca: o "de Ouro" reflete a luz de tempos em tempos. */
-html[data-fx="full"] .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
+/* (o brilho periódico do "de Ouro" no cabeçalho saiu: movimento sustentado na única área sempre visível) */
+html[data-fx="never"] .brand em{background:linear-gradient(110deg,var(--gold) 35%,color-mix(in srgb,var(--gold) 35%,#fff) 50%,var(--gold) 65%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:edo-shine 6s ease-in-out infinite}
 @keyframes edo-shine{0%,60%{background-position:120% 0}100%{background-position:-120% 0}}
 
 /* Números de largura fixa (não pulam quando mudam) e troca de aba com fusão nativa. */
 .stat .n,.countdown .big,#count,.aring b,.hoje small,.pr b{font-variant-numeric:tabular-nums}
-@keyframes edo-vt-out{to{opacity:0}}@keyframes edo-vt-in{from{opacity:0;translate:0 8px}}
-::view-transition-old(root){animation:edo-vt-out .14s ease-out both}
-::view-transition-new(root){animation:edo-vt-in .26s cubic-bezier(.2,.7,.2,1) both}
+/* Troca de aba: só o miolo esmaece; cabeçalho e abas ficam parados (não piscam). */
+header.top{view-transition-name:edo-top}
+::view-transition-group(edo-top){animation:none}
+::view-transition-old(edo-top){display:none}
+::view-transition-new(edo-top){animation:none}
+@keyframes edo-vt-out{to{opacity:0}}@keyframes edo-vt-in{from{opacity:0;translate:0 6px}}
+::view-transition-old(root){animation:edo-vt-out .12s var(--ease-out) both}
+::view-transition-new(root){animation:edo-vt-in .2s var(--ease-out) both}
 @media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 
 /* Respostas ao toque. */
 html[data-fx]:not([data-fx="off"]) :is(.btn,.tabs button,.alt:not(:disabled)):active{transform:scale(.96)}
 html[data-fx]:not([data-fx="off"]) .tabs button[aria-current="true"] .ni{animation:edo-pop .35s var(--ease)}
 @keyframes edo-pop{0%{transform:scale(.8)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
-html[data-fx]:not([data-fx="off"]) :is(.fb,.toast:not([hidden]),#pop:not([hidden])){animation:edo-rise .28s var(--ease)}
+html[data-fx]:not([data-fx="off"]) :is(.toast:not([hidden]),#pop:not([hidden])){animation:edo-rise .28s var(--ease)}
 @keyframes edo-rise{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 
 /* Luz que segue o ponteiro nos cartões. Só com mouse. */
@@ -62,3 +67,36 @@ html[data-fx="off"] .edo-aurora{display:none}
 html[data-fx="off"] :is(.edo-fx,.edo-gl){display:none}
 @media (prefers-reduced-motion:reduce){.edo-fx,.edo-gl,.edo-aurora{display:none}}
 html.lenis{scroll-behavior:auto!important}
+
+/* ---- Tokens e retorno de resposta (2026-11-25) ---- */
+:root{--ease-out:cubic-bezier(.23,1,.32,1);--ease-in-out:cubic-bezier(.77,0,.175,1);--ease-spring:cubic-bezier(.34,1.4,.64,1);--ease-spring:linear(0,.18 5%,.55 13%,.86 21%,1.04 30%,1.08 36%,1.06 43%,1.01 55%,.995 68%,1)}
+html{-webkit-tap-highlight-color:transparent}
+button,a,[role="button"],label{touch-action:manipulation}
+/* Resposta de questão: só na pintura nova (classe .novo, posta por pick()); marcar/riscar não repete nada. */
+@media (prefers-reduced-motion:no-preference){
+  html[data-fx]:not([data-fx="off"]) .alt.right.novo .L{animation:edo-tick .18s var(--ease-out) both}
+  html[data-fx]:not([data-fx="off"]) .alt.wrong.novo{animation:edo-nudge .2s var(--ease-out) both}
+  html[data-fx]:not([data-fx="off"]) .fb.novo{animation:edo-in .2s var(--ease-out) both}
+  html[data-fx]:not([data-fx="off"]) #goalBtn.fire{animation:edo-bump .32s var(--ease-spring)}
+  html[data-fx]:not([data-fx="off"]) #goalBtn.fire::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 2px var(--ok);animation:edo-ring .7s var(--ease-out) both}
+  html[data-fx]:not([data-fx="off"]) .hoje.edo-win .bar2::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,color-mix(in srgb,#fff 70%,var(--gold)) 50%,transparent);transform:translateX(-100%);animation:edo-sheen .5s .45s var(--ease-in-out) both}
+  html[data-fx]:not([data-fx="off"]) .hoje.edo-win .fechado{animation:edo-pop2 .28s .5s var(--ease-spring) both}
+}
+@keyframes edo-tick{from{transform:scale(.8)}}
+@keyframes edo-nudge{from{transform:translateX(-3px)}}
+@keyframes edo-in{from{opacity:.001;transform:translateY(4px)}}
+@keyframes edo-bump{40%{transform:scale(1.06)}}
+@keyframes edo-ring{from{opacity:.9;transform:scale(1)}to{opacity:0;transform:scale(1.35)}}
+@keyframes edo-sheen{to{transform:translateX(100%)}}
+@keyframes edo-pop2{from{opacity:.001;transform:scale(.97)}}
+#goalBtn{position:relative}
+.hoje .bar2{position:relative;overflow:hidden}
+/* Silêncio na leitura, na prova e no treino: sem partículas nem fundo animado onde se estuda. */
+body:is([data-view="mod"],[data-view="prova"],[data-view="papel"],[data-view="treino"]) :is(.edo-fx,.edo-aurora,.edo-gl){display:none}
+/* Pista de "rola para o lado" (segue o dedo; sem suporte, fica como antes). */
+@property --fl{syntax:"<length>";inherits:false;initial-value:0px}
+@property --fr{syntax:"<length>";inherits:false;initial-value:0px}
+@supports (animation-timeline:scroll(self inline)){
+  .track,.subtabs{-webkit-mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);mask-image:linear-gradient(90deg,transparent,#000 var(--fl),#000 calc(100% - var(--fr)),transparent);animation:edo-edge linear both;animation-timeline:scroll(self inline)}
+}
+@keyframes edo-edge{0%{--fl:0px;--fr:28px}12%{--fl:28px}88%{--fr:28px}100%{--fl:28px;--fr:0px}}
