@@ -229,7 +229,7 @@ function emitLista(est, lista) {
       id: 'BQ-e-' + onde.replace(/:/g, '-'), vol: MODS[q.mod || est].vol, mod: q.mod || est, kind: 'banco', tag: q.tag, base: [], cmd: q.s,
       alts: q.o, ans, ex, traps, erros, hab: q.h, dif: { f: 'fácil', m: 'média', d: 'difícil' }[q.d],
       ...(q.figSvg ? { fig: svgClasses(typeof q.figSvg === 'function' ? q.figSvg() : q.figSvg).replace(/[\r\n]+/g, '') } : {}), /* figSvg: figura própria da questão extra (tools/banco/figlib.mjs) */
-      ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: '', origem: 'e:' + onde,
+      ...(q.conta ? { conta: [].concat(q.conta) } : {}), src: q.src || '', origem: 'e:' + onde,
     });
   }
 }
