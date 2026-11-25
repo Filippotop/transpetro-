@@ -85,6 +85,6 @@ html{scrollbar-color:color-mix(in srgb,var(--muted) 45%,transparent) transparent
 
 /* alvos de toque (revisão crítica 2026-11-24): .back 17 px, .tool 27 px, .chipbtn 24 px e a grade do simulado 34 px ficavam abaixo do mínimo para o dedo */
 .back{display:inline-flex;align-items:center;min-height:44px;padding:0 12px 0 0;margin-bottom:4px;font-size:13px}
-.tool{min-height:32px;padding:6px 11px}
-.chipbtn{min-height:36px;padding:8px 12px;font-size:12px}
+.tool{min-height:44px;min-width:44px;padding:6px 11px}
+.chipbtn{min-height:44px;padding:8px 12px;font-size:12px}
 .simnav button{width:40px;height:40px}

@@ -878,7 +878,10 @@ async function testOfflineConsent(browser) {
   check(total === 61, `offline: a prova de 2023 deveria ter 61 imagens (60 questões + texto-base), tem ${total}`);
   check(await count() === 0, 'offline: baixou imagens de prova sem perguntar');
   const ask = page.locator('#pwaWarm');
-  check(await ask.isVisible().catch(() => false), 'offline: não apareceu a pergunta para baixar as provas');
+  check(!(await ask.isVisible().catch(() => false)), 'offline: a pergunta para baixar as provas apareceu na 1ª abertura (cobriria o PRÓXIMO PASSO)');
+  await page.evaluate(() => localStorage.setItem('edo-visitas', JSON.stringify({ n: 1, d: 'Sat Jan 01 2000' }))); /* simula a 2ª visita (um dia depois) */
+  await page.reload(); await page.waitForTimeout(1500);
+  check(await ask.isVisible().catch(() => false), 'offline: não apareceu a pergunta para baixar as provas na 2ª visita');
   if (await ask.isVisible().catch(() => false)) {
     await ask.click();
     for (let t = 0; t < 40 && await count() < total; t++) await page.waitForTimeout(500);
