@@ -318,7 +318,10 @@ sw = sw.replace(/const VER='[^']*';/, "const VER='1';");
 fs.writeFileSync(path.join(DEST, 'sw.js'), sw);
 
 /* Sanidade: nenhuma das palavras de outra matéria pode ter sobrado nos arquivos gerados. */
-const PROIBIDAS = /Elétrica|Eletrica|Transpetro|NR-10|Humanas|ENEM|edo-|eletrica-de-ouro|Cesgranrio/i;
+/* Palavra que o próprio usuário informou (ex.: a mesma banca, Cesgranrio) não é sobra de outra matéria. */
+const MEUS_TEXTOS = [NOME, SLUG, BANCA, CARGO, CONC, CURTO, a.prefixo].join(' ').toLowerCase();
+const PROIBIDAS = new RegExp(['Elétrica', 'Eletrica', 'Transpetro', 'NR-10', 'Humanas', 'ENEM', 'edo-', 'eletrica-de-ouro', 'Cesgranrio']
+  .filter(w => !MEUS_TEXTOS.includes(w.toLowerCase())).map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
 const sobras = [];
 for (const f of listaRecursiva(DEST)) {
   if (!TEXTO.test(f) || f === '.novo-app.json') continue;
